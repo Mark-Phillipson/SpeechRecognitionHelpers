@@ -38,6 +38,9 @@ namespace DictationBoxMSP
             // 
             // richTextBox1
             // 
+            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBox1.BackColor = System.Drawing.SystemColors.MenuText;
             this.richTextBox1.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox1.ForeColor = System.Drawing.SystemColors.Window;
@@ -50,6 +53,8 @@ namespace DictationBoxMSP
             // 
             // TransferButton
             // 
+            this.TransferButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.TransferButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.TransferButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.TransferButton.Location = new System.Drawing.Point(1003, 529);
             this.TransferButton.Margin = new System.Windows.Forms.Padding(4);
@@ -62,8 +67,10 @@ namespace DictationBoxMSP
             // 
             // CamelButton
             // 
+            this.CamelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CamelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CamelButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.CamelButton.Location = new System.Drawing.Point(1003, 434);
+            this.CamelButton.Location = new System.Drawing.Point(1003, 432);
             this.CamelButton.Margin = new System.Windows.Forms.Padding(4);
             this.CamelButton.Name = "CamelButton";
             this.CamelButton.Size = new System.Drawing.Size(87, 87);
@@ -74,8 +81,10 @@ namespace DictationBoxMSP
             // 
             // VariableButton
             // 
+            this.VariableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.VariableButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.VariableButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.VariableButton.Location = new System.Drawing.Point(1003, 339);
+            this.VariableButton.Location = new System.Drawing.Point(1003, 335);
             this.VariableButton.Margin = new System.Windows.Forms.Padding(4);
             this.VariableButton.Name = "VariableButton";
             this.VariableButton.Size = new System.Drawing.Size(87, 87);
@@ -86,6 +95,8 @@ namespace DictationBoxMSP
             // 
             // WindowButton
             // 
+            this.WindowButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.WindowButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.WindowButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.WindowButton.Location = new System.Drawing.Point(1003, 238);
             this.WindowButton.Margin = new System.Windows.Forms.Padding(4);
