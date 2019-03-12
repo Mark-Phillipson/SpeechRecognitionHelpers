@@ -34,6 +34,10 @@ namespace DictationBoxMSP
             this.CamelButton = new System.Windows.Forms.Button();
             this.VariableButton = new System.Windows.Forms.Button();
             this.WindowButton = new System.Windows.Forms.Button();
+            this.SearchButton = new System.Windows.Forms.Button();
+            this.FindButton = new System.Windows.Forms.Button();
+            this.FindtextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -44,10 +48,10 @@ namespace DictationBoxMSP
             this.richTextBox1.BackColor = System.Drawing.SystemColors.MenuText;
             this.richTextBox1.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBox1.ForeColor = System.Drawing.SystemColors.Window;
-            this.richTextBox1.Location = new System.Drawing.Point(16, 17);
+            this.richTextBox1.Location = new System.Drawing.Point(0, 1);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(979, 599);
+            this.richTextBox1.Size = new System.Drawing.Size(995, 618);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -56,11 +60,11 @@ namespace DictationBoxMSP
             this.TransferButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.TransferButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.TransferButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.TransferButton.Location = new System.Drawing.Point(1003, 529);
+            this.TransferButton.Location = new System.Drawing.Point(1003, 583);
             this.TransferButton.Margin = new System.Windows.Forms.Padding(4);
             this.TransferButton.Name = "TransferButton";
-            this.TransferButton.Size = new System.Drawing.Size(87, 87);
-            this.TransferButton.TabIndex = 1;
+            this.TransferButton.Size = new System.Drawing.Size(87, 34);
+            this.TransferButton.TabIndex = 8;
             this.TransferButton.Text = "Transfer";
             this.TransferButton.UseVisualStyleBackColor = false;
             this.TransferButton.Click += new System.EventHandler(this.TransferButton_Click);
@@ -70,11 +74,11 @@ namespace DictationBoxMSP
             this.CamelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CamelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CamelButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.CamelButton.Location = new System.Drawing.Point(1003, 432);
+            this.CamelButton.Location = new System.Drawing.Point(1003, 534);
             this.CamelButton.Margin = new System.Windows.Forms.Padding(4);
             this.CamelButton.Name = "CamelButton";
-            this.CamelButton.Size = new System.Drawing.Size(87, 87);
-            this.CamelButton.TabIndex = 2;
+            this.CamelButton.Size = new System.Drawing.Size(87, 34);
+            this.CamelButton.TabIndex = 7;
             this.CamelButton.Text = "Camel";
             this.CamelButton.UseVisualStyleBackColor = false;
             this.CamelButton.Click += new System.EventHandler(this.CamelButton_Click);
@@ -84,11 +88,11 @@ namespace DictationBoxMSP
             this.VariableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.VariableButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.VariableButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.VariableButton.Location = new System.Drawing.Point(1003, 335);
+            this.VariableButton.Location = new System.Drawing.Point(1003, 485);
             this.VariableButton.Margin = new System.Windows.Forms.Padding(4);
             this.VariableButton.Name = "VariableButton";
-            this.VariableButton.Size = new System.Drawing.Size(87, 87);
-            this.VariableButton.TabIndex = 3;
+            this.VariableButton.Size = new System.Drawing.Size(87, 34);
+            this.VariableButton.TabIndex = 6;
             this.VariableButton.Text = "Variable";
             this.VariableButton.UseVisualStyleBackColor = false;
             this.VariableButton.Click += new System.EventHandler(this.VariableButton_Click);
@@ -98,21 +102,72 @@ namespace DictationBoxMSP
             this.WindowButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.WindowButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.WindowButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.WindowButton.Location = new System.Drawing.Point(1003, 238);
+            this.WindowButton.Location = new System.Drawing.Point(1003, 436);
             this.WindowButton.Margin = new System.Windows.Forms.Padding(4);
             this.WindowButton.Name = "WindowButton";
-            this.WindowButton.Size = new System.Drawing.Size(87, 87);
-            this.WindowButton.TabIndex = 4;
+            this.WindowButton.Size = new System.Drawing.Size(87, 34);
+            this.WindowButton.TabIndex = 5;
             this.WindowButton.Text = "Window";
             this.WindowButton.UseVisualStyleBackColor = false;
             this.WindowButton.Click += new System.EventHandler(this.WindowButton_Click);
+            // 
+            // SearchButton
+            // 
+            this.SearchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SearchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SearchButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.SearchButton.Location = new System.Drawing.Point(1003, 387);
+            this.SearchButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchButton.Name = "SearchButton";
+            this.SearchButton.Size = new System.Drawing.Size(87, 34);
+            this.SearchButton.TabIndex = 4;
+            this.SearchButton.Text = "Search";
+            this.SearchButton.UseVisualStyleBackColor = false;
+            this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
+            // 
+            // FindButton
+            // 
+            this.FindButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.FindButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FindButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.FindButton.Location = new System.Drawing.Point(1003, 63);
+            this.FindButton.Margin = new System.Windows.Forms.Padding(4);
+            this.FindButton.Name = "FindButton";
+            this.FindButton.Size = new System.Drawing.Size(87, 34);
+            this.FindButton.TabIndex = 3;
+            this.FindButton.Text = "Find";
+            this.FindButton.UseVisualStyleBackColor = false;
+            this.FindButton.Click += new System.EventHandler(this.FindButton_Click);
+            // 
+            // FindtextBox
+            // 
+            this.FindtextBox.BackColor = System.Drawing.SystemColors.MenuText;
+            this.FindtextBox.ForeColor = System.Drawing.SystemColors.Window;
+            this.FindtextBox.Location = new System.Drawing.Point(1002, 30);
+            this.FindtextBox.Name = "FindtextBox";
+            this.FindtextBox.Size = new System.Drawing.Size(87, 26);
+            this.FindtextBox.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label1.Location = new System.Drawing.Point(1001, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(64, 18);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "&Find Text";
             // 
             // DictationBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1093, 623);
+            this.ClientSize = new System.Drawing.Size(1093, 620);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.FindtextBox);
+            this.Controls.Add(this.FindButton);
+            this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.WindowButton);
             this.Controls.Add(this.VariableButton);
             this.Controls.Add(this.CamelButton);
@@ -124,6 +179,7 @@ namespace DictationBoxMSP
             this.Name = "DictationBoxForm";
             this.Text = "Dictation Box MSP";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -134,6 +190,10 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Button CamelButton;
         private System.Windows.Forms.Button VariableButton;
         private System.Windows.Forms.Button WindowButton;
+        private System.Windows.Forms.Button SearchButton;
+        private System.Windows.Forms.Button FindButton;
+        private System.Windows.Forms.TextBox FindtextBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

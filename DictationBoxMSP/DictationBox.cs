@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -98,6 +99,59 @@ namespace DictationBoxMSP
             else
             {
                 this.Opacity = 1;
+            }
+        }
+
+        private void SearchButton_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://www.google.com/search?client=firefox-b-d&q=" + richTextBox1.Text);
+        }
+        public int FindMyText(string searchText, int searchStart, int searchEnd)
+        {
+            // Initialize the return value to false by default.
+            int returnValue = -1;
+
+            // Ensure that a search string and a valid starting point are specified.
+            if (searchText.Length > 0 && searchStart >= 0)
+            {
+                // Ensure that a valid ending value is provided.
+                if (searchEnd > searchStart || searchEnd == -1)
+                {
+                    // Obtain the location of the search string in richTextBox1.
+                    int indexToText = richTextBox1.Find(searchText, searchStart, searchEnd, RichTextBoxFinds.MatchCase);
+                    // Determine whether the text was found in richTextBox1.
+                    if (indexToText >= 0)
+                    {
+                        // Return the index to the specified search text.
+                        returnValue = indexToText;
+                    }
+                }
+            }
+
+            return returnValue;
+        }
+
+        private void FindButton_Click(object sender, EventArgs e)
+        {
+            if ( FindtextBox.Text== null )
+            {
+                return;
+            }
+            var searchFrom = 0;
+            var position = 0;
+            var successfulFinds = 0;
+            while (position>=0)
+            {
+
+                position = FindMyText(FindtextBox.Text, searchFrom, richTextBox1.Text.Length);
+                if (position>=0)
+                {
+                    successfulFinds++;
+                    searchFrom = position + 1;
+                    richTextBox1.SelectionStart = position;
+                    richTextBox1.SelectionLength = FindtextBox.Text.Length;
+                    richTextBox1.SelectionBackColor = Color.Red;
+                }
             }
         }
     }
