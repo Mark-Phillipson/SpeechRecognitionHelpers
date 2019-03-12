@@ -38,6 +38,9 @@ namespace DictationBoxMSP
             this.FindButton = new System.Windows.Forms.Button();
             this.FindtextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.ReplaceTextBox = new System.Windows.Forms.TextBox();
+            this.ReplaceButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -127,7 +130,7 @@ namespace DictationBoxMSP
             // 
             // FindButton
             // 
-            this.FindButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.FindButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.FindButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.FindButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FindButton.Location = new System.Drawing.Point(1003, 63);
@@ -141,6 +144,7 @@ namespace DictationBoxMSP
             // 
             // FindtextBox
             // 
+            this.FindtextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.FindtextBox.BackColor = System.Drawing.SystemColors.MenuText;
             this.FindtextBox.ForeColor = System.Drawing.SystemColors.Window;
             this.FindtextBox.Location = new System.Drawing.Point(1002, 30);
@@ -150,6 +154,7 @@ namespace DictationBoxMSP
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.label1.Location = new System.Drawing.Point(1001, 8);
@@ -158,12 +163,50 @@ namespace DictationBoxMSP
             this.label1.TabIndex = 1;
             this.label1.Text = "&Find Text";
             // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label2.Location = new System.Drawing.Point(1002, 100);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(86, 18);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "&Replace Text";
+            // 
+            // ReplaceTextBox
+            // 
+            this.ReplaceTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReplaceTextBox.BackColor = System.Drawing.SystemColors.MenuText;
+            this.ReplaceTextBox.ForeColor = System.Drawing.SystemColors.Window;
+            this.ReplaceTextBox.Location = new System.Drawing.Point(1003, 122);
+            this.ReplaceTextBox.Name = "ReplaceTextBox";
+            this.ReplaceTextBox.Size = new System.Drawing.Size(87, 26);
+            this.ReplaceTextBox.TabIndex = 10;
+            // 
+            // ReplaceButton
+            // 
+            this.ReplaceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReplaceButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ReplaceButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ReplaceButton.Location = new System.Drawing.Point(1004, 155);
+            this.ReplaceButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ReplaceButton.Name = "ReplaceButton";
+            this.ReplaceButton.Size = new System.Drawing.Size(87, 34);
+            this.ReplaceButton.TabIndex = 11;
+            this.ReplaceButton.Text = "Replace";
+            this.ReplaceButton.UseVisualStyleBackColor = false;
+            this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
+            // 
             // DictationBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(1093, 620);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.ReplaceTextBox);
+            this.Controls.Add(this.ReplaceButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.FindtextBox);
             this.Controls.Add(this.FindButton);
@@ -194,6 +237,9 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Button FindButton;
         private System.Windows.Forms.TextBox FindtextBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox ReplaceTextBox;
+        private System.Windows.Forms.Button ReplaceButton;
     }
 }
 

@@ -154,5 +154,16 @@ namespace DictationBoxMSP
                 }
             }
         }
+
+        private void ReplaceButton_Click(object sender, EventArgs e)
+        {
+            if (FindtextBox.Text== null  || ReplaceTextBox.Text== null  || richTextBox1.Text== null )
+            {
+                return;
+            }
+            var text = richTextBox1.Text;
+            text=text.Replace(FindtextBox.Text, ReplaceTextBox.Text);
+            richTextBox1.Text = text;
+        }
     }
 }
