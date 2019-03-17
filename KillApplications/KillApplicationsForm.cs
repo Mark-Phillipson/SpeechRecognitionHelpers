@@ -38,6 +38,10 @@ namespace KillApplications
             }
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.AutoSize = true;
+            dataGridView1.DefaultCellStyle.BackColor = Color.Black;
+            dataGridView1.DefaultCellStyle.ForeColor = Color.White;
+            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Black;
+            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dataGridView1.DataSource = bindingSource;
             DataGridViewColumn column = new DataGridViewButtonColumn();
             column.DataPropertyName = "Kill";
@@ -121,12 +125,18 @@ namespace KillApplications
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+             RefreshDataGridView();
+            //this.dataGridView1.Focus();
+        }
+
+        private void RefreshDataGridView()
+        {
             var processes = Process.GetProcesses();
             var applicationName = "";
-            if (textBox1.Text!= null  && textBox1.Text.Length>0)
+            if (textBox1.Text != null && textBox1.Text.Length > 2)
             {
                 bindingSource.Clear();
-                foreach (var process in processes.Where(p => p.ProcessName.Contains(textBox1.Text)  &&  p.MainWindowTitle!= null && p.MainWindowTitle.Length>1).OrderBy(p => p.ProcessName))
+                foreach (var process in processes.Where(p => p.ProcessName.Contains(textBox1.Text) && p.MainWindowTitle != null && p.MainWindowTitle.Length > 1).OrderBy(p => p.ProcessName))
                 {
                     applicationName = GetApplicationName(process.ProcessName);
                     bindingSource.Add(new ProcessClass(process.Id, process.ProcessName, process.MainWindowTitle, applicationName));
@@ -134,13 +144,13 @@ namespace KillApplications
             }
             else
             {
+                bindingSource.Clear();
                 foreach (var process in processes.Where(p => p.MainWindowTitle != null && p.MainWindowTitle.Length > 1).OrderBy(p => p.ProcessName))
                 {
                     applicationName = GetApplicationName(process.ProcessName);
                     bindingSource.Add(new ProcessClass(process.Id, process.ProcessName, process.MainWindowTitle, applicationName));
                 }
             }
-            //this.dataGridView1.Focus();
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -152,6 +162,7 @@ namespace KillApplications
                 int processId =(int)cells[1].Value;
                 Process process = Process.GetProcessById(processId);
                 process.Kill();
+                RefreshDataGridView();
             }
         }
     }
