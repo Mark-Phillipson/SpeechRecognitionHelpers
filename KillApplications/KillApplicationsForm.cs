@@ -38,14 +38,23 @@ namespace KillApplications
             }
             dataGridView1.AutoGenerateColumns = false;
             dataGridView1.AutoSize = true;
+            dataGridView1.EnableHeadersVisualStyles = false;
             dataGridView1.DefaultCellStyle.BackColor = Color.Black;
             dataGridView1.DefaultCellStyle.ForeColor = Color.White;
+            dataGridView1.DefaultCellStyle.Font = new Font("Calibri", 11);
             dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Black;
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dataGridView1.RowHeadersDefaultCellStyle.BackColor = Color.Black;
+            dataGridView1.RowHeadersDefaultCellStyle.ForeColor = Color.White;
+            dataGridView1.RowHeadersDefaultCellStyle.Font = new Font("Calibri", 11);
             dataGridView1.DataSource = bindingSource;
             DataGridViewColumn column = new DataGridViewButtonColumn();
             column.DataPropertyName = "Kill";
             column.Name = "Kill";
+            column.DefaultCellStyle.ForeColor = Color.DarkRed;
+            column.DefaultCellStyle.BackColor = Color.Black;
+
+
             dataGridView1.Columns.Add(column);
             column = new DataGridViewTextBoxColumn();
             column.DataPropertyName = "Id";
@@ -69,11 +78,17 @@ namespace KillApplications
             var textBox = this.textBox1;
                 textBox1.AutoCompleteCustomSource = source;
             textBox1.AutoCompleteMode =
-                              AutoCompleteMode.SuggestAppend;
+                              AutoCompleteMode.Suggest;
             textBox1.AutoCompleteSource =
                               AutoCompleteSource.CustomSource;
             dataGridView1.AutoResizeColumns();
-            this.AutoSize = true;
+            label1.Dock = DockStyle.None;
+            textBox1.Dock = DockStyle.None;
+            dataGridView1.Dock = DockStyle.None;
+            // no smaller than design time size
+            this.MinimumSize = new System.Drawing.Size(this.Width, this.Height);
+            this.AutoSize=true;
+            this.AutoSizeMode = AutoSizeMode.GrowOnly;
         }
 
         private void SeedDatabase()
@@ -136,7 +151,7 @@ namespace KillApplications
             if (textBox1.Text != null && textBox1.Text.Length > 2)
             {
                 bindingSource.Clear();
-                foreach (var process in processes.Where(p => p.ProcessName.Contains(textBox1.Text) && p.MainWindowTitle != null && p.MainWindowTitle.Length > 1).OrderBy(p => p.ProcessName))
+                foreach (var process in processes.Where(p => p.ProcessName.ToLower().Contains(textBox1.Text.ToLower()) && p.MainWindowTitle != null && p.MainWindowTitle.Length > 1).OrderBy(p => p.ProcessName))
                 {
                     applicationName = GetApplicationName(process.ProcessName);
                     bindingSource.Add(new ProcessClass(process.Id, process.ProcessName, process.MainWindowTitle, applicationName));

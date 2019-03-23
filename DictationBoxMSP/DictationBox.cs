@@ -133,7 +133,7 @@ namespace DictationBoxMSP
 
         private void FindButton_Click(object sender, EventArgs e)
         {
-            if ( FindtextBox.Text== null )
+            if ( FindtextBox.Text== null  || FindtextBox.Text.Length==0)
             {
                 return;
             }
@@ -157,7 +157,7 @@ namespace DictationBoxMSP
 
         private void ReplaceButton_Click(object sender, EventArgs e)
         {
-            if (FindtextBox.Text== null  || ReplaceTextBox.Text== null  || richTextBox1.Text== null )
+            if (FindtextBox.Text== null  || ReplaceTextBox.Text== null  || richTextBox1.Text== null  || FindtextBox.Text.Length==0 || ReplaceTextBox.Text.Length==0 || richTextBox1.Text.Length==0)
             {
                 return;
             }
