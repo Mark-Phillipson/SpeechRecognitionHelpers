@@ -37,7 +37,6 @@ namespace MouseControl
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Name = "MouseControlForm";
             this.Text = "Mouse Control";
-            this.Load += new System.EventHandler(this.MouseControlForm_Load);
             this.ResumeLayout(false);
 
         }

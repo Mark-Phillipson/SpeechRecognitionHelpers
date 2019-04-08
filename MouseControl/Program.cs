@@ -14,9 +14,11 @@ namespace MouseControl
         [STAThread]
         static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MouseControlForm());
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new MouseControlForm());
+            MouseControl mouseControl = new MouseControl();
+            mouseControl.PerformControl();
         }
     }
 }
