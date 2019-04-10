@@ -5,13 +5,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MouseControl
 {
     public class MouseControl
     {
-        private const int MillisecondsDelay = 100;
-
         [DllImport("user32.dll")]
         static extern bool GetCursorPos(out POINT lpPoint);
         [DllImport("user32.dll")]
@@ -34,7 +33,8 @@ namespace MouseControl
         }
         public void PerformControl()
         {
-            var processes = Process.GetProcessesByName("MouseControl");
+        int millisecondsDelay = Properties.Settings.Default.Delay;
+        var processes = Process.GetProcessesByName("MouseControl");
             foreach (var process in processes)
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -54,24 +54,74 @@ namespace MouseControl
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count()<2)
             {
-                arguments=  new string[] { args[0], "/right click" };
+                arguments=  new string[] { args[0], "/25" };
+                //arguments=  new string[] { args[0], "/upper-left" };
             }
             else
             {
                 arguments = Environment.GetCommandLineArgs();
             }
-            if (arguments[1].ToLower().Contains("/right click"))
+            //Debug.Print(arguments[1]);
+            int delay = 0;
+            if (Int32.TryParse(arguments[1].Substring(1), out delay))
+            {
+                Properties.Settings.Default.Delay = delay;
+                Properties.Settings.Default.Save();
+                millisecondsDelay = Properties.Settings.Default.Delay;
+                //MessageBox.Show(arguments[1] + " delay" + millisecondsDelay);
+            }
+            if (arguments[1].ToLower().Contains("/right-click"))
             {
                 mouse_event((int)MouseEventType.RightDown, point.X, point.Y, 0, 0);
                 mouse_event((int)MouseEventType.RightUp, point.X, point.Y, 0, 0);
                 KillAllMouseControls(processes);
             }
-            else if (arguments[1].ToLower().Contains("/right"))
+            else if (arguments[1].ToLower().Contains("/upper-left"))
+            {
+                int counterX = point.X;
+                for (int counterY = point.Y; counterY > 0; counterY--)
+                {
+                    counterX--;
+                    SetCursorPos(counterX, counterY);
+                    Task.Delay(millisecondsDelay).Wait();
+                }
+            }
+            else if (arguments[1].ToLower().Contains("/upper-right"))
+            {
+                int counterX = point.X; 
+                for (int counterY = point.Y; counterY > 0; counterY--)
+                {
+                    counterX++;
+                    SetCursorPos(counterX, counterY);
+                    Task.Delay(millisecondsDelay).Wait();
+                }
+            }
+            else if (arguments[1].ToLower().Contains("/lower-left"))
+            {
+                int counterX = point.X;
+                for (int counterY = point.Y; counterY < 1200; counterY++)
+                {
+                    counterX--;
+                    SetCursorPos(counterX, counterY);
+                    Task.Delay(millisecondsDelay).Wait();
+                }
+            }
+            else if (arguments[1].ToLower().Contains("/lower-right"))
+            {
+                int counterX = point.X;
+                for (int counterY = point.Y; counterY < 1200; counterY++)
+                {
+                    counterX++;
+                    SetCursorPos(counterX, counterY);
+                    Task.Delay(millisecondsDelay).Wait();
+                }
+            }
+            else if (arguments[1].ToLower().Contains("/right") && !arguments[1].ToLower().Contains("click"))
             {
                 for (int counter = point.X; counter < 3400; counter++)
                 {
                     SetCursorPos(counter, point.Y);
-                    Task.Delay(MillisecondsDelay).Wait();
+                    Task.Delay(millisecondsDelay).Wait();
                 }
             }
             else if (arguments[1].ToLower().Contains("/left"))
@@ -79,7 +129,7 @@ namespace MouseControl
                 for (int counter = point.X; counter > 0; counter--)
                 {
                     SetCursorPos(counter, point.Y);
-                    Task.Delay(MillisecondsDelay).Wait();
+                    Task.Delay(millisecondsDelay).Wait();
                 }
             }
             else if (arguments[1].ToLower().Contains("/down"))
@@ -87,7 +137,7 @@ namespace MouseControl
                 for (int counter = point.Y; counter < 1200; counter++)
                 {
                     SetCursorPos(point.X, counter);
-                    Task.Delay(MillisecondsDelay).Wait();
+                    Task.Delay(millisecondsDelay).Wait();
                 }
             }
             else if (arguments[1].ToLower().Contains("/up"))
@@ -95,7 +145,7 @@ namespace MouseControl
                 for (int counter = point.Y; counter > 0; counter--)
                 {
                     SetCursorPos(point.X, counter);
-                    Task.Delay(MillisecondsDelay).Wait();
+                    Task.Delay(millisecondsDelay).Wait();
                 }
             }
             else if (arguments[1].ToLower().Contains("/click"))
