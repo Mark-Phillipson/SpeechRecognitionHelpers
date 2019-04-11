@@ -165,5 +165,12 @@ namespace DictationBoxMSP
             text=text.Replace(FindtextBox.Text, ReplaceTextBox.Text);
             richTextBox1.Text = text;
         }
+
+        private void CopyOnlyButton_Click(object sender, EventArgs e)
+        {
+            string text = richTextBox1.Text;
+            Clipboard.SetText(text);
+            Application.Exit();
+        }
     }
 }

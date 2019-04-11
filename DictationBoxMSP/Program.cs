@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,16 +18,16 @@ namespace DictationBoxMSP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            using (Mutex mutex= new Mutex(false,"Global\\" + appGuid))
+            var processes = Process.GetProcessesByName("DictationBoxMSP");
+            foreach (var process in processes)
             {
-                if (!mutex.WaitOne(0,false))
+                var currentProcess = Process.GetCurrentProcess();
+                if (process.Id != currentProcess.Id)
                 {
-                    //MessageBox.Show("Instance already running");
-                    return;
+                    currentProcess.Kill();
                 }
             }
             Application.Run(new DictationBoxForm());
         }
-        private static string appGuid = "c0a76b5a-12ab-45c5-b9d9-d693faa6e8b9";
     }
 }

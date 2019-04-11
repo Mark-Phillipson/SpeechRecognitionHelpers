@@ -41,6 +41,7 @@ namespace DictationBoxMSP
             this.label2 = new System.Windows.Forms.Label();
             this.ReplaceTextBox = new System.Windows.Forms.TextBox();
             this.ReplaceButton = new System.Windows.Forms.Button();
+            this.CopyOnlyButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -198,12 +199,27 @@ namespace DictationBoxMSP
             this.ReplaceButton.UseVisualStyleBackColor = false;
             this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
             // 
+            // CopyOnlyButton
+            // 
+            this.CopyOnlyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.CopyOnlyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CopyOnlyButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.CopyOnlyButton.Location = new System.Drawing.Point(1003, 336);
+            this.CopyOnlyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CopyOnlyButton.Name = "CopyOnlyButton";
+            this.CopyOnlyButton.Size = new System.Drawing.Size(87, 34);
+            this.CopyOnlyButton.TabIndex = 12;
+            this.CopyOnlyButton.Text = "Copy Only";
+            this.CopyOnlyButton.UseVisualStyleBackColor = false;
+            this.CopyOnlyButton.Click += new System.EventHandler(this.CopyOnlyButton_Click);
+            // 
             // DictationBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(1093, 620);
+            this.Controls.Add(this.CopyOnlyButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.ReplaceTextBox);
             this.Controls.Add(this.ReplaceButton);
@@ -240,6 +256,7 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox ReplaceTextBox;
         private System.Windows.Forms.Button ReplaceButton;
+        private System.Windows.Forms.Button CopyOnlyButton;
     }
 }
 
