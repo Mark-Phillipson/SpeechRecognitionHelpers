@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MouseControl", "MouseContro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillMouseControl", "KillMouseControl\KillMouseControl.csproj", "{D7CD8FB2-434C-4106-B7D0-C3D147E05B94}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{03064C76-257B-4F6E-9D2D-0164B28FF0AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,8 @@ Global
 		{D7CD8FB2-434C-4106-B7D0-C3D147E05B94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7CD8FB2-434C-4106-B7D0-C3D147E05B94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7CD8FB2-434C-4106-B7D0-C3D147E05B94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03064C76-257B-4F6E-9D2D-0164B28FF0AE}.Debug|Any CPU.ActiveCfg = Debug
+		{03064C76-257B-4F6E-9D2D-0164B28FF0AE}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

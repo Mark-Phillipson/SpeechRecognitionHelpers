@@ -87,7 +87,7 @@ namespace DictationBoxMSP
                 value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
             }
             richTextBox1.Text = value;
-            PerformTransfer();
+            PerformTransfer(); 
         }
 
         private void WindowButton_Click(object sender, EventArgs e)
