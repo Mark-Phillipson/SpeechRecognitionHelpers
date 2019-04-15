@@ -104,7 +104,9 @@ namespace DictationBoxMSP
 
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            Process.Start("https://www.google.com/search?client=firefox-b-d&q=" + richTextBox1.Text);
+            var searchString = richTextBox1.Text.Replace("c#","CSharp");
+            searchString = searchString.Replace("C#","CSharp");
+            Process.Start("https://www.google.com/search?client=firefox-b-d&q=" + searchString);
         }
         public int FindMyText(string searchText, int searchStart, int searchEnd)
         {
