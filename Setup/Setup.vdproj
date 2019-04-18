@@ -35,13 +35,13 @@
         "Entry"
         {
         "MsmKey" = "8:_62BF1DE424F1F5C394D2A8AF11020EE9"
-        "OwnerKey" = "8:_2A265BEEE296112A995BECA4CD54D585"
+        "OwnerKey" = "8:_8BBD82994A1776FEC50147F6F2E535CA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_62BF1DE424F1F5C394D2A8AF11020EE9"
-        "OwnerKey" = "8:_8BBD82994A1776FEC50147F6F2E535CA"
+        "OwnerKey" = "8:_2A265BEEE296112A995BECA4CD54D585"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -107,37 +107,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0EAC5E468C7A46B28AEED23FE35F5D4F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CBA05DF4340D4A77BE008EAF23A8B565"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_2A265BEEE296112A995BECA4CD54D585"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F68E2BE0665CA4526F788684DBFF31C4"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8BBD82994A1776FEC50147F6F2E535CA"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_62BF1DE424F1F5C394D2A8AF11020EE9"
+        "OwnerKey" = "8:_9FBDF944CBB444C7BBDD94997565C308"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -149,7 +119,37 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9FBDF944CBB444C7BBDD94997565C308"
+        "OwnerKey" = "8:_62BF1DE424F1F5C394D2A8AF11020EE9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_8BBD82994A1776FEC50147F6F2E535CA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_F68E2BE0665CA4526F788684DBFF31C4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_2A265BEEE296112A995BECA4CD54D585"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CBA05DF4340D4A77BE008EAF23A8B565"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_0EAC5E468C7A46B28AEED23FE35F5D4F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -170,6 +170,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -186,6 +194,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -222,11 +238,6 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_2A265BEEE296112A995BECA4CD54D585"
-                    {
-                    "Name" = "8:EntityFramework.SqlServerCompact.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EntityFramework.SqlServerCompact.dll"
             "TargetName" = "8:"
@@ -253,11 +264,6 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_62BF1DE424F1F5C394D2A8AF11020EE9"
-                    {
-                    "Name" = "8:EntityFramework.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EntityFramework.dll"
             "TargetName" = "8:"
@@ -284,11 +290,6 @@
             "AssemblyAsmDisplayName" = "8:EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_8BBD82994A1776FEC50147F6F2E535CA"
-                    {
-                    "Name" = "8:EntityFramework.SqlServer.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:EntityFramework.SqlServer.dll"
             "TargetName" = "8:"
@@ -315,11 +316,6 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_A5C130516A983C07D1EDA2FB40F436D5"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -366,11 +362,6 @@
             "AssemblyAsmDisplayName" = "8:System.Net.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
                 "ScatterAssemblies"
                 {
-                    "_CFCF8AB7B2CB5655105E59378802A966"
-                    {
-                    "Name" = "8:System.Net.Http.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Net.Http.dll"
             "TargetName" = "8:"
@@ -397,11 +388,6 @@
             "AssemblyAsmDisplayName" = "8:System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_F68E2BE0665CA4526F788684DBFF31C4"
-                    {
-                    "Name" = "8:System.Data.SqlServerCe.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Data.SqlServerCe.dll"
             "TargetName" = "8:"
@@ -598,7 +584,21 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_9299BBE4BA5C4A3AA61A88E1B35D6DD0"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2BA2A6BCFC18430F8C3C17C5C2A6961F"
+            {
+            "Name" = "8:Shortcut to Primary output from KillApplications (Active)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_CBA05DF4340D4A77BE008EAF23A8B565"
+            "Folder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
+            "WorkingFolder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_53ED98ACDEEC49EBA5844D3AD7BB6276"
             {
             "Name" = "8:Dictation Box MSP"
             "Arguments" = "8:"
@@ -606,13 +606,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_A4670D508DFF4A2DA3155BFD9974DB9A"
-            "Folder" = "8:_A4670D508DFF4A2DA3155BFD9974DB9A"
-            "WorkingFolder" = "8:_A4670D508DFF4A2DA3155BFD9974DB9A"
+            "Target" = "8:_9FBDF944CBB444C7BBDD94997565C308"
+            "Folder" = "8:_951CA6E9BA144678AD3B8DC4461B61B0"
+            "WorkingFolder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
             "Icon" = "8:_CA47EEC049794937A1975DCC3279FCBE"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A09A1C10D0684EB7BAB44F936553A230"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8C984D3D376C4F07A1D27110EC5BB61B"
             {
             "Name" = "8:Dictation Box MSP"
             "Arguments" = "8:"
@@ -620,10 +620,24 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_951CA6E9BA144678AD3B8DC4461B61B0"
-            "Folder" = "8:_951CA6E9BA144678AD3B8DC4461B61B0"
-            "WorkingFolder" = "8:_951CA6E9BA144678AD3B8DC4461B61B0"
+            "Target" = "8:_9FBDF944CBB444C7BBDD94997565C308"
+            "Folder" = "8:_A4670D508DFF4A2DA3155BFD9974DB9A"
+            "WorkingFolder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
             "Icon" = "8:_CA47EEC049794937A1975DCC3279FCBE"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C2AA0D68FD1A4881890CA13FB7737F05"
+            {
+            "Name" = "8:Shortcut to Primary output from MouseControl (Active)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_0EAC5E468C7A46B28AEED23FE35F5D4F"
+            "Folder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
+            "WorkingFolder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
         }
