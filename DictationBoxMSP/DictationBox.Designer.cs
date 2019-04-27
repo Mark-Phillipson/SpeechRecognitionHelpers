@@ -236,7 +236,7 @@ namespace DictationBoxMSP
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "DictationBoxForm";
-            this.Text = "Dictation Box MSP";
+            this.Text = "Custom Dictation Box";
             this.ResumeLayout(false);
             this.PerformLayout();
 

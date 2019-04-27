@@ -23,7 +23,7 @@ namespace KillApplications
         private void Form1_Load(object sender, EventArgs e)
         {
             //Seed database if necessary
-            SeedDatabase();
+            //SeedDatabase();
             // Create the list to use as the custom source. 
             var source = new AutoCompleteStringCollection();
             var processes = Process.GetProcesses();
@@ -46,16 +46,17 @@ namespace KillApplications
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dataGridView1.RowHeadersDefaultCellStyle.BackColor = Color.Black;
             dataGridView1.RowHeadersDefaultCellStyle.ForeColor = Color.White;
-            dataGridView1.RowHeadersDefaultCellStyle.Font = new Font("Calibri", 11);
+            dataGridView1.RowHeadersDefaultCellStyle.Font = new Font("Calibri", 1);
             dataGridView1.DataSource = bindingSource;
-            DataGridViewColumn column = new DataGridViewButtonColumn();
-            column.DataPropertyName = "Kill";
-            column.Name = "Kill";
-            column.DefaultCellStyle.ForeColor = Color.DarkRed;
-            column.DefaultCellStyle.BackColor = Color.Black;
-
-
-            dataGridView1.Columns.Add(column);
+            var buttonColumn = new DataGridViewButtonColumn() { Name="buttonColumn"};
+            buttonColumn.DataPropertyName = "Kill";
+            //buttonColumn.Name = "Kill";
+            buttonColumn.FlatStyle = FlatStyle.Flat;
+            buttonColumn.DefaultCellStyle.ForeColor = Color.White;
+            buttonColumn.DefaultCellStyle.BackColor = Color.Black;
+            buttonColumn.DefaultCellStyle.SelectionBackColor = Color.Black;
+            dataGridView1.Columns.Add(buttonColumn);
+            DataGridViewColumn column = new DataGridViewColumn();
             column = new DataGridViewTextBoxColumn();
             column.DataPropertyName = "Id";
             column.Name = "Id";
@@ -116,7 +117,49 @@ namespace KillApplications
 
         private string GetApplicationName(string processName)
         {
-            string applicationName = _localDbContext.Applications.Where(a => a.ProcessName == processName).FirstOrDefault()?.ApplicationName;
+            var applicationName = "";
+            switch (processName)
+            {
+                case "nsbrowse":
+                    applicationName = "Command Browser";
+                    break;
+                case "natspeak":
+                    applicationName = "Dragon Professional Individual";
+                    break;
+                case "dragonbar":
+                    applicationName = "Dragon Bar";
+                    break;
+                case "chrome":
+                    applicationName = "Google Chrome";
+                        break;
+                case "KBPro":
+                    applicationName = "KnowBrainer";
+                    break;
+                case "MSACCESS":
+                    applicationName = "Microsoft Access";
+                    break;
+                case "EXCEL":
+                    applicationName = "Microsoft Excel";
+                    break;
+                case "notepad":
+                    applicationName = "Microsoft Notepad";
+                    break;
+                case "outlook":
+                    applicationName = "Microsoft Outlook";
+                    break;
+                case "WINWORD":
+                    applicationName = "Microsoft Word";
+                    break;
+                case "upwork":
+                    applicationName = "Upwork Time Tracker";
+                    break;
+                case "firefox":
+                    applicationName = "Mozilla Firefox";
+                    break;
+                default:
+                    break;
+            }
+            //string applicationName = _localDbContext.Applications.Where(a => a.ProcessName == processName).FirstOrDefault()?.ApplicationName;
             return applicationName;
         }
 
