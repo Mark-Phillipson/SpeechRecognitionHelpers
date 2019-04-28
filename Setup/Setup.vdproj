@@ -58,12 +58,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CA47EEC049794937A1975DCC3279FCBE"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_CBA05DF4340D4A77BE008EAF23A8B565"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -84,6 +78,12 @@
         {
         "MsmKey" = "8:_CFCF8AB7B2CB5655105E59378802A966"
         "OwnerKey" = "8:_9FBDF944CBB444C7BBDD94997565C308"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -171,6 +171,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "Release"
@@ -326,26 +334,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CA47EEC049794937A1975DCC3279FCBE"
-            {
-            "SourcePath" = "8:..\\DictationBoxMSP\\Voice-Search.ico"
-            "TargetName" = "8:Voice-Search.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
-            "Condition" = "8:"
-            "Transitive" = "11:TRUE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CFCF8AB7B2CB5655105E59378802A966"
             {
             "AssemblyRegister" = "3:1"
@@ -375,6 +363,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F593B68CE3AC413FBD25D6C1C8918E9A"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\Pictures\\Banner.jpg"
+            "TargetName" = "8:Banner.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F68E2BE0665CA4526F788684DBFF31C4"
@@ -465,25 +473,25 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Speech Recognition Helpers"
         "ProductCode" = "8:{CD850D0B-5A9B-4669-8C9B-54A0AAC28116}"
-        "PackageCode" = "8:{0491DBD3-10F8-4E03-AAB3-CD4C679A1706}"
+        "PackageCode" = "8:{685A97AF-CC22-47A5-BF4A-AEB9CD1CBAA2}"
         "UpgradeCode" = "8:{559994EF-A868-4842-A08E-1EED0B23D0FA}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
+        "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:MSP Systems"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:"
+        "ARPHELPLINK" = "8:https://www.upwork.com/fl/markp2"
         "Title" = "8:Speech Recognition Helpers"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Mark Phillipson"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:_CA47EEC049794937A1975DCC3279FCBE"
-        "ARPIconIndex" = "3:0"
+        "ARPURLINFOABOUT" = "8:https://www.upwork.com/fl/markp2"
+        "ARPPRODUCTICON" = "8:_9FBDF944CBB444C7BBDD94997565C308"
+        "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
@@ -585,32 +593,32 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_53ED98ACDEEC49EBA5844D3AD7BB6276"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5772E6B3BF1E44BE9060B66F5FD28B0D"
+            {
+            "Name" = "8:Kill Applications"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_CBA05DF4340D4A77BE008EAF23A8B565"
+            "Folder" = "8:_951CA6E9BA144678AD3B8DC4461B61B0"
+            "WorkingFolder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
+            "Icon" = "8:_CBA05DF4340D4A77BE008EAF23A8B565"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C01418F925A1424FAE21C3AD1BCA570C"
             {
             "Name" = "8:Dictation Box MSP"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
+            "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
             "Target" = "8:_9FBDF944CBB444C7BBDD94997565C308"
             "Folder" = "8:_951CA6E9BA144678AD3B8DC4461B61B0"
             "WorkingFolder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
-            "Icon" = "8:_CA47EEC049794937A1975DCC3279FCBE"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8C984D3D376C4F07A1D27110EC5BB61B"
-            {
-            "Name" = "8:Dictation Box MSP"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_9FBDF944CBB444C7BBDD94997565C308"
-            "Folder" = "8:_A4670D508DFF4A2DA3155BFD9974DB9A"
-            "WorkingFolder" = "8:_37EDA2EAB920420592AD614BCC3615A5"
-            "Icon" = "8:_CA47EEC049794937A1975DCC3279FCBE"
+            "Icon" = "8:_9FBDF944CBB444C7BBDD94997565C308"
             "Feature" = "8:"
             }
         }
@@ -640,7 +648,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -662,7 +671,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -710,7 +720,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -741,7 +752,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -772,7 +784,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -820,7 +833,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
@@ -855,7 +869,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -898,7 +913,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -942,7 +958,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_F593B68CE3AC413FBD25D6C1C8918E9A"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -986,7 +1003,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:0"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
