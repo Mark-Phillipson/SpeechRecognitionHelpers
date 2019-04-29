@@ -1,4 +1,4 @@
-# ProgrammingDictationBox
+# Programming Dictation Box
 
 Fast dictation box for normal dictation and converting to variable names and camel case.
 
@@ -15,6 +15,6 @@ A fairly simple Windows Forms C# application that includes:
 For speed best to call from a DVC Script for example:
 
 `SendSystemKeys "{Ctrl+c}"`
-`AppBringUp "C:\Users\MPhil\source\repos\DictationBoxMSP\DictationBoxMSP\bin\Release\DictationBoxMSP.exe"`
+`AppBringUp "C:\Program Files (x86)\MSP Systems\Speech Recognition Helpers\DictationBoxMSP.exe"`  
 `SendSystemKeys "{Ctrl+v}"`
 `SendSystemKeys "{Ctrl+a}"`
