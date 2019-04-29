@@ -15,6 +15,9 @@ A fairly simple Windows Forms C# application that includes:
 For speed best to call from a DVC Script for example:
 
 `SendSystemKeys "{Ctrl+c}"`
+
 `AppBringUp "C:\Program Files (x86)\MSP Systems\Speech Recognition Helpers\DictationBoxMSP.exe"`  
+
 `SendSystemKeys "{Ctrl+v}"`
+
 `SendSystemKeys "{Ctrl+a}"`
