@@ -5,5 +5,8 @@
     <Setting Name="Delay" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">75</Value>
     </Setting>
+    <Setting Name="LastCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/left</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

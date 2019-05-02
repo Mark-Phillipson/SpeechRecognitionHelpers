@@ -69,6 +69,13 @@ namespace MouseControl
                 Properties.Settings.Default.Save();
                 millisecondsDelay = Properties.Settings.Default.Delay;
                 //MessageBox.Show(arguments[1] + " delay" + millisecondsDelay);
+                var lastCommand = Properties.Settings.Default.LastCommand;
+                arguments[1] = lastCommand;
+            }
+            else
+            {
+                Properties.Settings.Default.LastCommand = arguments[1];
+                Properties.Settings.Default.Save();
             }
             if (arguments[1].ToLower().Contains("/right-click"))
             {
