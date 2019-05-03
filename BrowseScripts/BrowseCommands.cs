@@ -23,6 +23,7 @@ namespace BrowseScripts
         BindingSource BindingSourceContent = new BindingSource();
         BindingSource bindingSourceLists = new BindingSource();
         BindingSource bindingSourceList = new BindingSource();
+        XDocument document;
 
         public BrowseCommands()
         {
@@ -39,33 +40,46 @@ namespace BrowseScripts
         private void Form1_Load(object sender, EventArgs e)
         {
             var filename = @"C:\Users\MPhil\AppData\Roaming\KnowBrainer\KnowBrainerCommands\MyKBCommands - Copy.xml";
+
             if (!File.Exists(filename))
             {
                 filename = null;
                 using (OpenFileDialog openFileDialog= new OpenFileDialog())
                 {
                     openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Roaming\KnowBrainer\";
-                    openFileDialog.Filter = "xml files (*.xml)|*.xml|All Files (*.*)|*.*";
+                    openFileDialog.Filter = "XML KnowBrainer Command Files (*.xml)|*.xml|All Files (*.*)|*.*";
                     openFileDialog.FilterIndex = 1;
                     openFileDialog.RestoreDirectory = true;
                     openFileDialog.Title = "Please select a KnowBrainer XML commands file to browse.";
-                    if (openFileDialog.ShowDialog()==DialogResult.OK)
+                    while (true)
                     {
-                        filename = openFileDialog.FileName;
+                        if (openFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            filename = openFileDialog.FileName;
+                        }
+                        if (filename == null || filename.Length == 0)
+                        {
+                            Application.Exit();
+                            return;
+                        }
+                        try
+                        {
+                            document = LoadXMLDocument(filename);
+                            break;
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show("The XML file does not appear to be in the expected format. Please select a valid file and try again. " + exception.Message, "Problem with File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            openFileDialog.FileName = null;
+                            filename = null;
+                        }
                     }
                 }
             }
-            if (filename== null  || filename.Length==0)
-            {
-                Application.Exit();
-                return;
-            }
-            XDocument document = XDocument.Load(filename);
-            var commands = document.Descendants("Command").Count();
-            var lists = document.Descendants("List").Count();
-            dataSet.ReadXmlSchema(filename);
-            dataSet.ReadXml(filename);
-
+            else
+                {
+                    document = LoadXMLDocument(filename);
+                }
             bindingSourceCommands.DataSource = dataSet;
             bindingSourceCommands.DataMember = "Commands";
             bindingSourceCommands.Sort = "scope ASC, moduleDescription ASC, windowTitle ASC";
@@ -136,6 +150,17 @@ namespace BrowseScripts
 
 
 
+        }
+
+        private XDocument LoadXMLDocument(string filename)
+        {
+            XDocument document = XDocument.Load(filename);
+            var commands = document.Descendants("Command").Count();
+            var lists = document.Descendants("List").Count();
+            Text = $"Browse KnowBrainer Commands (Commands: {commands} Lists: {lists})";
+            dataSet.ReadXmlSchema(filename);
+            dataSet.ReadXml(filename);
+            return document;
         }
 
         private void TextBoxFilter_TextChanged(object sender, EventArgs e)
@@ -302,6 +327,46 @@ namespace BrowseScripts
             {
                 var filter = "name Like '%" + textBoxListFilter.Text + "%'";
                 bindingSourceLists.Filter = filter;
+            }
+        }
+
+        private void ButtonExportCommand_Click(object sender, EventArgs e)
+        {
+            var currentRow = bindingSourceCommand.Current;
+            if (currentRow != null)
+            {
+                var description =((System.Data.DataRowView)currentRow).Row.ItemArray[0].ToString();
+                var command =((System.Data.DataRowView)currentRow).Row.ItemArray[2].ToString();
+                var group =((System.Data.DataRowView)currentRow).Row.ItemArray[3].ToString();
+                currentRow = bindingSourceCommands.Current;
+                var scope =((System.Data.DataRowView)currentRow).Row.ItemArray[1].ToString();
+                var moduleDescription =((System.Data.DataRowView)currentRow).Row.ItemArray[4].ToString();
+                var windowTitle =((System.Data.DataRowView)currentRow).Row.ItemArray[5].ToString();
+                var commandText = $"This command is used for {scope} {moduleDescription} {windowTitle} {Environment.NewLine}" +
+                    $"The spoken command name is: '{command}' {description} {group}{Environment.NewLine}{Environment.NewLine}" +
+                    $"The {textBoxType.Text} code is as follows:{Environment.NewLine}{Environment.NewLine}" +
+                    $"{textBoxContent.Text}";
+                //if (command.Contains("<") && command.Contains(">"))
+                //{
+
+                //}
+                Clipboard.SetText(commandText);
+
+                //XDocument documentExport = new XDocument(
+                //     new XComment("Exported KnowBrainer Command"),
+                //     new XElement("KnowBrainerCommands",
+                //     from element in document.Elements("Commands")
+                //     where
+                //     (from add in element.Elements("Command")
+                //      where
+                //      (string)add.Attribute("name") == command
+                //      select add)
+                //     .Any()
+                //     select element
+                // ));
+
+                //documentExport.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + $"\\{command}.xml");
+                //Application.Exit();
             }
         }
     }

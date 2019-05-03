@@ -44,6 +44,7 @@ namespace BrowseScripts
             this.textBoxFilterValue = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxListFilter = new System.Windows.Forms.TextBox();
+            this.buttonExportCommand = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).BeginInit();
@@ -214,11 +215,24 @@ namespace BrowseScripts
             this.textBoxListFilter.TabIndex = 6;
             this.textBoxListFilter.TextChanged += new System.EventHandler(this.TextBoxListFilter_TextChanged);
             // 
+            // buttonExportCommand
+            // 
+            this.buttonExportCommand.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonExportCommand.Location = new System.Drawing.Point(1276, 3);
+            this.buttonExportCommand.Name = "buttonExportCommand";
+            this.buttonExportCommand.Size = new System.Drawing.Size(130, 26);
+            this.buttonExportCommand.TabIndex = 15;
+            this.buttonExportCommand.TabStop = false;
+            this.buttonExportCommand.Text = "Copy Current";
+            this.buttonExportCommand.UseVisualStyleBackColor = true;
+            this.buttonExportCommand.Click += new System.EventHandler(this.ButtonExportCommand_Click);
+            // 
             // BrowseCommands
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1546, 802);
+            this.Controls.Add(this.buttonExportCommand);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxListFilter);
             this.Controls.Add(this.textBoxFilterValue);
@@ -265,6 +279,7 @@ namespace BrowseScripts
         private System.Windows.Forms.TextBox textBoxFilterValue;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxListFilter;
+        private System.Windows.Forms.Button buttonExportCommand;
     }
 }
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace KillMouseControl.Properties
+namespace CustomIntelliSense.Properties
 {
 
 
