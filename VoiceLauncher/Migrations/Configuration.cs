@@ -1,24 +1,23 @@
-namespace KillApplications.Migrations
+namespace VoiceLauncher.Migrations
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<KillApplications.Models.LocalDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<VoiceLauncher.Models.VoiceLauncherContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(KillApplications.Models.LocalDbContext context)
+        protected override void Seed(VoiceLauncher.Models.VoiceLauncherContext context)
         {
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
-
         }
     }
 }

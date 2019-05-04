@@ -1,0 +1,8 @@
+﻿dbo.Computers
+dbo.GeneralLookups
+dbo.HtmlTags
+dbo.Mouse Positions
+dbo.tblCategories
+dbo.tblCustomIntelliSense
+dbo.tblLanguages
+dbo.tblLauncher
