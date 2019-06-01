@@ -56,6 +56,8 @@ namespace BrowseScripts
                         }
                         try
                         {
+                            Properties.Settings.Default.LastFileOpened = filename;
+                            Properties.Settings.Default.Save();
                             Document = LoadXMLDocument(filename);
                             break;
                         }
