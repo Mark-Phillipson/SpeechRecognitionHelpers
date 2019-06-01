@@ -31,8 +31,8 @@ namespace BrowseScripts
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            var filename = @"C:\Users\MPhil\AppData\Roaming\KnowBrainer\KnowBrainerCommands\MyKBCommands - Copy.xml";
-
+            //int millisecondsDelay = Properties.Settings.Default.Delay;
+            var filename = Properties.Settings.Default.LastFileOpened;
             if (!File.Exists(filename))
             {
                 filename = null;
@@ -162,7 +162,7 @@ namespace BrowseScripts
             XDocument document = XDocument.Load(filename);
             var commands = document.Descendants("Command").Count();
             var lists = document.Descendants("List").Count();
-            Text = $"Browse KnowBrainer Commands (Commands: {commands} Lists: {lists})";
+            Text = $"Browse KnowBrainer Commands (Commands: {commands} Lists: {lists}) {filename}";
             dataSet.ReadXmlSchema(filename);
             dataSet.ReadXml(filename);
             return document;
