@@ -10,31 +10,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
-// This is the code for your desktop app.
-// Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-
 namespace BrowseScripts
 {
     public partial class BrowseCommands : Form
     {
-        DataSet dataSet = new DataSet();
-        BindingSource bindingSourceCommands = new BindingSource();
-        BindingSource bindingSourceCommand = new BindingSource();
-        BindingSource BindingSourceContent = new BindingSource();
-        BindingSource bindingSourceLists = new BindingSource();
-        BindingSource bindingSourceList = new BindingSource();
+        readonly DataSet dataSet = new DataSet();
+        readonly BindingSource bindingSourceCommands = new BindingSource();
+        readonly BindingSource bindingSourceCommand = new BindingSource();
+        readonly BindingSource BindingSourceContent = new BindingSource();
+        readonly BindingSource bindingSourceLists = new BindingSource();
+        readonly BindingSource bindingSourceList = new BindingSource();
         XDocument document;
+
+        public XDocument Document { get => document; set => document = value; }
 
         public BrowseCommands()
         {
             InitializeComponent();
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            // Click on the link below to continue learning how to build a desktop app using WinForms!
-            System.Diagnostics.Process.Start("http://aka.ms/dotnet-get-started-desktop");
-
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -64,7 +56,7 @@ namespace BrowseScripts
                         }
                         try
                         {
-                            document = LoadXMLDocument(filename);
+                            Document = LoadXMLDocument(filename);
                             break;
                         }
                         catch (Exception exception)
@@ -78,7 +70,7 @@ namespace BrowseScripts
             }
             else
                 {
-                    document = LoadXMLDocument(filename);
+                    Document = LoadXMLDocument(filename);
                 }
             bindingSourceCommands.DataSource = dataSet;
             bindingSourceCommands.DataMember = "Commands";
@@ -147,7 +139,20 @@ namespace BrowseScripts
             dataGridViewList.AutoResizeColumns();
             dataGridViewList.Columns[0].HeaderText = "List Values";
             dataGridViewList.Columns[0].Width =   130;
-
+            string[] arguments;
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Count() < 2)
+            {
+                //arguments = new string[] { args[0], "/Arrow" };
+                //checkBoxFilterAll.Checked = true;
+                //textBoxCommandFilter.Text = arguments[1].Substring(1);
+            }
+            else
+            {
+                arguments = Environment.GetCommandLineArgs();
+                checkBoxFilterAll.Checked = true;
+                textBoxCommandFilter.Text = arguments[1].Substring(1);
+            }
 
 
         }
@@ -165,7 +170,7 @@ namespace BrowseScripts
 
         private void TextBoxFilter_TextChanged(object sender, EventArgs e)
         {
-            var filter = "";
+            string filter;
             if (textBoxFilter.Text!= null  && textBoxFilter.Text.Length>0)
             {
                 filter= "scope Like '%" + textBoxFilter.Text + "%' or module Like '%" + textBoxFilter.Text + "%' " +
