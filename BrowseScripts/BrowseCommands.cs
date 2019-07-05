@@ -211,7 +211,12 @@ namespace BrowseScripts
             {
                 return;
             }
-            if (currentRow!= null )
+            var currentRowDRV = (DataRowView)currentRow;
+            if (currentRowDRV== null || currentRowDRV.Row.ItemArray[2]?.ToString().Length==0)
+            {
+                return;
+            }
+                if (currentRow!= null)
             {
                 BindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[1];
                 FilterLists((DataRowView)currentRow);
@@ -234,6 +239,10 @@ namespace BrowseScripts
 
         private void FilterLists(DataRowView currentRow)
         {
+            if (currentRow.Row.ItemArray[2]?.ToString().Length==0)
+            {
+                return;
+            }
             var commandName =(string)((DataRowView)currentRow).Row.ItemArray[2];
             if (commandName.Contains("<") && commandName.Contains(">"))
             {
