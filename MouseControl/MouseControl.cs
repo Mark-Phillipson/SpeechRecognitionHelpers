@@ -54,7 +54,7 @@ namespace MouseControl
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count()<2)
             {
-                arguments=  new string[] { args[0], "/25" };
+                arguments=  new string[] { args[0], "/1" };
                 //arguments=  new string[] { args[0], "/upper-left" };
             }
             else
@@ -62,6 +62,7 @@ namespace MouseControl
                 arguments = Environment.GetCommandLineArgs();
             }
             //Debug.Print(arguments[1]);
+
             int delay = 0;
             if (Int32.TryParse(arguments[1].Substring(1), out delay))
             {
@@ -77,6 +78,12 @@ namespace MouseControl
                 Properties.Settings.Default.LastCommand = arguments[1];
                 Properties.Settings.Default.Save();
             }
+            var step = 1;
+            if (millisecondsDelay== 1)
+            {
+                step = 50;
+                millisecondsDelay = 300;
+            }
             if (arguments[1].ToLower().Contains("/right-click"))
             {
                 mouse_event((int)MouseEventType.RightDown, point.X, point.Y, 0, 0);
@@ -86,7 +93,7 @@ namespace MouseControl
             else if (arguments[1].ToLower().Contains("/upper-left"))
             {
                 int counterX = point.X;
-                for (int counterY = point.Y; counterY > 0; counterY--)
+                for (int counterY = point.Y; counterY > 0; counterY=counterY-step)
                 {
                     counterX--;
                     SetCursorPos(counterX, counterY);
@@ -96,7 +103,7 @@ namespace MouseControl
             else if (arguments[1].ToLower().Contains("/upper-right"))
             {
                 int counterX = point.X; 
-                for (int counterY = point.Y; counterY > 0; counterY--)
+                for (int counterY = point.Y; counterY > 0; counterY=counterY-step)
                 {
                     counterX++;
                     SetCursorPos(counterX, counterY);
@@ -106,7 +113,7 @@ namespace MouseControl
             else if (arguments[1].ToLower().Contains("/lower-left"))
             {
                 int counterX = point.X;
-                for (int counterY = point.Y; counterY < 1200; counterY++)
+                for (int counterY = point.Y; counterY < 1200; counterY=counterY+step)
                 {
                     counterX--;
                     SetCursorPos(counterX, counterY);
@@ -116,7 +123,7 @@ namespace MouseControl
             else if (arguments[1].ToLower().Contains("/lower-right"))
             {
                 int counterX = point.X;
-                for (int counterY = point.Y; counterY < 1200; counterY++)
+                for (int counterY = point.Y; counterY < 1200; counterY=counterY+step)
                 {
                     counterX++;
                     SetCursorPos(counterX, counterY);
@@ -125,7 +132,7 @@ namespace MouseControl
             }
             else if (arguments[1].ToLower().Contains("/right") && !arguments[1].ToLower().Contains("click"))
             {
-                for (int counter = point.X; counter < 3400; counter++)
+                for (int counter = point.X; counter < 3400; counter=counter+step)
                 {
                     SetCursorPos(counter, point.Y);
                     Task.Delay(millisecondsDelay).Wait();
@@ -133,7 +140,7 @@ namespace MouseControl
             }
             else if (arguments[1].ToLower().Contains("/left"))
             {
-                for (int counter = point.X; counter > 0; counter--)
+                for (int counter = point.X; counter > 0; counter=counter-step)
                 {
                     SetCursorPos(counter, point.Y);
                     Task.Delay(millisecondsDelay).Wait();
@@ -141,7 +148,7 @@ namespace MouseControl
             }
             else if (arguments[1].ToLower().Contains("/down"))
             {
-                for (int counter = point.Y; counter < 1200; counter++)
+                for (int counter = point.Y; counter < 1200; counter=counter+step)
                 {
                     SetCursorPos(point.X, counter);
                     Task.Delay(millisecondsDelay).Wait();
@@ -149,7 +156,7 @@ namespace MouseControl
             }
             else if (arguments[1].ToLower().Contains("/up"))
             {
-                for (int counter = point.Y; counter > 0; counter--)
+                for (int counter = point.Y; counter > 0; counter=counter-step)
                 {
                     SetCursorPos(point.X, counter);
                     Task.Delay(millisecondsDelay).Wait();
