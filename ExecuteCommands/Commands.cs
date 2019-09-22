@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ExecuteCommands
 {
@@ -29,6 +30,13 @@ namespace ExecuteCommands
             if (arguments[1]=="CloseFileExplorer")
             {
                 CloseFileExplorer();
+                Console.WriteLine("Close File Explorer Ran successfully. ");
+            }
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new Form1());
             }
         }
 

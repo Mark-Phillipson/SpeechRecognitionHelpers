@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+//TODO In order to test the mouse control class, need to separate the commandline arguments from the class, and then supply them in the class constructor from program.CS.  Then the test methods can call the class with various arguments
 namespace MouseControl
 {
     public class MouseControl
@@ -84,6 +84,7 @@ namespace MouseControl
                 step = 50;
                 millisecondsDelay = 300;
             }
+            
             if (arguments[1].ToLower().Contains("/right-click"))
             {
                 mouse_event((int)MouseEventType.RightDown, point.X, point.Y, 0, 0);

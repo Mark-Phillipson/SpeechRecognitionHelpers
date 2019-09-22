@@ -170,8 +170,11 @@ namespace DictationBoxMSP
 
         private void CopyOnlyButton_Click(object sender, EventArgs e)
         {
-            string text = richTextBox1.Text;
-            Clipboard.SetText(text);
+            if (richTextBox1?.Text!= null )
+            {
+                string text = richTextBox1.Text;
+                Clipboard.SetText(text);
+            }
             Application.Exit();
         }
     }
