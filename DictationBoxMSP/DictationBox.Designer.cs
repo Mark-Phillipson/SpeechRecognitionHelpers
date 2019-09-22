@@ -42,6 +42,7 @@ namespace DictationBoxMSP
             this.ReplaceTextBox = new System.Windows.Forms.TextBox();
             this.ReplaceButton = new System.Windows.Forms.Button();
             this.CopyOnlyButton = new System.Windows.Forms.Button();
+            this.buttonFrontSize = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -50,8 +51,8 @@ namespace DictationBoxMSP
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.richTextBox1.BackColor = System.Drawing.SystemColors.MenuText;
-            this.richTextBox1.Font = new System.Drawing.Font("Calibri", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox1.ForeColor = System.Drawing.SystemColors.Window;
+            this.richTextBox1.Font = new System.Drawing.Font("Cascadia Code", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.richTextBox1.Location = new System.Drawing.Point(0, 1);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox1.Name = "richTextBox1";
@@ -213,12 +214,27 @@ namespace DictationBoxMSP
             this.CopyOnlyButton.UseVisualStyleBackColor = false;
             this.CopyOnlyButton.Click += new System.EventHandler(this.CopyOnlyButton_Click);
             // 
+            // buttonFrontSize
+            // 
+            this.buttonFrontSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonFrontSize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonFrontSize.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.buttonFrontSize.Location = new System.Drawing.Point(1003, 197);
+            this.buttonFrontSize.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonFrontSize.Name = "buttonFrontSize";
+            this.buttonFrontSize.Size = new System.Drawing.Size(87, 34);
+            this.buttonFrontSize.TabIndex = 13;
+            this.buttonFrontSize.Text = "Font Size";
+            this.buttonFrontSize.UseVisualStyleBackColor = false;
+            this.buttonFrontSize.Click += new System.EventHandler(this.ButtonFrontSize_Click);
+            // 
             // DictationBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(1093, 620);
+            this.Controls.Add(this.buttonFrontSize);
             this.Controls.Add(this.CopyOnlyButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.ReplaceTextBox);
@@ -257,6 +273,7 @@ namespace DictationBoxMSP
         private System.Windows.Forms.TextBox ReplaceTextBox;
         private System.Windows.Forms.Button ReplaceButton;
         private System.Windows.Forms.Button CopyOnlyButton;
+        private System.Windows.Forms.Button buttonFrontSize;
     }
 }
 

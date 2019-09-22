@@ -177,5 +177,19 @@ namespace DictationBoxMSP
             }
             Application.Exit();
         }
+
+        private void ButtonFrontSize_Click(object sender, EventArgs e)
+        {
+            float currentSize = richTextBox1.Font.Size;
+            if (currentSize==21.75)
+            {
+                currentSize -= 10.0f;
+            }
+            else
+            {
+                currentSize += 10.0f;
+            }
+            richTextBox1.Font = new Font(richTextBox1.Font.Name, currentSize, richTextBox1.Font.Style);
+        }
     }
 }
