@@ -191,5 +191,13 @@ namespace DictationBoxMSP
             }
             richTextBox1.Font = new Font(richTextBox1.Font.Name, currentSize, richTextBox1.Font.Style);
         }
+
+        private void DictationBoxForm_Load(object sender, EventArgs e)
+        {
+            if (Clipboard.ContainsText())
+            {
+                this.richTextBox1.Text = Clipboard.GetText();
+            }
+        }
     }
 }

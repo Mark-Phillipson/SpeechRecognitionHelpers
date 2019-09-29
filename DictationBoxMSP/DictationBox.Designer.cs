@@ -253,6 +253,7 @@ namespace DictationBoxMSP
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "DictationBoxForm";
             this.Text = "Custom Dictation Box";
+            this.Load += new System.EventHandler(this.DictationBoxForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
