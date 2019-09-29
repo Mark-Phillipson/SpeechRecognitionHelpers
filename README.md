@@ -1,4 +1,4 @@
-# Programming Dictation Box
+# Various Speech Recognition Helper Projects
 
 Fast dictation box for normal dictation and converting to variable names and camel case.
 
@@ -21,3 +21,4 @@ For speed best to call from a DVC Script for example:
 `SendSystemKeys "{Ctrl+v}"`
 
 `SendSystemKeys "{Ctrl+a}"`
+
