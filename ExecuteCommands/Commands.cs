@@ -20,22 +20,27 @@ namespace ExecuteCommands
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count() < 2)
             {
-                arguments = new string[] { args[0], "ShowDictationBox" };
+                arguments = new string[] { args[0], "ToggleMicrophone" };
                 //arguments=  new string[] { args[0], "/upper-left" };
             }
             else
             {
                 arguments = Environment.GetCommandLineArgs();
             }
-            if (arguments[1]=="CloseFileExplorer")
+            if (arguments[1].Contains("CloseFileExplorer"))
             {
                 CloseFileExplorer();
                 Console.WriteLine("Close File Explorer Ran successfully. ");
             }
-            else if (arguments[1]=="ShowDictationBox")
+            else if (arguments[1].Contains ("ShowDictationBox"))
             {
                 ShowDictationBox();
                 Console.WriteLine("The Show Dictation Command ran successfully!");
+            }
+            else if (arguments[1].Contains("ToggleMicrophone"))
+            {
+                ToggleMicrophone();
+                Console.WriteLine("The toggle microphone command executed successfully!");
             }
             else
             {
@@ -68,5 +73,10 @@ namespace ExecuteCommands
                 process.Start();
             }
         }
+        private void ToggleMicrophone()
+        {
+            SendKeys.SendWait("{ADD}");
+        }
+
     }
 }
