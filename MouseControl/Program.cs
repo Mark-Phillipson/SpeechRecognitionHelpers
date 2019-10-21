@@ -17,7 +17,7 @@ namespace MouseControl
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new MouseControlForm());
-            MouseControl mouseControl = new MouseControl();
+            MouseControl mouseControl = new MouseControl(args);
             mouseControl.PerformControl();
         }
     }

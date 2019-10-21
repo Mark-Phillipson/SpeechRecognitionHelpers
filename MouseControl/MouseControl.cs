@@ -11,6 +11,9 @@ namespace MouseControl
 {
     public class MouseControl
     {
+        private readonly string[] arguments;
+        public IList<string> Arguments => Array.AsReadOnly(arguments);
+
         [DllImport("user32.dll")]
         static extern bool GetCursorPos(out POINT lpPoint);
         [DllImport("user32.dll")]
@@ -31,10 +34,50 @@ namespace MouseControl
             RightDown = 0x08,
             RightUp = 0x10
         }
+
+        public MouseControl(string[] args)
+        {
+            if (args == null)
+                args = new string[0];
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (string.IsNullOrEmpty(args[i]))
+                {
+                    if (args[i] == null)
+                    {
+                        throw new ArgumentNullException($"arg[{i}]");
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"args[{i}] value is empty");
+                    }
+                }
+                else if (i == 1 && args[i].Length < 2)
+                {
+                    throw new ArgumentOutOfRangeException($"args[{i}]='{args[i]}' value is not long enough");
+                }
+            }
+
+            if (args.Count() < 2)
+            {
+                if (args.Count() < 1)
+                {
+                    args = new string[] { "/0", "/1" };
+                }
+                else
+                {
+                    args = new string[] { args[0], "/1" };
+                }
+            }
+            
+            arguments = args;
+        }
+
         public void PerformControl()
         {
-        int millisecondsDelay = Properties.Settings.Default.Delay;
-        var processes = Process.GetProcessesByName("MouseControl");
+            int millisecondsDelay = Properties.Settings.Default.Delay;
+            var processes = Process.GetProcessesByName("MouseControl");
             foreach (var process in processes)
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -45,23 +88,6 @@ namespace MouseControl
             }
             POINT point;
             GetCursorPos(out point);
-
-            string[] arguments;
-            //foreach (var argument in arguments)
-            //{
-            //    MessageBox.Show(argument);
-            //}
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Count()<2)
-            {
-                arguments=  new string[] { args[0], "/1" };
-                //arguments=  new string[] { args[0], "/upper-left" };
-            }
-            else
-            {
-                arguments = Environment.GetCommandLineArgs();
-            }
-            //Debug.Print(arguments[1]);
 
             int delay = 0;
             if (Int32.TryParse(arguments[1].Substring(1), out delay))
@@ -84,7 +110,7 @@ namespace MouseControl
                 step = 50;
                 millisecondsDelay = 300;
             }
-            
+
             if (arguments[1].ToLower().Contains("/right-click"))
             {
                 mouse_event((int)MouseEventType.RightDown, point.X, point.Y, 0, 0);
@@ -103,7 +129,7 @@ namespace MouseControl
             }
             else if (arguments[1].ToLower().Contains("/upper-right"))
             {
-                int counterX = point.X; 
+                int counterX = point.X;
                 for (int counterY = point.Y; counterY > 0; counterY=counterY-step)
                 {
                     counterX++;
