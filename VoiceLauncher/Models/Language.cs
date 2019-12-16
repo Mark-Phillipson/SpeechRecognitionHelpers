@@ -11,7 +11,7 @@ namespace VoiceLauncher.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Language()
         {
-            CustomIntelliSenses = new HashSet<CustomIntelliSense>();
+            CustomIntelliSenses = new ObservableListSource<CustomIntelliSense>();
         }
 
         public int ID { get; set; }
@@ -24,6 +24,6 @@ namespace VoiceLauncher.Models
         public bool Active { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CustomIntelliSense> CustomIntelliSenses { get; set; }
+        public virtual ObservableListSource<CustomIntelliSense> CustomIntelliSenses { get; set; }
     }
 }

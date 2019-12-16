@@ -11,8 +11,8 @@ namespace VoiceLauncher.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Computer()
         {
-            CustomIntelliSenses = new HashSet<CustomIntelliSense>();
-            Launchers = new HashSet<Launcher>();
+            CustomIntelliSenses = new ObservableListSource<CustomIntelliSense>();
+            Launchers = new ObservableListSource<Launcher>();
         }
 
         public int ID { get; set; }
@@ -23,9 +23,9 @@ namespace VoiceLauncher.Models
         public string ComputerName { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CustomIntelliSense> CustomIntelliSenses { get; set; }
+        public virtual ObservableListSource<CustomIntelliSense> CustomIntelliSenses { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Launcher> Launchers { get; set; }
+        public virtual ObservableListSource<Launcher> Launchers { get; set; }
     }
 }
