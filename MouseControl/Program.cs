@@ -17,7 +17,17 @@ namespace MouseControl
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new MouseControlForm());
-            MouseControl mouseControl = new MouseControl();
+            string[] arguments;
+            if (args.Count() < 2)
+            {
+                arguments = new string[] { args[0], "/1" };
+                //arguments=  new string[] { args[0], "/upper-left" };
+            }
+            else
+            {
+                arguments = Environment.GetCommandLineArgs();
+            }
+            MouseControl mouseControl = new MouseControl(arguments);
             mouseControl.PerformControl();
         }
     }

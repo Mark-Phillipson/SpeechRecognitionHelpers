@@ -59,13 +59,16 @@ namespace VoiceLauncher
             customIntelliSenseDataGridView.Columns[9].HeaderText = "Delivery Type";
         }
 
-        private void SetDataSourceForGrid()
+        private void SetDataSourceForGrid(bool showAll=false)
         {
-            //Language language = voiceLauncherContext.Languages.Where(v => v.ID == languageId).FirstOrDefault();
-            //this.languageIDComboBox.SelectedItem = language;
-            //Category category = voiceLauncherContext.Categories.Where(v => v.ID == categoryId).FirstOrDefault();
-            //this.categoryIDComboBox.SelectedItem = category;
-            db.CustomIntelliSenses.Where(v => v.Category.ID == categoryId && v.Language.ID == languageId).OrderBy(o => o.Display_Value).Load();
+            if (showAll)
+            {
+                db.CustomIntelliSenses.OrderBy(v => v.Language.LanguageName).ThenBy(v => v.Category.CategoryName).ThenBy(o => o.Display_Value).Load();
+            }
+            else
+            {
+                db.CustomIntelliSenses.Where(v => v.Category.ID == categoryId && v.Language.ID == languageId).OrderBy(o => o.Display_Value).Load();
+            }
             this.customIntelliSenseBindingSource.DataSource = db.CustomIntelliSenses.Local
                 .ToBindingList();
 
@@ -84,6 +87,7 @@ namespace VoiceLauncher
             customIntelliSenseBindingSource.EndEdit();
             db.SaveChanges();
             this.customIntelliSenseDataGridView.Refresh();
+            MessageBox.Show("Save Successful", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void customIntelliSenseDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs anError)
@@ -117,9 +121,6 @@ namespace VoiceLauncher
             }
         }
 
-        private void customIntelliSenseDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
-        {
-        }
 
         private void customIntelliSense_Load(object sender, EventArgs e)
         {
@@ -136,17 +137,11 @@ namespace VoiceLauncher
             cboBoxColumn.DataSource = db.Languages.Local.ToBindingList();
             cboBoxColumn.DisplayMember = "LanguageName";  // the Name property in Choice class
             cboBoxColumn.ValueMember = "ID";  // ditto for the Value property        }
-            //this.languageIDComboBox.DataSource = voiceLauncherContext.Languages.Local.ToBindingList();
-            //this.languageIDComboBox.DisplayMember = "LanguageName";
-            //this.languageIDComboBox.ValueMember = "ID";
             cboBoxColumn = (DataGridViewComboBoxColumn)customIntelliSenseDataGridView.Columns["dataGridViewTextBoxColumn6"];
             db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
             cboBoxColumn.DataSource = db.Categories.Local.ToBindingList();
             cboBoxColumn.DisplayMember = "CategoryName";
             cboBoxColumn.ValueMember = "ID";
-            //this.categoryIDComboBox.DataSource = voiceLauncherContext.Categories.Local.ToBindingList();
-            //this.categoryIDComboBox.DisplayMember = "CategoryName";
-            //this.categoryIDComboBox.ValueMember = "ID";
             cboBoxColumn = (DataGridViewComboBoxColumn)customIntelliSenseDataGridView.Columns["dataGridViewTextBoxColumnDeliveryType"];
             cboBoxColumn.Items.Add("Copy and Paste");
             cboBoxColumn.Items.Add("Send Keys");
@@ -174,30 +169,9 @@ namespace VoiceLauncher
         {
         }
 
-        private void languageIDComboBox_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-            //ComboBox comboBox = (ComboBox)sender;
-            //Language selectedLanguage = (Language)languageIDComboBox.SelectedItem;
-            //languageId = selectedLanguage.ID;
-            //SetDataSourceForGrid();
-        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            IEnumerable<CustomIntelliSense> filteredData = null;
-            if (string.IsNullOrEmpty(this.textBox1.Text))
-            {
-                filteredData = db.CustomIntelliSenses.Local.ToBindingList();
-            }
-            else if (textBox1.Text.Length > 4)
-            {
-                filteredData = db.CustomIntelliSenses.Local.ToBindingList().Where(v => v.Display_Value.Contains(this.textBox1.Text) || v.SendKeys_Value.Contains(this.textBox1.Text) || v.Category.CategoryName.Contains(this.textBox1.Text) || v.Language.LanguageName.Contains(this.textBox1.Text));
-            }
-            if (filteredData == null)
-            {
-                return;
-            }
-            this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
         }
 
         private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
@@ -206,11 +180,58 @@ namespace VoiceLauncher
             {
                 var current = (CustomIntelliSense)this.customIntelliSenseBindingSource.Current;
                 this.customIntelliSenseBindingSource.RemoveCurrent();
-                if (!string.IsNullOrEmpty(this.textBox1.Text))
+                if (string.IsNullOrEmpty(this.toolStripTextBoxSearch.Text))
                 {
                     db.CustomIntelliSenses.Local.Remove(current);
                 }
+                else
+                {
+                    db.CustomIntelliSenses.Remove(current);
+                }
             }
+        }
+
+        private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
+        {
+            customIntelliSenseDataGridView.ClearSelection();
+            int rowIndex = customIntelliSenseDataGridView.Rows.Count - 1;
+            customIntelliSenseDataGridView.Rows[rowIndex].Selected = true;
+            customIntelliSenseDataGridView.Rows[rowIndex].Cells[0].Selected = true;
+
+        }
+
+        private void customIntelliSenseDataGridView_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+        {
+            e.Row.Cells["dataGridViewTextBoxColumn1"].Value = languageId;
+            e.Row.Cells["dataGridViewTextBoxColumn6"].Value = categoryId;
+            e.Row.Cells["dataGridViewTextBoxColumnDeliveryType"].Value = "Send Keys";
+
+        }
+        private void toolStripTextBoxSearch_TextChanged(object sender, EventArgs e)
+        {
+            IEnumerable<CustomIntelliSense> filteredData = null;
+            if (string.IsNullOrEmpty(this.toolStripTextBoxSearch.Text))
+            {
+                this.bindingNavigatorDeleteItem.Enabled = true;
+                filteredData = db.CustomIntelliSenses.Local.ToBindingList();
+            }
+            else if (toolStripTextBoxSearch.Text.Length > 4)
+            {
+                this.bindingNavigatorDeleteItem.Enabled = false;
+                filteredData = db.CustomIntelliSenses.Local.ToBindingList().Where(v => v.Display_Value.Contains(this.toolStripTextBoxSearch.Text) || v.SendKeys_Value.Contains(this.toolStripTextBoxSearch.Text) || v.Category.CategoryName.Contains(this.toolStripTextBoxSearch.Text) || v.Language.LanguageName.Contains(this.toolStripTextBoxSearch.Text));
+            }
+            if (filteredData == null)
+            {
+                this.bindingNavigatorDeleteItem.Enabled = true;
+                return;
+            }
+            this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
+        }
+
+        private void toolStripButtonShowAll_Click(object sender, EventArgs e)
+        {
+            Text = "Custom IntelliSense — All Records";
+            SetDataSourceForGrid(true);
         }
     }
 }
