@@ -51,14 +51,12 @@
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewComboBoxColumn5 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.categoryBindingNavigator)).BeginInit();
             this.categoryBindingNavigator.SuspendLayout();
@@ -95,7 +93,7 @@
             this.categoryBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.categoryBindingNavigator.Name = "categoryBindingNavigator";
             this.categoryBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.categoryBindingNavigator.Size = new System.Drawing.Size(800, 25);
+            this.categoryBindingNavigator.Size = new System.Drawing.Size(1000, 25);
             this.categoryBindingNavigator.TabIndex = 0;
             this.categoryBindingNavigator.Text = "bindingNavigator1";
             // 
@@ -186,7 +184,7 @@
             this.categoryBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("categoryBindingNavigatorSaveItem.Image")));
             this.categoryBindingNavigatorSaveItem.Name = "categoryBindingNavigatorSaveItem";
             this.categoryBindingNavigatorSaveItem.Size = new System.Drawing.Size(78, 22);
-            this.categoryBindingNavigatorSaveItem.Text = "Save Data";
+            this.categoryBindingNavigatorSaveItem.Text = "&Save Data";
             this.categoryBindingNavigatorSaveItem.Click += new System.EventHandler(this.categoryBindingNavigatorSaveItem_Click);
             // 
             // categoryDataGridView
@@ -198,11 +196,11 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3});
             this.categoryDataGridView.DataSource = this.categoryBindingSource;
-            this.categoryDataGridView.Dock = System.Windows.Forms.DockStyle.Top;
+            this.categoryDataGridView.Dock = System.Windows.Forms.DockStyle.Left;
             this.categoryDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
             this.categoryDataGridView.Location = new System.Drawing.Point(0, 25);
             this.categoryDataGridView.Name = "categoryDataGridView";
-            this.categoryDataGridView.Size = new System.Drawing.Size(800, 169);
+            this.categoryDataGridView.Size = new System.Drawing.Size(250, 626);
             this.categoryDataGridView.TabIndex = 1;
             this.categoryDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.categoryDataGridView_DataError);
             // 
@@ -210,27 +208,26 @@
             // 
             this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
             this.customIntelliSensesBindingSource.DataSource = this.categoryBindingSource;
+            this.customIntelliSensesBindingSource.Sort = "LanguageID ASC, Display_Value ASC, SendKeys_Value ASC";
             // 
             // customIntelliSensesDataGridView
             // 
             this.customIntelliSensesDataGridView.AutoGenerateColumns = false;
             this.customIntelliSensesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.customIntelliSensesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn5,
+            this.dataGridViewComboBoxColumn5,
             this.dataGridViewTextBoxColumn4,
             this.dataGridViewTextBoxColumn6,
             this.dataGridViewTextBoxColumn7,
             this.dataGridViewTextBoxColumn8,
             this.dataGridViewTextBoxColumn10,
-            this.dataGridViewTextBoxColumn11,
-            this.dataGridViewTextBoxColumn12,
             this.dataGridViewTextBoxColumn13});
             this.customIntelliSensesDataGridView.DataSource = this.customIntelliSensesBindingSource;
             this.customIntelliSensesDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.customIntelliSensesDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.customIntelliSensesDataGridView.Location = new System.Drawing.Point(0, 194);
+            this.customIntelliSensesDataGridView.Location = new System.Drawing.Point(250, 25);
             this.customIntelliSensesDataGridView.Name = "customIntelliSensesDataGridView";
-            this.customIntelliSensesDataGridView.Size = new System.Drawing.Size(800, 457);
+            this.customIntelliSensesDataGridView.Size = new System.Drawing.Size(750, 626);
             this.customIntelliSensesDataGridView.TabIndex = 2;
             this.customIntelliSensesDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.customIntelliSensesDataGridView_DataError);
             // 
@@ -264,12 +261,13 @@
             // 
             this.languageBindingSource.DataSource = typeof(VoiceLauncher.Models.Language);
             // 
-            // dataGridViewTextBoxColumn5
+            // dataGridViewComboBoxColumn5
             // 
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "LanguageID";
-            this.dataGridViewTextBoxColumn5.HeaderText = "LanguageID";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewComboBoxColumn5.DataPropertyName = "LanguageID";
+            this.dataGridViewComboBoxColumn5.HeaderText = "LanguageID";
+            this.dataGridViewComboBoxColumn5.Name = "dataGridViewComboBoxColumn5";
+            this.dataGridViewComboBoxColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewComboBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // dataGridViewTextBoxColumn4
             // 
@@ -283,7 +281,6 @@
             this.dataGridViewTextBoxColumn6.DataPropertyName = "Display_Value";
             this.dataGridViewTextBoxColumn6.HeaderText = "Display_Value";
             this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             // 
             // dataGridViewTextBoxColumn7
             // 
@@ -303,18 +300,6 @@
             this.dataGridViewTextBoxColumn10.HeaderText = "Remarks";
             this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             // 
-            // dataGridViewTextBoxColumn11
-            // 
-            this.dataGridViewTextBoxColumn11.DataPropertyName = "Search";
-            this.dataGridViewTextBoxColumn11.HeaderText = "Search";
-            this.dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            // 
-            // dataGridViewTextBoxColumn12
-            // 
-            this.dataGridViewTextBoxColumn12.DataPropertyName = "ComputerID";
-            this.dataGridViewTextBoxColumn12.HeaderText = "ComputerID";
-            this.dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            // 
             // dataGridViewTextBoxColumn13
             // 
             this.dataGridViewTextBoxColumn13.DataPropertyName = "DeliveryType";
@@ -325,12 +310,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 651);
+            this.ClientSize = new System.Drawing.Size(1000, 651);
             this.Controls.Add(this.customIntelliSensesDataGridView);
             this.Controls.Add(this.categoryDataGridView);
             this.Controls.Add(this.categoryBindingNavigator);
             this.Name = "Categories";
             this.Text = "Categories";
+            this.Load += new System.EventHandler(this.Categories_Load);
             ((System.ComponentModel.ISupportInitialize)(this.categoryBindingNavigator)).EndInit();
             this.categoryBindingNavigator.ResumeLayout(false);
             this.categoryBindingNavigator.PerformLayout();
@@ -367,14 +353,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+        private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewComboBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
     }
 }

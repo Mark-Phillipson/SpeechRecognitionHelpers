@@ -10,7 +10,7 @@ namespace VoiceLauncher
 {
     public partial class Categories : Form
     {
-        private VoiceLauncherContext voiceLauncherContext;
+        private VoiceLauncherContext db;
         public Categories()
         {
             InitializeComponent();
@@ -19,27 +19,28 @@ namespace VoiceLauncher
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            voiceLauncherContext = new VoiceLauncherContext();
-            voiceLauncherContext.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
-            this.categoryBindingSource.DataSource = voiceLauncherContext.Categories.Local.ToBindingList();
+            db = new VoiceLauncherContext();
+            db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
+            this.categoryBindingSource.DataSource = db.Categories.Local.ToBindingList();
+            //customIntelliSensesBindingSource.Sort = "LanguageID ASC, Display_Value ASC, SendKeys_Value ASC";
         }
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
-            this.voiceLauncherContext.Dispose();
+            this.db.Dispose();
         }
 
         private void categoryBindingNavigatorSaveItem_Click(object sender, EventArgs e)
         {
             this.Validate();
-            foreach (var customIntelliSense in voiceLauncherContext.CustomIntelliSenses.Local.ToList())
+            foreach (var customIntelliSense in db.CustomIntelliSenses.Local.ToList())
             {
                 if (customIntelliSense.Category == null)
                 {
-                    voiceLauncherContext.CustomIntelliSenses.Remove(customIntelliSense);
+                    db.CustomIntelliSenses.Remove(customIntelliSense);
                 }
             }
-            voiceLauncherContext.SaveChanges();
+            db.SaveChanges();
             this.categoryDataGridView.Refresh();
             this.customIntelliSensesDataGridView.Refresh();
         }
@@ -104,6 +105,26 @@ namespace VoiceLauncher
 
                 anError.ThrowException = false;
             }
+        }
+
+        private void Categories_Load(object sender, EventArgs e)
+        {
+            DataGridViewComboBoxColumn cboBoxColumn = (DataGridViewComboBoxColumn)customIntelliSensesDataGridView.Columns[0];
+            db = new VoiceLauncherContext();
+            db.Languages.OrderBy(o => o.LanguageName).Load();
+            cboBoxColumn.DataSource = db.Languages.Local.ToBindingList();
+            cboBoxColumn.DisplayMember = "LanguageName";  // the Name property in Choice class
+            cboBoxColumn.ValueMember = "ID";  // ditto for the Value property        }
+            foreach (DataGridViewColumn column in customIntelliSensesDataGridView.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
+            customIntelliSensesDataGridView.Columns[0].HeaderText = "Language";
+            customIntelliSensesDataGridView.Columns[2].HeaderText = "Display Value";
+            customIntelliSensesDataGridView.Columns[3].HeaderText = "SendKeys Value";
+            customIntelliSensesDataGridView.Columns[4].HeaderText = "Command Type";
+            customIntelliSensesDataGridView.Columns[6].HeaderText = "Delivery Type";
+            customIntelliSensesBindingSource.Sort = "LanguageID ASC, Display_Value ASC, SendKeys_Value ASC";
         }
     }
 }

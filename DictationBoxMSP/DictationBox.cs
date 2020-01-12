@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -87,12 +85,12 @@ namespace DictationBoxMSP
                 value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
             }
             richTextBox1.Text = value;
-            PerformTransfer(); 
+            PerformTransfer();
         }
 
         private void WindowButton_Click(object sender, EventArgs e)
         {
-            if (Opacity==1)
+            if (Opacity == 1)
             {
                 this.Opacity = 0.5;
             }
@@ -104,8 +102,8 @@ namespace DictationBoxMSP
 
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            var searchString = richTextBox1.Text.Replace("c#","CSharp");
-            searchString = searchString.Replace("C#","CSharp");
+            var searchString = richTextBox1.Text.Replace("c#", "CSharp");
+            searchString = searchString.Replace("C#", "CSharp");
             Process.Start("https://www.google.com/search?client=firefox-b-d&q=" + searchString);
         }
         public int FindMyText(string searchText, int searchStart, int searchEnd)
@@ -135,18 +133,18 @@ namespace DictationBoxMSP
 
         private void FindButton_Click(object sender, EventArgs e)
         {
-            if ( FindtextBox.Text== null  || FindtextBox.Text.Length==0)
+            if (FindtextBox.Text == null || FindtextBox.Text.Length == 0)
             {
                 return;
             }
             var searchFrom = 0;
             var position = 0;
             var successfulFinds = 0;
-            while (position>=0)
+            while (position >= 0)
             {
 
                 position = FindMyText(FindtextBox.Text, searchFrom, richTextBox1.Text.Length);
-                if (position>=0)
+                if (position >= 0)
                 {
                     successfulFinds++;
                     searchFrom = position + 1;
@@ -159,18 +157,18 @@ namespace DictationBoxMSP
 
         private void ReplaceButton_Click(object sender, EventArgs e)
         {
-            if (FindtextBox.Text== null  || ReplaceTextBox.Text== null  || richTextBox1.Text== null  || FindtextBox.Text.Length==0 || ReplaceTextBox.Text.Length==0 || richTextBox1.Text.Length==0)
+            if (FindtextBox.Text == null || ReplaceTextBox.Text == null || richTextBox1.Text == null || FindtextBox.Text.Length == 0 || ReplaceTextBox.Text.Length == 0 || richTextBox1.Text.Length == 0)
             {
                 return;
             }
             var text = richTextBox1.Text;
-            text=text.Replace(FindtextBox.Text, ReplaceTextBox.Text);
+            text = text.Replace(FindtextBox.Text, ReplaceTextBox.Text);
             richTextBox1.Text = text;
         }
 
         private void CopyOnlyButton_Click(object sender, EventArgs e)
         {
-            if (richTextBox1?.Text!= null )
+            if (richTextBox1?.Text != null)
             {
                 string text = richTextBox1.Text;
                 Clipboard.SetText(text);
@@ -181,7 +179,7 @@ namespace DictationBoxMSP
         private void ButtonFrontSize_Click(object sender, EventArgs e)
         {
             float currentSize = richTextBox1.Font.Size;
-            if (currentSize==21.75)
+            if (currentSize == 21.75)
             {
                 currentSize -= 10.0f;
             }
@@ -197,7 +195,7 @@ namespace DictationBoxMSP
             if (Clipboard.ContainsText())
             {
                 this.richTextBox1.Text = Clipboard.GetText();
-                this.richTextBox1.SelectionStart=0;
+                this.richTextBox1.SelectionStart = 0;
                 this.richTextBox1.SelectionLength = this.richTextBox1.TextLength;
             }
         }

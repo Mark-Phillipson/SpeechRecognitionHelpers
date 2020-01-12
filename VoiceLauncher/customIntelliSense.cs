@@ -59,7 +59,7 @@ namespace VoiceLauncher
             customIntelliSenseDataGridView.Columns[9].HeaderText = "Delivery Type";
         }
 
-        private void SetDataSourceForGrid(bool showAll=false)
+        private void SetDataSourceForGrid(bool showAll = false)
         {
             if (showAll)
             {
@@ -87,7 +87,7 @@ namespace VoiceLauncher
             customIntelliSenseBindingSource.EndEdit();
             db.SaveChanges();
             this.customIntelliSenseDataGridView.Refresh();
-            MessageBox.Show("Save Successful", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Text = $"Saved Successfully at {DateTime.Now.ToShortTimeString()}";
         }
 
         private void customIntelliSenseDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs anError)
@@ -160,7 +160,8 @@ namespace VoiceLauncher
                 }
             }
             this.customIntelliSenseDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            this.customIntelliSenseDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            //I have turned this off because it sometimes causes the screen to freeze up but would be nice to have if it worked
+            //this.customIntelliSenseDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
         }
 
@@ -209,13 +210,43 @@ namespace VoiceLauncher
         }
         private void toolStripTextBoxSearch_TextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void toolStripButtonShowAll_Click(object sender, EventArgs e)
+        {
+            Text = "Custom IntelliSense — All Records";
+            SetDataSourceForGrid(true);
+        }
+
+        private void toolStripTextBoxFind_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void Focus_Click(object sender, EventArgs e)
+        {
+            customIntelliSenseDataGridView.BeginEdit(true);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void categoriesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Categories categoriesForm = new Categories();
+            categoriesForm.ShowDialog();
+        }
+
+        private void toolStripTextBoxSearch_Leave(object sender, EventArgs e)
+        {
             IEnumerable<CustomIntelliSense> filteredData = null;
             if (string.IsNullOrEmpty(this.toolStripTextBoxSearch.Text))
             {
                 this.bindingNavigatorDeleteItem.Enabled = true;
                 filteredData = db.CustomIntelliSenses.Local.ToBindingList();
             }
-            else if (toolStripTextBoxSearch.Text.Length > 4)
+            else if (toolStripTextBoxSearch.Text.Length > 0)
             {
                 this.bindingNavigatorDeleteItem.Enabled = false;
                 filteredData = db.CustomIntelliSenses.Local.ToBindingList().Where(v => v.Display_Value.Contains(this.toolStripTextBoxSearch.Text) || v.SendKeys_Value.Contains(this.toolStripTextBoxSearch.Text) || v.Category.CategoryName.Contains(this.toolStripTextBoxSearch.Text) || v.Language.LanguageName.Contains(this.toolStripTextBoxSearch.Text));
@@ -226,12 +257,55 @@ namespace VoiceLauncher
                 return;
             }
             this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
+
+
         }
 
-        private void toolStripButtonShowAll_Click(object sender, EventArgs e)
+        private void toolStripTextBoxFind_Leave(object sender, EventArgs e)
         {
-            Text = "Custom IntelliSense — All Records";
-            SetDataSourceForGrid(true);
+            if (string.IsNullOrEmpty(this.toolStripTextBoxFind.Text) || this.toolStripTextBoxFind.Text.Length < 1)
+            {
+                return;
+            }
+            string searchValue = this.toolStripTextBoxFind.Text;
+            int rowIndex = -1;
+            bool firstOne = true;
+            int firstRow = -1;
+            int firstColumn = -1;
+            foreach (DataGridViewRow row in customIntelliSenseDataGridView.Rows)
+            {
+                for (int i = 3; i < 5; i++)
+                {
+                    if (row.Cells[i].Value != null && row.Cells[i].Value.ToString().Contains(searchValue))
+                    {
+                        rowIndex = row.Index;
+                        customIntelliSenseDataGridView.Rows[rowIndex].Selected = true;
+                        if (firstOne)
+                        {
+                            firstRow = rowIndex;
+                            firstColumn = i;
+                            firstOne = false;
+                        }
+                    }
+                }
+            }
+            if (firstOne == false)
+            {
+                customIntelliSenseDataGridView.CurrentCell = customIntelliSenseDataGridView.Rows[firstRow].Cells[firstColumn];
+            }
+
+        }
+
+        private void singleCustomIntelliSenseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
+            customIntelliSenseSingleRecord.CurrentId = (int)customIntelliSenseDataGridView.CurrentRow.Cells[0].Value;
+            //var languageIdCurrent = (int)customIntelliSenseDataGridView.CurrentRow.Cells[1].Value;
+            //var language = db.Languages.Where(v => v.ID == languageIdCurrent).FirstOrDefault();
+            //customIntelliSenseSingleRecord.comboBoxLanguageID.SelectedItem = language;
+
+            customIntelliSenseSingleRecord.ShowDialog();
+
         }
     }
 }

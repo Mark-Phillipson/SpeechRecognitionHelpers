@@ -35,6 +35,7 @@ namespace VoiceLauncher
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.customIntelliSenseBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
@@ -49,8 +50,10 @@ namespace VoiceLauncher
             this.toolStripButtonShowAll = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripTextBoxFind = new System.Windows.Forms.ToolStripTextBox();
+            this.Focus = new System.Windows.Forms.ToolStripButton();
             this.customIntelliSenseDataGridView = new System.Windows.Forms.DataGridView();
-            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -65,14 +68,19 @@ namespace VoiceLauncher
             this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).BeginInit();
             this.customIntelliSenseBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -99,8 +107,11 @@ namespace VoiceLauncher
             this.customIntelliSenseBindingNavigatorSaveItem,
             this.toolStripButtonShowAll,
             this.toolStripLabel1,
-            this.toolStripTextBoxSearch});
-            this.customIntelliSenseBindingNavigator.Location = new System.Drawing.Point(0, 0);
+            this.toolStripTextBoxSearch,
+            this.toolStripLabel2,
+            this.toolStripTextBoxFind,
+            this.Focus});
+            this.customIntelliSenseBindingNavigator.Location = new System.Drawing.Point(0, 24);
             this.customIntelliSenseBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.customIntelliSenseBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
             this.customIntelliSenseBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
@@ -113,12 +124,17 @@ namespace VoiceLauncher
             // 
             // bindingNavigatorAddNewItem
             // 
+            this.bindingNavigatorAddNewItem.BackColor = System.Drawing.Color.DarkGreen;
             this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(76, 22);
             this.bindingNavigatorAddNewItem.Text = "&Add New";
             this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
+            // 
+            // customIntelliSenseBindingSource
+            // 
+            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
             // 
             // bindingNavigatorCountItem
             // 
@@ -188,6 +204,7 @@ namespace VoiceLauncher
             // 
             // bindingNavigatorDeleteItem
             // 
+            this.bindingNavigatorDeleteItem.BackColor = System.Drawing.Color.Red;
             this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
@@ -197,6 +214,7 @@ namespace VoiceLauncher
             // 
             // customIntelliSenseBindingNavigatorSaveItem
             // 
+            this.customIntelliSenseBindingNavigatorSaveItem.BackColor = System.Drawing.Color.SlateBlue;
             this.customIntelliSenseBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("customIntelliSenseBindingNavigatorSaveItem.Image")));
             this.customIntelliSenseBindingNavigatorSaveItem.Name = "customIntelliSenseBindingNavigatorSaveItem";
             this.customIntelliSenseBindingNavigatorSaveItem.Size = new System.Drawing.Size(90, 22);
@@ -224,7 +242,33 @@ namespace VoiceLauncher
             this.toolStripTextBoxSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBoxSearch.Name = "toolStripTextBoxSearch";
             this.toolStripTextBoxSearch.Size = new System.Drawing.Size(100, 25);
+            this.toolStripTextBoxSearch.Leave += new System.EventHandler(this.toolStripTextBoxSearch_Leave);
             this.toolStripTextBoxSearch.TextChanged += new System.EventHandler(this.toolStripTextBoxSearch_TextChanged);
+            // 
+            // toolStripLabel2
+            // 
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(35, 22);
+            this.toolStripLabel2.Text = "&Find";
+            // 
+            // toolStripTextBoxFind
+            // 
+            this.toolStripTextBoxFind.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStripTextBoxFind.Name = "toolStripTextBoxFind";
+            this.toolStripTextBoxFind.Size = new System.Drawing.Size(100, 25);
+            this.toolStripTextBoxFind.Leave += new System.EventHandler(this.toolStripTextBoxFind_Leave);
+            this.toolStripTextBoxFind.TextChanged += new System.EventHandler(this.toolStripTextBoxFind_TextChanged);
+            // 
+            // Focus
+            // 
+            this.Focus.BackColor = System.Drawing.Color.Brown;
+            this.Focus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.Focus.Image = ((System.Drawing.Image)(resources.GetObject("Focus.Image")));
+            this.Focus.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.Focus.Name = "Focus";
+            this.Focus.Size = new System.Drawing.Size(46, 22);
+            this.Focus.Text = "F&ocus";
+            this.Focus.Click += new System.EventHandler(this.Focus_Click);
             // 
             // customIntelliSenseDataGridView
             // 
@@ -247,7 +291,7 @@ namespace VoiceLauncher
             this.customIntelliSenseDataGridView.DataSource = this.customIntelliSenseBindingSource;
             this.customIntelliSenseDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.customIntelliSenseDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.customIntelliSenseDataGridView.Location = new System.Drawing.Point(0, 25);
+            this.customIntelliSenseDataGridView.Location = new System.Drawing.Point(0, 49);
             this.customIntelliSenseDataGridView.Name = "customIntelliSenseDataGridView";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.Color.Black;
@@ -260,15 +304,10 @@ namespace VoiceLauncher
             this.customIntelliSenseDataGridView.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.Black;
             this.customIntelliSenseDataGridView.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.customIntelliSenseDataGridView.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
-            this.customIntelliSenseDataGridView.Size = new System.Drawing.Size(1200, 460);
+            this.customIntelliSenseDataGridView.Size = new System.Drawing.Size(1200, 436);
             this.customIntelliSenseDataGridView.TabIndex = 7;
             this.customIntelliSenseDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.customIntelliSenseDataGridView_DataError);
             this.customIntelliSenseDataGridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.customIntelliSenseDataGridView_DefaultValuesNeeded);
-            // 
-            // customIntelliSensesBindingSource
-            // 
-            this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
-            this.customIntelliSensesBindingSource.DataSource = this.languageBindingSource;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -375,13 +414,47 @@ namespace VoiceLauncher
             this.dataGridViewTextBoxColumn13.HeaderText = "Language";
             this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
             // 
-            // customIntelliSenseBindingSource
+            // customIntelliSensesBindingSource
             // 
-            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
+            this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
+            this.customIntelliSensesBindingSource.DataSource = this.languageBindingSource;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitToolStripMenuItem,
+            this.categoriesToolStripMenuItem,
+            this.singleCustomIntelliSenseToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1200, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // categoriesToolStripMenuItem
+            // 
+            this.categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
+            this.categoriesToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
+            this.categoriesToolStripMenuItem.Text = "&Categories";
+            this.categoriesToolStripMenuItem.Click += new System.EventHandler(this.categoriesToolStripMenuItem_Click);
             // 
             // languageBindingSource1
             // 
             this.languageBindingSource1.DataSource = typeof(VoiceLauncher.Models.Language);
+            // 
+            // singleCustomIntelliSenseToolStripMenuItem
+            // 
+            this.singleCustomIntelliSenseToolStripMenuItem.Name = "singleCustomIntelliSenseToolStripMenuItem";
+            this.singleCustomIntelliSenseToolStripMenuItem.Size = new System.Drawing.Size(158, 20);
+            this.singleCustomIntelliSenseToolStripMenuItem.Text = "Single Custom &IntelliSense";
+            this.singleCustomIntelliSenseToolStripMenuItem.Click += new System.EventHandler(this.singleCustomIntelliSenseToolStripMenuItem_Click);
             // 
             // customIntelliSense
             // 
@@ -391,10 +464,12 @@ namespace VoiceLauncher
             this.ClientSize = new System.Drawing.Size(1200, 485);
             this.Controls.Add(this.customIntelliSenseDataGridView);
             this.Controls.Add(this.customIntelliSenseBindingNavigator);
+            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "customIntelliSense";
             this.Text = "customIntelliSense";
             this.Activated += new System.EventHandler(this.customIntelliSense_Activated);
@@ -402,10 +477,12 @@ namespace VoiceLauncher
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).EndInit();
             this.customIntelliSenseBindingNavigator.ResumeLayout(false);
             this.customIntelliSenseBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -448,5 +525,12 @@ namespace VoiceLauncher
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBoxFind;
+        private System.Windows.Forms.ToolStripButton Focus;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem categoriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem singleCustomIntelliSenseToolStripMenuItem;
     }
 }
