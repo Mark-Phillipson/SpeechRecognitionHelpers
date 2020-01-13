@@ -11,6 +11,9 @@ namespace VoiceLauncher
     {
         private VoiceLauncherContext db = new VoiceLauncherContext();
         public int CurrentId { get; set; }
+        public string DefaultValueToSend { get; set; }
+        public int? LanguageId { get; internal set; }
+        public int? CategoryId { get; internal set; }
 
         public CustomIntelliSenseSingleRecord()
         {
@@ -21,6 +24,18 @@ namespace VoiceLauncher
         {
             db.CustomIntelliSenses.Where(v => v.ID == CurrentId).Load();
             customIntelliSenseBindingSource.DataSource = db.CustomIntelliSenses.Local.ToBindingList();
+            if (CurrentId == 0)
+            {
+                CustomIntelliSense customIntelliSense = new CustomIntelliSense
+                {
+                    SendKeys_Value = DefaultValueToSend,
+                    Command_Type = "SendKeys",
+                    DeliveryType = "Copy and Paste",
+                    LanguageID = (int)LanguageId,
+                    CategoryID = (int)CategoryId
+                };
+                db.CustomIntelliSenses.Local.Add(customIntelliSense);
+            }
             db.Languages.OrderBy(o => o.LanguageName).Load();
             BindingSource bindingSourceLanguage = new BindingSource();
             bindingSourceLanguage.DataSource = db.Languages.Local.ToBindingList();
@@ -29,7 +44,7 @@ namespace VoiceLauncher
             languageIDComboBox.DisplayMember = "LanguageName";  // the Name property in Choice class
             languageIDComboBox.ValueMember = "ID";  // ditto for the Value property        }
             languageIDComboBox.DataBindings.Clear();
-            languageIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "LanguageId", true));
+            languageIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "LanguageId"));
             db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
             BindingSource bindingSourceCategory = new BindingSource();
             bindingSourceCategory.DataSource = db.Categories.Local.ToBindingList();
@@ -37,7 +52,7 @@ namespace VoiceLauncher
             categoryIDComboBox.DisplayMember = "CategoryName";
             categoryIDComboBox.ValueMember = "ID";
             categoryIDComboBox.DataBindings.Clear();
-            categoryIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "CategoryId", true));
+            categoryIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "CategoryId"));
             deliveryTypeComboBox.Items.Add("Copy and Paste");
             deliveryTypeComboBox.Items.Add("Send Keys");
             deliveryTypeComboBox.Items.Add("Executed as Script");
@@ -48,7 +63,14 @@ namespace VoiceLauncher
         {
             this.Validate();
             customIntelliSenseBindingSource.EndEdit();
-            db.SaveChanges();
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
             this.Text = $"Saved Successfully at {DateTime.Now.ToShortTimeString()}";
 
         }

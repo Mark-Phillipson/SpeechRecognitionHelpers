@@ -14,6 +14,7 @@ namespace VoiceLauncher
         private VoiceLauncherContext db;
         private int categoryId = 39;
         private int languageId = 1;
+        private string searchTerm = null;
         public customIntelliSense()
         {
             InitializeComponent();
@@ -26,29 +27,53 @@ namespace VoiceLauncher
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count() < 2)
             {
-                arguments = new string[] { args[0], "Visual Basic", "Statements" };
+                //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
+                arguments = new string[] { args[0], "Add New", "Some new value" };
+                //arguments = new string[] { args[0], "Razor", "Snippet" };
                 //arguments = new string[] { args[0], "Not Applicable", "Words" };
             }
             else
             {
                 arguments = Environment.GetCommandLineArgs();
             }
-            string languageName = arguments[1].Replace("/", "").Trim();
 
-            Language language = db.Languages.Where(v => v.LanguageName == languageName).FirstOrDefault();
-            if (language == null)
+            if (arguments[1].EndsWith("Add New") && arguments[2]?.Length > 0)
             {
-                throw (new Exception($" Language not found in commandline argument {arguments[1]}"));
+                CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
+                customIntelliSenseSingleRecord.CurrentId = (int)0;
+                customIntelliSenseSingleRecord.DefaultValueToSend = arguments[2].Replace("/", "").Trim();
+                var languageId = db.Languages.Where(v => v.LanguageName == "Not Applicable").FirstOrDefault()?.ID;
+                customIntelliSenseSingleRecord.LanguageId = languageId;
+                var categoryId = db.Categories.Where(v => v.CategoryName == "Words").FirstOrDefault()?.ID;
+                customIntelliSenseSingleRecord.CategoryId = categoryId;
+                customIntelliSenseSingleRecord.ShowDialog();
+                Application.Exit();
+                return;
             }
-            languageId = language.ID;
-            string categoryName = arguments[2].Replace("/", "").Trim();
-            Category category = db.Categories.Where(v => v.CategoryName == categoryName).FirstOrDefault();
-            if (category == null)
+            //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} 3:{arguments[3]}");
+            if (arguments[1].ToLower().Contains("unknown") && arguments[2].ToLower().Contains("unknown"))
             {
-                throw (new Exception($" the Category not found in commandline argument {arguments[2]}"));
+                searchTerm = arguments[3].Replace("/", "").Trim();
+                this.Text = $"Custom IntelliSense Search Term: {searchTerm}";
             }
-            categoryId = category.ID;
-            this.Text = $"Custom IntelliSense {language.LanguageName} {category.CategoryName}";
+            else
+            {
+                string languageName = arguments[1].Replace("/", "").Trim();
+                Language language = db.Languages.Where(v => v.LanguageName == languageName).FirstOrDefault();
+                if (language == null)
+                {
+                    throw (new Exception($" Language not found in commandline argument {arguments[1]}"));
+                }
+                languageId = language.ID;
+                string categoryName = arguments[2].Replace("/", "").Trim();
+                Category category = db.Categories.Where(v => v.CategoryName == categoryName).FirstOrDefault();
+                if (category == null)
+                {
+                    throw (new Exception($" the Category not found in commandline argument {arguments[2]}"));
+                }
+                categoryId = category.ID;
+                this.Text = $"Custom IntelliSense {language.LanguageName} {category.CategoryName}";
+            }
             SetDataSourceForGrid();
             db.Configuration.ProxyCreationEnabled = false;
             customIntelliSenseDataGridView.Columns[2].HeaderText = "Category";
@@ -64,6 +89,10 @@ namespace VoiceLauncher
             if (showAll)
             {
                 db.CustomIntelliSenses.OrderBy(v => v.Language.LanguageName).ThenBy(v => v.Category.CategoryName).ThenBy(o => o.Display_Value).Load();
+            }
+            else if (searchTerm != null)
+            {
+                db.CustomIntelliSenses.Where(v => v.Display_Value.ToLower().Contains(searchTerm.ToLower())).Load();
             }
             else
             {
@@ -300,12 +329,7 @@ namespace VoiceLauncher
         {
             CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
             customIntelliSenseSingleRecord.CurrentId = (int)customIntelliSenseDataGridView.CurrentRow.Cells[0].Value;
-            //var languageIdCurrent = (int)customIntelliSenseDataGridView.CurrentRow.Cells[1].Value;
-            //var language = db.Languages.Where(v => v.ID == languageIdCurrent).FirstOrDefault();
-            //customIntelliSenseSingleRecord.comboBoxLanguageID.SelectedItem = language;
-
             customIntelliSenseSingleRecord.ShowDialog();
-
         }
     }
 }

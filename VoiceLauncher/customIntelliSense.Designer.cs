@@ -72,8 +72,8 @@ namespace VoiceLauncher
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).BeginInit();
             this.customIntelliSenseBindingNavigator.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
@@ -445,16 +445,16 @@ namespace VoiceLauncher
             this.categoriesToolStripMenuItem.Text = "&Categories";
             this.categoriesToolStripMenuItem.Click += new System.EventHandler(this.categoriesToolStripMenuItem_Click);
             // 
-            // languageBindingSource1
-            // 
-            this.languageBindingSource1.DataSource = typeof(VoiceLauncher.Models.Language);
-            // 
             // singleCustomIntelliSenseToolStripMenuItem
             // 
             this.singleCustomIntelliSenseToolStripMenuItem.Name = "singleCustomIntelliSenseToolStripMenuItem";
             this.singleCustomIntelliSenseToolStripMenuItem.Size = new System.Drawing.Size(158, 20);
             this.singleCustomIntelliSenseToolStripMenuItem.Text = "Single Custom &IntelliSense";
             this.singleCustomIntelliSenseToolStripMenuItem.Click += new System.EventHandler(this.singleCustomIntelliSenseToolStripMenuItem_Click);
+            // 
+            // languageBindingSource1
+            // 
+            this.languageBindingSource1.DataSource = typeof(VoiceLauncher.Models.Language);
             // 
             // customIntelliSense
             // 

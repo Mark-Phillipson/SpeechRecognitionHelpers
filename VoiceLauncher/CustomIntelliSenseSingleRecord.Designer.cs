@@ -54,7 +54,6 @@ namespace VoiceLauncher
             this.categoryIDComboBox = new System.Windows.Forms.ComboBox();
             this.command_TypeTextBox = new System.Windows.Forms.TextBox();
             this.display_ValueTextBox = new System.Windows.Forms.TextBox();
-            this.iDTextBox = new System.Windows.Forms.TextBox();
             this.languageIDComboBox = new System.Windows.Forms.ComboBox();
             this.remarksTextBox = new System.Windows.Forms.TextBox();
             this.sendKeys_ValueTextBox = new System.Windows.Forms.TextBox();
@@ -229,7 +228,6 @@ namespace VoiceLauncher
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
-            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -306,17 +304,6 @@ namespace VoiceLauncher
             this.display_ValueTextBox.Size = new System.Drawing.Size(571, 21);
             this.display_ValueTextBox.TabIndex = 5;
             // 
-            // iDTextBox
-            // 
-            this.iDTextBox.BackColor = System.Drawing.SystemColors.MenuText;
-            this.iDTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "ID", true));
-            this.iDTextBox.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.iDTextBox.ForeColor = System.Drawing.SystemColors.Window;
-            this.iDTextBox.Location = new System.Drawing.Point(109, 388);
-            this.iDTextBox.Name = "iDTextBox";
-            this.iDTextBox.Size = new System.Drawing.Size(571, 21);
-            this.iDTextBox.TabIndex = 13;
-            // 
             // languageIDComboBox
             // 
             this.languageIDComboBox.BackColor = System.Drawing.SystemColors.MenuText;
@@ -383,7 +370,6 @@ namespace VoiceLauncher
             this.Controls.Add(display_ValueLabel);
             this.Controls.Add(this.display_ValueTextBox);
             this.Controls.Add(iDLabel);
-            this.Controls.Add(this.iDTextBox);
             this.Controls.Add(languageIDLabel);
             this.Controls.Add(this.languageIDComboBox);
             this.Controls.Add(remarksLabel);
@@ -425,7 +411,6 @@ namespace VoiceLauncher
         private System.Windows.Forms.ComboBox categoryIDComboBox;
         private System.Windows.Forms.TextBox command_TypeTextBox;
         private System.Windows.Forms.TextBox display_ValueTextBox;
-        private System.Windows.Forms.TextBox iDTextBox;
         private System.Windows.Forms.ComboBox languageIDComboBox;
         private System.Windows.Forms.TextBox remarksTextBox;
         private System.Windows.Forms.TextBox sendKeys_ValueTextBox;
