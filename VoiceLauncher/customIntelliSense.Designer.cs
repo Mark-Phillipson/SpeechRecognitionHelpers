@@ -73,7 +73,9 @@ namespace VoiceLauncher
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.launchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).BeginInit();
             this.customIntelliSenseBindingNavigator.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
@@ -424,7 +426,9 @@ namespace VoiceLauncher
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem,
             this.categoriesToolStripMenuItem,
-            this.singleCustomIntelliSenseToolStripMenuItem});
+            this.singleCustomIntelliSenseToolStripMenuItem,
+            this.languagesToolStripMenuItem,
+            this.launchesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1200, 24);
@@ -452,9 +456,23 @@ namespace VoiceLauncher
             this.singleCustomIntelliSenseToolStripMenuItem.Text = "Single Custom &IntelliSense";
             this.singleCustomIntelliSenseToolStripMenuItem.Click += new System.EventHandler(this.singleCustomIntelliSenseToolStripMenuItem_Click);
             // 
+            // languagesToolStripMenuItem
+            // 
+            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
+            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
+            this.languagesToolStripMenuItem.Text = "&Languages";
+            this.languagesToolStripMenuItem.Click += new System.EventHandler(this.languagesToolStripMenuItem_Click);
+            // 
             // languageBindingSource1
             // 
             this.languageBindingSource1.DataSource = typeof(VoiceLauncher.Models.Language);
+            // 
+            // launchesToolStripMenuItem
+            // 
+            this.launchesToolStripMenuItem.Name = "launchesToolStripMenuItem";
+            this.launchesToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.launchesToolStripMenuItem.Text = "L&aunches";
+            this.launchesToolStripMenuItem.Click += new System.EventHandler(this.launchesToolStripMenuItem_Click);
             // 
             // customIntelliSense
             // 
@@ -532,5 +550,7 @@ namespace VoiceLauncher
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem categoriesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem singleCustomIntelliSenseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem languagesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem launchesToolStripMenuItem;
     }
 }

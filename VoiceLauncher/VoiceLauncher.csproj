@@ -80,6 +80,18 @@
     <Compile Include="CustomIntelliSenseSingleRecord.Designer.cs">
       <DependentUpon>CustomIntelliSenseSingleRecord.cs</DependentUpon>
     </Compile>
+    <Compile Include="LanguagesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LanguagesForm.Designer.cs">
+      <DependentUpon>LanguagesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LauncherForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LauncherForm.Designer.cs">
+      <DependentUpon>LauncherForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201905041003107_CreateDatabase.cs" />
     <Compile Include="Migrations\201905041003107_CreateDatabase.Designer.cs">
       <DependentUpon>201905041003107_CreateDatabase.cs</DependentUpon>
@@ -116,6 +128,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CustomIntelliSenseSingleRecord.resx">
       <DependentUpon>CustomIntelliSenseSingleRecord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LanguagesForm.resx">
+      <DependentUpon>LanguagesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LauncherForm.resx">
+      <DependentUpon>LauncherForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201905041003107_CreateDatabase.resx">
       <DependentUpon>201905041003107_CreateDatabase.cs</DependentUpon>

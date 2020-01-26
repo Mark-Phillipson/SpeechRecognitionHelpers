@@ -28,8 +28,8 @@ namespace VoiceLauncher
             if (args.Count() < 2)
             {
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
-                arguments = new string[] { args[0], "Add New", "Some new value" };
-                //arguments = new string[] { args[0], "Razor", "Snippet" };
+                //arguments = new string[] { args[0], "Add New", "Some new value" };
+                arguments = new string[] { args[0], "Razor", "Snippet" };
                 //arguments = new string[] { args[0], "Not Applicable", "Words" };
             }
             else
@@ -225,8 +225,8 @@ namespace VoiceLauncher
         {
             customIntelliSenseDataGridView.ClearSelection();
             int rowIndex = customIntelliSenseDataGridView.Rows.Count - 1;
-            customIntelliSenseDataGridView.Rows[rowIndex].Selected = true;
-            customIntelliSenseDataGridView.Rows[rowIndex].Cells[0].Selected = true;
+            //customIntelliSenseDataGridView.Rows[rowIndex].Selected = true;
+            customIntelliSenseDataGridView.Rows[rowIndex].Cells[1].Selected = true;
 
         }
 
@@ -330,6 +330,18 @@ namespace VoiceLauncher
             CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
             customIntelliSenseSingleRecord.CurrentId = (int)customIntelliSenseDataGridView.CurrentRow.Cells[0].Value;
             customIntelliSenseSingleRecord.ShowDialog();
+        }
+
+        private void languagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LanguagesForm languagesForm = new LanguagesForm();
+            languagesForm.ShowDialog();
+        }
+
+        private void launchesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LauncherForm launcherForm = new LauncherForm();
+            launcherForm.ShowDialog();
         }
     }
 }

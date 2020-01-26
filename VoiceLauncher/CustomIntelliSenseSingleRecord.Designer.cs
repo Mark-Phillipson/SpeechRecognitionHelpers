@@ -32,7 +32,6 @@ namespace VoiceLauncher
             System.Windows.Forms.Label categoryIDLabel;
             System.Windows.Forms.Label command_TypeLabel;
             System.Windows.Forms.Label display_ValueLabel;
-            System.Windows.Forms.Label iDLabel;
             System.Windows.Forms.Label languageIDLabel;
             System.Windows.Forms.Label remarksLabel;
             System.Windows.Forms.Label sendKeys_ValueLabel;
@@ -40,6 +39,7 @@ namespace VoiceLauncher
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomIntelliSenseSingleRecord));
             this.customIntelliSenseBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -58,11 +58,9 @@ namespace VoiceLauncher
             this.remarksTextBox = new System.Windows.Forms.TextBox();
             this.sendKeys_ValueTextBox = new System.Windows.Forms.TextBox();
             this.deliveryTypeComboBox = new System.Windows.Forms.ComboBox();
-            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             categoryIDLabel = new System.Windows.Forms.Label();
             command_TypeLabel = new System.Windows.Forms.Label();
             display_ValueLabel = new System.Windows.Forms.Label();
-            iDLabel = new System.Windows.Forms.Label();
             languageIDLabel = new System.Windows.Forms.Label();
             remarksLabel = new System.Windows.Forms.Label();
             sendKeys_ValueLabel = new System.Windows.Forms.Label();
@@ -98,15 +96,6 @@ namespace VoiceLauncher
             display_ValueLabel.Size = new System.Drawing.Size(71, 13);
             display_ValueLabel.TabIndex = 4;
             display_ValueLabel.Text = "Display &Value";
-            // 
-            // iDLabel
-            // 
-            iDLabel.AutoSize = true;
-            iDLabel.Location = new System.Drawing.Point(12, 395);
-            iDLabel.Name = "iDLabel";
-            iDLabel.Size = new System.Drawing.Size(21, 13);
-            iDLabel.TabIndex = 12;
-            iDLabel.Text = "ID:";
             // 
             // languageIDLabel
             // 
@@ -183,6 +172,10 @@ namespace VoiceLauncher
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(74, 22);
             this.bindingNavigatorAddNewItem.Text = "&Add new";
+            // 
+            // customIntelliSenseBindingSource
+            // 
+            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
             // 
             // bindingNavigatorCountItem
             // 
@@ -351,10 +344,6 @@ namespace VoiceLauncher
             this.deliveryTypeComboBox.Size = new System.Drawing.Size(203, 22);
             this.deliveryTypeComboBox.TabIndex = 11;
             // 
-            // customIntelliSenseBindingSource
-            // 
-            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
-            // 
             // CustomIntelliSenseSingleRecord
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -369,7 +358,6 @@ namespace VoiceLauncher
             this.Controls.Add(this.command_TypeTextBox);
             this.Controls.Add(display_ValueLabel);
             this.Controls.Add(this.display_ValueTextBox);
-            this.Controls.Add(iDLabel);
             this.Controls.Add(languageIDLabel);
             this.Controls.Add(this.languageIDComboBox);
             this.Controls.Add(remarksLabel);
