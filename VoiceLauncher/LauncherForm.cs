@@ -11,6 +11,7 @@ namespace VoiceLauncher
     public partial class LauncherForm : Form
     {
         readonly VoiceLauncherContext db;
+        public string SearchTerm { get; set; } = "";
         public LauncherForm()
         {
             InitializeComponent();
@@ -20,7 +21,14 @@ namespace VoiceLauncher
 
         private void LauncherForm_Load(object sender, EventArgs e)
         {
-            db.Launchers.OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
+            if (SearchTerm.Length > 0)
+            {
+                db.Launchers.Where(v => v.Name.Contains(SearchTerm)).OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
+            }
+            else
+            {
+                db.Launchers.OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
+            }
             db.Categories.Where(v => v.CategoryType == "Launch Applications").OrderBy(o => o.CategoryName).Load();
             ToolStripComboBox comboBox = this.toolStripComboBoxFilterByCategory;
             comboBox.ComboBox.DataSource = db.Categories.Local.ToBindingList();

@@ -27,6 +27,7 @@ namespace VoiceLauncher
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count() < 2)
             {
+                //arguments = new string[] { args[0], "Launcher", "Unknown", "Download" };
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
                 //arguments = new string[] { args[0], "Add New", "Some new value" };
                 arguments = new string[] { args[0], "Razor", "Snippet" };
@@ -36,7 +37,7 @@ namespace VoiceLauncher
             {
                 arguments = Environment.GetCommandLineArgs();
             }
-
+            //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} 3:{arguments[3]}");
             if (arguments[1].EndsWith("Add New") && arguments[2]?.Length > 0)
             {
                 CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
@@ -50,7 +51,15 @@ namespace VoiceLauncher
                 Application.Exit();
                 return;
             }
-            //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} 3:{arguments[3]}");
+            else if (arguments[1].EndsWith("Launcher") && arguments[2].EndsWith("Unknown"))
+            {
+                LauncherForm launcherForm = new LauncherForm();
+                launcherForm.SearchTerm = arguments[3].Replace("/", "").Trim();
+                launcherForm.ShowDialog();
+                Application.Exit();
+                return;
+            }
+
             if (arguments[1].ToLower().Contains("unknown") && arguments[2].ToLower().Contains("unknown"))
             {
                 searchTerm = arguments[3].Replace("/", "").Trim();

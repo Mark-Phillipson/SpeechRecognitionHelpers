@@ -74,8 +74,8 @@ namespace VoiceLauncher
             this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.launchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).BeginInit();
             this.customIntelliSenseBindingNavigator.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
@@ -463,16 +463,16 @@ namespace VoiceLauncher
             this.languagesToolStripMenuItem.Text = "&Languages";
             this.languagesToolStripMenuItem.Click += new System.EventHandler(this.languagesToolStripMenuItem_Click);
             // 
-            // languageBindingSource1
-            // 
-            this.languageBindingSource1.DataSource = typeof(VoiceLauncher.Models.Language);
-            // 
             // launchesToolStripMenuItem
             // 
             this.launchesToolStripMenuItem.Name = "launchesToolStripMenuItem";
             this.launchesToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
-            this.launchesToolStripMenuItem.Text = "L&aunches";
+            this.launchesToolStripMenuItem.Text = "La&unches";
             this.launchesToolStripMenuItem.Click += new System.EventHandler(this.launchesToolStripMenuItem_Click);
+            // 
+            // languageBindingSource1
+            // 
+            this.languageBindingSource1.DataSource = typeof(VoiceLauncher.Models.Language);
             // 
             // customIntelliSense
             // 

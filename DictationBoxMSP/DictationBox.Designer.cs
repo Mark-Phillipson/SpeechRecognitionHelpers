@@ -43,6 +43,7 @@ namespace DictationBoxMSP
             this.ReplaceButton = new System.Windows.Forms.Button();
             this.CopyOnlyButton = new System.Windows.Forms.Button();
             this.buttonFrontSize = new System.Windows.Forms.Button();
+            this.buttonPasteText = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // richTextBox1
@@ -228,12 +229,27 @@ namespace DictationBoxMSP
             this.buttonFrontSize.UseVisualStyleBackColor = false;
             this.buttonFrontSize.Click += new System.EventHandler(this.ButtonFrontSize_Click);
             // 
+            // buttonPasteText
+            // 
+            this.buttonPasteText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPasteText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonPasteText.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.buttonPasteText.Location = new System.Drawing.Point(1003, 283);
+            this.buttonPasteText.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonPasteText.Name = "buttonPasteText";
+            this.buttonPasteText.Size = new System.Drawing.Size(87, 34);
+            this.buttonPasteText.TabIndex = 14;
+            this.buttonPasteText.Text = "Paste Text";
+            this.buttonPasteText.UseVisualStyleBackColor = false;
+            this.buttonPasteText.Click += new System.EventHandler(this.buttonPasteText_Click);
+            // 
             // DictationBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(1093, 620);
+            this.Controls.Add(this.buttonPasteText);
             this.Controls.Add(this.buttonFrontSize);
             this.Controls.Add(this.CopyOnlyButton);
             this.Controls.Add(this.label2);
@@ -275,6 +291,7 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Button ReplaceButton;
         private System.Windows.Forms.Button CopyOnlyButton;
         private System.Windows.Forms.Button buttonFrontSize;
+        private System.Windows.Forms.Button buttonPasteText;
     }
 }
 

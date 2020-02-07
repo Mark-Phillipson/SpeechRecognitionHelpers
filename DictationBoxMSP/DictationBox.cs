@@ -192,12 +192,22 @@ namespace DictationBoxMSP
 
         private void DictationBoxForm_Load(object sender, EventArgs e)
         {
+            GetClipboardIntoTextbox();
+        }
+
+        private void GetClipboardIntoTextbox()
+        {
             if (Clipboard.ContainsText())
             {
                 this.richTextBox1.Text = Clipboard.GetText();
                 this.richTextBox1.SelectionStart = 0;
                 this.richTextBox1.SelectionLength = this.richTextBox1.TextLength;
             }
+        }
+
+        private void buttonPasteText_Click(object sender, EventArgs e)
+        {
+            GetClipboardIntoTextbox();
         }
     }
 }
