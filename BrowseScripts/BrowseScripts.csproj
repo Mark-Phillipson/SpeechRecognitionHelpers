@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BrowseScripts.ico" />
+    <Content Include="Publish\TextFile1.txt" />
     <None Include="Resources\BrowseScriptsLauncher.png" />
   </ItemGroup>
   <ItemGroup>
