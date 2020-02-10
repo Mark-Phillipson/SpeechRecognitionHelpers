@@ -385,5 +385,11 @@ namespace BrowseScripts
                 //Application.Exit();
             }
         }
+
+        private void buttonViewScript_Click(object sender, EventArgs e)
+        {
+            ExampleCallingScript form = new ExampleCallingScript();
+            form.ShowDialog();
+        }
     }
 }

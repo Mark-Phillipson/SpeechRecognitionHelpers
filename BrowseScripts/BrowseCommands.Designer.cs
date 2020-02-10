@@ -45,6 +45,7 @@ namespace BrowseScripts
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxListFilter = new System.Windows.Forms.TextBox();
             this.buttonExportCommand = new System.Windows.Forms.Button();
+            this.buttonViewScript = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).BeginInit();
@@ -145,7 +146,7 @@ namespace BrowseScripts
             this.textBoxType.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxType.Location = new System.Drawing.Point(881, 3);
             this.textBoxType.Name = "textBoxType";
-            this.textBoxType.Size = new System.Drawing.Size(353, 26);
+            this.textBoxType.Size = new System.Drawing.Size(200, 26);
             this.textBoxType.TabIndex = 7;
             // 
             // dataGridViewLists
@@ -227,11 +228,24 @@ namespace BrowseScripts
             this.buttonExportCommand.UseVisualStyleBackColor = true;
             this.buttonExportCommand.Click += new System.EventHandler(this.ButtonExportCommand_Click);
             // 
+            // buttonViewScript
+            // 
+            this.buttonViewScript.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonViewScript.Location = new System.Drawing.Point(1106, 3);
+            this.buttonViewScript.Name = "buttonViewScript";
+            this.buttonViewScript.Size = new System.Drawing.Size(142, 26);
+            this.buttonViewScript.TabIndex = 16;
+            this.buttonViewScript.TabStop = false;
+            this.buttonViewScript.Text = "View Calling Script";
+            this.buttonViewScript.UseVisualStyleBackColor = true;
+            this.buttonViewScript.Click += new System.EventHandler(this.buttonViewScript_Click);
+            // 
             // BrowseCommands
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1546, 802);
+            this.Controls.Add(this.buttonViewScript);
             this.Controls.Add(this.buttonExportCommand);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBoxListFilter);
@@ -280,6 +294,7 @@ namespace BrowseScripts
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxListFilter;
         private System.Windows.Forms.Button buttonExportCommand;
+        private System.Windows.Forms.Button buttonViewScript;
     }
 }
 
