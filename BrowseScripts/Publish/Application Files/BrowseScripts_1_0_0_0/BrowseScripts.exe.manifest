@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="BrowseScripts.exe" version="1.0.0.0" publicKeyToken="492a4540783a3224" language="neutral" processorArchitecture="msil" type="win32" />
+  <description asmv2:iconFile="BrowseScripts.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="BrowseScripts" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="BrowseScripts.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="BrowseScripts.exe" size="133568">
+      <assemblyIdentity name="BrowseScripts" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>FuPdkAxH/7C0259oJoGfRA81F+VGNmrbQI1EkBugif0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="BrowseScripts.exe.config" size="1022">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>84AG0FPPa/+o+T13LgveExTi1O0w1bU1geIJEgyJklI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="BrowseScripts.ico" size="77294">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>+8EX2DbdxlpXWgCWdyGgJqVZkHMgdezDEiHxDZcPUYg=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="Publish\TextFile1.txt" size="15">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>mq1nOil8YsRMXIv+bQddK+dcx9NH7ZrihlLY0Ddm3PE=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=SURFACEPRO\MPhil" issuerKeyHash="bd8f4a11676669f78fe5c338ffe0e7352a278686" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>/0c3RzRN+ZMrRPUjZxlBqGfPN538mGFzl3SA2U7aP2Y=</DigestValue></Reference></SignedInfo><SignatureValue>l/7FQvTuaWCJmyAmQOhQtaBvIrmMLDU7LRnQBsYyAqvr4HRaAFYU17uWvpDeL2MXX5eAkgC8dRJftYBXFSG5MIFjRYHXSQkD6yMHCJLRXi7kTm+lpsFRJO2wyCwXOsYbjUyOFCTELFYuhIfmD0uloUOcpLJPtgrJdu/FwkmqvdU=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>qmmF6MA941A0iQoiBubm9buA09DJXpDg6yPN26MJRe3zVvLvIslrfBF/Ci6cJe3W+/cF4sRn3+Q2gvYnOm7HjZ09LFqcREGeL+tQPxYpJffLrF6pj5Hx9VFpo8TVsOEur5AIDarJ0Mgf8TZTEpxy3Bb+8eHFjLRIBwPMErxSGKk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="663fda4ed9807497736198fc9d37cf67a841196723f5442b93f94d34473747ff" Description="" Url=""><as:assemblyIdentity name="BrowseScripts.exe" version="1.0.0.0" publicKeyToken="492a4540783a3224" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=SURFACEPRO\MPhil</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>0ieSQPsNhX6Tx9z4NHZ/zd+MmzoSAPvobBUQEMKzv20=</DigestValue></Reference></SignedInfo><SignatureValue>DVdv+nqJj8pV6a4wT9yNo2ZLYhvPsOHuhuueh74nTjp8Lblo0NhsSrjsHM8ISZV07ec8zkbCR70aZB6fdnTTWaOSCgRU4SnVMBGoEXxCK0Twq0CW4O2ISKvtmcfNQoXUYR+eGhFrHm56c27MawnK0y4ZpdFGUt++ROgfGSbo6PU=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>qmmF6MA941A0iQoiBubm9buA09DJXpDg6yPN26MJRe3zVvLvIslrfBF/Ci6cJe3W+/cF4sRn3+Q2gvYnOm7HjZ09LFqcREGeL+tQPxYpJffLrF6pj5Hx9VFpo8TVsOEur5AIDarJ0Mgf8TZTEpxy3Bb+8eHFjLRIBwPMErxSGKk=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB2TCCAUKgAwIBAgIQd6kDix24471CmpshbDCKgjANBgkqhkiG9w0BAQsFADArMSkwJwYDVQQDHiAAUwBVAFIARgBBAEMARQBQAFIATwBcAE0AUABoAGkAbDAeFw0yMDAyMTAxNTE3MzBaFw0yMTAyMDkyMTE3MzBaMCsxKTAnBgNVBAMeIABTAFUAUgBGAEEAQwBFAFAAUgBPAFwATQBQAGgAaQBsMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqaYXowD3jUDSJCiIG5ub1u4DT0MlekODrI83bowlF7fNW8u8iyWt8EX8KLpwl7db79wXixGff5DaC9ic6bseNnT0sWpxEQZ4v61A/Fikl98usXqmPkfH1UWmjxNWw4S6vkAgNqsnQyB/xNlMSnHLcFv7x4cWMtEgHA8wSvFIYqQIDAQABMA0GCSqGSIb3DQEBCwUAA4GBAGtnt6Zxi55T50yrf9tWTu3j6rRNxFi2348mjE2mUnuEbXWhuW2Q/GBSeQe8/qfHrUQvVODHlpcQnDK8AKiNbMjf1DQnAl8vIDcGbYBub2UpG1X60C47AcxxNxULw99urNsU8swhsGzNWOsDSgsHigRKvNEtvxsLnJbVghjepWeT</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
