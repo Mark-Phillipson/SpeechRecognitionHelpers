@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ExecuteCommands
@@ -13,10 +10,6 @@ namespace ExecuteCommands
         public void PerformCommand()
         {
             string[] arguments;
-            //foreach (var argument in arguments)
-            //{
-            //    MessageBox.Show(argument);
-            //}
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count() < 2)
             {
@@ -26,13 +19,20 @@ namespace ExecuteCommands
             else
             {
                 arguments = Environment.GetCommandLineArgs();
+                arguments[1] = arguments[1].Replace("/", "");
+                arguments[1] = arguments[1].Trim();
             }
             if (arguments[1].Contains("CloseFileExplorer"))
             {
-                CloseFileExplorer();
+                CloseAllProcesses();
                 Console.WriteLine("Close File Explorer Ran successfully. ");
             }
-            else if (arguments[1].Contains ("ShowDictationBox"))
+            else if (arguments[1] == "explorer" || arguments[1] == "excel" || arguments[1] == "winword" || arguments[1] == "msaccess")
+            {
+                CloseAllProcesses(arguments[1]);
+                Console.WriteLine($"Close all Processes of {arguments[1]} Ran successfully! ");
+            }
+            else if (arguments[1].Contains("ShowDictationBox"))
             {
                 ShowDictationBox();
                 Console.WriteLine("The Show Dictation Command ran successfully!");
@@ -50,10 +50,9 @@ namespace ExecuteCommands
             }
         }
 
-        private void CloseFileExplorer()
+        private void CloseAllProcesses(string processName = "explorer")
         {
-            //var test = Process.GetProcesses();
-            var processes = Process.GetProcessesByName("explorer");
+            var processes = Process.GetProcessesByName(processName);
             foreach (var process in processes)
             {
                 process.Kill();

@@ -51,9 +51,10 @@ namespace DictationBoxMSP
             this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.BackColor = System.Drawing.SystemColors.MenuText;
+            this.richTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.richTextBox1.Font = new System.Drawing.Font("Cascadia Code", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.richTextBox1.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.richTextBox1.ForeColor = System.Drawing.Color.White;
             this.richTextBox1.Location = new System.Drawing.Point(0, 1);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox1.Name = "richTextBox1";
@@ -64,8 +65,9 @@ namespace DictationBoxMSP
             // TransferButton
             // 
             this.TransferButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.TransferButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.TransferButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TransferButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.TransferButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.TransferButton.ForeColor = System.Drawing.Color.White;
             this.TransferButton.Location = new System.Drawing.Point(1003, 583);
             this.TransferButton.Margin = new System.Windows.Forms.Padding(4);
             this.TransferButton.Name = "TransferButton";
@@ -78,8 +80,9 @@ namespace DictationBoxMSP
             // CamelButton
             // 
             this.CamelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CamelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CamelButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.CamelButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.CamelButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.CamelButton.ForeColor = System.Drawing.Color.White;
             this.CamelButton.Location = new System.Drawing.Point(1003, 534);
             this.CamelButton.Margin = new System.Windows.Forms.Padding(4);
             this.CamelButton.Name = "CamelButton";
@@ -92,8 +95,9 @@ namespace DictationBoxMSP
             // VariableButton
             // 
             this.VariableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.VariableButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.VariableButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.VariableButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.VariableButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.VariableButton.ForeColor = System.Drawing.Color.White;
             this.VariableButton.Location = new System.Drawing.Point(1003, 485);
             this.VariableButton.Margin = new System.Windows.Forms.Padding(4);
             this.VariableButton.Name = "VariableButton";
@@ -106,8 +110,9 @@ namespace DictationBoxMSP
             // WindowButton
             // 
             this.WindowButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.WindowButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.WindowButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.WindowButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.WindowButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.WindowButton.ForeColor = System.Drawing.Color.White;
             this.WindowButton.Location = new System.Drawing.Point(1003, 436);
             this.WindowButton.Margin = new System.Windows.Forms.Padding(4);
             this.WindowButton.Name = "WindowButton";
@@ -120,8 +125,9 @@ namespace DictationBoxMSP
             // SearchButton
             // 
             this.SearchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SearchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SearchButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.SearchButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.SearchButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.SearchButton.ForeColor = System.Drawing.Color.White;
             this.SearchButton.Location = new System.Drawing.Point(1003, 387);
             this.SearchButton.Margin = new System.Windows.Forms.Padding(4);
             this.SearchButton.Name = "SearchButton";
@@ -134,8 +140,9 @@ namespace DictationBoxMSP
             // FindButton
             // 
             this.FindButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FindButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FindButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.FindButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.FindButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.FindButton.ForeColor = System.Drawing.Color.White;
             this.FindButton.Location = new System.Drawing.Point(1003, 63);
             this.FindButton.Margin = new System.Windows.Forms.Padding(4);
             this.FindButton.Name = "FindButton";
@@ -148,8 +155,9 @@ namespace DictationBoxMSP
             // FindtextBox
             // 
             this.FindtextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.FindtextBox.BackColor = System.Drawing.SystemColors.MenuText;
-            this.FindtextBox.ForeColor = System.Drawing.SystemColors.Window;
+            this.FindtextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.FindtextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FindtextBox.ForeColor = System.Drawing.Color.White;
             this.FindtextBox.Location = new System.Drawing.Point(1002, 30);
             this.FindtextBox.Name = "FindtextBox";
             this.FindtextBox.Size = new System.Drawing.Size(87, 26);
@@ -159,7 +167,9 @@ namespace DictationBoxMSP
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(1001, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 18);
@@ -170,7 +180,8 @@ namespace DictationBoxMSP
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            this.label2.ForeColor = System.Drawing.Color.White;
             this.label2.Location = new System.Drawing.Point(1002, 100);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(86, 18);
@@ -180,8 +191,9 @@ namespace DictationBoxMSP
             // ReplaceTextBox
             // 
             this.ReplaceTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ReplaceTextBox.BackColor = System.Drawing.SystemColors.MenuText;
-            this.ReplaceTextBox.ForeColor = System.Drawing.SystemColors.Window;
+            this.ReplaceTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.ReplaceTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ReplaceTextBox.ForeColor = System.Drawing.Color.White;
             this.ReplaceTextBox.Location = new System.Drawing.Point(1003, 122);
             this.ReplaceTextBox.Name = "ReplaceTextBox";
             this.ReplaceTextBox.Size = new System.Drawing.Size(87, 26);
@@ -190,8 +202,9 @@ namespace DictationBoxMSP
             // ReplaceButton
             // 
             this.ReplaceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ReplaceButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ReplaceButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ReplaceButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.ReplaceButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.ReplaceButton.ForeColor = System.Drawing.Color.White;
             this.ReplaceButton.Location = new System.Drawing.Point(1004, 155);
             this.ReplaceButton.Margin = new System.Windows.Forms.Padding(4);
             this.ReplaceButton.Name = "ReplaceButton";
@@ -204,8 +217,9 @@ namespace DictationBoxMSP
             // CopyOnlyButton
             // 
             this.CopyOnlyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.CopyOnlyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CopyOnlyButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.CopyOnlyButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.CopyOnlyButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.CopyOnlyButton.ForeColor = System.Drawing.Color.White;
             this.CopyOnlyButton.Location = new System.Drawing.Point(1003, 336);
             this.CopyOnlyButton.Margin = new System.Windows.Forms.Padding(4);
             this.CopyOnlyButton.Name = "CopyOnlyButton";
@@ -218,8 +232,9 @@ namespace DictationBoxMSP
             // buttonFrontSize
             // 
             this.buttonFrontSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonFrontSize.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonFrontSize.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.buttonFrontSize.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonFrontSize.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonFrontSize.ForeColor = System.Drawing.Color.White;
             this.buttonFrontSize.Location = new System.Drawing.Point(1003, 197);
             this.buttonFrontSize.Margin = new System.Windows.Forms.Padding(4);
             this.buttonFrontSize.Name = "buttonFrontSize";
@@ -232,8 +247,9 @@ namespace DictationBoxMSP
             // buttonPasteText
             // 
             this.buttonPasteText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonPasteText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonPasteText.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.buttonPasteText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonPasteText.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonPasteText.ForeColor = System.Drawing.Color.White;
             this.buttonPasteText.Location = new System.Drawing.Point(1003, 283);
             this.buttonPasteText.Margin = new System.Windows.Forms.Padding(4);
             this.buttonPasteText.Name = "buttonPasteText";
@@ -247,7 +263,7 @@ namespace DictationBoxMSP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.ClientSize = new System.Drawing.Size(1093, 620);
             this.Controls.Add(this.buttonPasteText);
             this.Controls.Add(this.buttonFrontSize);
@@ -265,6 +281,7 @@ namespace DictationBoxMSP
             this.Controls.Add(this.TransferButton);
             this.Controls.Add(this.richTextBox1);
             this.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ForeColor = System.Drawing.Color.White;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "DictationBoxForm";

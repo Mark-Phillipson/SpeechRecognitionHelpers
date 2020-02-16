@@ -1,12 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -31,12 +26,17 @@ namespace BrowseScripts
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            dataGridViewCommands.EnableHeadersVisualStyles = false;
+            dataGridViewCommand.EnableHeadersVisualStyles = false;
+            dataGridViewLists.EnableHeadersVisualStyles = false;
+            dataGridViewList.EnableHeadersVisualStyles = false;
+
             //int millisecondsDelay = Properties.Settings.Default.Delay;
             var filename = Properties.Settings.Default.LastFileOpened;
             if (!File.Exists(filename))
             {
                 filename = null;
-                using (OpenFileDialog openFileDialog= new OpenFileDialog())
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
                     openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Roaming\KnowBrainer\";
                     openFileDialog.Filter = "XML KnowBrainer Command Files (*.xml)|*.xml|All Files (*.*)|*.*";
@@ -71,9 +71,9 @@ namespace BrowseScripts
                 }
             }
             else
-                {
-                    Document = LoadXMLDocument(filename);
-                }
+            {
+                Document = LoadXMLDocument(filename);
+            }
             bindingSourceCommands.DataSource = dataSet;
             bindingSourceCommands.DataMember = "Commands";
             bindingSourceCommands.Sort = "scope ASC, moduleDescription ASC, windowTitle ASC";
@@ -85,7 +85,7 @@ namespace BrowseScripts
             dataGridViewCommands.Columns[0].HeaderText = "Scope";
             dataGridViewCommands.Columns[1].HeaderText = "Module";
             dataGridViewCommands.Columns[2].HeaderText = "Company";
-            dataGridViewCommands.Columns[2].Width=130;
+            dataGridViewCommands.Columns[2].Width = 130;
             dataGridViewCommands.Columns[3].HeaderText = "Module Description";
             dataGridViewCommands.Columns[4].HeaderText = "Window Title";
             dataGridViewCommands.Columns[4].Width = 70;
@@ -96,19 +96,19 @@ namespace BrowseScripts
             bindingSourceCommand.DataSource = dataSet;
             bindingSourceCommand.DataMember = "Command";
             bindingSourceCommand.Sort = "name";
-            
+
             dataGridViewCommand.AutoGenerateColumns = true;
             dataGridViewCommand.DataSource = bindingSourceCommand;
             dataGridViewCommand.Columns[0].HeaderText = "Description";
             dataGridViewCommand.Columns[0].Width = 90;
             dataGridViewCommand.Columns[1].HeaderText = "Name";
-            dataGridViewCommand.Columns[1].Width = 270;
+            dataGridViewCommand.Columns[1].Width = 305;
             dataGridViewCommand.Columns[2].HeaderText = "Group";
             dataGridViewCommand.Columns[2].Width = 200;
             dataGridViewCommand.Columns[3].HeaderText = "Enabled?";
             dataGridViewCommand.Columns[3].Width = 70;
             dataGridViewCommand.RowHeadersVisible = false;
-            var currentRow= bindingSourceCommands.Current;
+            var currentRow = bindingSourceCommands.Current;
             bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[0];
 
             BindingSourceContent.DataSource = dataSet;
@@ -116,7 +116,7 @@ namespace BrowseScripts
             currentRow = bindingSourceCommand.Current;
             BindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[1];
             currentRow = BindingSourceContent.Current;
-            if (currentRow!= null )
+            if (currentRow != null)
             {
                 textBoxContent.Text = ((DataRowView)currentRow).Row.ItemArray[1].ToString();
                 textBoxType.Text = ((DataRowView)currentRow).Row.ItemArray[0].ToString();
@@ -128,7 +128,7 @@ namespace BrowseScripts
             dataGridViewLists.DataSource = bindingSourceLists;
             dataGridViewLists.AutoResizeColumns();
             dataGridViewLists.Columns[0].HeaderText = "List Name";
-            dataGridViewLists.Columns[0].Width = 120;
+            dataGridViewLists.Columns[0].Width = 140;
             dataGridViewLists.RowHeadersVisible = false;
 
 
@@ -140,7 +140,7 @@ namespace BrowseScripts
 
             dataGridViewList.AutoResizeColumns();
             dataGridViewList.Columns[0].HeaderText = "List Values";
-            dataGridViewList.Columns[0].Width =   130;
+            dataGridViewList.Columns[0].Width = 140;
             string[] arguments;
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count() < 2)
@@ -173,9 +173,9 @@ namespace BrowseScripts
         private void TextBoxFilter_TextChanged(object sender, EventArgs e)
         {
             string filter;
-            if (textBoxFilter.Text!= null  && textBoxFilter.Text.Length>0)
+            if (textBoxFilter.Text != null && textBoxFilter.Text.Length > 0)
             {
-                filter= "scope Like '%" + textBoxFilter.Text + "%' or module Like '%" + textBoxFilter.Text + "%' " +
+                filter = "scope Like '%" + textBoxFilter.Text + "%' or module Like '%" + textBoxFilter.Text + "%' " +
                     " or company Like '%" + textBoxFilter.Text + "%' or moduleDescription Like '%" + textBoxFilter.Text + "%' " +
                     " or windowTitle Like '%" + textBoxFilter.Text + "%'";
                 bindingSourceCommands.Filter = filter;
@@ -190,10 +190,10 @@ namespace BrowseScripts
 
         private void DataGridViewCommands_SelectionChanged(object sender, EventArgs e)
         {
-            if (checkBoxFilterAll.Checked==false)
+            if (checkBoxFilterAll.Checked == false)
             {
                 var currentRow = bindingSourceCommands.Current;
-                if (currentRow!= null )
+                if (currentRow != null)
                 {
                     bindingSourceCommand.Filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
                 }
@@ -212,25 +212,25 @@ namespace BrowseScripts
                 return;
             }
             var currentRowDRV = (DataRowView)currentRow;
-            if (currentRowDRV== null || currentRowDRV.Row.ItemArray[2]?.ToString().Length==0)
+            if (currentRowDRV == null || currentRowDRV.Row.ItemArray[2]?.ToString().Length == 0)
             {
                 return;
             }
-                if (currentRow!= null)
+            if (currentRow != null)
             {
                 BindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[1];
                 FilterLists((DataRowView)currentRow);
             }
             currentRow = BindingSourceContent.Current;
-            if (currentRow!= null )
+            if (currentRow != null)
             {
                 textBoxContent.Text = ((DataRowView)currentRow).Row.ItemArray[1].ToString();
                 textBoxType.Text = ((DataRowView)currentRow).Row.ItemArray[0].ToString();
             }
-            if (checkBoxFilterAll.Checked==true)
+            if (checkBoxFilterAll.Checked == true)
             {
                 currentRow = bindingSourceCommand.Current;
-                if (currentRow!= null )
+                if (currentRow != null)
                 {
                     bindingSourceCommands.Filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[5];
                 }
@@ -239,22 +239,22 @@ namespace BrowseScripts
 
         private void FilterLists(DataRowView currentRow)
         {
-            if (currentRow.Row.ItemArray[2]?.ToString().Length==0)
+            if (currentRow.Row.ItemArray[2]?.ToString().Length == 0)
             {
                 return;
             }
-            var commandName =(string)((DataRowView)currentRow).Row.ItemArray[2];
+            var commandName = (string)((DataRowView)currentRow).Row.ItemArray[2];
             if (commandName.Contains("<") && commandName.Contains(">"))
             {
                 var filter = "";
                 var position1 = commandName.IndexOf("<");
                 var position2 = commandName.IndexOf(">");
                 var temporary = commandName;
-                while (position2>0)
+                while (position2 > 0)
                 {
                     var listName = temporary.Substring(position1 + 1, position2 - position1 - 1);
-                    filter = filter + (filter.Length>0?" Or ":"") + "name = '" + listName + "'";
-                    if (temporary.Length>position2+2)
+                    filter = filter + (filter.Length > 0 ? " Or " : "") + "name = '" + listName + "'";
+                    if (temporary.Length > position2 + 2)
                     {
                         temporary = temporary.Substring(position2 + 2);
                         position1 = temporary.IndexOf("<");
@@ -274,15 +274,15 @@ namespace BrowseScripts
         private void TextBoxCommandFilter_TextChanged(object sender, EventArgs e)
         {
             var filter = "";
-            if (textBoxCommandFilter.Text!= null  && textBoxCommandFilter.Text.Length>0)
+            if (textBoxCommandFilter.Text != null && textBoxCommandFilter.Text.Length > 0)
             {
-                if (checkBoxFilterAll.Checked==false)
+                if (checkBoxFilterAll.Checked == false)
                 {
                     var currentRow = bindingSourceCommands.Current;
                     if (currentRow != null)
                     {
                         filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
-                        filter =filter +  " And (description Like '%" + textBoxCommandFilter.Text + "%' or name Like '%" + textBoxCommandFilter.Text + "%' " +
+                        filter = filter + " And (description Like '%" + textBoxCommandFilter.Text + "%' or name Like '%" + textBoxCommandFilter.Text + "%' " +
                                                                 " or group Like '%" + textBoxCommandFilter.Text + "%')";
                         bindingSourceCommand.Filter = filter;
                     }
@@ -300,7 +300,7 @@ namespace BrowseScripts
                 var currentRow = bindingSourceCommands.Current;
                 if (currentRow != null)
                 {
-                    filter= "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
+                    filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
                     bindingSourceCommand.Filter = filter;
                 }
             }
@@ -309,7 +309,7 @@ namespace BrowseScripts
 
         private void CheckBoxFilterAll_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBoxFilterAll.Checked==true)
+            if (checkBoxFilterAll.Checked == true)
             {
                 textBoxFilter.Enabled = false;
                 textBoxCommandFilter.Focus();
@@ -339,7 +339,7 @@ namespace BrowseScripts
 
         private void TextBoxListFilter_TextChanged(object sender, EventArgs e)
         {
-            if (textBoxListFilter.Text!= null  && textBoxListFilter.Text.Length>0)
+            if (textBoxListFilter.Text != null && textBoxListFilter.Text.Length > 0)
             {
                 var filter = "name Like '%" + textBoxListFilter.Text + "%'";
                 bindingSourceLists.Filter = filter;
@@ -351,13 +351,13 @@ namespace BrowseScripts
             var currentRow = bindingSourceCommand.Current;
             if (currentRow != null)
             {
-                var description =((System.Data.DataRowView)currentRow).Row.ItemArray[0].ToString();
-                var command =((System.Data.DataRowView)currentRow).Row.ItemArray[2].ToString();
-                var group =((System.Data.DataRowView)currentRow).Row.ItemArray[3].ToString();
+                var description = ((System.Data.DataRowView)currentRow).Row.ItemArray[0].ToString();
+                var command = ((System.Data.DataRowView)currentRow).Row.ItemArray[2].ToString();
+                var group = ((System.Data.DataRowView)currentRow).Row.ItemArray[3].ToString();
                 currentRow = bindingSourceCommands.Current;
-                var scope =((System.Data.DataRowView)currentRow).Row.ItemArray[1].ToString();
-                var moduleDescription =((System.Data.DataRowView)currentRow).Row.ItemArray[4].ToString();
-                var windowTitle =((System.Data.DataRowView)currentRow).Row.ItemArray[5].ToString();
+                var scope = ((System.Data.DataRowView)currentRow).Row.ItemArray[1].ToString();
+                var moduleDescription = ((System.Data.DataRowView)currentRow).Row.ItemArray[4].ToString();
+                var windowTitle = ((System.Data.DataRowView)currentRow).Row.ItemArray[5].ToString();
                 var commandText = $"This command is used for {scope} {moduleDescription} {windowTitle} {Environment.NewLine}" +
                     $"The spoken command name is: '{command}' {description} {group}{Environment.NewLine}{Environment.NewLine}" +
                     $"The {textBoxType.Text} code is as follows:{Environment.NewLine}{Environment.NewLine}" +
@@ -390,6 +390,11 @@ namespace BrowseScripts
         {
             ExampleCallingScript form = new ExampleCallingScript();
             form.ShowDialog();
+        }
+
+        private void dataGridViewLists_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        {
+
         }
     }
 }
