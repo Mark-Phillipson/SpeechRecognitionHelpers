@@ -185,6 +185,7 @@ namespace VoiceLauncher
             cboBoxColumn.Items.Add("Send Keys");
             cboBoxColumn.Items.Add("Executed as Script");
             cboBoxColumn.Items.Add("Clipboard Only");
+            var textBox = (DataGridViewTextBoxColumn)customIntelliSenseDataGridView.Columns["dataGridViewTextBoxColumn4"];
 
             foreach (DataGridViewColumn column in customIntelliSenseDataGridView.Columns)
             {
@@ -351,6 +352,21 @@ namespace VoiceLauncher
         {
             LauncherForm launcherForm = new LauncherForm();
             launcherForm.ShowDialog();
+        }
+
+        private void customIntelliSenseDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (customIntelliSenseDataGridView.CurrentRow == null || customIntelliSenseDataGridView.CurrentRow.Cells == null)
+            {
+                return;
+            }
+            if (e.ColumnIndex == 4 && (int)customIntelliSenseDataGridView.CurrentRow.Cells[2].Value == 48)
+            {
+                if (e.Value != null)
+                {
+                    e.Value = new string('*', e.Value.ToString().Length);
+                }
+            }
         }
     }
 }

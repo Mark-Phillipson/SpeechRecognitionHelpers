@@ -168,7 +168,7 @@ namespace DictationBoxMSP
 
         private void CopyOnlyButton_Click(object sender, EventArgs e)
         {
-            if (richTextBox1?.Text != null)
+            if (richTextBox1?.Text != null && richTextBox1.Text.Length > 0)
             {
                 string text = richTextBox1.Text;
                 Clipboard.SetText(text);
@@ -193,6 +193,7 @@ namespace DictationBoxMSP
         private void DictationBoxForm_Load(object sender, EventArgs e)
         {
             GetClipboardIntoTextbox();
+
         }
 
         private void GetClipboardIntoTextbox()

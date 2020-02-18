@@ -308,6 +308,7 @@ namespace VoiceLauncher
             this.customIntelliSenseDataGridView.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
             this.customIntelliSenseDataGridView.Size = new System.Drawing.Size(1200, 436);
             this.customIntelliSenseDataGridView.TabIndex = 7;
+            this.customIntelliSenseDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.customIntelliSenseDataGridView_CellFormatting);
             this.customIntelliSenseDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.customIntelliSenseDataGridView_DataError);
             this.customIntelliSenseDataGridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.customIntelliSenseDataGridView_DefaultValuesNeeded);
             // 
