@@ -148,12 +148,23 @@ namespace BrowseScripts
                 //arguments = new string[] { args[0], "/Arrow" };
                 //checkBoxFilterAll.Checked = true;
                 //textBoxCommandFilter.Text = arguments[1].Substring(1);
+                checkBoxFilterAll.Checked = false;
+                textBoxFilter.Text = "Access";
+                textBoxCommandFilter.Text = "Import";
+
             }
-            else
+            else if (args.Count() == 2)
             {
                 arguments = Environment.GetCommandLineArgs();
                 checkBoxFilterAll.Checked = true;
                 textBoxCommandFilter.Text = arguments[1].Substring(1);
+            }
+            else
+            {
+                arguments = Environment.GetCommandLineArgs();
+                checkBoxFilterAll.Checked = false;
+                textBoxFilter.Text = arguments[1].Substring(1);
+                textBoxCommandFilter.Text = arguments[2].Substring(1);
             }
 
 

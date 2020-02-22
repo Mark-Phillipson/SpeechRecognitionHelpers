@@ -30,12 +30,15 @@ namespace VoiceLauncher
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(customIntelliSense));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.customIntelliSenseBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
-            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
@@ -54,6 +57,13 @@ namespace VoiceLauncher
             this.toolStripTextBoxFind = new System.Windows.Forms.ToolStripTextBox();
             this.Focus = new System.Windows.Forms.ToolStripButton();
             this.customIntelliSenseDataGridView = new System.Windows.Forms.DataGridView();
+            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.launchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -68,28 +78,22 @@ namespace VoiceLauncher
             this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.launchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).BeginInit();
             this.customIntelliSenseBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // customIntelliSenseBindingNavigator
             // 
             this.customIntelliSenseBindingNavigator.AddNewItem = this.bindingNavigatorAddNewItem;
-            this.customIntelliSenseBindingNavigator.BackColor = System.Drawing.Color.Navy;
+            this.customIntelliSenseBindingNavigator.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.customIntelliSenseBindingNavigator.BindingSource = this.customIntelliSenseBindingSource;
             this.customIntelliSenseBindingNavigator.CountItem = this.bindingNavigatorCountItem;
             this.customIntelliSenseBindingNavigator.DeleteItem = this.bindingNavigatorMoveFirstItem;
@@ -134,10 +138,6 @@ namespace VoiceLauncher
             this.bindingNavigatorAddNewItem.Text = "&Add New";
             this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
             // 
-            // customIntelliSenseBindingSource
-            // 
-            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
-            // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
@@ -171,7 +171,9 @@ namespace VoiceLauncher
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
+            this.bindingNavigatorPositionItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.bindingNavigatorPositionItem.ForeColor = System.Drawing.Color.White;
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -241,7 +243,10 @@ namespace VoiceLauncher
             // 
             // toolStripTextBoxSearch
             // 
+            this.toolStripTextBoxSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.toolStripTextBoxSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.toolStripTextBoxSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStripTextBoxSearch.ForeColor = System.Drawing.Color.White;
             this.toolStripTextBoxSearch.Name = "toolStripTextBoxSearch";
             this.toolStripTextBoxSearch.Size = new System.Drawing.Size(100, 25);
             this.toolStripTextBoxSearch.Leave += new System.EventHandler(this.toolStripTextBoxSearch_Leave);
@@ -255,7 +260,10 @@ namespace VoiceLauncher
             // 
             // toolStripTextBoxFind
             // 
+            this.toolStripTextBoxFind.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.toolStripTextBoxFind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.toolStripTextBoxFind.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStripTextBoxFind.ForeColor = System.Drawing.Color.White;
             this.toolStripTextBoxFind.Name = "toolStripTextBoxFind";
             this.toolStripTextBoxFind.Size = new System.Drawing.Size(100, 25);
             this.toolStripTextBoxFind.Leave += new System.EventHandler(this.toolStripTextBoxFind_Leave);
@@ -274,7 +282,22 @@ namespace VoiceLauncher
             // 
             // customIntelliSenseDataGridView
             // 
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Red;
+            this.customIntelliSenseDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.customIntelliSenseDataGridView.AutoGenerateColumns = false;
+            this.customIntelliSenseDataGridView.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Cascadia Code", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.customIntelliSenseDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.customIntelliSenseDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.customIntelliSenseDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn1,
@@ -291,18 +314,32 @@ namespace VoiceLauncher
             this.dataGridViewTextBoxColumn12,
             this.dataGridViewTextBoxColumn13});
             this.customIntelliSenseDataGridView.DataSource = this.customIntelliSenseBindingSource;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.customIntelliSenseDataGridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.customIntelliSenseDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.customIntelliSenseDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.customIntelliSenseDataGridView.Location = new System.Drawing.Point(0, 49);
             this.customIntelliSenseDataGridView.Name = "customIntelliSenseDataGridView";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.customIntelliSenseDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Cascadia Code", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Red;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.customIntelliSenseDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Red;
+            this.customIntelliSenseDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle7;
             this.customIntelliSenseDataGridView.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.Color.Black;
             this.customIntelliSenseDataGridView.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.customIntelliSenseDataGridView.RowTemplate.DefaultCellStyle.ForeColor = System.Drawing.Color.White;
@@ -311,6 +348,62 @@ namespace VoiceLauncher
             this.customIntelliSenseDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.customIntelliSenseDataGridView_CellFormatting);
             this.customIntelliSenseDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.customIntelliSenseDataGridView_DataError);
             this.customIntelliSenseDataGridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.customIntelliSenseDataGridView_DefaultValuesNeeded);
+            this.customIntelliSenseDataGridView.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.customIntelliSenseDataGridView_EditingControlShowing);
+            // 
+            // customIntelliSensesBindingSource
+            // 
+            this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
+            this.customIntelliSensesBindingSource.DataSource = this.languageBindingSource;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitToolStripMenuItem,
+            this.categoriesToolStripMenuItem,
+            this.singleCustomIntelliSenseToolStripMenuItem,
+            this.languagesToolStripMenuItem,
+            this.launchesToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1200, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // categoriesToolStripMenuItem
+            // 
+            this.categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
+            this.categoriesToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.categoriesToolStripMenuItem.Text = "&Categories";
+            this.categoriesToolStripMenuItem.Click += new System.EventHandler(this.categoriesToolStripMenuItem_Click);
+            // 
+            // singleCustomIntelliSenseToolStripMenuItem
+            // 
+            this.singleCustomIntelliSenseToolStripMenuItem.Name = "singleCustomIntelliSenseToolStripMenuItem";
+            this.singleCustomIntelliSenseToolStripMenuItem.Size = new System.Drawing.Size(160, 20);
+            this.singleCustomIntelliSenseToolStripMenuItem.Text = "Single Custom &IntelliSense";
+            this.singleCustomIntelliSenseToolStripMenuItem.Click += new System.EventHandler(this.singleCustomIntelliSenseToolStripMenuItem_Click);
+            // 
+            // languagesToolStripMenuItem
+            // 
+            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
+            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
+            this.languagesToolStripMenuItem.Text = "&Languages";
+            this.languagesToolStripMenuItem.Click += new System.EventHandler(this.languagesToolStripMenuItem_Click);
+            // 
+            // launchesToolStripMenuItem
+            // 
+            this.launchesToolStripMenuItem.Name = "launchesToolStripMenuItem";
+            this.launchesToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.launchesToolStripMenuItem.Text = "La&unches";
+            this.launchesToolStripMenuItem.Click += new System.EventHandler(this.launchesToolStripMenuItem_Click);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -322,12 +415,12 @@ namespace VoiceLauncher
             // 
             this.dataGridViewTextBoxColumn2.DataPropertyName = "LanguageID";
             this.dataGridViewTextBoxColumn2.DataSource = this.languageBindingSource;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Red;
+            this.dataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewTextBoxColumn2.DisplayMember = "LanguageName";
             this.dataGridViewTextBoxColumn2.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
             this.dataGridViewTextBoxColumn2.HeaderText = "Language";
@@ -343,12 +436,12 @@ namespace VoiceLauncher
             // dataGridViewTextBoxColumn6
             // 
             this.dataGridViewTextBoxColumn6.DataPropertyName = "CategoryID";
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewTextBoxColumn6.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewTextBoxColumn6.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewTextBoxColumn6.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
             this.dataGridViewTextBoxColumn6.HeaderText = "CategoryID";
             this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
@@ -417,59 +510,9 @@ namespace VoiceLauncher
             this.dataGridViewTextBoxColumn13.HeaderText = "Language";
             this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
             // 
-            // customIntelliSensesBindingSource
+            // customIntelliSenseBindingSource
             // 
-            this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
-            this.customIntelliSensesBindingSource.DataSource = this.languageBindingSource;
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem,
-            this.categoriesToolStripMenuItem,
-            this.singleCustomIntelliSenseToolStripMenuItem,
-            this.languagesToolStripMenuItem,
-            this.launchesToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1200, 24);
-            this.menuStrip1.TabIndex = 8;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
-            this.exitToolStripMenuItem.Text = "E&xit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
-            // categoriesToolStripMenuItem
-            // 
-            this.categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
-            this.categoriesToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
-            this.categoriesToolStripMenuItem.Text = "&Categories";
-            this.categoriesToolStripMenuItem.Click += new System.EventHandler(this.categoriesToolStripMenuItem_Click);
-            // 
-            // singleCustomIntelliSenseToolStripMenuItem
-            // 
-            this.singleCustomIntelliSenseToolStripMenuItem.Name = "singleCustomIntelliSenseToolStripMenuItem";
-            this.singleCustomIntelliSenseToolStripMenuItem.Size = new System.Drawing.Size(158, 20);
-            this.singleCustomIntelliSenseToolStripMenuItem.Text = "Single Custom &IntelliSense";
-            this.singleCustomIntelliSenseToolStripMenuItem.Click += new System.EventHandler(this.singleCustomIntelliSenseToolStripMenuItem_Click);
-            // 
-            // languagesToolStripMenuItem
-            // 
-            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
-            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
-            this.languagesToolStripMenuItem.Text = "&Languages";
-            this.languagesToolStripMenuItem.Click += new System.EventHandler(this.languagesToolStripMenuItem_Click);
-            // 
-            // launchesToolStripMenuItem
-            // 
-            this.launchesToolStripMenuItem.Name = "launchesToolStripMenuItem";
-            this.launchesToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
-            this.launchesToolStripMenuItem.Text = "La&unches";
-            this.launchesToolStripMenuItem.Click += new System.EventHandler(this.launchesToolStripMenuItem_Click);
+            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
             // 
             // languageBindingSource1
             // 
@@ -479,13 +522,13 @@ namespace VoiceLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.MidnightBlue;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.ClientSize = new System.Drawing.Size(1200, 485);
             this.Controls.Add(this.customIntelliSenseDataGridView);
             this.Controls.Add(this.customIntelliSenseBindingNavigator);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Cascadia Code", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -496,12 +539,12 @@ namespace VoiceLauncher
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).EndInit();
             this.customIntelliSenseBindingNavigator.ResumeLayout(false);
             this.customIntelliSenseBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -531,6 +574,15 @@ namespace VoiceLauncher
         private System.Windows.Forms.ToolStripButton toolStripButtonShowAll;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBoxSearch;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBoxFind;
+        private System.Windows.Forms.ToolStripButton Focus;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem categoriesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem singleCustomIntelliSenseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem languagesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem launchesToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewTextBoxColumn6;
@@ -544,14 +596,5 @@ namespace VoiceLauncher
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBoxFind;
-        private System.Windows.Forms.ToolStripButton Focus;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem categoriesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem singleCustomIntelliSenseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem languagesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem launchesToolStripMenuItem;
     }
 }
