@@ -62,6 +62,7 @@ namespace BrowseScripts
             this.textBoxListFilter = new System.Windows.Forms.TextBox();
             this.buttonExportCommand = new System.Windows.Forms.Button();
             this.buttonViewScript = new System.Windows.Forms.Button();
+            this.buttonOpenXmlFile = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).BeginInit();
@@ -97,7 +98,6 @@ namespace BrowseScripts
             this.dataGridViewCommands.GridColor = System.Drawing.Color.White;
             this.dataGridViewCommands.Location = new System.Drawing.Point(15, 43);
             this.dataGridViewCommands.Name = "dataGridViewCommands";
-            this.dataGridViewCommands.ReadOnly = true;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -142,7 +142,6 @@ namespace BrowseScripts
             this.dataGridViewCommand.GridColor = System.Drawing.Color.White;
             this.dataGridViewCommand.Location = new System.Drawing.Point(14, 414);
             this.dataGridViewCommand.Name = "dataGridViewCommand";
-            this.dataGridViewCommand.ReadOnly = true;
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             dataGridViewCellStyle9.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -160,6 +159,7 @@ namespace BrowseScripts
             this.dataGridViewCommand.Size = new System.Drawing.Size(709, 375);
             this.dataGridViewCommand.TabIndex = 11;
             this.dataGridViewCommand.SelectionChanged += new System.EventHandler(this.DataGridViewCommand_SelectionChanged);
+            this.dataGridViewCommand.DoubleClick += new System.EventHandler(this.dataGridViewCommand_DoubleClick);
             // 
             // textBoxFilter
             // 
@@ -167,7 +167,7 @@ namespace BrowseScripts
             this.textBoxFilter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxFilter.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxFilter.ForeColor = System.Drawing.Color.White;
-            this.textBoxFilter.Location = new System.Drawing.Point(157, 5);
+            this.textBoxFilter.Location = new System.Drawing.Point(170, 3);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(100, 26);
             this.textBoxFilter.TabIndex = 1;
@@ -179,7 +179,7 @@ namespace BrowseScripts
             this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.label1.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(12, 5);
+            this.label1.Location = new System.Drawing.Point(12, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(139, 18);
             this.label1.TabIndex = 0;
@@ -191,7 +191,7 @@ namespace BrowseScripts
             this.checkBoxFilterAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.checkBoxFilterAll.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBoxFilterAll.ForeColor = System.Drawing.Color.White;
-            this.checkBoxFilterAll.Location = new System.Drawing.Point(301, 5);
+            this.checkBoxFilterAll.Location = new System.Drawing.Point(289, 3);
             this.checkBoxFilterAll.Name = "checkBoxFilterAll";
             this.checkBoxFilterAll.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.checkBoxFilterAll.Size = new System.Drawing.Size(152, 22);
@@ -213,8 +213,9 @@ namespace BrowseScripts
             this.textBoxContent.Multiline = true;
             this.textBoxContent.Name = "textBoxContent";
             this.textBoxContent.ReadOnly = true;
-            this.textBoxContent.Size = new System.Drawing.Size(653, 747);
+            this.textBoxContent.Size = new System.Drawing.Size(653, 717);
             this.textBoxContent.TabIndex = 13;
+            this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
             // 
             // label2
             // 
@@ -222,7 +223,7 @@ namespace BrowseScripts
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.label2.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(459, 5);
+            this.label2.Location = new System.Drawing.Point(460, 3);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(107, 18);
             this.label2.TabIndex = 3;
@@ -234,7 +235,7 @@ namespace BrowseScripts
             this.textBoxCommandFilter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxCommandFilter.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxCommandFilter.ForeColor = System.Drawing.Color.White;
-            this.textBoxCommandFilter.Location = new System.Drawing.Point(601, 5);
+            this.textBoxCommandFilter.Location = new System.Drawing.Point(586, 3);
             this.textBoxCommandFilter.Name = "textBoxCommandFilter";
             this.textBoxCommandFilter.Size = new System.Drawing.Size(100, 26);
             this.textBoxCommandFilter.TabIndex = 4;
@@ -246,7 +247,7 @@ namespace BrowseScripts
             this.textBoxType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxType.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxType.ForeColor = System.Drawing.Color.White;
-            this.textBoxType.Location = new System.Drawing.Point(881, 5);
+            this.textBoxType.Location = new System.Drawing.Point(908, 3);
             this.textBoxType.Name = "textBoxType";
             this.textBoxType.Size = new System.Drawing.Size(200, 26);
             this.textBoxType.TabIndex = 7;
@@ -281,6 +282,7 @@ namespace BrowseScripts
             this.dataGridViewLists.TabIndex = 10;
             this.dataGridViewLists.SelectionChanged += new System.EventHandler(this.DataGridViewLists_SelectionChanged);
             this.dataGridViewLists.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridViewLists_UserDeletedRow);
+            this.dataGridViewLists.DoubleClick += new System.EventHandler(this.dataGridViewLists_DoubleClick);
             // 
             // dataGridViewList
             // 
@@ -305,7 +307,6 @@ namespace BrowseScripts
             this.dataGridViewList.GridColor = System.Drawing.Color.White;
             this.dataGridViewList.Location = new System.Drawing.Point(729, 414);
             this.dataGridViewList.Name = "dataGridViewList";
-            this.dataGridViewList.ReadOnly = true;
             dataGridViewCellStyle16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             dataGridViewCellStyle16.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle16.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
@@ -314,6 +315,7 @@ namespace BrowseScripts
             this.dataGridViewList.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.dataGridViewList.Size = new System.Drawing.Size(149, 375);
             this.dataGridViewList.TabIndex = 12;
+            this.dataGridViewList.DoubleClick += new System.EventHandler(this.dataGridViewList_DoubleClick);
             // 
             // buttonCopyCode
             // 
@@ -321,7 +323,7 @@ namespace BrowseScripts
             this.buttonCopyCode.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
             this.buttonCopyCode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCopyCode.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCopyCode.Location = new System.Drawing.Point(1439, 3);
+            this.buttonCopyCode.Location = new System.Drawing.Point(1437, 3);
             this.buttonCopyCode.Name = "buttonCopyCode";
             this.buttonCopyCode.Size = new System.Drawing.Size(95, 27);
             this.buttonCopyCode.TabIndex = 8;
@@ -345,7 +347,7 @@ namespace BrowseScripts
             this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.label3.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(707, 5);
+            this.label3.Location = new System.Drawing.Point(705, 3);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 18);
             this.label3.TabIndex = 5;
@@ -357,7 +359,7 @@ namespace BrowseScripts
             this.textBoxListFilter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxListFilter.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxListFilter.ForeColor = System.Drawing.Color.White;
-            this.textBoxListFilter.Location = new System.Drawing.Point(778, 5);
+            this.textBoxListFilter.Location = new System.Drawing.Point(789, 3);
             this.textBoxListFilter.Name = "textBoxListFilter";
             this.textBoxListFilter.Size = new System.Drawing.Size(100, 26);
             this.textBoxListFilter.TabIndex = 6;
@@ -369,7 +371,7 @@ namespace BrowseScripts
             this.buttonExportCommand.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
             this.buttonExportCommand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonExportCommand.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonExportCommand.Location = new System.Drawing.Point(1276, 3);
+            this.buttonExportCommand.Location = new System.Drawing.Point(1288, 3);
             this.buttonExportCommand.Name = "buttonExportCommand";
             this.buttonExportCommand.Size = new System.Drawing.Size(130, 27);
             this.buttonExportCommand.TabIndex = 15;
@@ -384,7 +386,7 @@ namespace BrowseScripts
             this.buttonViewScript.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
             this.buttonViewScript.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonViewScript.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonViewScript.Location = new System.Drawing.Point(1106, 3);
+            this.buttonViewScript.Location = new System.Drawing.Point(1127, 3);
             this.buttonViewScript.Name = "buttonViewScript";
             this.buttonViewScript.Size = new System.Drawing.Size(142, 27);
             this.buttonViewScript.TabIndex = 16;
@@ -393,12 +395,28 @@ namespace BrowseScripts
             this.buttonViewScript.UseVisualStyleBackColor = false;
             this.buttonViewScript.Click += new System.EventHandler(this.buttonViewScript_Click);
             // 
+            // buttonOpenXmlFile
+            // 
+            this.buttonOpenXmlFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonOpenXmlFile.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
+            this.buttonOpenXmlFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonOpenXmlFile.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonOpenXmlFile.Location = new System.Drawing.Point(881, 762);
+            this.buttonOpenXmlFile.Name = "buttonOpenXmlFile";
+            this.buttonOpenXmlFile.Size = new System.Drawing.Size(142, 27);
+            this.buttonOpenXmlFile.TabIndex = 17;
+            this.buttonOpenXmlFile.TabStop = false;
+            this.buttonOpenXmlFile.Text = "Open XML File";
+            this.buttonOpenXmlFile.UseVisualStyleBackColor = false;
+            this.buttonOpenXmlFile.Click += new System.EventHandler(this.buttonOpenXmlFile_Click);
+            // 
             // BrowseCommands
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.ClientSize = new System.Drawing.Size(1546, 802);
+            this.Controls.Add(this.buttonOpenXmlFile);
             this.Controls.Add(this.buttonViewScript);
             this.Controls.Add(this.buttonExportCommand);
             this.Controls.Add(this.label3);
@@ -452,6 +470,7 @@ namespace BrowseScripts
         private System.Windows.Forms.TextBox textBoxListFilter;
         private System.Windows.Forms.Button buttonExportCommand;
         private System.Windows.Forms.Button buttonViewScript;
+        private System.Windows.Forms.Button buttonOpenXmlFile;
     }
 }
 

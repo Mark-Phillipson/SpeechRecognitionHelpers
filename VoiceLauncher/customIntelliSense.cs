@@ -180,23 +180,27 @@ namespace VoiceLauncher
             cboBoxColumn.DisplayMember = "LanguageName";  // the Name property in Choice class
             cboBoxColumn.ValueMember = "ID";  // ditto for the Value property        }
             cboBoxColumn.DisplayStyleForCurrentCellOnly = true;
-            var style = new DataGridViewCellStyle() { BackColor = Color.Black, ForeColor = Color.White };
-
+            var style = new DataGridViewCellStyle() { BackColor = Color.Black, ForeColor = Color.White, SelectionBackColor = Color.Black, SelectionForeColor = Color.Red };
+            cboBoxColumn.DisplayStyleForCurrentCellOnly = false;
             cboBoxColumn.DefaultCellStyle = style;
+            cboBoxColumn.FlatStyle = FlatStyle.Popup;
+            cboBoxColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox;
             cboBoxColumn = (DataGridViewComboBoxColumn)customIntelliSenseDataGridView.Columns["dataGridViewTextBoxColumn6"];
             db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
             cboBoxColumn.DataSource = db.Categories.Local.ToBindingList();
             cboBoxColumn.DisplayMember = "CategoryName";
             cboBoxColumn.ValueMember = "ID";
-            cboBoxColumn.DisplayStyleForCurrentCellOnly = true;
-            cboBoxColumn.DefaultCellStyle = new DataGridViewCellStyle() { BackColor = Color.Black, ForeColor = Color.White };
+            cboBoxColumn.DisplayStyleForCurrentCellOnly = false;
+            cboBoxColumn.DefaultCellStyle = style;
+            cboBoxColumn.FlatStyle = FlatStyle.Popup;
             cboBoxColumn = (DataGridViewComboBoxColumn)customIntelliSenseDataGridView.Columns["dataGridViewTextBoxColumnDeliveryType"];
             cboBoxColumn.Items.Add("Copy and Paste");
             cboBoxColumn.Items.Add("Send Keys");
             cboBoxColumn.Items.Add("Executed as Script");
             cboBoxColumn.Items.Add("Clipboard Only");
-            cboBoxColumn.DisplayStyleForCurrentCellOnly = true;
-            cboBoxColumn.DefaultCellStyle = new DataGridViewCellStyle() { BackColor = Color.Black, ForeColor = Color.White };
+            cboBoxColumn.DisplayStyleForCurrentCellOnly = false;
+            cboBoxColumn.DefaultCellStyle = style;
+            cboBoxColumn.FlatStyle = FlatStyle.Popup;
             var textBox = (DataGridViewTextBoxColumn)customIntelliSenseDataGridView.Columns["dataGridViewTextBoxColumn4"];
 
             foreach (DataGridViewColumn column in customIntelliSenseDataGridView.Columns)
@@ -385,24 +389,24 @@ namespace VoiceLauncher
         private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             //((ComboBox)sender).BackColor = (Color)((ComboBox)sender).SelectedItem;
-            ((ComboBox)sender).BackColor = Color.Black;
-            ((ComboBox)sender).ForeColor = Color.White;
+            //((ComboBox)sender).BackColor = Color.Black;
+            //((ComboBox)sender).ForeColor = Color.White;
         }
 
         private void customIntelliSenseDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            ComboBox combo = e.Control as ComboBox;
-            if (combo != null)
-            {
-                // Remove an existing event-handler, if present, to avoid 
-                // adding multiple handlers when the editing control is reused.
-                combo.SelectedIndexChanged -=
-                    new EventHandler(ComboBox_SelectedIndexChanged);
+            //ComboBox combo = e.Control as ComboBox;
+            //if (combo != null)
+            //{
+            //    // Remove an existing event-handler, if present, to avoid 
+            //    // adding multiple handlers when the editing control is reused.
+            //    combo.SelectedIndexChanged -=
+            //        new EventHandler(ComboBox_SelectedIndexChanged);
 
-                // Add the event handler. 
-                combo.SelectedIndexChanged +=
-                    new EventHandler(ComboBox_SelectedIndexChanged);
-            }
+            //    // Add the event handler. 
+            //    combo.SelectedIndexChanged +=
+            //        new EventHandler(ComboBox_SelectedIndexChanged);
+            //}
 
         }
     }

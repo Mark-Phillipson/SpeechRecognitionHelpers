@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,7 +17,7 @@ namespace BrowseScripts
         readonly BindingSource bindingSourceLists = new BindingSource();
         readonly BindingSource bindingSourceList = new BindingSource();
         XDocument document;
-
+        string filename = "";
         public XDocument Document { get => document; set => document = value; }
 
         public BrowseCommands()
@@ -32,7 +33,7 @@ namespace BrowseScripts
             dataGridViewList.EnableHeadersVisualStyles = false;
 
             //int millisecondsDelay = Properties.Settings.Default.Delay;
-            var filename = Properties.Settings.Default.LastFileOpened;
+            filename = Properties.Settings.Default.LastFileOpened;
             if (!File.Exists(filename))
             {
                 filename = null;
@@ -92,7 +93,10 @@ namespace BrowseScripts
             dataGridViewCommands.Columns[5].HeaderText = "Window Class";
             dataGridViewCommands.Columns[5].Width = 70;
             dataGridViewCommands.RowHeadersVisible = false;
-
+            for (int i = 0; i < 6; i++)
+            {
+                dataGridViewCommands.Columns[i].ReadOnly = i != 1 ? true : false;
+            }
             bindingSourceCommand.DataSource = dataSet;
             bindingSourceCommand.DataMember = "Command";
             bindingSourceCommand.Sort = "name";
@@ -107,6 +111,11 @@ namespace BrowseScripts
             dataGridViewCommand.Columns[2].Width = 200;
             dataGridViewCommand.Columns[3].HeaderText = "Enabled?";
             dataGridViewCommand.Columns[3].Width = 70;
+            for (int i = 0; i < 4; i++)
+            {
+                dataGridViewCommand.Columns[i].ReadOnly = i != 1 ? true : false;
+            }
+
             dataGridViewCommand.RowHeadersVisible = false;
             var currentRow = bindingSourceCommands.Current;
             bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[0];
@@ -406,6 +415,67 @@ namespace BrowseScripts
         private void dataGridViewLists_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
 
+        }
+
+        private void dataGridViewList_DoubleClick(object sender, EventArgs e)
+        {
+            MaximiseControl(dataGridViewList);
+        }
+
+        private void MaximiseControl(DataGridView dataGridView)
+        {
+            if (dataGridView.Dock == DockStyle.Fill)
+            {
+                dataGridView.Dock = DockStyle.None;
+            }
+            else
+            {
+                dataGridView.Dock = DockStyle.Fill;
+                dataGridView.BringToFront();
+            }
+        }
+
+        private void dataGridViewCommands_DoubleClick(object sender, EventArgs e)
+        {
+            MaximiseControl(dataGridViewCommands);
+        }
+
+        private void dataGridViewCommand_DoubleClick(object sender, EventArgs e)
+        {
+            MaximiseControl(dataGridViewCommand);
+        }
+
+        private void dataGridViewLists_DoubleClick(object sender, EventArgs e)
+        {
+            MaximiseControl(dataGridViewLists);
+        }
+
+        private void textBoxContent_DoubleClick(object sender, EventArgs e)
+        {
+            if (textBoxContent.Dock == DockStyle.Fill)
+            {
+                textBoxContent.Dock = DockStyle.None;
+            }
+            else
+            {
+                textBoxContent.Dock = DockStyle.Fill;
+                textBoxContent.BringToFront();
+            }
+        }
+
+        private void buttonOpenXmlFile_Click(object sender, EventArgs e)
+        {
+            if (filename.Length > 0 && File.Exists(filename))
+            {
+                try
+                {
+                    Process.Start(filename);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message, "Exception!", MessageBoxButtons.OK);
+                }
+            }
         }
     }
 }
