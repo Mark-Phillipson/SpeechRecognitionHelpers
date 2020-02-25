@@ -1,5 +1,7 @@
 # Various Speech Recognition Helper Projects
 
+# Custom Dictation Box
+
 Fast dictation box for normal dictation and converting to variable names and camel case.
 
 A fairly simple Windows Forms C# application that includes:
@@ -11,6 +13,7 @@ A fairly simple Windows Forms C# application that includes:
 * Convert the current dictation to a variable i.e. capitalising each word and remove spaces
 * Convert the current dictation to camel case i.e. similar to Variable except the first character is always lowercase
 * Maximise the dictation box and the controls will resize accordingly
+* Has the ability to toggle between two different font sizes, depending on what you are dictating.
 
 For speed best to call from a DVC Script for example:
 
@@ -28,3 +31,4 @@ This Windows forms application will load the KnowBrainer XML script file and giv
 
 https://github.com/Mark-Phillipson/DragonScripts/wiki/Browse-KnowBrainer-Scripts  
 
+ 
