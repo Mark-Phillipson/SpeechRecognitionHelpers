@@ -31,4 +31,6 @@ This Windows forms application will load the KnowBrainer XML script file and giv
 
 https://github.com/Mark-Phillipson/DragonScripts/wiki/Browse-KnowBrainer-Scripts  
 
- 
+# Custom IntelliSense
+
+https://github.com/Mark-Phillipson/DragonScripts/wiki/Custom-IntelliSense
