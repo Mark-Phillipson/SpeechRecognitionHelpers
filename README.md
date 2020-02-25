@@ -22,3 +22,9 @@ For speed best to call from a DVC Script for example:
 
 `SendSystemKeys "{Ctrl+a}"`
 
+# Browse Scripts
+
+This Windows forms application will load the KnowBrainer XML script file and give you the ability to filter by a search term, thus showing a particular script, including the list values and even the code. Please see the following link for more info.
+
+https://github.com/Mark-Phillipson/DragonScripts/wiki/Browse-KnowBrainer-Scripts  
+
