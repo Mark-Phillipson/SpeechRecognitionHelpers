@@ -37,25 +37,33 @@ https://github.com/Mark-Phillipson/DragonScripts/wiki/Custom-IntelliSense
 
 The idea with the Custom IntelliSense is is to provide the following functionality:
 
-Be available everywhere by voice, not just in an IDE
-Call up in a variety of ways:
+* Be available everywhere by voice, not just in an IDE
 
-Language Category - will show a list matching the language and category.
+* Call up in a variety of ways:
 
-Language Category Name - if this matches an existing record in the Custom IntelliSense, it will run the command.
+* Language Category - will show a list matching the language and category.
 
-Show List <SearchTerm> - will show a list of all records that contain the search term, regardless of the language of category.
+* Language Category Name - if this matches an existing record in the Custom IntelliSense, it will run the command.
 
-When a list is shown on the screen, have the ability to say edit list, thereby providing the ability to edit on-the-fly.
+
+* Show List <SearchTerm> - will show a list of all records that contain the search term, regardless of the language of category.
+
+
+* When a list is shown on the screen, have the ability to say edit list, thereby providing the ability to edit on-the-fly.
 
 Each record can have different types as follows:
 
-Send Keys
-Copy and Paste
-Copy Only
-Run as Dragon Advanced Script command
+
+* Send Keys
+
+* Copy and Paste
+
+* Copy Only
+
+* Run as Dragon Advanced Script command
 
 Mainly the first two are used.
+
 
 # Video Demos
 
