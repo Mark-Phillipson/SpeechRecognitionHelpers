@@ -67,6 +67,7 @@ Mainly the first two are used.
 
 # Video Demos
 
-To view some of the functionality in action on Twitch please click the link:
+To view some of the functionality in action on Twitch or YouTube please click the links:
 
 https://www.twitch.tv/marcusvoiceprogrammer/videos
+https://www.youtube.com/channel/UCagNNvjqAX003KNIANSkGXA
