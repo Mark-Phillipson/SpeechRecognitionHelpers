@@ -46,7 +46,7 @@ The idea with the Custom IntelliSense is is to provide the following functionali
 * Language Category Name - if this matches an existing record in the Custom IntelliSense, it will run the command.
 
 
-* Show List <SearchTerm> - will show a list of all records that contain the search term, regardless of the language or category.
+* Show List (SearchTerm) - will show a list of all records that contain the search term, regardless of the language or category.
 
 
 * When a list is shown on the screen, have the ability to say edit list, thereby providing the ability to edit on-the-fly.
