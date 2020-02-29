@@ -69,4 +69,4 @@ Mainly the first two are used.
 
 To view some of the functionality in action on Twitch please click the link:
 
-https://www.twitch.tv/marcusvoiceprogrammer
+https://www.twitch.tv/marcusvoiceprogrammer/videos
