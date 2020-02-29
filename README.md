@@ -34,3 +34,7 @@ https://github.com/Mark-Phillipson/DragonScripts/wiki/Browse-KnowBrainer-Scripts
 # Custom IntelliSense
 
 https://github.com/Mark-Phillipson/DragonScripts/wiki/Custom-IntelliSense
+
+To view some of the functionality in action please click the link:
+
+https://www.twitch.tv/marcusvoiceprogrammer
