@@ -38,17 +38,11 @@ https://github.com/Mark-Phillipson/DragonScripts/wiki/Custom-IntelliSense
 The idea with the Custom IntelliSense is is to provide the following functionality:
 
 * Be available everywhere by voice, not just in an IDE
-
 * Call up in a variety of ways:
-
 * Language Category - will show a list matching the language and category.
-
 * Language Category Name - if this matches an existing record in the Custom IntelliSense, it will run the command.
-
-
+* When the voice command for example (Category) Words (Name) Comments is issued, this will run the command directly.
 * Show List (SearchTerm) - will show a list of all records that contain the search term, regardless of the language or category.
-
-
 * When a list is shown on the screen, have the ability to say edit list, thereby providing the ability to edit on-the-fly.
 
 Each record can have different types as follows:
@@ -69,11 +63,8 @@ Mainly the first two are used.
 The idea of Voice Launcher is to provide the following functionality:
 
 * Provide away by voice to open a predefined application or file on your computer.
-
 * When the voice command Launcher (Category) is issued show a list of the launcher items matching the category. Then by issuing a command from the list the item will be launched.
-
 * When the voice command Show Launcher (SearchTerm)is issued show a list of launch items regardless of the category that contain the search term in the name.
-
 * When the voice command Edit List is issued, provide the ability to edit the launcher commands on the fly as it were.
 
 In addition to the above there is also the Multiple Launcher command, that can be preset to launch a subset of applications/files/folders that may be required at certain times.
