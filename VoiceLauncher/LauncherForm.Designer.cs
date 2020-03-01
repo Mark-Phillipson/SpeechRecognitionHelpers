@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LauncherForm));
             this.launcherBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -45,19 +46,18 @@
             this.launcherBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
-            this.launcherDataGridView = new System.Windows.Forms.DataGridView();
-            this.toolStripComboBoxFilterByCategory = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripComboBoxFilterByCategory = new System.Windows.Forms.ToolStripComboBox();
+            this.launcherDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewComboBoxColumn4 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataGridViewComboBoxColumn5 = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).BeginInit();
             this.launcherBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // launcherBindingNavigator
@@ -103,6 +103,10 @@
             this.bindingNavigatorAddNewItem.Text = "&Add New";
             this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
             // 
+            // launcherBindingSource
+            // 
+            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
+            // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
@@ -146,7 +150,6 @@
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
-            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -196,10 +199,22 @@
             // 
             // toolStripTextBoxSearch
             // 
-            this.toolStripTextBoxSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toolStripTextBoxSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.toolStripTextBoxSearch.Name = "toolStripTextBoxSearch";
             this.toolStripTextBoxSearch.Size = new System.Drawing.Size(100, 25);
             this.toolStripTextBoxSearch.Leave += new System.EventHandler(this.toolStripTextBoxSearch_Leave);
+            // 
+            // toolStripLabel2
+            // 
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(100, 22);
+            this.toolStripLabel2.Text = "&Filter by Category";
+            // 
+            // toolStripComboBoxFilterByCategory
+            // 
+            this.toolStripComboBoxFilterByCategory.Name = "toolStripComboBoxFilterByCategory";
+            this.toolStripComboBoxFilterByCategory.Size = new System.Drawing.Size(121, 25);
+            this.toolStripComboBoxFilterByCategory.Leave += new System.EventHandler(this.toolStripComboBoxFilterByCategory_Leave);
             // 
             // launcherDataGridView
             // 
@@ -219,18 +234,6 @@
             this.launcherDataGridView.TabIndex = 1;
             this.launcherDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.launcherDataGridView_DataError);
             this.launcherDataGridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.launcherDataGridView_DefaultValuesNeeded);
-            // 
-            // toolStripComboBoxFilterByCategory
-            // 
-            this.toolStripComboBoxFilterByCategory.Name = "toolStripComboBoxFilterByCategory";
-            this.toolStripComboBoxFilterByCategory.Size = new System.Drawing.Size(121, 25);
-            this.toolStripComboBoxFilterByCategory.Leave += new System.EventHandler(this.toolStripComboBoxFilterByCategory_Leave);
-            // 
-            // toolStripLabel2
-            // 
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(100, 22);
-            this.toolStripLabel2.Text = "&Filter by Category";
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -267,10 +270,6 @@
             this.dataGridViewComboBoxColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewComboBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
-            // launcherBindingSource
-            // 
-            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
-            // 
             // LauncherForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -284,8 +283,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).EndInit();
             this.launcherBindingNavigator.ResumeLayout(false);
             this.launcherBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

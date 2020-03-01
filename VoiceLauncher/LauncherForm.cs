@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using VoiceLauncher.Models;
@@ -12,6 +13,7 @@ namespace VoiceLauncher
     {
         readonly VoiceLauncherContext db;
         public string SearchTerm { get; set; } = "";
+        public string CategoryFilter { get; set; } = "";
         public LauncherForm()
         {
             InitializeComponent();
@@ -21,9 +23,34 @@ namespace VoiceLauncher
 
         private void LauncherForm_Load(object sender, EventArgs e)
         {
+            this.BackColor = Color.Black;
+            this.ForeColor = Color.White;
+            launcherBindingNavigator.BackColor = Color.Black;
+            launcherBindingNavigator.ForeColor = Color.White;
+            launcherDataGridView.EnableHeadersVisualStyles = false;
+            launcherDataGridView.BackgroundColor = Color.Black;
+            launcherDataGridView.ForeColor = Color.White;
+            bindingNavigatorPositionItem.BackColor = Color.Black;
+            bindingNavigatorPositionItem.ForeColor = Color.White;
+            toolStripComboBoxFilterByCategory.BackColor = Color.Black;
+            toolStripComboBoxFilterByCategory.ForeColor = Color.White;
+
+            toolStripTextBoxSearch.BackColor = Color.Black;
+            toolStripTextBoxSearch.ForeColor = Color.White;
+
+            var style = new DataGridViewCellStyle
+            { BackColor = Color.Black, ForeColor = Color.White };
+            launcherDataGridView.DefaultCellStyle = style;
+            launcherDataGridView.RowHeadersDefaultCellStyle = style;
+            launcherDataGridView.RowsDefaultCellStyle = style;
+            launcherDataGridView.ColumnHeadersDefaultCellStyle= style;
             if (SearchTerm.Length > 0)
             {
                 db.Launchers.Where(v => v.Name.Contains(SearchTerm)).OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
+            }
+            else if (CategoryFilter.Length > 0)
+            {
+                db.Launchers.Where(v => v.Category.CategoryName.Contains(CategoryFilter)).OrderBy(v => v.Name).Load();
             }
             else
             {
@@ -39,11 +66,22 @@ namespace VoiceLauncher
             cboBoxColumn.DataSource = db.Categories.Local.ToBindingList();
             cboBoxColumn.DisplayMember = "CategoryName";
             cboBoxColumn.ValueMember = "ID";
+            style = new DataGridViewCellStyle() { BackColor = Color.Black, ForeColor = Color.White, SelectionBackColor = Color.Black, SelectionForeColor = Color.Red };
+            cboBoxColumn.DisplayStyleForCurrentCellOnly = false;
+            cboBoxColumn.DefaultCellStyle = style;
+            cboBoxColumn.FlatStyle = FlatStyle.Popup;
+            cboBoxColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox;
+
             cboBoxColumn = (DataGridViewComboBoxColumn)launcherDataGridView.Columns[4];
             db.Computers.OrderBy(v => v.ComputerName).Load();
             cboBoxColumn.DataSource = db.Computers.Local.ToBindingList();
             cboBoxColumn.DisplayMember = "ComputerName";
             cboBoxColumn.ValueMember = "ID";
+            cboBoxColumn.DisplayStyleForCurrentCellOnly = false;
+            cboBoxColumn.DefaultCellStyle = style;
+            cboBoxColumn.FlatStyle = FlatStyle.Popup;
+            cboBoxColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.ComboBox;
+
             foreach (DataGridViewColumn column in launcherDataGridView.Columns)
             {
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;

@@ -32,9 +32,11 @@ namespace VoiceLauncher
             if (args.Count() < 2)
             {
                 //arguments = new string[] { args[0], "Launcher", "Unknown", "Download" };
+                //strCommandLine =    strCommandLine & " "  & Chr(34)  & "/ " &  "Launcher" & CHR(34)  & " " & Chr(34) &   " / " &  ListVar1  & Chr(34) & " " & Chr(34) &   " / " &  "Unknown"  & Chr(34)
+                arguments = new string[] { args[0], "Launcher", "Access Projects", "Unknown" };
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
                 //arguments = new string[] { args[0], "Add New", "Some new value" };
-                arguments = new string[] { args[0], "Razor", "Snippet" };
+                //arguments = new string[] { args[0], "Razor", "Snippet" };
                 //arguments = new string[] { args[0], "Not Applicable", "Words" };
             }
             else
@@ -52,6 +54,7 @@ namespace VoiceLauncher
                 var categoryId = db.Categories.Where(v => v.CategoryName == "Words").FirstOrDefault()?.ID;
                 customIntelliSenseSingleRecord.CategoryId = categoryId;
                 customIntelliSenseSingleRecord.ShowDialog();
+                this.Visible = false;
                 Application.Exit();
                 return;
             }
@@ -60,6 +63,16 @@ namespace VoiceLauncher
                 LauncherForm launcherForm = new LauncherForm();
                 launcherForm.SearchTerm = arguments[3].Replace("/", "").Trim();
                 launcherForm.ShowDialog();
+                this.Visible = false;
+                Application.Exit();
+                return;
+            }
+            else if (arguments[1].EndsWith("Launcher") && arguments[3].EndsWith("Unknown"))
+            {
+                LauncherForm launcherForm = new LauncherForm();
+                launcherForm.CategoryFilter = arguments[2].Replace("/", "").Trim();
+                launcherForm.ShowDialog();
+                this.Visible = false;
                 Application.Exit();
                 return;
             }
@@ -179,7 +192,6 @@ namespace VoiceLauncher
             cboBoxColumn.DataSource = db.Languages.Local.ToBindingList();
             cboBoxColumn.DisplayMember = "LanguageName";  // the Name property in Choice class
             cboBoxColumn.ValueMember = "ID";  // ditto for the Value property        }
-            cboBoxColumn.DisplayStyleForCurrentCellOnly = true;
             var style = new DataGridViewCellStyle() { BackColor = Color.Black, ForeColor = Color.White, SelectionBackColor = Color.Black, SelectionForeColor = Color.Red };
             cboBoxColumn.DisplayStyleForCurrentCellOnly = false;
             cboBoxColumn.DefaultCellStyle = style;
