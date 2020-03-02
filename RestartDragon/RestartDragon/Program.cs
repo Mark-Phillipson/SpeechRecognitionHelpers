@@ -38,6 +38,8 @@ namespace RestartDragon
             KillAllProcesses(name);
             name = "KBPro";
             KillAllProcesses(name);
+            name="ProcHandler";
+            KillAllProcesses(name);
             try
             {
                 Process process = new Process();
