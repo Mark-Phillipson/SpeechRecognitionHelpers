@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RestartDragon
@@ -17,7 +15,7 @@ namespace RestartDragon
         public static extern IntPtr FindWindow(string lpClassName,
             string lpWindowName);
 
-        // Activate an application window.
+        // Activate an application window 06/03/2020 07:52
         [DllImport("USER32.DLL")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
@@ -30,15 +28,15 @@ namespace RestartDragon
 
         static void Main(string[] args)
         {
-            var name = "natspeak";
+            var name = "nsbrowse";
             KillAllProcesses(name);
             name = "dragonbar";
             KillAllProcesses(name);
-            name = "nsbrowse";
+            name = "natspeak";
+            KillAllProcesses(name);
+            name = "ProcHandler";
             KillAllProcesses(name);
             name = "KBPro";
-            KillAllProcesses(name);
-            name="ProcHandler";
             KillAllProcesses(name);
             try
             {
@@ -67,13 +65,10 @@ namespace RestartDragon
             }
             catch (Exception exception)
             {
-                //Dispatcher.Invoke(() =>
-                //{
-                //    _logText.Text += $"An error has occurred: {exception.Message}";
-                //});
+                MessageBox.Show(exception.Message);
             }
 
-             void SendKeysCustom(string applicationClass, string applicationCaption, List<string> keys, string processName, string applicationToLaunch = "", int delay = 0)
+            void SendKeysCustom(string applicationClass, string applicationCaption, List<string> keys, string processName, string applicationToLaunch = "", int delay = 0)
             {
                 // Get a handle to the application. The window class
                 // and window name can be obtained using the Spy++ tool.

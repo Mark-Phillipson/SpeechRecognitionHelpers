@@ -10,13 +10,13 @@ using VoiceLauncher.Models;
 
 namespace VoiceLauncher
 {
-    public partial class customIntelliSense : Form
+    public partial class CustomIntelliSenseForm : Form
     {
         private VoiceLauncherContext db;
-        private int categoryId = 39;
-        private int languageId = 1;
-        private string searchTerm = null;
-        public customIntelliSense()
+        public int? LanguageId { get; internal set; } = 1;
+        public int? CategoryId { get; internal set; } = 39;
+        public string SearchTerm { get; set; }
+        public CustomIntelliSenseForm()
         {
             InitializeComponent();
             db = new VoiceLauncherContext();
@@ -27,79 +27,6 @@ namespace VoiceLauncher
             menuStrip1.BackColor = Color.Black;
             menuStrip1.ForeColor = Color.White;
             customIntelliSenseDataGridView.EnableHeadersVisualStyles = false;
-            string[] arguments;
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Count() < 2)
-            {
-                //arguments = new string[] { args[0], "Launcher", "Unknown", "Download" };
-                //strCommandLine =    strCommandLine & " "  & Chr(34)  & "/ " &  "Launcher" & CHR(34)  & " " & Chr(34) &   " / " &  ListVar1  & Chr(34) & " " & Chr(34) &   " / " &  "Unknown"  & Chr(34)
-                arguments = new string[] { args[0], "Launcher", "Access Projects", "Unknown" };
-                //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
-                //arguments = new string[] { args[0], "Add New", "Some new value" };
-                //arguments = new string[] { args[0], "Razor", "Snippet" };
-                //arguments = new string[] { args[0], "Not Applicable", "Words" };
-            }
-            else
-            {
-                arguments = Environment.GetCommandLineArgs();
-            }
-            //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} 3:{arguments[3]}");
-            if (arguments[1].EndsWith("Add New") && arguments[2]?.Length > 0)
-            {
-                CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
-                customIntelliSenseSingleRecord.CurrentId = (int)0;
-                customIntelliSenseSingleRecord.DefaultValueToSend = arguments[2].Replace("/", "").Trim();
-                var languageId = db.Languages.Where(v => v.LanguageName == "Not Applicable").FirstOrDefault()?.ID;
-                customIntelliSenseSingleRecord.LanguageId = languageId;
-                var categoryId = db.Categories.Where(v => v.CategoryName == "Words").FirstOrDefault()?.ID;
-                customIntelliSenseSingleRecord.CategoryId = categoryId;
-                customIntelliSenseSingleRecord.ShowDialog();
-                this.Visible = false;
-                Application.Exit();
-                return;
-            }
-            else if (arguments[1].EndsWith("Launcher") && arguments[2].EndsWith("Unknown"))
-            {
-                LauncherForm launcherForm = new LauncherForm();
-                launcherForm.SearchTerm = arguments[3].Replace("/", "").Trim();
-                launcherForm.ShowDialog();
-                this.Visible = false;
-                Application.Exit();
-                return;
-            }
-            else if (arguments[1].EndsWith("Launcher") && arguments[3].EndsWith("Unknown"))
-            {
-                LauncherForm launcherForm = new LauncherForm();
-                launcherForm.CategoryFilter = arguments[2].Replace("/", "").Trim();
-                launcherForm.ShowDialog();
-                this.Visible = false;
-                Application.Exit();
-                return;
-            }
-
-            if (arguments[1].ToLower().Contains("unknown") && arguments[2].ToLower().Contains("unknown"))
-            {
-                searchTerm = arguments[3].Replace("/", "").Trim();
-                this.Text = $"Custom IntelliSense Search Term: {searchTerm}";
-            }
-            else
-            {
-                string languageName = arguments[1].Replace("/", "").Trim();
-                Language language = db.Languages.Where(v => v.LanguageName == languageName).FirstOrDefault();
-                if (language == null)
-                {
-                    throw (new Exception($" Language not found in commandline argument {arguments[1]}"));
-                }
-                languageId = language.ID;
-                string categoryName = arguments[2].Replace("/", "").Trim();
-                Category category = db.Categories.Where(v => v.CategoryName == categoryName).FirstOrDefault();
-                if (category == null)
-                {
-                    throw (new Exception($" the Category not found in commandline argument {arguments[2]}"));
-                }
-                categoryId = category.ID;
-                this.Text = $"Custom IntelliSense {language.LanguageName} {category.CategoryName}";
-            }
             SetDataSourceForGrid();
             db.Configuration.ProxyCreationEnabled = false;
             customIntelliSenseDataGridView.Columns[2].HeaderText = "Category";
@@ -116,13 +43,13 @@ namespace VoiceLauncher
             {
                 db.CustomIntelliSenses.OrderBy(v => v.Language.LanguageName).ThenBy(v => v.Category.CategoryName).ThenBy(o => o.Display_Value).Load();
             }
-            else if (searchTerm != null)
+            else if (SearchTerm != null)
             {
-                db.CustomIntelliSenses.Where(v => v.Display_Value.ToLower().Contains(searchTerm.ToLower())).Load();
+                db.CustomIntelliSenses.Where(v => v.Display_Value.ToLower().Contains(SearchTerm.ToLower())).Load();
             }
             else
             {
-                db.CustomIntelliSenses.Where(v => v.Category.ID == categoryId && v.Language.ID == languageId).OrderBy(o => o.Display_Value).Load();
+                db.CustomIntelliSenses.Where(v => v.Category.ID == CategoryId && v.Language.ID == LanguageId).OrderBy(o => o.Display_Value).Load();
             }
             this.customIntelliSenseBindingSource.DataSource = db.CustomIntelliSenses.Local
                 .ToBindingList();
@@ -270,8 +197,8 @@ namespace VoiceLauncher
 
         private void customIntelliSenseDataGridView_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
-            e.Row.Cells["dataGridViewTextBoxColumn1"].Value = languageId;
-            e.Row.Cells["dataGridViewTextBoxColumn6"].Value = categoryId;
+            e.Row.Cells["dataGridViewTextBoxColumn1"].Value = LanguageId;
+            e.Row.Cells["dataGridViewTextBoxColumn6"].Value = CategoryId;
             e.Row.Cells["dataGridViewTextBoxColumnDeliveryType"].Value = "Send Keys";
 
         }
