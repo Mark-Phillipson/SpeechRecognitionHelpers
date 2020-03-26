@@ -31,6 +31,8 @@ namespace BrowseScripts
             dataGridViewCommand.EnableHeadersVisualStyles = false;
             dataGridViewLists.EnableHeadersVisualStyles = false;
             dataGridViewList.EnableHeadersVisualStyles = false;
+            dataGridViewLists.Visible = false;
+            dataGridViewList.Visible = false;
 
             //int millisecondsDelay = Properties.Settings.Default.Delay;
             filename = Properties.Settings.Default.LastFileOpened;
@@ -120,6 +122,14 @@ namespace BrowseScripts
             var currentRow = bindingSourceCommands.Current;
             bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[0];
 
+            listViewCommandsAvailable.Visible = false;
+            listViewCommandsAvailable.View = View.Tile;
+            listViewCommandsAvailable.Columns.Add("Name", 90);
+            listViewCommandsAvailable.ForeColor = System.Drawing.Color.White;
+            listViewCommandsAvailable.BackColor = System.Drawing.Color.Black;
+            listViewCommandsAvailable.Font = new System.Drawing.Font("Cascadia Code", 11, System.Drawing.FontStyle.Bold);
+
+            SetUpTiles(currentRow);
             BindingSourceContent.DataSource = dataSet;
             BindingSourceContent.DataMember = "Content";
             currentRow = bindingSourceCommand.Current;
@@ -141,6 +151,8 @@ namespace BrowseScripts
             dataGridViewLists.RowHeadersVisible = false;
 
 
+
+
             bindingSourceList.DataSource = dataSet;
             bindingSourceList.DataMember = "value";
             dataGridViewList.AutoGenerateColumns = true;
@@ -152,15 +164,11 @@ namespace BrowseScripts
             dataGridViewList.Columns[0].Width = 140;
             string[] arguments;
             string[] args = Environment.GetCommandLineArgs();
-            if (args.Count() < 2)
+            if (args.Count() < 2)// I.e. no commandline arguments
             {
-                //arguments = new string[] { args[0], "/Arrow" };
-                //checkBoxFilterAll.Checked = true;
-                //textBoxCommandFilter.Text = arguments[1].Substring(1);
                 checkBoxFilterAll.Checked = false;
                 textBoxFilter.Text = "Access";
                 textBoxCommandFilter.Text = "Import";
-
             }
             else if (args.Count() == 2)
             {
@@ -175,8 +183,25 @@ namespace BrowseScripts
                 textBoxFilter.Text = arguments[1].Substring(1);
                 textBoxCommandFilter.Text = arguments[2].Substring(1);
             }
+        }
 
+        private void SetUpTiles(object currentRow)
+        {
+            listViewCommandsAvailable.Clear();
 
+            DataView dataView = new DataView(dataSet.Tables["Command"]);
+            dataView.Sort = "Name ASC";
+            ListViewItem listViewItem;
+            var commandId = ((DataRowView)currentRow).Row.ItemArray[0].ToString();
+            //MessageBox.Show(commandId);
+            foreach (DataRowView rowView in dataView)
+            {
+                if (rowView["Commands_ID"].ToString() == commandId)
+                {
+                    listViewItem = new ListViewItem(new string[] { rowView["Name"].ToString() });
+                    listViewCommandsAvailable.Items.Add(listViewItem);
+                }
+            }
         }
 
         private XDocument LoadXMLDocument(string filename)
@@ -199,6 +224,7 @@ namespace BrowseScripts
                     " or company Like '%" + textBoxFilter.Text + "%' or moduleDescription Like '%" + textBoxFilter.Text + "%' " +
                     " or windowTitle Like '%" + textBoxFilter.Text + "%'";
                 bindingSourceCommands.Filter = filter;
+                SetUpTiles(bindingSourceCommands.Current);
             }
             else
             {
@@ -259,6 +285,8 @@ namespace BrowseScripts
 
         private void FilterLists(DataRowView currentRow)
         {
+            dataGridViewLists.Visible = false;
+            dataGridViewList.Visible = false;
             if (currentRow.Row.ItemArray[2]?.ToString().Length == 0)
             {
                 return;
@@ -287,6 +315,11 @@ namespace BrowseScripts
                     }
                 }
                 bindingSourceLists.Filter = filter;
+                if (bindingSourceLists.List.Count > 0)
+                {
+                    dataGridViewLists.Visible = true;
+                    dataGridViewList.Visible = true;
+                }
             }
 
         }
@@ -306,6 +339,7 @@ namespace BrowseScripts
                                                                 " or group Like '%" + textBoxCommandFilter.Text + "%')";
                         bindingSourceCommand.Filter = filter;
                     }
+                    SetUpTiles(currentRow);
                 }
                 else
                 {
@@ -476,6 +510,23 @@ namespace BrowseScripts
                     MessageBox.Show(exception.Message, "Exception!", MessageBoxButtons.OK);
                 }
             }
+        }
+
+        private void listViewCommandsAvailable_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (listViewCommandsAvailable.Dock == DockStyle.Fill)
+            {
+                listViewCommandsAvailable.Dock = DockStyle.None;
+                listViewCommandsAvailable.Visible = false;
+            }
+        }
+
+        private void buttonCommandsAvailable_Click(object sender, EventArgs e)
+        {
+            SetUpTiles(bindingSourceCommands.Current);
+            listViewCommandsAvailable.Dock = DockStyle.Fill;
+            listViewCommandsAvailable.Visible = true;
+            listViewCommandsAvailable.BringToFront();
         }
     }
 }

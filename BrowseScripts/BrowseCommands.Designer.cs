@@ -63,6 +63,8 @@ namespace BrowseScripts
             this.buttonExportCommand = new System.Windows.Forms.Button();
             this.buttonViewScript = new System.Windows.Forms.Button();
             this.buttonOpenXmlFile = new System.Windows.Forms.Button();
+            this.listViewCommandsAvailable = new System.Windows.Forms.ListView();
+            this.buttonCommandsAvailable = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).BeginInit();
@@ -213,7 +215,7 @@ namespace BrowseScripts
             this.textBoxContent.Multiline = true;
             this.textBoxContent.Name = "textBoxContent";
             this.textBoxContent.ReadOnly = true;
-            this.textBoxContent.Size = new System.Drawing.Size(653, 717);
+            this.textBoxContent.Size = new System.Drawing.Size(657, 717);
             this.textBoxContent.TabIndex = 13;
             this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
             // 
@@ -410,12 +412,39 @@ namespace BrowseScripts
             this.buttonOpenXmlFile.UseVisualStyleBackColor = false;
             this.buttonOpenXmlFile.Click += new System.EventHandler(this.buttonOpenXmlFile_Click);
             // 
+            // listViewCommandsAvailable
+            // 
+            this.listViewCommandsAvailable.HideSelection = false;
+            this.listViewCommandsAvailable.Location = new System.Drawing.Point(1540, 43);
+            this.listViewCommandsAvailable.Name = "listViewCommandsAvailable";
+            this.listViewCommandsAvailable.Size = new System.Drawing.Size(3, 698);
+            this.listViewCommandsAvailable.TabIndex = 18;
+            this.listViewCommandsAvailable.UseCompatibleStateImageBehavior = false;
+            this.listViewCommandsAvailable.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewCommandsAvailable_MouseDoubleClick);
+            // 
+            // buttonCommandsAvailable
+            // 
+            this.buttonCommandsAvailable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonCommandsAvailable.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
+            this.buttonCommandsAvailable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonCommandsAvailable.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCommandsAvailable.Location = new System.Drawing.Point(1027, 762);
+            this.buttonCommandsAvailable.Name = "buttonCommandsAvailable";
+            this.buttonCommandsAvailable.Size = new System.Drawing.Size(155, 27);
+            this.buttonCommandsAvailable.TabIndex = 19;
+            this.buttonCommandsAvailable.TabStop = false;
+            this.buttonCommandsAvailable.Text = "Commands Available";
+            this.buttonCommandsAvailable.UseVisualStyleBackColor = false;
+            this.buttonCommandsAvailable.Click += new System.EventHandler(this.buttonCommandsAvailable_Click);
+            // 
             // BrowseCommands
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.ClientSize = new System.Drawing.Size(1546, 802);
+            this.Controls.Add(this.buttonCommandsAvailable);
+            this.Controls.Add(this.listViewCommandsAvailable);
             this.Controls.Add(this.buttonOpenXmlFile);
             this.Controls.Add(this.buttonViewScript);
             this.Controls.Add(this.buttonExportCommand);
@@ -471,6 +500,8 @@ namespace BrowseScripts
         private System.Windows.Forms.Button buttonExportCommand;
         private System.Windows.Forms.Button buttonViewScript;
         private System.Windows.Forms.Button buttonOpenXmlFile;
+        private System.Windows.Forms.ListView listViewCommandsAvailable;
+        private System.Windows.Forms.Button buttonCommandsAvailable;
     }
 }
 
