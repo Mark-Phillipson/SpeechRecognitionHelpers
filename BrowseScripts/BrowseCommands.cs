@@ -82,14 +82,15 @@ namespace BrowseScripts
             bindingSourceCommands.Sort = "scope ASC, moduleDescription ASC, windowTitle ASC";
             dataGridViewCommands.AutoGenerateColumns = true;
             dataGridViewCommands.DataSource = bindingSourceCommands;
-            dataGridViewCommands.AutoResizeColumns();
+            //dataGridViewCommands.AutoResizeColumns();
             dataGridViewCommands.AllowUserToAddRows = false;
             dataGridViewCommands.AllowUserToDeleteRows = false;
             dataGridViewCommands.Columns[0].HeaderText = "Scope";
             dataGridViewCommands.Columns[1].HeaderText = "Module";
             dataGridViewCommands.Columns[2].HeaderText = "Company";
-            dataGridViewCommands.Columns[2].Width = 130;
+            dataGridViewCommands.Columns[2].Width = 140;
             dataGridViewCommands.Columns[3].HeaderText = "Module Description";
+            dataGridViewCommands.Columns[3].Width = 140;
             dataGridViewCommands.Columns[4].HeaderText = "Window Title";
             dataGridViewCommands.Columns[4].Width = 70;
             dataGridViewCommands.Columns[5].HeaderText = "Window Class";
@@ -123,11 +124,11 @@ namespace BrowseScripts
             bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[0];
 
             listViewCommandsAvailable.Visible = false;
-            listViewCommandsAvailable.View = View.Tile;
-            listViewCommandsAvailable.Columns.Add("Name", 90);
+            listViewCommandsAvailable.View = View.List;
+            listViewCommandsAvailable.Columns.Add("Name", 400);
             listViewCommandsAvailable.ForeColor = System.Drawing.Color.White;
             listViewCommandsAvailable.BackColor = System.Drawing.Color.Black;
-            listViewCommandsAvailable.Font = new System.Drawing.Font("Cascadia Code", 11, System.Drawing.FontStyle.Bold);
+            listViewCommandsAvailable.Font = new System.Drawing.Font("Cascadia Code", 9, System.Drawing.FontStyle.Bold);
 
             SetUpTiles(currentRow);
             BindingSourceContent.DataSource = dataSet;
@@ -167,8 +168,8 @@ namespace BrowseScripts
             if (args.Count() < 2)// I.e. no commandline arguments
             {
                 checkBoxFilterAll.Checked = false;
-                textBoxFilter.Text = "Access";
-                textBoxCommandFilter.Text = "Import";
+                textBoxFilter.Text = "global";
+                textBoxCommandFilter.Text = "move";
             }
             else if (args.Count() == 2)
             {
@@ -327,38 +328,55 @@ namespace BrowseScripts
         private void TextBoxCommandFilter_TextChanged(object sender, EventArgs e)
         {
             var filter = "";
-            if (textBoxCommandFilter.Text != null && textBoxCommandFilter.Text.Length > 0)
+            if (listViewCommandsAvailable.Visible == true && textBoxCommandFilter.Text != null && textBoxCommandFilter.Text.Length > 0)
             {
-                if (checkBoxFilterAll.Checked == false)
+                ListViewItem foundItem = listViewCommandsAvailable.FindItemWithText(textBoxCommandFilter.Text, false, 0, true);
+                if (foundItem != null)
                 {
-                    var currentRow = bindingSourceCommands.Current;
-                    if (currentRow != null)
+                    listViewCommandsAvailable.TopItem = foundItem;
+                    foreach (ListViewItem item in listViewCommandsAvailable.Items)
                     {
-                        filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
-                        filter = filter + " And (description Like '%" + textBoxCommandFilter.Text + "%' or name Like '%" + textBoxCommandFilter.Text + "%' " +
-                                                                " or group Like '%" + textBoxCommandFilter.Text + "%')";
-                        bindingSourceCommand.Filter = filter;
+                        item.Selected = false;
                     }
-                    SetUpTiles(currentRow);
-                }
-                else
-                {
-                    filter = "description Like '%" + textBoxCommandFilter.Text + "%' or name Like '%" + textBoxCommandFilter.Text + "%' " +
-                                        " or group Like '%" + textBoxCommandFilter.Text + "%'";
-                    bindingSourceCommand.Filter = filter;
+                    listViewCommandsAvailable.Items[foundItem.Index].Focused = true;
+                    listViewCommandsAvailable.Items[foundItem.Index].Selected = true;
                 }
             }
             else
             {
-                bindingSourceCommand.Filter = "";
-                var currentRow = bindingSourceCommands.Current;
-                if (currentRow != null)
+                if (textBoxCommandFilter.Text != null && textBoxCommandFilter.Text.Length > 0)
                 {
-                    filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
-                    bindingSourceCommand.Filter = filter;
+                    if (checkBoxFilterAll.Checked == false)
+                    {
+                        var currentRow = bindingSourceCommands.Current;
+                        if (currentRow != null)
+                        {
+                            filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
+                            filter = filter + " And (description Like '%" + textBoxCommandFilter.Text + "%' or name Like '%" + textBoxCommandFilter.Text + "%' " +
+                                                                    " or group Like '%" + textBoxCommandFilter.Text + "%')";
+                            bindingSourceCommand.Filter = filter;
+                        }
+                        SetUpTiles(currentRow);
+                    }
+                    else
+                    {
+                        filter = "description Like '%" + textBoxCommandFilter.Text + "%' or name Like '%" + textBoxCommandFilter.Text + "%' " +
+                                            " or group Like '%" + textBoxCommandFilter.Text + "%'";
+                        bindingSourceCommand.Filter = filter;
+                    }
                 }
+                else
+                {
+                    bindingSourceCommand.Filter = "";
+                    var currentRow = bindingSourceCommands.Current;
+                    if (currentRow != null)
+                    {
+                        filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[0];
+                        bindingSourceCommand.Filter = filter;
+                    }
+                }
+                textBoxFilterValue.Text = filter;
             }
-            textBoxFilterValue.Text = filter;
         }
 
         private void CheckBoxFilterAll_CheckedChanged(object sender, EventArgs e)

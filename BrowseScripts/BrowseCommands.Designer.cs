@@ -65,10 +65,16 @@ namespace BrowseScripts
             this.buttonOpenXmlFile = new System.Windows.Forms.Button();
             this.listViewCommandsAvailable = new System.Windows.Forms.ListView();
             this.buttonCommandsAvailable = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewList)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridViewCommands
@@ -98,7 +104,7 @@ namespace BrowseScripts
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridViewCommands.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewCommands.GridColor = System.Drawing.Color.White;
-            this.dataGridViewCommands.Location = new System.Drawing.Point(15, 43);
+            this.dataGridViewCommands.Location = new System.Drawing.Point(9, 0);
             this.dataGridViewCommands.Name = "dataGridViewCommands";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
@@ -114,7 +120,7 @@ namespace BrowseScripts
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.Red;
             this.dataGridViewCommands.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridViewCommands.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridViewCommands.Size = new System.Drawing.Size(709, 365);
+            this.dataGridViewCommands.Size = new System.Drawing.Size(709, 362);
             this.dataGridViewCommands.TabIndex = 9;
             this.dataGridViewCommands.SelectionChanged += new System.EventHandler(this.DataGridViewCommands_SelectionChanged);
             // 
@@ -142,7 +148,7 @@ namespace BrowseScripts
             dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridViewCommand.DefaultCellStyle = dataGridViewCellStyle8;
             this.dataGridViewCommand.GridColor = System.Drawing.Color.White;
-            this.dataGridViewCommand.Location = new System.Drawing.Point(14, 414);
+            this.dataGridViewCommand.Location = new System.Drawing.Point(9, 371);
             this.dataGridViewCommand.Name = "dataGridViewCommand";
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
@@ -204,18 +210,16 @@ namespace BrowseScripts
             // 
             // textBoxContent
             // 
-            this.textBoxContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBoxContent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBoxContent.Font = new System.Drawing.Font("Cascadia Code", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxContent.ForeColor = System.Drawing.Color.White;
-            this.textBoxContent.Location = new System.Drawing.Point(881, 43);
+            this.textBoxContent.Location = new System.Drawing.Point(0, 0);
             this.textBoxContent.Multiline = true;
             this.textBoxContent.Name = "textBoxContent";
             this.textBoxContent.ReadOnly = true;
-            this.textBoxContent.Size = new System.Drawing.Size(657, 717);
+            this.textBoxContent.Size = new System.Drawing.Size(650, 746);
             this.textBoxContent.TabIndex = 13;
             this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
             // 
@@ -272,7 +276,7 @@ namespace BrowseScripts
             this.dataGridViewLists.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLists.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.dataGridViewLists.GridColor = System.Drawing.Color.White;
-            this.dataGridViewLists.Location = new System.Drawing.Point(729, 43);
+            this.dataGridViewLists.Location = new System.Drawing.Point(729, 0);
             this.dataGridViewLists.Name = "dataGridViewLists";
             dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             dataGridViewCellStyle13.ForeColor = System.Drawing.Color.White;
@@ -307,7 +311,7 @@ namespace BrowseScripts
             this.dataGridViewList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewList.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.dataGridViewList.GridColor = System.Drawing.Color.White;
-            this.dataGridViewList.Location = new System.Drawing.Point(729, 414);
+            this.dataGridViewList.Location = new System.Drawing.Point(729, 371);
             this.dataGridViewList.Name = "dataGridViewList";
             dataGridViewCellStyle16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             dataGridViewCellStyle16.ForeColor = System.Drawing.Color.White;
@@ -330,13 +334,13 @@ namespace BrowseScripts
             this.buttonCopyCode.Size = new System.Drawing.Size(95, 27);
             this.buttonCopyCode.TabIndex = 8;
             this.buttonCopyCode.TabStop = false;
-            this.buttonCopyCode.Text = "&Copy Code";
+            this.buttonCopyCode.Text = "Co&py Code";
             this.buttonCopyCode.UseVisualStyleBackColor = false;
             this.buttonCopyCode.Click += new System.EventHandler(this.ButtonCopyCode_Click);
             // 
             // textBoxFilterValue
             // 
-            this.textBoxFilterValue.Location = new System.Drawing.Point(96, 202);
+            this.textBoxFilterValue.Location = new System.Drawing.Point(96, 159);
             this.textBoxFilterValue.Multiline = true;
             this.textBoxFilterValue.Name = "textBoxFilterValue";
             this.textBoxFilterValue.Size = new System.Drawing.Size(323, 36);
@@ -400,12 +404,13 @@ namespace BrowseScripts
             // buttonOpenXmlFile
             // 
             this.buttonOpenXmlFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonOpenXmlFile.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.buttonOpenXmlFile.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
             this.buttonOpenXmlFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonOpenXmlFile.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonOpenXmlFile.Location = new System.Drawing.Point(881, 762);
+            this.buttonOpenXmlFile.Location = new System.Drawing.Point(0, 719);
             this.buttonOpenXmlFile.Name = "buttonOpenXmlFile";
-            this.buttonOpenXmlFile.Size = new System.Drawing.Size(142, 27);
+            this.buttonOpenXmlFile.Size = new System.Drawing.Size(650, 27);
             this.buttonOpenXmlFile.TabIndex = 17;
             this.buttonOpenXmlFile.TabStop = false;
             this.buttonOpenXmlFile.Text = "Open XML File";
@@ -415,9 +420,9 @@ namespace BrowseScripts
             // listViewCommandsAvailable
             // 
             this.listViewCommandsAvailable.HideSelection = false;
-            this.listViewCommandsAvailable.Location = new System.Drawing.Point(1540, 43);
+            this.listViewCommandsAvailable.Location = new System.Drawing.Point(1480, 93);
             this.listViewCommandsAvailable.Name = "listViewCommandsAvailable";
-            this.listViewCommandsAvailable.Size = new System.Drawing.Size(3, 698);
+            this.listViewCommandsAvailable.Size = new System.Drawing.Size(10, 501);
             this.listViewCommandsAvailable.TabIndex = 18;
             this.listViewCommandsAvailable.UseCompatibleStateImageBehavior = false;
             this.listViewCommandsAvailable.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewCommandsAvailable_MouseDoubleClick);
@@ -425,17 +430,61 @@ namespace BrowseScripts
             // buttonCommandsAvailable
             // 
             this.buttonCommandsAvailable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonCommandsAvailable.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.buttonCommandsAvailable.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
             this.buttonCommandsAvailable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCommandsAvailable.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCommandsAvailable.Location = new System.Drawing.Point(1027, 762);
+            this.buttonCommandsAvailable.Location = new System.Drawing.Point(0, 692);
             this.buttonCommandsAvailable.Name = "buttonCommandsAvailable";
-            this.buttonCommandsAvailable.Size = new System.Drawing.Size(155, 27);
+            this.buttonCommandsAvailable.Size = new System.Drawing.Size(650, 27);
             this.buttonCommandsAvailable.TabIndex = 19;
             this.buttonCommandsAvailable.TabStop = false;
             this.buttonCommandsAvailable.Text = "Commands Available";
             this.buttonCommandsAvailable.UseVisualStyleBackColor = false;
             this.buttonCommandsAvailable.Click += new System.EventHandler(this.buttonCommandsAvailable_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.buttonCommandsAvailable);
+            this.panel1.Controls.Add(this.buttonOpenXmlFile);
+            this.panel1.Controls.Add(this.textBoxContent);
+            this.panel1.Location = new System.Drawing.Point(893, 43);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(650, 746);
+            this.panel1.TabIndex = 20;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.buttonViewScript);
+            this.panel2.Controls.Add(this.buttonExportCommand);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.textBoxListFilter);
+            this.panel2.Controls.Add(this.buttonCopyCode);
+            this.panel2.Controls.Add(this.textBoxType);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.textBoxCommandFilter);
+            this.panel2.Controls.Add(this.checkBoxFilterAll);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.textBoxFilter);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1546, 37);
+            this.panel2.TabIndex = 21;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.dataGridViewCommands);
+            this.panel3.Controls.Add(this.textBoxFilterValue);
+            this.panel3.Controls.Add(this.dataGridViewList);
+            this.panel3.Controls.Add(this.dataGridViewLists);
+            this.panel3.Controls.Add(this.dataGridViewCommand);
+            this.panel3.Location = new System.Drawing.Point(0, 43);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(888, 756);
+            this.panel3.TabIndex = 22;
             // 
             // BrowseCommands
             // 
@@ -443,26 +492,10 @@ namespace BrowseScripts
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
             this.ClientSize = new System.Drawing.Size(1546, 802);
-            this.Controls.Add(this.buttonCommandsAvailable);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.listViewCommandsAvailable);
-            this.Controls.Add(this.buttonOpenXmlFile);
-            this.Controls.Add(this.buttonViewScript);
-            this.Controls.Add(this.buttonExportCommand);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBoxListFilter);
-            this.Controls.Add(this.textBoxFilterValue);
-            this.Controls.Add(this.buttonCopyCode);
-            this.Controls.Add(this.dataGridViewList);
-            this.Controls.Add(this.dataGridViewLists);
-            this.Controls.Add(this.textBoxType);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBoxCommandFilter);
-            this.Controls.Add(this.textBoxContent);
-            this.Controls.Add(this.checkBoxFilterAll);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBoxFilter);
-            this.Controls.Add(this.dataGridViewCommand);
-            this.Controls.Add(this.dataGridViewCommands);
             this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -476,8 +509,13 @@ namespace BrowseScripts
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewList)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -502,6 +540,9 @@ namespace BrowseScripts
         private System.Windows.Forms.Button buttonOpenXmlFile;
         private System.Windows.Forms.ListView listViewCommandsAvailable;
         private System.Windows.Forms.Button buttonCommandsAvailable;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
     }
 }
 
