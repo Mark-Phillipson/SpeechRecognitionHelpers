@@ -26,6 +26,14 @@ namespace VoiceLauncher
             base.OnLoad(e);
             menuStrip1.BackColor = Color.Black;
             menuStrip1.ForeColor = Color.White;
+            FontFamily fontFamily = new FontFamily("Cascadia Code");
+            Font font = new Font(fontFamily, (float)11, FontStyle.Bold, GraphicsUnit.Point);
+            var style = new DataGridViewCellStyle
+            { BackColor = Color.Black, ForeColor = Color.White, Font = font };
+            customIntelliSenseDataGridView.DefaultCellStyle = style;
+            customIntelliSenseDataGridView.ColumnHeadersDefaultCellStyle = style;
+            customIntelliSenseDataGridView.RowHeadersDefaultCellStyle = style;
+            customIntelliSenseDataGridView.RowsDefaultCellStyle = style;
             customIntelliSenseDataGridView.EnableHeadersVisualStyles = false;
             SetDataSourceForGrid();
             db.Configuration.ProxyCreationEnabled = false;
@@ -35,6 +43,12 @@ namespace VoiceLauncher
             customIntelliSenseDataGridView.Columns[5].Visible = false;
             customIntelliSenseDataGridView.Columns[7].Visible = false;
             customIntelliSenseDataGridView.Columns[9].HeaderText = "Delivery Type";
+            customIntelliSenseDataGridView.RowTemplate.Height = 200;
+            customIntelliSenseDataGridView.RowTemplate.MinimumHeight = 100;
+            foreach (DataGridViewColumn column in customIntelliSenseDataGridView.Columns)
+            {
+                column.DefaultCellStyle.Font = new Font("Cascadia Code", 10.5F, GraphicsUnit.Pixel);
+            }
         }
 
         private void SetDataSourceForGrid(bool showAll = false)

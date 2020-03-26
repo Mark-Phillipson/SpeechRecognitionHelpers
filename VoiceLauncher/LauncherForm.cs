@@ -43,7 +43,7 @@ namespace VoiceLauncher
             launcherDataGridView.DefaultCellStyle = style;
             launcherDataGridView.RowHeadersDefaultCellStyle = style;
             launcherDataGridView.RowsDefaultCellStyle = style;
-            launcherDataGridView.ColumnHeadersDefaultCellStyle= style;
+            launcherDataGridView.ColumnHeadersDefaultCellStyle = style;
             if (SearchTerm.Length > 0)
             {
                 db.Launchers.Where(v => v.Name.Contains(SearchTerm)).OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
