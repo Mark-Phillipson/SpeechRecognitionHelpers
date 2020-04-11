@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Linq;
-using VoiceLauncher.Models;
 using System.Windows.Forms;
+using VoiceLauncher.Models;
 
 namespace VoiceLauncher
 {
     public class OpenForms
     {
         private VoiceLauncherContext db;
-        private int categoryId = 39;
-        private int languageId = 1;
         private string searchTerm = null;
         public OpenForms()
         {
@@ -29,13 +27,14 @@ namespace VoiceLauncher
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
                 //arguments = new string[] { args[0], "Add New", "Some new value" };
                 //arguments = new string[] { args[0], "Razor", "Snippet" };
-                arguments = new string[] { args[0], "Not Applicable", "Words" };
+                arguments = new string[] { args[0], "Union", "Blazor" };
+                //arguments = new string[] { args[0], "Blazor", "Snippet" };
             }
             else
             {
                 arguments = Environment.GetCommandLineArgs();
             }
-            //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} 3:{arguments[3]}");
+            //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]}");
             if (arguments[1].EndsWith("Add New") && arguments[2]?.Length > 0)
             {
                 CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
@@ -46,6 +45,13 @@ namespace VoiceLauncher
                 var categoryId = db.Categories.Where(v => v.CategoryName == "Words").FirstOrDefault()?.ID;
                 customIntelliSenseSingleRecord.CategoryId = categoryId;
                 Application.Run(customIntelliSenseSingleRecord);
+                return;
+            }
+            else if (arguments[1].Contains("Union"))
+            {
+                FormCustomIntellisenseLauncherUnion formCustomIntellisenseLauncherUnion = new FormCustomIntellisenseLauncherUnion();
+                formCustomIntellisenseLauncherUnion.SearchTerm = arguments[2].Replace("/", "").Trim();
+                Application.Run(formCustomIntellisenseLauncherUnion);
                 return;
             }
             else if (arguments[1].EndsWith("Launcher") && arguments[2].EndsWith("Unknown"))
@@ -76,7 +82,7 @@ namespace VoiceLauncher
                 VoiceLauncher.CustomIntelliSenseForm customIntelliSense = new VoiceLauncher.CustomIntelliSenseForm();
                 string languageName = arguments[1].Replace("/", "").Trim();
 
-                Language language =db.Languages.Where(v => v.LanguageName == languageName).FirstOrDefault();
+                Language language = db.Languages.Where(v => v.LanguageName == languageName).FirstOrDefault();
                 if (language == null)
                 {
                     throw (new Exception($" Language not found in commandline argument {arguments[1]}"));

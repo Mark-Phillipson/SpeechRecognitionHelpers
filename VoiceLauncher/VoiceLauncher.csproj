@@ -80,6 +80,12 @@
     <Compile Include="CustomIntelliSenseSingleRecord.Designer.cs">
       <DependentUpon>CustomIntelliSenseSingleRecord.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormCustomIntellisenseLauncherUnion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCustomIntellisenseLauncherUnion.Designer.cs">
+      <DependentUpon>FormCustomIntellisenseLauncherUnion.cs</DependentUpon>
+    </Compile>
     <Compile Include="LanguagesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,17 +98,10 @@
     <Compile Include="LauncherForm.Designer.cs">
       <DependentUpon>LauncherForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201905041003107_CreateDatabase.cs" />
-    <Compile Include="Migrations\201905041003107_CreateDatabase.Designer.cs">
-      <DependentUpon>201905041003107_CreateDatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201905041550443_Search1.cs" />
-    <Compile Include="Migrations\201905041550443_Search1.Designer.cs">
-      <DependentUpon>201905041550443_Search1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Computer.cs" />
     <Compile Include="Models\CurrentWindow.cs" />
+    <Compile Include="Models\CustomIntellisenseLauncherUnion.cs" />
     <Compile Include="Models\GeneralLookup.cs" />
     <Compile Include="Models\HtmlTag.cs" />
     <Compile Include="Models\LauncherMultipleLauncherBridge.cs" />
@@ -130,17 +129,14 @@
     <EmbeddedResource Include="CustomIntelliSenseSingleRecord.resx">
       <DependentUpon>CustomIntelliSenseSingleRecord.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormCustomIntellisenseLauncherUnion.resx">
+      <DependentUpon>FormCustomIntellisenseLauncherUnion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LanguagesForm.resx">
       <DependentUpon>LanguagesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LauncherForm.resx">
       <DependentUpon>LauncherForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201905041003107_CreateDatabase.resx">
-      <DependentUpon>201905041003107_CreateDatabase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201905041550443_Search1.resx">
-      <DependentUpon>201905041550443_Search1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -64,6 +64,7 @@ namespace VoiceLauncher
             this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.launchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButtonDuplicate = new System.Windows.Forms.ToolStripButton();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -116,7 +117,8 @@ namespace VoiceLauncher
             this.toolStripTextBoxSearch,
             this.toolStripLabel2,
             this.toolStripTextBoxFind,
-            this.Focus});
+            this.Focus,
+            this.toolStripButtonDuplicate});
             this.customIntelliSenseBindingNavigator.Location = new System.Drawing.Point(0, 24);
             this.customIntelliSenseBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.customIntelliSenseBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -404,6 +406,16 @@ namespace VoiceLauncher
             this.launchesToolStripMenuItem.Text = "La&unches";
             this.launchesToolStripMenuItem.Click += new System.EventHandler(this.launchesToolStripMenuItem_Click);
             // 
+            // toolStripButtonDuplicate
+            // 
+            this.toolStripButtonDuplicate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonDuplicate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDuplicate.Image")));
+            this.toolStripButtonDuplicate.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonDuplicate.Name = "toolStripButtonDuplicate";
+            this.toolStripButtonDuplicate.Size = new System.Drawing.Size(74, 22);
+            this.toolStripButtonDuplicate.Text = "Duplica&te";
+            this.toolStripButtonDuplicate.Click += new System.EventHandler(this.toolStripButtonDuplicate_Click);
+            // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "ID";
@@ -595,5 +607,6 @@ namespace VoiceLauncher
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
+        private System.Windows.Forms.ToolStripButton toolStripButtonDuplicate;
     }
 }

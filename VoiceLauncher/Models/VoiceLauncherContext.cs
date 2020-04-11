@@ -1,9 +1,6 @@
 namespace VoiceLauncher.Models
 {
-    using System;
     using System.Data.Entity;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using System.Linq;
 
     public partial class VoiceLauncherContext : DbContext
     {
@@ -27,6 +24,7 @@ namespace VoiceLauncher.Models
         public virtual DbSet<Launcher> Launchers { get; set; }
         public virtual DbSet<MultipleLauncher> MultipleLaunchers { get; set; }
         public virtual DbSet<ValuesToInsert> ValuesToInserts { get; set; }
+        public virtual DbSet<CustomIntellisenseLauncherUnion> CustomIntellisenseLauncherUnions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

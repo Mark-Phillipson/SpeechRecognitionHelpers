@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -43,8 +44,8 @@ namespace VoiceLauncher
             customIntelliSenseDataGridView.Columns[5].Visible = false;
             customIntelliSenseDataGridView.Columns[7].Visible = false;
             customIntelliSenseDataGridView.Columns[9].HeaderText = "Delivery Type";
-            customIntelliSenseDataGridView.RowTemplate.Height = 200;
-            customIntelliSenseDataGridView.RowTemplate.MinimumHeight = 100;
+            //customIntelliSenseDataGridView.RowTemplate.Height = 200;
+            //customIntelliSenseDataGridView.RowTemplate.MinimumHeight = 100;
             foreach (DataGridViewColumn column in customIntelliSenseDataGridView.Columns)
             {
                 column.DefaultCellStyle.Font = new Font("Cascadia Code", 10.5F, GraphicsUnit.Pixel);
@@ -112,7 +113,7 @@ namespace VoiceLauncher
                 DataGridView view = (DataGridView)sender;
                 view.Rows[anError.RowIndex].ErrorText = "an error";
                 view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].ErrorText = "an error";
-
+                MessageBox.Show(anError.Exception.Message);
                 anError.ThrowException = false;
             }
         }
@@ -202,18 +203,24 @@ namespace VoiceLauncher
 
         private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
         {
-            customIntelliSenseDataGridView.ClearSelection();
-            int rowIndex = customIntelliSenseDataGridView.Rows.Count - 1;
-            //customIntelliSenseDataGridView.Rows[rowIndex].Selected = true;
-            customIntelliSenseDataGridView.Rows[rowIndex].Cells[1].Selected = true;
-
         }
+
+        public DataGridViewRow CloneWithValues(DataGridViewRow row)
+        {
+            DataGridViewRow clonedRow = (DataGridViewRow)row.Clone();
+            for (Int32 index = 0; index < row.Cells.Count; index++)
+            {
+                clonedRow.Cells[index].Value = row.Cells[index].Value;
+            }
+            return clonedRow;
+        }
+
 
         private void customIntelliSenseDataGridView_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
-            e.Row.Cells["dataGridViewTextBoxColumn1"].Value = LanguageId;
-            e.Row.Cells["dataGridViewTextBoxColumn6"].Value = CategoryId;
-            e.Row.Cells["dataGridViewTextBoxColumnDeliveryType"].Value = "Send Keys";
+            //e.Row.Cells["dataGridViewTextBoxColumn1"].Value = LanguageId;
+            //e.Row.Cells["dataGridViewTextBoxColumn6"].Value = CategoryId;
+            //e.Row.Cells["dataGridViewTextBoxColumnDeliveryType"].Value = "Send Keys";
 
         }
         private void toolStripTextBoxSearch_TextChanged(object sender, EventArgs e)
@@ -265,8 +272,6 @@ namespace VoiceLauncher
                 return;
             }
             this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
-
-
         }
 
         private void toolStripTextBoxFind_Leave(object sender, EventArgs e)
@@ -360,6 +365,48 @@ namespace VoiceLauncher
             //    combo.SelectedIndexChanged +=
             //        new EventHandler(ComboBox_SelectedIndexChanged);
             //}
+
+        }
+
+        private void toolStripButtonDuplicate_Click(object sender, EventArgs e)
+        {
+            int rowIndex = customIntelliSenseDataGridView.Rows.Count - 1;
+            if (customIntelliSenseBindingSource.Current != null)
+            {
+                //customIntelliSenseBindingSource.MoveFirst();
+                //customIntelliSenseBindingSource.MoveLast();
+                var current = (CustomIntelliSense)this.customIntelliSenseBindingSource.Current;
+                CustomIntelliSense customIntelliSenseNew = new CustomIntelliSense
+                {
+                    CategoryID = current.CategoryID,
+                    Command_Type = current.Command_Type,
+                    ComputerID = current.ComputerID,
+                    DeliveryType = current.DeliveryType,
+                    Display_Value = "TBC!",
+                    LanguageID = current.LanguageID,
+                    Remarks = current.Remarks,
+                    SendKeys_Value = current.SendKeys_Value
+                };
+
+                db.CustomIntelliSenses.Local.Add(customIntelliSenseNew);
+                try
+                {
+                    //db.SaveChanges();
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+                IEnumerable<CustomIntelliSense> filteredData = null;
+                filteredData = db.CustomIntelliSenses.Local.ToBindingList();
+                this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
+            }
+            else
+            {
+                customIntelliSenseDataGridView.ClearSelection();
+                customIntelliSenseDataGridView.Rows[rowIndex].Cells[1].Selected = true;
+
+            }
 
         }
     }
