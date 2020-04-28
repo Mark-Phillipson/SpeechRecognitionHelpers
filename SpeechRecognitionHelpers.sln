@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestartDragon", "RestartDra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bank", "ConsoleApp1\Bank.csproj", "{C565D778-80E0-4180-9504-7F9857C79EE4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankTests", "BankTests\BankTests.csproj", "{4AF0C2A5-AB5A-4ACE-8191-97A71FA9EDAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "BankTests\UnitTests.csproj", "{4AF0C2A5-AB5A-4ACE-8191-97A71FA9EDAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

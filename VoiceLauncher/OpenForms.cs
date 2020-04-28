@@ -27,7 +27,8 @@ namespace VoiceLauncher
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
                 //arguments = new string[] { args[0], "Add New", "Some new value" };
                 //arguments = new string[] { args[0], "Razor", "Snippet" };
-                arguments = new string[] { args[0], "Union", "Blazor" };
+                arguments = new string[] { args[0], "Todos", "All" };
+                //arguments = new string[] { args[0], "Union", "Blazor" };
                 //arguments = new string[] { args[0], "Blazor", "Snippet" };
             }
             else
@@ -52,6 +53,13 @@ namespace VoiceLauncher
                 FormCustomIntellisenseLauncherUnion formCustomIntellisenseLauncherUnion = new FormCustomIntellisenseLauncherUnion();
                 formCustomIntellisenseLauncherUnion.SearchTerm = arguments[2].Replace("/", "").Trim();
                 Application.Run(formCustomIntellisenseLauncherUnion);
+                return;
+            }
+            else if (arguments[1].Contains("Todos"))
+            {
+                TodosForm todosForm = new TodosForm();
+                todosForm.SearchTerm = arguments[2].Replace("/", "").Trim();
+                Application.Run(todosForm);
                 return;
             }
             else if (arguments[1].EndsWith("Launcher") && arguments[2].EndsWith("Unknown"))

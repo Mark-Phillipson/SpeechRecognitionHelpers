@@ -68,6 +68,7 @@ namespace BrowseScripts
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.MessageAlert = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).BeginInit();
@@ -164,7 +165,7 @@ namespace BrowseScripts
             dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.Red;
             this.dataGridViewCommand.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dataGridViewCommand.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridViewCommand.Size = new System.Drawing.Size(709, 375);
+            this.dataGridViewCommand.Size = new System.Drawing.Size(709, 376);
             this.dataGridViewCommand.TabIndex = 11;
             this.dataGridViewCommand.SelectionChanged += new System.EventHandler(this.DataGridViewCommand_SelectionChanged);
             this.dataGridViewCommand.DoubleClick += new System.EventHandler(this.dataGridViewCommand_DoubleClick);
@@ -319,7 +320,7 @@ namespace BrowseScripts
             dataGridViewCellStyle16.SelectionForeColor = System.Drawing.Color.Red;
             this.dataGridViewList.RowsDefaultCellStyle = dataGridViewCellStyle16;
             this.dataGridViewList.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridViewList.Size = new System.Drawing.Size(149, 375);
+            this.dataGridViewList.Size = new System.Drawing.Size(149, 376);
             this.dataGridViewList.TabIndex = 12;
             this.dataGridViewList.DoubleClick += new System.EventHandler(this.dataGridViewList_DoubleClick);
             // 
@@ -382,7 +383,7 @@ namespace BrowseScripts
             this.buttonExportCommand.Size = new System.Drawing.Size(130, 27);
             this.buttonExportCommand.TabIndex = 15;
             this.buttonExportCommand.TabStop = false;
-            this.buttonExportCommand.Text = "Copy Current";
+            this.buttonExportCommand.Text = "Export Script";
             this.buttonExportCommand.UseVisualStyleBackColor = false;
             this.buttonExportCommand.Click += new System.EventHandler(this.ButtonExportCommand_Click);
             // 
@@ -476,6 +477,7 @@ namespace BrowseScripts
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.MessageAlert);
             this.panel3.Controls.Add(this.dataGridViewCommands);
             this.panel3.Controls.Add(this.textBoxFilterValue);
             this.panel3.Controls.Add(this.dataGridViewList);
@@ -485,6 +487,15 @@ namespace BrowseScripts
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(888, 756);
             this.panel3.TabIndex = 22;
+            // 
+            // MessageAlert
+            // 
+            this.MessageAlert.AutoSize = true;
+            this.MessageAlert.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.MessageAlert.Location = new System.Drawing.Point(0, 743);
+            this.MessageAlert.Name = "MessageAlert";
+            this.MessageAlert.Size = new System.Drawing.Size(0, 13);
+            this.MessageAlert.TabIndex = 15;
             // 
             // BrowseCommands
             // 
@@ -543,6 +554,7 @@ namespace BrowseScripts
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label MessageAlert;
     }
 }
 

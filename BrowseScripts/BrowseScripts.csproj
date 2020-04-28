@@ -91,6 +91,9 @@
     <Compile Include="ExampleCallingScript.Designer.cs">
       <DependentUpon>ExampleCallingScript.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileManagement.cs" />
+    <Compile Include="ListManagement.cs" />
+    <Compile Include="Mapping.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Publish\Class1.cs" />

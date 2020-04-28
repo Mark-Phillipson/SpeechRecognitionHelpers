@@ -25,12 +25,12 @@ namespace VoiceLauncher
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            menuStrip1.BackColor = Color.Black;
+            menuStrip1.BackColor = Color.FromArgb(38, 38, 38);
             menuStrip1.ForeColor = Color.White;
             FontFamily fontFamily = new FontFamily("Cascadia Code");
             Font font = new Font(fontFamily, (float)11, FontStyle.Bold, GraphicsUnit.Point);
             var style = new DataGridViewCellStyle
-            { BackColor = Color.Black, ForeColor = Color.White, Font = font };
+            { BackColor = Color.FromArgb(38, 38, 38), ForeColor = Color.White, Font = font };
             customIntelliSenseDataGridView.DefaultCellStyle = style;
             customIntelliSenseDataGridView.ColumnHeadersDefaultCellStyle = style;
             customIntelliSenseDataGridView.RowHeadersDefaultCellStyle = style;

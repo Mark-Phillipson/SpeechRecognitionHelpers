@@ -107,6 +107,7 @@
     <Compile Include="Models\LauncherMultipleLauncherBridge.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\MousePosition.cs" />
+    <Compile Include="Models\Todo.cs" />
     <Compile Include="ObservableListSource.cs" />
     <Compile Include="OpenForms.cs" />
     <Compile Include="Program.cs" />
@@ -120,6 +121,12 @@
     <Compile Include="Models\MultipleLauncher.cs" />
     <Compile Include="Models\ValuesToInsert.cs" />
     <Compile Include="Models\VoiceLauncherContext.cs" />
+    <Compile Include="TodosForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TodosForm.Designer.cs">
+      <DependentUpon>TodosForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Categories.resx">
       <DependentUpon>Categories.cs</DependentUpon>
     </EmbeddedResource>
@@ -147,6 +154,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="TodosForm.resx">
+      <DependentUpon>TodosForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\VoiceLauncher.Models.Category.datasource" />
     <None Include="Properties\DataSources\VoiceLauncher.Models.Computer.datasource" />

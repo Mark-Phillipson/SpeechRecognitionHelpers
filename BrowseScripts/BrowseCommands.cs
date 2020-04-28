@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -13,7 +14,7 @@ namespace BrowseScripts
         readonly DataSet dataSet = new DataSet();
         readonly BindingSource bindingSourceCommands = new BindingSource();
         readonly BindingSource bindingSourceCommand = new BindingSource();
-        readonly BindingSource BindingSourceContent = new BindingSource();
+        readonly BindingSource bindingSourceContent = new BindingSource();
         readonly BindingSource bindingSourceLists = new BindingSource();
         readonly BindingSource bindingSourceList = new BindingSource();
         XDocument document;
@@ -27,142 +28,59 @@ namespace BrowseScripts
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            dataGridViewCommands.EnableHeadersVisualStyles = false;
-            dataGridViewCommand.EnableHeadersVisualStyles = false;
-            dataGridViewLists.EnableHeadersVisualStyles = false;
-            dataGridViewList.EnableHeadersVisualStyles = false;
-            dataGridViewLists.Visible = false;
-            dataGridViewList.Visible = false;
-
-            //int millisecondsDelay = Properties.Settings.Default.Delay;
-            filename = Properties.Settings.Default.LastFileOpened;
+            if (true || !Debugger.IsAttached)
+            {
+                filename = Properties.Settings.Default.LastFileOpened;
+            }
             if (!File.Exists(filename))
             {
-                filename = null;
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                {
-                    openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Roaming\KnowBrainer\";
-                    openFileDialog.Filter = "XML KnowBrainer Command Files (*.xml)|*.xml|All Files (*.*)|*.*";
-                    openFileDialog.FilterIndex = 1;
-                    openFileDialog.RestoreDirectory = true;
-                    openFileDialog.Title = "Please select a KnowBrainer XML commands file to browse.";
-                    while (true)
-                    {
-                        if (openFileDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            filename = openFileDialog.FileName;
-                        }
-                        if (filename == null || filename.Length == 0)
-                        {
-                            Application.Exit();
-                            return;
-                        }
-                        try
-                        {
-                            Properties.Settings.Default.LastFileOpened = filename;
-                            Properties.Settings.Default.Save();
-                            Document = LoadXMLDocument(filename);
-                            break;
-                        }
-                        catch (Exception exception)
-                        {
-                            MessageBox.Show("The XML file does not appear to be in the expected format. Please select a valid file and try again. " + exception.Message, "Problem with File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            openFileDialog.FileName = null;
-                            filename = null;
-                        }
-                    }
-                }
+                filename = FileManagement.OpenXMLFile();
             }
-            else
+            if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
             {
-                Document = LoadXMLDocument(filename);
+                Application.Exit();
+                return;
             }
-            bindingSourceCommands.DataSource = dataSet;
-            bindingSourceCommands.DataMember = "Commands";
-            bindingSourceCommands.Sort = "scope ASC, moduleDescription ASC, windowTitle ASC";
-            dataGridViewCommands.AutoGenerateColumns = true;
-            dataGridViewCommands.DataSource = bindingSourceCommands;
-            //dataGridViewCommands.AutoResizeColumns();
-            dataGridViewCommands.AllowUserToAddRows = false;
-            dataGridViewCommands.AllowUserToDeleteRows = false;
-            dataGridViewCommands.Columns[0].HeaderText = "Scope";
-            dataGridViewCommands.Columns[1].HeaderText = "Module";
-            dataGridViewCommands.Columns[2].HeaderText = "Company";
-            dataGridViewCommands.Columns[2].Width = 140;
-            dataGridViewCommands.Columns[3].HeaderText = "Module Description";
-            dataGridViewCommands.Columns[3].Width = 140;
-            dataGridViewCommands.Columns[4].HeaderText = "Window Title";
-            dataGridViewCommands.Columns[4].Width = 70;
-            dataGridViewCommands.Columns[5].HeaderText = "Window Class";
-            dataGridViewCommands.Columns[5].Width = 70;
-            dataGridViewCommands.RowHeadersVisible = false;
-            for (int i = 0; i < 6; i++)
-            {
-                dataGridViewCommands.Columns[i].ReadOnly = i != 1 ? true : false;
-            }
-            bindingSourceCommand.DataSource = dataSet;
-            bindingSourceCommand.DataMember = "Command";
-            bindingSourceCommand.Sort = "name";
+            Properties.Settings.Default.LastFileOpened = filename;
+            Properties.Settings.Default.Save();
+            Document = FileManagement.LoadXMLDocument(filename, dataSet, this);
 
-            dataGridViewCommand.AutoGenerateColumns = true;
-            dataGridViewCommand.DataSource = bindingSourceCommand;
-            dataGridViewCommand.Columns[0].HeaderText = "Description";
-            dataGridViewCommand.Columns[0].Width = 90;
-            dataGridViewCommand.Columns[1].HeaderText = "Name";
-            dataGridViewCommand.Columns[1].Width = 305;
-            dataGridViewCommand.Columns[2].HeaderText = "Group";
-            dataGridViewCommand.Columns[2].Width = 200;
-            dataGridViewCommand.Columns[3].HeaderText = "Enabled?";
-            dataGridViewCommand.Columns[3].Width = 70;
-            for (int i = 0; i < 4; i++)
+            if (Document == null)
             {
-                dataGridViewCommand.Columns[i].ReadOnly = i != 1 ? true : false;
+                NotifyErrorAndQuit();
+                return;
             }
-
-            dataGridViewCommand.RowHeadersVisible = false;
+            try
+            {
+                SetupCommands();
+            }
+            catch (Exception)
+            {
+                NotifyErrorAndQuit();
+                return;
+            }
+            SetUpCommand();
+            SetupLists();
+            SetupAvailableCommands();
             var currentRow = bindingSourceCommands.Current;
             bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[0];
-
-            listViewCommandsAvailable.Visible = false;
-            listViewCommandsAvailable.View = View.List;
-            listViewCommandsAvailable.Columns.Add("Name", 400);
-            listViewCommandsAvailable.ForeColor = System.Drawing.Color.White;
-            listViewCommandsAvailable.BackColor = System.Drawing.Color.Black;
-            listViewCommandsAvailable.Font = new System.Drawing.Font("Cascadia Code", 9, System.Drawing.FontStyle.Bold);
-
             SetUpTiles(currentRow);
-            BindingSourceContent.DataSource = dataSet;
-            BindingSourceContent.DataMember = "Content";
+            bindingSourceContent.DataSource = dataSet;
+            bindingSourceContent.DataMember = "Content";
             currentRow = bindingSourceCommand.Current;
-            BindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[1];
-            currentRow = BindingSourceContent.Current;
+            bindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[1];
+            currentRow = bindingSourceContent.Current;
             if (currentRow != null)
             {
                 textBoxContent.Text = ((DataRowView)currentRow).Row.ItemArray[1].ToString();
                 textBoxType.Text = ((DataRowView)currentRow).Row.ItemArray[0].ToString();
             }
 
-            bindingSourceLists.DataSource = dataSet;
-            bindingSourceLists.DataMember = "List";
-            dataGridViewLists.AutoGenerateColumns = true;
-            dataGridViewLists.DataSource = bindingSourceLists;
-            dataGridViewLists.AutoResizeColumns();
-            dataGridViewLists.Columns[0].HeaderText = "List Name";
-            dataGridViewLists.Columns[0].Width = 140;
-            dataGridViewLists.RowHeadersVisible = false;
+            SetUpFormAccordingToCommandlineArguments();
+        }
 
-
-
-
-            bindingSourceList.DataSource = dataSet;
-            bindingSourceList.DataMember = "value";
-            dataGridViewList.AutoGenerateColumns = true;
-            dataGridViewList.DataSource = bindingSourceList;
-            dataGridViewList.RowHeadersVisible = false;
-
-            dataGridViewList.AutoResizeColumns();
-            dataGridViewList.Columns[0].HeaderText = "List Values";
-            dataGridViewList.Columns[0].Width = 140;
+        private void SetUpFormAccordingToCommandlineArguments()
+        {
             string[] arguments;
             string[] args = Environment.GetCommandLineArgs();
             if (args.Count() < 2)// I.e. no commandline arguments
@@ -186,6 +104,101 @@ namespace BrowseScripts
             }
         }
 
+        private void SetupAvailableCommands()
+        {
+            listViewCommandsAvailable.Visible = false;
+            listViewCommandsAvailable.View = View.List;
+            listViewCommandsAvailable.Columns.Add("Name", 400);
+            listViewCommandsAvailable.ForeColor = System.Drawing.Color.White;
+            listViewCommandsAvailable.BackColor = System.Drawing.Color.Black;
+            listViewCommandsAvailable.Font = new System.Drawing.Font("Cascadia Code", 9, System.Drawing.FontStyle.Bold);
+        }
+
+        private void SetupLists()
+        {
+            bindingSourceLists.DataSource = dataSet;
+            bindingSourceLists.DataMember = "List";
+            dataGridViewLists.EnableHeadersVisualStyles = false;
+            dataGridViewLists.Visible = false;
+            dataGridViewLists.AutoGenerateColumns = true;
+            dataGridViewLists.DataSource = bindingSourceLists;
+            dataGridViewLists.AutoResizeColumns();
+            dataGridViewLists.Columns[0].HeaderText = "List Name";
+            dataGridViewLists.Columns[0].Width = 140;
+            dataGridViewLists.RowHeadersVisible = false;
+
+            bindingSourceList.DataSource = dataSet;
+            bindingSourceList.DataMember = "value";
+            dataGridViewList.EnableHeadersVisualStyles = false;
+            dataGridViewList.Visible = false;
+            dataGridViewList.AutoGenerateColumns = true;
+            dataGridViewList.DataSource = bindingSourceList;
+            dataGridViewList.RowHeadersVisible = false;
+            dataGridViewList.AutoResizeColumns();
+            dataGridViewList.Columns[0].HeaderText = "List Values";
+            dataGridViewList.Columns[0].Width = 140;
+
+        }
+
+        private void SetUpCommand()
+        {
+            bindingSourceCommand.DataSource = dataSet;
+            bindingSourceCommand.DataMember = "Command";
+            bindingSourceCommand.Sort = "name";
+            dataGridViewCommand.RowHeadersVisible = false;
+            dataGridViewCommand.EnableHeadersVisualStyles = false;
+            dataGridViewCommand.AutoGenerateColumns = true;
+            dataGridViewCommand.DataSource = bindingSourceCommand;
+            dataGridViewCommand.Columns[0].HeaderText = "Description";
+            dataGridViewCommand.Columns[0].Width = 90;
+            dataGridViewCommand.Columns[1].HeaderText = "Name";
+            dataGridViewCommand.Columns[1].Width = 305;
+            dataGridViewCommand.Columns[2].HeaderText = "Group";
+            dataGridViewCommand.Columns[2].Width = 200;
+            dataGridViewCommand.Columns[3].HeaderText = "Enabled?";
+            dataGridViewCommand.Columns[3].Width = 70;
+            for (int i = 0; i < 4; i++)
+            {
+                dataGridViewCommand.Columns[i].ReadOnly = i != 1 ? true : false;
+            }
+        }
+
+        private void SetupCommands()
+        {
+            bindingSourceCommands.DataSource = dataSet;
+            bindingSourceCommands.DataMember = "Commands";
+            bindingSourceCommands.Sort = "scope ASC, moduleDescription ASC, windowTitle ASC";
+            dataGridViewCommands.EnableHeadersVisualStyles = false;
+            dataGridViewCommands.AutoGenerateColumns = true;
+            dataGridViewCommands.DataSource = bindingSourceCommands;
+            dataGridViewCommands.AllowUserToAddRows = false;
+            dataGridViewCommands.AllowUserToDeleteRows = false;
+            dataGridViewCommands.Columns[0].HeaderText = "Scope";
+            dataGridViewCommands.Columns[1].HeaderText = "Module";
+            dataGridViewCommands.Columns[2].HeaderText = "Company";
+            dataGridViewCommands.Columns[2].Width = 140;
+            dataGridViewCommands.Columns[3].HeaderText = "Module Description";
+            dataGridViewCommands.Columns[3].Width = 140;
+            dataGridViewCommands.Columns[4].HeaderText = "Window Title";
+            dataGridViewCommands.Columns[4].Width = 70;
+            dataGridViewCommands.Columns[5].HeaderText = "Window Class";
+            dataGridViewCommands.Columns[5].Width = 70;
+            dataGridViewCommands.RowHeadersVisible = false;
+            for (int i = 0; i < 6; i++)
+            {
+                dataGridViewCommands.Columns[i].ReadOnly = i != 1 ? true : false;
+            }
+
+        }
+
+        private void NotifyErrorAndQuit()
+        {
+            MessageBox.Show($"The XML {filename} file does not appear to be in the expected format. Please relaunch the application and select a valid file. ", "Problem with File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            Properties.Settings.Default.LastFileOpened = "";
+            Properties.Settings.Default.Save();
+            Application.Exit();
+        }
+
         private void SetUpTiles(object currentRow)
         {
             listViewCommandsAvailable.Clear();
@@ -203,17 +216,6 @@ namespace BrowseScripts
                     listViewCommandsAvailable.Items.Add(listViewItem);
                 }
             }
-        }
-
-        private XDocument LoadXMLDocument(string filename)
-        {
-            XDocument document = XDocument.Load(filename);
-            var commands = document.Descendants("Command").Count();
-            var lists = document.Descendants("List").Count();
-            Text = $"Browse KnowBrainer Commands (Commands: {commands} Lists: {lists}) {filename}";
-            dataSet.ReadXmlSchema(filename);
-            dataSet.ReadXml(filename);
-            return document;
         }
 
         private void TextBoxFilter_TextChanged(object sender, EventArgs e)
@@ -259,27 +261,28 @@ namespace BrowseScripts
                 return;
             }
             var currentRowDRV = (DataRowView)currentRow;
-            if (currentRowDRV == null || currentRowDRV.Row.ItemArray[2]?.ToString().Length == 0)
+            // Check there Is a name for the script If not return
+            if (currentRowDRV == null || currentRowDRV.Row.ItemArray[Mapping.ScriptName]?.ToString().Length == 0)
             {
                 return;
             }
             if (currentRow != null)
             {
-                BindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[1];
+                bindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[Mapping.PrimaryKey_Command];
                 FilterLists((DataRowView)currentRow);
             }
-            currentRow = BindingSourceContent.Current;
+            currentRow = bindingSourceContent.Current;
             if (currentRow != null)
             {
-                textBoxContent.Text = ((DataRowView)currentRow).Row.ItemArray[1].ToString();
-                textBoxType.Text = ((DataRowView)currentRow).Row.ItemArray[0].ToString();
+                textBoxContent.Text = ((DataRowView)currentRow).Row.ItemArray[Mapping.Content].ToString();
+                textBoxType.Text = ((DataRowView)currentRow).Row.ItemArray[Mapping.ScriptType].ToString();
             }
             if (checkBoxFilterAll.Checked == true)
             {
                 currentRow = bindingSourceCommand.Current;
                 if (currentRow != null)
                 {
-                    bindingSourceCommands.Filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[5];
+                    bindingSourceCommands.Filter = "Commands_Id =" + ((System.Data.DataRowView)currentRow).Row.ItemArray[Mapping.CommandsFK];
                 }
             }
         }
@@ -288,33 +291,15 @@ namespace BrowseScripts
         {
             dataGridViewLists.Visible = false;
             dataGridViewList.Visible = false;
-            if (currentRow.Row.ItemArray[2]?.ToString().Length == 0)
+            if (currentRow.Row.ItemArray[Mapping.ScriptName]?.ToString().Length == 0)
             {
                 return;
             }
-            var commandName = (string)((DataRowView)currentRow).Row.ItemArray[2];
-            if (commandName.Contains("<") && commandName.Contains(">"))
+            var commandName = (string)((DataRowView)currentRow).Row.ItemArray[Mapping.ScriptName];
+            if (ListManagement.HasLists(commandName))
             {
                 var filter = "";
-                var position1 = commandName.IndexOf("<");
-                var position2 = commandName.IndexOf(">");
-                var temporary = commandName;
-                while (position2 > 0)
-                {
-                    var listName = temporary.Substring(position1 + 1, position2 - position1 - 1);
-                    filter = filter + (filter.Length > 0 ? " Or " : "") + "name = '" + listName + "'";
-                    if (temporary.Length > position2 + 2)
-                    {
-                        temporary = temporary.Substring(position2 + 2);
-                        position1 = temporary.IndexOf("<");
-                        position2 = temporary.IndexOf(">");
-                    }
-                    else
-                    {
-                        temporary = "";
-                        position2 = 0;
-                    }
-                }
+                filter = ListManagement.BuildListFilter(commandName, filter);
                 bindingSourceLists.Filter = filter;
                 if (bindingSourceLists.List.Count > 0)
                 {
@@ -322,7 +307,6 @@ namespace BrowseScripts
                     dataGridViewList.Visible = true;
                 }
             }
-
         }
 
         private void TextBoxCommandFilter_TextChanged(object sender, EventArgs e)
@@ -423,38 +407,24 @@ namespace BrowseScripts
             var currentRow = bindingSourceCommand.Current;
             if (currentRow != null)
             {
-                var description = ((System.Data.DataRowView)currentRow).Row.ItemArray[0].ToString();
-                var command = ((System.Data.DataRowView)currentRow).Row.ItemArray[2].ToString();
-                var group = ((System.Data.DataRowView)currentRow).Row.ItemArray[3].ToString();
+                var description = ((DataRowView)currentRow).Row.ItemArray[Mapping.Description].ToString();
+                var command = ((DataRowView)currentRow).Row.ItemArray[Mapping.ScriptName].ToString();
+                var group = ((DataRowView)currentRow).Row.ItemArray[Mapping.Group].ToString();
                 currentRow = bindingSourceCommands.Current;
-                var scope = ((System.Data.DataRowView)currentRow).Row.ItemArray[1].ToString();
-                var moduleDescription = ((System.Data.DataRowView)currentRow).Row.ItemArray[4].ToString();
-                var windowTitle = ((System.Data.DataRowView)currentRow).Row.ItemArray[5].ToString();
+                var scope = ((DataRowView)currentRow).Row.ItemArray[Mapping.Scope].ToString();
+                var module = ((DataRowView)currentRow).Row.ItemArray[Mapping.Module].ToString();
+                var moduleDescription = ((DataRowView)currentRow).Row.ItemArray[Mapping.ModuleDescription].ToString();
+                var windowTitle = ((DataRowView)currentRow).Row.ItemArray[Mapping.WindowTitle].ToString();
                 var commandText = $"This command is used for {scope} {moduleDescription} {windowTitle} {Environment.NewLine}" +
                     $"The spoken command name is: '{command}' {description} {group}{Environment.NewLine}{Environment.NewLine}" +
                     $"The {textBoxType.Text} code is as follows:{Environment.NewLine}{Environment.NewLine}" +
                     $"{textBoxContent.Text}";
-                //if (command.Contains("<") && command.Contains(">"))
-                //{
-
-                //}
                 Clipboard.SetText(commandText);
-
-                //XDocument documentExport = new XDocument(
-                //     new XComment("Exported KnowBrainer Command"),
-                //     new XElement("KnowBrainerCommands",
-                //     from element in document.Elements("Commands")
-                //     where
-                //     (from add in element.Elements("Command")
-                //      where
-                //      (string)add.Attribute("name") == command
-                //      select add)
-                //     .Any()
-                //     select element
-                // ));
-
-                //documentExport.Save(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + $"\\{command}.xml");
-                //Application.Exit();
+                FileManagement.ExportSingleCommand(dataSet, scope, module, command);
+            }
+            else
+            {
+                MessageBox.Show("Please select a Script first then click Export Script", "Script Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

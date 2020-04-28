@@ -6,7 +6,6 @@ namespace BankTests
     [TestClass]
     public class BankAccountTests
     {
-
         [TestMethod]
         public void Debit_WhenAmountIsMoreThanBalance_ShouldThrowArgumentOutOfRange()
         {

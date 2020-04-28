@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BrowseScripts\BrowseScripts.csproj" />
     <ProjectReference Include="..\ConsoleApp1\Bank.csproj" />
   </ItemGroup>
 

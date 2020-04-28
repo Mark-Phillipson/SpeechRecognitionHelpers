@@ -25,7 +25,7 @@ namespace VoiceLauncher.Models
         public virtual DbSet<MultipleLauncher> MultipleLaunchers { get; set; }
         public virtual DbSet<ValuesToInsert> ValuesToInserts { get; set; }
         public virtual DbSet<CustomIntellisenseLauncherUnion> CustomIntellisenseLauncherUnions { get; set; }
-
+        public virtual DbSet<Todo> Todos { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
         }
