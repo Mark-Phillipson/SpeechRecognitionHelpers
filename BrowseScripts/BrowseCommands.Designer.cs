@@ -56,19 +56,23 @@ namespace BrowseScripts
             this.textBoxType = new System.Windows.Forms.TextBox();
             this.dataGridViewLists = new System.Windows.Forms.DataGridView();
             this.dataGridViewList = new System.Windows.Forms.DataGridView();
-            this.buttonCopyCode = new System.Windows.Forms.Button();
             this.textBoxFilterValue = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxListFilter = new System.Windows.Forms.TextBox();
-            this.buttonExportCommand = new System.Windows.Forms.Button();
-            this.buttonViewScript = new System.Windows.Forms.Button();
-            this.buttonOpenXmlFile = new System.Windows.Forms.Button();
             this.listViewCommandsAvailable = new System.Windows.Forms.ListView();
-            this.buttonCommandsAvailable = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.MessageAlert = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectDifferentXMLFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openXMLFileWithExternalAppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.commandsAvailableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewCallingScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).BeginInit();
@@ -76,6 +80,7 @@ namespace BrowseScripts
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridViewCommands
@@ -165,7 +170,7 @@ namespace BrowseScripts
             dataGridViewCellStyle10.SelectionForeColor = System.Drawing.Color.Red;
             this.dataGridViewCommand.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dataGridViewCommand.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridViewCommand.Size = new System.Drawing.Size(709, 376);
+            this.dataGridViewCommand.Size = new System.Drawing.Size(709, 348);
             this.dataGridViewCommand.TabIndex = 11;
             this.dataGridViewCommand.SelectionChanged += new System.EventHandler(this.DataGridViewCommand_SelectionChanged);
             this.dataGridViewCommand.DoubleClick += new System.EventHandler(this.dataGridViewCommand_DoubleClick);
@@ -320,24 +325,9 @@ namespace BrowseScripts
             dataGridViewCellStyle16.SelectionForeColor = System.Drawing.Color.Red;
             this.dataGridViewList.RowsDefaultCellStyle = dataGridViewCellStyle16;
             this.dataGridViewList.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dataGridViewList.Size = new System.Drawing.Size(149, 376);
+            this.dataGridViewList.Size = new System.Drawing.Size(149, 348);
             this.dataGridViewList.TabIndex = 12;
             this.dataGridViewList.DoubleClick += new System.EventHandler(this.dataGridViewList_DoubleClick);
-            // 
-            // buttonCopyCode
-            // 
-            this.buttonCopyCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.buttonCopyCode.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
-            this.buttonCopyCode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonCopyCode.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCopyCode.Location = new System.Drawing.Point(1437, 3);
-            this.buttonCopyCode.Name = "buttonCopyCode";
-            this.buttonCopyCode.Size = new System.Drawing.Size(95, 27);
-            this.buttonCopyCode.TabIndex = 8;
-            this.buttonCopyCode.TabStop = false;
-            this.buttonCopyCode.Text = "Co&py Code";
-            this.buttonCopyCode.UseVisualStyleBackColor = false;
-            this.buttonCopyCode.Click += new System.EventHandler(this.ButtonCopyCode_Click);
             // 
             // textBoxFilterValue
             // 
@@ -372,52 +362,6 @@ namespace BrowseScripts
             this.textBoxListFilter.TabIndex = 6;
             this.textBoxListFilter.TextChanged += new System.EventHandler(this.TextBoxListFilter_TextChanged);
             // 
-            // buttonExportCommand
-            // 
-            this.buttonExportCommand.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.buttonExportCommand.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
-            this.buttonExportCommand.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonExportCommand.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonExportCommand.Location = new System.Drawing.Point(1288, 3);
-            this.buttonExportCommand.Name = "buttonExportCommand";
-            this.buttonExportCommand.Size = new System.Drawing.Size(130, 27);
-            this.buttonExportCommand.TabIndex = 15;
-            this.buttonExportCommand.TabStop = false;
-            this.buttonExportCommand.Text = "Export Script";
-            this.buttonExportCommand.UseVisualStyleBackColor = false;
-            this.buttonExportCommand.Click += new System.EventHandler(this.ButtonExportCommand_Click);
-            // 
-            // buttonViewScript
-            // 
-            this.buttonViewScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.buttonViewScript.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
-            this.buttonViewScript.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonViewScript.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonViewScript.Location = new System.Drawing.Point(1127, 3);
-            this.buttonViewScript.Name = "buttonViewScript";
-            this.buttonViewScript.Size = new System.Drawing.Size(142, 27);
-            this.buttonViewScript.TabIndex = 16;
-            this.buttonViewScript.TabStop = false;
-            this.buttonViewScript.Text = "View Calling Script";
-            this.buttonViewScript.UseVisualStyleBackColor = false;
-            this.buttonViewScript.Click += new System.EventHandler(this.buttonViewScript_Click);
-            // 
-            // buttonOpenXmlFile
-            // 
-            this.buttonOpenXmlFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.buttonOpenXmlFile.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonOpenXmlFile.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
-            this.buttonOpenXmlFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonOpenXmlFile.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonOpenXmlFile.Location = new System.Drawing.Point(0, 719);
-            this.buttonOpenXmlFile.Name = "buttonOpenXmlFile";
-            this.buttonOpenXmlFile.Size = new System.Drawing.Size(650, 27);
-            this.buttonOpenXmlFile.TabIndex = 17;
-            this.buttonOpenXmlFile.TabStop = false;
-            this.buttonOpenXmlFile.Text = "Open XML File";
-            this.buttonOpenXmlFile.UseVisualStyleBackColor = false;
-            this.buttonOpenXmlFile.Click += new System.EventHandler(this.buttonOpenXmlFile_Click);
-            // 
             // listViewCommandsAvailable
             // 
             this.listViewCommandsAvailable.HideSelection = false;
@@ -428,28 +372,10 @@ namespace BrowseScripts
             this.listViewCommandsAvailable.UseCompatibleStateImageBehavior = false;
             this.listViewCommandsAvailable.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listViewCommandsAvailable_MouseDoubleClick);
             // 
-            // buttonCommandsAvailable
-            // 
-            this.buttonCommandsAvailable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.buttonCommandsAvailable.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonCommandsAvailable.FlatAppearance.BorderColor = System.Drawing.Color.Maroon;
-            this.buttonCommandsAvailable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonCommandsAvailable.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCommandsAvailable.Location = new System.Drawing.Point(0, 692);
-            this.buttonCommandsAvailable.Name = "buttonCommandsAvailable";
-            this.buttonCommandsAvailable.Size = new System.Drawing.Size(650, 27);
-            this.buttonCommandsAvailable.TabIndex = 19;
-            this.buttonCommandsAvailable.TabStop = false;
-            this.buttonCommandsAvailable.Text = "Commands Available";
-            this.buttonCommandsAvailable.UseVisualStyleBackColor = false;
-            this.buttonCommandsAvailable.Click += new System.EventHandler(this.buttonCommandsAvailable_Click);
-            // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.buttonCommandsAvailable);
-            this.panel1.Controls.Add(this.buttonOpenXmlFile);
             this.panel1.Controls.Add(this.textBoxContent);
             this.panel1.Location = new System.Drawing.Point(893, 43);
             this.panel1.Name = "panel1";
@@ -458,11 +384,8 @@ namespace BrowseScripts
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.buttonViewScript);
-            this.panel2.Controls.Add(this.buttonExportCommand);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.textBoxListFilter);
-            this.panel2.Controls.Add(this.buttonCopyCode);
             this.panel2.Controls.Add(this.textBoxType);
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.textBoxCommandFilter);
@@ -470,7 +393,7 @@ namespace BrowseScripts
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.textBoxFilter);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Location = new System.Drawing.Point(0, 24);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1546, 37);
             this.panel2.TabIndex = 21;
@@ -483,19 +406,92 @@ namespace BrowseScripts
             this.panel3.Controls.Add(this.dataGridViewList);
             this.panel3.Controls.Add(this.dataGridViewLists);
             this.panel3.Controls.Add(this.dataGridViewCommand);
-            this.panel3.Location = new System.Drawing.Point(0, 43);
+            this.panel3.Location = new System.Drawing.Point(0, 61);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(888, 756);
+            this.panel3.Size = new System.Drawing.Size(888, 728);
             this.panel3.TabIndex = 22;
             // 
             // MessageAlert
             // 
             this.MessageAlert.AutoSize = true;
             this.MessageAlert.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.MessageAlert.Location = new System.Drawing.Point(0, 743);
+            this.MessageAlert.Location = new System.Drawing.Point(0, 715);
             this.MessageAlert.Name = "MessageAlert";
             this.MessageAlert.Size = new System.Drawing.Size(0, 13);
             this.MessageAlert.TabIndex = 15;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.commandsAvailableToolStripMenuItem,
+            this.viewCallingScriptToolStripMenuItem,
+            this.copyCodeToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1546, 24);
+            this.menuStrip1.TabIndex = 23;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectDifferentXMLFileToolStripMenuItem,
+            this.openXMLFileWithExternalAppToolStripMenuItem,
+            this.exportScriptToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "Fil&e";
+            // 
+            // selectDifferentXMLFileToolStripMenuItem
+            // 
+            this.selectDifferentXMLFileToolStripMenuItem.Name = "selectDifferentXMLFileToolStripMenuItem";
+            this.selectDifferentXMLFileToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.selectDifferentXMLFileToolStripMenuItem.Text = "&Select Different XML File";
+            this.selectDifferentXMLFileToolStripMenuItem.Click += new System.EventHandler(this.selectDifferentXMLFileToolStripMenuItem_Click);
+            // 
+            // openXMLFileWithExternalAppToolStripMenuItem
+            // 
+            this.openXMLFileWithExternalAppToolStripMenuItem.Name = "openXMLFileWithExternalAppToolStripMenuItem";
+            this.openXMLFileWithExternalAppToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.openXMLFileWithExternalAppToolStripMenuItem.Text = "&Open XML File with External App";
+            this.openXMLFileWithExternalAppToolStripMenuItem.Click += new System.EventHandler(this.openXMLFileWithExternalAppToolStripMenuItem_Click);
+            // 
+            // exportScriptToolStripMenuItem
+            // 
+            this.exportScriptToolStripMenuItem.Name = "exportScriptToolStripMenuItem";
+            this.exportScriptToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.exportScriptToolStripMenuItem.Text = "&Export Script";
+            this.exportScriptToolStripMenuItem.Click += new System.EventHandler(this.exportScriptToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // commandsAvailableToolStripMenuItem
+            // 
+            this.commandsAvailableToolStripMenuItem.Name = "commandsAvailableToolStripMenuItem";
+            this.commandsAvailableToolStripMenuItem.Size = new System.Drawing.Size(132, 20);
+            this.commandsAvailableToolStripMenuItem.Text = "Commands &Available";
+            this.commandsAvailableToolStripMenuItem.Click += new System.EventHandler(this.commandsAvailableToolStripMenuItem_Click);
+            // 
+            // viewCallingScriptToolStripMenuItem
+            // 
+            this.viewCallingScriptToolStripMenuItem.Name = "viewCallingScriptToolStripMenuItem";
+            this.viewCallingScriptToolStripMenuItem.Size = new System.Drawing.Size(117, 20);
+            this.viewCallingScriptToolStripMenuItem.Text = "&View Calling Script";
+            this.viewCallingScriptToolStripMenuItem.Click += new System.EventHandler(this.viewCallingScriptToolStripMenuItem_Click);
+            // 
+            // copyCodeToolStripMenuItem
+            // 
+            this.copyCodeToolStripMenuItem.Name = "copyCodeToolStripMenuItem";
+            this.copyCodeToolStripMenuItem.Size = new System.Drawing.Size(78, 20);
+            this.copyCodeToolStripMenuItem.Text = "Co&py Code";
+            this.copyCodeToolStripMenuItem.Click += new System.EventHandler(this.copyCodeToolStripMenuItem_Click);
             // 
             // BrowseCommands
             // 
@@ -507,15 +503,17 @@ namespace BrowseScripts
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.listViewCommandsAvailable);
+            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "BrowseCommands";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Browse KnowBrainer Commands";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.BrowseCommands_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommands)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCommand)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLists)).EndInit();
@@ -526,7 +524,10 @@ namespace BrowseScripts
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -542,19 +543,23 @@ namespace BrowseScripts
         private System.Windows.Forms.TextBox textBoxType;
         private System.Windows.Forms.DataGridView dataGridViewLists;
         private System.Windows.Forms.DataGridView dataGridViewList;
-        private System.Windows.Forms.Button buttonCopyCode;
         private System.Windows.Forms.TextBox textBoxFilterValue;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxListFilter;
-        private System.Windows.Forms.Button buttonExportCommand;
-        private System.Windows.Forms.Button buttonViewScript;
-        private System.Windows.Forms.Button buttonOpenXmlFile;
         private System.Windows.Forms.ListView listViewCommandsAvailable;
-        private System.Windows.Forms.Button buttonCommandsAvailable;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label MessageAlert;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectDifferentXMLFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem commandsAvailableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openXMLFileWithExternalAppToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewCallingScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportScriptToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyCodeToolStripMenuItem;
     }
 }
 

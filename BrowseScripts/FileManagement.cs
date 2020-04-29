@@ -31,19 +31,24 @@ namespace BrowseScripts
             openFileDialog.RestoreDirectory = true;
             openFileDialog.Title = "Please select a KnowBrainer XML commands file to browse.";
         }
-        public static XDocument LoadXMLDocument(string filename, DataSet dataSet, BrowseCommands form)
+        public static bool LoadXMLDocument(string filename, DataSet dataSet, BrowseCommands form)
         {
             XDocument document = XDocument.Load(filename);
             var commands = document.Descendants("Command").Count();
             var lists = document.Descendants("List").Count();
             if (commands == 0 || lists == 0)
             {
-                return null;
+                return false;
             }
             form.Text = $"Browse KnowBrainer Commands (Commands: {commands} Lists: {lists}) {filename}";
+            dataSet.Clear();
             dataSet.ReadXmlSchema(filename);
             dataSet.ReadXml(filename);
-            return document;
+            if (document == null)
+            {
+                return false;
+            }
+            return true;
         }
         public static void ExportSingleCommand(DataSet dataSet, string scope, string module, string name)
         {

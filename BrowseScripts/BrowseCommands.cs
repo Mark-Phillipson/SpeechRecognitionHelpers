@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -17,18 +17,29 @@ namespace BrowseScripts
         readonly BindingSource bindingSourceContent = new BindingSource();
         readonly BindingSource bindingSourceLists = new BindingSource();
         readonly BindingSource bindingSourceList = new BindingSource();
-        XDocument document;
-        string filename = "";
-        public XDocument Document { get => document; set => document = value; }
+        private string _filename = "";
 
         public BrowseCommands()
         {
             InitializeComponent();
+            menuStrip1.BackColor = Color.FromArgb(38, 38, 38);
+            menuStrip1.ForeColor = Color.White;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void BrowseCommands_Load(object sender, EventArgs e)
         {
-            if (true || !Debugger.IsAttached)
+            var loadedSuccessfully = LoadDataAndSetUp(_filename);
+            if (!loadedSuccessfully)
+            {
+                Application.Exit();
+                return;
+            }
+            SetUpFormAccordingToCommandlineArguments();
+        }
+
+        private bool LoadDataAndSetUp(string filename)
+        {
+            if (filename == "")
             {
                 filename = Properties.Settings.Default.LastFileOpened;
             }
@@ -38,17 +49,13 @@ namespace BrowseScripts
             }
             if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
             {
-                Application.Exit();
-                return;
+                return false;
             }
-            Properties.Settings.Default.LastFileOpened = filename;
-            Properties.Settings.Default.Save();
-            Document = FileManagement.LoadXMLDocument(filename, dataSet, this);
-
-            if (Document == null)
+            var validDocument = FileManagement.LoadXMLDocument(filename, dataSet, this);
+            if (validDocument == false)
             {
                 NotifyErrorAndQuit();
-                return;
+                return false;
             }
             try
             {
@@ -57,26 +64,33 @@ namespace BrowseScripts
             catch (Exception)
             {
                 NotifyErrorAndQuit();
-                return;
+                return false;
             }
+            Properties.Settings.Default.LastFileOpened = filename;
+            Properties.Settings.Default.Save();
             SetUpCommand();
             SetupLists();
             SetupAvailableCommands();
+            SetupContent();
+            _filename = filename;
+            return true;
+        }
+
+        private void SetupContent()
+        {
             var currentRow = bindingSourceCommands.Current;
-            bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[0];
+            bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[Mapping.PrimaryKey_Commands];
             SetUpTiles(currentRow);
             bindingSourceContent.DataSource = dataSet;
             bindingSourceContent.DataMember = "Content";
             currentRow = bindingSourceCommand.Current;
-            bindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[1];
+            bindingSourceContent.Filter = "Command_Id =" + ((DataRowView)currentRow).Row.ItemArray[Mapping.PrimaryKey_Command];
             currentRow = bindingSourceContent.Current;
             if (currentRow != null)
             {
-                textBoxContent.Text = ((DataRowView)currentRow).Row.ItemArray[1].ToString();
-                textBoxType.Text = ((DataRowView)currentRow).Row.ItemArray[0].ToString();
+                textBoxContent.Text = ((DataRowView)currentRow).Row.ItemArray[Mapping.Content].ToString();
+                textBoxType.Text = ((DataRowView)currentRow).Row.ItemArray[Mapping.ScriptType].ToString();
             }
-
-            SetUpFormAccordingToCommandlineArguments();
         }
 
         private void SetUpFormAccordingToCommandlineArguments()
@@ -193,7 +207,7 @@ namespace BrowseScripts
 
         private void NotifyErrorAndQuit()
         {
-            MessageBox.Show($"The XML {filename} file does not appear to be in the expected format. Please relaunch the application and select a valid file. ", "Problem with File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show($"The XML {_filename} file does not appear to be in the expected format. Please relaunch the application and select a valid file. ", "Problem with File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             Properties.Settings.Default.LastFileOpened = "";
             Properties.Settings.Default.Save();
             Application.Exit();
@@ -386,13 +400,6 @@ namespace BrowseScripts
             }
         }
 
-        private void ButtonCopyCode_Click(object sender, EventArgs e)
-        {
-            textBoxContent.Focus();
-            textBoxContent.Copy();
-            textBoxFilter.Focus();
-        }
-
         private void TextBoxListFilter_TextChanged(object sender, EventArgs e)
         {
             if (textBoxListFilter.Text != null && textBoxListFilter.Text.Length > 0)
@@ -400,38 +407,6 @@ namespace BrowseScripts
                 var filter = "name Like '%" + textBoxListFilter.Text + "%'";
                 bindingSourceLists.Filter = filter;
             }
-        }
-
-        private void ButtonExportCommand_Click(object sender, EventArgs e)
-        {
-            var currentRow = bindingSourceCommand.Current;
-            if (currentRow != null)
-            {
-                var description = ((DataRowView)currentRow).Row.ItemArray[Mapping.Description].ToString();
-                var command = ((DataRowView)currentRow).Row.ItemArray[Mapping.ScriptName].ToString();
-                var group = ((DataRowView)currentRow).Row.ItemArray[Mapping.Group].ToString();
-                currentRow = bindingSourceCommands.Current;
-                var scope = ((DataRowView)currentRow).Row.ItemArray[Mapping.Scope].ToString();
-                var module = ((DataRowView)currentRow).Row.ItemArray[Mapping.Module].ToString();
-                var moduleDescription = ((DataRowView)currentRow).Row.ItemArray[Mapping.ModuleDescription].ToString();
-                var windowTitle = ((DataRowView)currentRow).Row.ItemArray[Mapping.WindowTitle].ToString();
-                var commandText = $"This command is used for {scope} {moduleDescription} {windowTitle} {Environment.NewLine}" +
-                    $"The spoken command name is: '{command}' {description} {group}{Environment.NewLine}{Environment.NewLine}" +
-                    $"The {textBoxType.Text} code is as follows:{Environment.NewLine}{Environment.NewLine}" +
-                    $"{textBoxContent.Text}";
-                Clipboard.SetText(commandText);
-                FileManagement.ExportSingleCommand(dataSet, scope, module, command);
-            }
-            else
-            {
-                MessageBox.Show("Please select a Script first then click Export Script", "Script Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void buttonViewScript_Click(object sender, EventArgs e)
-        {
-            ExampleCallingScript form = new ExampleCallingScript();
-            form.ShowDialog();
         }
 
         private void dataGridViewLists_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
@@ -485,21 +460,6 @@ namespace BrowseScripts
             }
         }
 
-        private void buttonOpenXmlFile_Click(object sender, EventArgs e)
-        {
-            if (filename.Length > 0 && File.Exists(filename))
-            {
-                try
-                {
-                    Process.Start(filename);
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.Message, "Exception!", MessageBoxButtons.OK);
-                }
-            }
-        }
-
         private void listViewCommandsAvailable_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (listViewCommandsAvailable.Dock == DockStyle.Fill)
@@ -509,12 +469,82 @@ namespace BrowseScripts
             }
         }
 
-        private void buttonCommandsAvailable_Click(object sender, EventArgs e)
+        private void selectDifferentXMLFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var newFileName = FileManagement.OpenXMLFile();
+            var result = LoadDataAndSetUp(newFileName);
+            if (result == false)
+            {
+                Application.Exit();
+            }
+        }
+
+        private void commandsAvailableToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetUpTiles(bindingSourceCommands.Current);
             listViewCommandsAvailable.Dock = DockStyle.Fill;
             listViewCommandsAvailable.Visible = true;
             listViewCommandsAvailable.BringToFront();
+        }
+
+        private void openXMLFileWithExternalAppToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_filename.Length > 0 && File.Exists(_filename))
+            {
+                try
+                {
+                    Process.Start(_filename);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message, "Exception!", MessageBoxButtons.OK);
+                }
+            }
+        }
+
+        private void viewCallingScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExampleCallingScript form = new ExampleCallingScript();
+            form.ShowDialog();
+        }
+
+        private void exportScriptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var currentRow = bindingSourceCommand.Current;
+            if (currentRow != null)
+            {
+                var description = ((DataRowView)currentRow).Row.ItemArray[Mapping.Description].ToString();
+                var command = ((DataRowView)currentRow).Row.ItemArray[Mapping.ScriptName].ToString();
+                var group = ((DataRowView)currentRow).Row.ItemArray[Mapping.Group].ToString();
+                currentRow = bindingSourceCommands.Current;
+                var scope = ((DataRowView)currentRow).Row.ItemArray[Mapping.Scope].ToString();
+                var module = ((DataRowView)currentRow).Row.ItemArray[Mapping.Module].ToString();
+                var moduleDescription = ((DataRowView)currentRow).Row.ItemArray[Mapping.ModuleDescription].ToString();
+                var windowTitle = ((DataRowView)currentRow).Row.ItemArray[Mapping.WindowTitle].ToString();
+                var commandText = $"This command is used for {scope} {moduleDescription} {windowTitle} {Environment.NewLine}" +
+                    $"The spoken command name is: '{command}' {description} {group}{Environment.NewLine}{Environment.NewLine}" +
+                    $"The {textBoxType.Text} code is as follows:{Environment.NewLine}{Environment.NewLine}" +
+                    $"{textBoxContent.Text}";
+                Clipboard.SetText(commandText);
+                FileManagement.ExportSingleCommand(dataSet, scope, module, command);
+            }
+            else
+            {
+                MessageBox.Show("Please select a Script first then click Export Script", "Script Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+        }
+
+        private void copyCodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            textBoxContent.Focus();
+            textBoxContent.Copy();
+            textBoxFilter.Focus();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
