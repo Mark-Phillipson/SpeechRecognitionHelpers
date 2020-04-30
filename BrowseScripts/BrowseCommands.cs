@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace BrowseScripts
 {
@@ -22,8 +21,9 @@ namespace BrowseScripts
         public BrowseCommands()
         {
             InitializeComponent();
-            menuStrip1.BackColor = Color.FromArgb(38, 38, 38);
-            menuStrip1.ForeColor = Color.White;
+            menuStrip1.BackColor = Color.FromArgb(100, 100, 100);
+            menuStrip1.ForeColor = Color.FromArgb(12, 12, 12);
+            menuStrip1.Renderer = new MyRenderer();
         }
 
         private void BrowseCommands_Load(object sender, EventArgs e)
@@ -546,5 +546,26 @@ namespace BrowseScripts
         {
             Application.Exit();
         }
+        private class MyRenderer : ToolStripProfessionalRenderer
+        {
+            public MyRenderer() : base(new MyColors()) { }
+        }
+
+        private class MyColors : ProfessionalColorTable
+        {
+            public override Color MenuItemSelected
+            {
+                get { return Color.FromArgb(100, 100, 100); }
+            }
+            public override Color MenuItemSelectedGradientBegin
+            {
+                get { return Color.FromArgb(38, 38, 38); }
+            }
+            public override Color MenuItemSelectedGradientEnd
+            {
+                get { return Color.FromArgb(100, 100, 100); }
+            }
+        }
     }
+
 }
