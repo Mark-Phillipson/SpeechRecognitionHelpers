@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bank", "ConsoleApp1\Bank.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "BankTests\UnitTests.csproj", "{4AF0C2A5-AB5A-4ACE-8191-97A71FA9EDAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeechRecognitionHelpersLibrary", "SpeechRecognitionHelpersLibrary\SpeechRecognitionHelpersLibrary.csproj", "{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{4AF0C2A5-AB5A-4ACE-8191-97A71FA9EDAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AF0C2A5-AB5A-4ACE-8191-97A71FA9EDAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AF0C2A5-AB5A-4ACE-8191-97A71FA9EDAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

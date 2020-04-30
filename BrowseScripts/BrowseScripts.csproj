@@ -144,5 +144,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpeechRecognitionHelpersLibrary\SpeechRecognitionHelpersLibrary.csproj">
+      <Project>{fa141aac-0af2-4cb4-a9a8-fabe0bddbc66}</Project>
+      <Name>SpeechRecognitionHelpersLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

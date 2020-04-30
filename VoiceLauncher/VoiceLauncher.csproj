@@ -80,6 +80,7 @@
     <Compile Include="CustomIntelliSenseSingleRecord.Designer.cs">
       <DependentUpon>CustomIntelliSenseSingleRecord.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomTheme.cs" />
     <Compile Include="FormCustomIntellisenseLauncherUnion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -189,6 +190,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpeechRecognitionHelpersLibrary\SpeechRecognitionHelpersLibrary.csproj">
+      <Project>{fa141aac-0af2-4cb4-a9a8-fabe0bddbc66}</Project>
+      <Name>SpeechRecognitionHelpersLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using VoiceLauncher.Models;
@@ -22,6 +23,15 @@ namespace VoiceLauncher
             db.Languages.OrderBy(v => v.LanguageName).Load();
             languageDataGridView.DataSource = db.Languages.Local.ToBindingList();
             languageDataGridView.Refresh();
+            CustomTheme.SetDataGridViewTheme(languageDataGridView, "Tahoma", 9);
+            BackColor = Color.FromArgb(100, 100, 100);
+            ForeColor = Color.White;
+            languageBindingNavigator.BackColor = Color.FromArgb(38, 38, 38);
+            languageBindingNavigator.ForeColor = Color.White;
+            foreach (DataGridViewColumn column in languageDataGridView.Columns)
+            {
+                column.Width = 200;
+            }
         }
 
         private void languageBindingNavigatorSaveItem_Click(object sender, EventArgs e)

@@ -1,3 +1,4 @@
+using SpeechRecognitionHelpersLibrary;
 using System;
 using System.Data;
 using System.Diagnostics;
@@ -545,26 +546,6 @@ namespace BrowseScripts
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-        private class MyRenderer : ToolStripProfessionalRenderer
-        {
-            public MyRenderer() : base(new MyColors()) { }
-        }
-
-        private class MyColors : ProfessionalColorTable
-        {
-            public override Color MenuItemSelected
-            {
-                get { return Color.FromArgb(100, 100, 100); }
-            }
-            public override Color MenuItemSelectedGradientBegin
-            {
-                get { return Color.FromArgb(38, 38, 38); }
-            }
-            public override Color MenuItemSelectedGradientEnd
-            {
-                get { return Color.FromArgb(100, 100, 100); }
-            }
         }
     }
 

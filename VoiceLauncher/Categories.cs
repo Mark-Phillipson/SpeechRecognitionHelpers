@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using VoiceLauncher.Models;
@@ -22,6 +23,12 @@ namespace VoiceLauncher
             db = new VoiceLauncherContext();
             db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
             this.categoryBindingSource.DataSource = db.Categories.Local.ToBindingList();
+            CustomTheme.SetDataGridViewTheme(categoryDataGridView, "Tahoma", 8);
+            CustomTheme.SetDataGridViewTheme(customIntelliSensesDataGridView, "Tahoma", 8);
+            categoryBindingNavigator.BackColor = Color.FromArgb(38, 38, 38);
+            categoryBindingNavigator.ForeColor = Color.White;
+            BackColor = Color.FromArgb(100, 100, 100);
+            ForeColor = Color.White;
             //customIntelliSensesBindingSource.Sort = "LanguageID ASC, Display_Value ASC, SendKeys_Value ASC";
         }
         protected override void OnClosing(CancelEventArgs e)

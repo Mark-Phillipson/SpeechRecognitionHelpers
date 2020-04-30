@@ -1,3 +1,4 @@
+using SpeechRecognitionHelpersLibrary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,31 +22,30 @@ namespace VoiceLauncher
         {
             InitializeComponent();
             db = new VoiceLauncherContext();
+            BackColor = Color.FromArgb(100, 100, 100);
+            ForeColor = Color.White;
+
         }
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             menuStrip1.BackColor = Color.FromArgb(38, 38, 38);
             menuStrip1.ForeColor = Color.White;
-            FontFamily fontFamily = new FontFamily("Cascadia Code");
-            Font font = new Font(fontFamily, (float)11, FontStyle.Bold, GraphicsUnit.Point);
-            var style = new DataGridViewCellStyle
-            { BackColor = Color.FromArgb(38, 38, 38), ForeColor = Color.White, Font = font };
-            customIntelliSenseDataGridView.DefaultCellStyle = style;
-            customIntelliSenseDataGridView.ColumnHeadersDefaultCellStyle = style;
-            customIntelliSenseDataGridView.RowHeadersDefaultCellStyle = style;
-            customIntelliSenseDataGridView.RowsDefaultCellStyle = style;
-            customIntelliSenseDataGridView.EnableHeadersVisualStyles = false;
-            SetDataSourceForGrid();
+            menuStrip1.Renderer = new MyRenderer();
             db.Configuration.ProxyCreationEnabled = false;
+            SetupDataGridView();
+        }
+
+        private void SetupDataGridView()
+        {
+            CustomTheme.SetDataGridViewTheme(customIntelliSenseDataGridView, "Tahoma");
+            SetDataSourceForGrid();
             customIntelliSenseDataGridView.Columns[2].HeaderText = "Category";
             customIntelliSenseDataGridView.Columns[3].HeaderText = "Display Value";
             customIntelliSenseDataGridView.Columns[4].HeaderText = "Value to Send or Code to Run";
             customIntelliSenseDataGridView.Columns[5].Visible = false;
             customIntelliSenseDataGridView.Columns[7].Visible = false;
             customIntelliSenseDataGridView.Columns[9].HeaderText = "Delivery Type";
-            //customIntelliSenseDataGridView.RowTemplate.Height = 200;
-            //customIntelliSenseDataGridView.RowTemplate.MinimumHeight = 100;
             foreach (DataGridViewColumn column in customIntelliSenseDataGridView.Columns)
             {
                 column.DefaultCellStyle.Font = new Font("Cascadia Code", 10.5F, GraphicsUnit.Pixel);

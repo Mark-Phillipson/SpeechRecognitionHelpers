@@ -27,6 +27,8 @@ namespace VoiceLauncher.Models
         [Column("Category_Type")]
         public string CategoryType { get; set; }
 
+        public bool Sensitive { get; set; } = false;
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         //public virtual ICollection<CustomIntelliSense> CustomIntelliSenses { get; set; }
 

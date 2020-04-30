@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using VoiceLauncher.Models;
@@ -37,6 +38,8 @@ namespace VoiceLauncher
                 db.CustomIntelliSenses.Local.Add(customIntelliSense);
             }
             db.Languages.OrderBy(o => o.LanguageName).Load();
+            customIntelliSenseBindingNavigator.BackColor = Color.FromArgb(100, 100, 100);
+            customIntelliSenseBindingNavigator.ForeColor = Color.White;
             BindingSource bindingSourceLanguage = new BindingSource();
             bindingSourceLanguage.DataSource = db.Languages.Local.ToBindingList();
             languageIDComboBox.DataSource = bindingSourceLanguage;
