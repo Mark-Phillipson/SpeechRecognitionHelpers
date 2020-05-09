@@ -1,91 +1,32 @@
 ﻿using BrowseScripts;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
+
 
 namespace UnitTests
 {
-    [TestClass]
+
     public class ListManagementTests
     {
-        [TestMethod]
-        public void BuildListFilter_ReturnCorrectFilter()
+        [Theory]
+        [InlineData("Test <Test1> <Test2>", "", "name = 'Test1' Or name = 'Test2'")]
+        [InlineData("Test <Test1> <Test2>", "Test0", "name= 'Test0' Or name = 'Test1' Or name = 'Test2'")]
+        [InlineData("Test", "Test0", "name = 'Test0'")]
+        [InlineData(null, null, "")]
+        [InlineData("", null, "")]
+        public void BuildListFilter_ReturnCorrectFilter(string commandName, string filter, string expected)
         {
-            var commandName = "Test <Test1> <Test2>";
-            var filter = "";
-
             var actual = ListManagement.BuildListFilter(commandName, filter);
-
-            Assert.AreEqual("name = 'Test1' Or name = 'Test2'", actual);
+            Assert.Equal(expected, actual);
         }
-        [TestMethod]
-        public void BuildListFilter_ReturnBlankFilter()
+        [Theory]
+        [InlineData("Test <Test1>", true)]
+        [InlineData("Test", false)]
+        [InlineData(null, false)]
+        public void HasLists_ReturnCorrectValue(string commandName, bool expected)
         {
-            var commandName = "Test";
-            var filter = "";
-            var expected = "";
-
-            var actual = ListManagement.BuildListFilter(commandName, filter);
-
-            Assert.AreEqual(expected, actual);
-        }
-        [TestMethod]
-        public void BuildListFilter_ReturnCorrectFilterAddTo()
-        {
-            var commandName = "Test <Test1> <Test2>";
-            var filter = "name = 'Test0'";
-            var expected = "name = 'Test0' Or name = 'Test1' Or name = 'Test2'";
-
-            var actual = ListManagement.BuildListFilter(commandName, filter);
-
-            Assert.AreEqual(expected, actual);
-        }
-        [TestMethod]
-        public void BuildListFilter_BadData()
-        {
-            string commandName = null;
-            string filter = null;
-            var expected = "";
-
-            var actual = ListManagement.BuildListFilter(commandName, filter);
-
-            Assert.AreEqual(expected, actual);
-        }
-        [TestMethod]
-        public void BuildListFilter_BadDataPart2()
-        {
-            string commandName = "";
-            string filter = null;
-            var expected = "";
-
-            var actual = ListManagement.BuildListFilter(commandName, filter);
-
-            Assert.AreEqual(expected, actual);
-        }
-        [TestMethod]
-        public void HasLists_ReturnTrue()
-        {
-            string commandName = "Test <Test1>";
-            var expected = true;
             var actual = ListManagement.HasLists(commandName);
-
-            Assert.AreEqual(expected, actual);
+            Assert.Equal(expected, actual);
         }
-        [TestMethod]
-        public void HasLists_ReturnFalse()
-        {
-            string commandName = "Test";
-            var expected = false;
-            var actual = ListManagement.HasLists(commandName);
 
-            Assert.AreEqual(expected, actual);
-        }
-        [TestMethod]
-        public void HasLists_BadData()
-        {
-            string commandName = null;
-            var expected = false;
-            var actual = ListManagement.HasLists(commandName);
-
-            Assert.AreEqual(expected, actual);
-        }
     }
 }
