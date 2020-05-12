@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ExecuteCommands
 {
@@ -14,11 +10,11 @@ namespace ExecuteCommands
         [STAThread]
         static void Main()
         {
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
-            Commands commands = new Commands();
-            commands.PerformCommand();
+            string[] args = Environment.GetCommandLineArgs();
+            IHandleProcesses handleProcesses = new HandleProcesses();
+            Commands commands = new Commands(handleProcesses);
+            var result = commands.PerformCommand(args);
+            Console.WriteLine(result);
         }
     }
 }

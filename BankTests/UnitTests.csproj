@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BrowseScripts\BrowseScripts.csproj" />
     <ProjectReference Include="..\ConsoleApp1\Bank.csproj" />
+    <ProjectReference Include="..\ExecuteCommands\ExecuteCommands.csproj" />
   </ItemGroup>
 
 </Project>

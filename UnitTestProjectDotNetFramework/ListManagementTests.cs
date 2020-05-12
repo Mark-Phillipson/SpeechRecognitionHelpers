@@ -9,8 +9,8 @@ namespace UnitTests
     {
         [Theory]
         [InlineData("Test <Test1> <Test2>", "", "name = 'Test1' Or name = 'Test2'")]
-        [InlineData("Test <Test1> <Test2>", "Test0", "name= 'Test0' Or name = 'Test1' Or name = 'Test2'")]
-        [InlineData("Test", "Test0", "name = 'Test0'")]
+        [InlineData("Test <Test1> <Test2>", "name = 'Test0'", "name = 'Test0' Or name = 'Test1' Or name = 'Test2'")]
+        [InlineData("Test", "name = 'Test0'", "name = 'Test0'")]
         [InlineData(null, null, "")]
         [InlineData("", null, "")]
         public void BuildListFilter_ReturnCorrectFilter(string commandName, string filter, string expected)
