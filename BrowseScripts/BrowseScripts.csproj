@@ -130,6 +130,7 @@
   <ItemGroup>
     <Content Include="BrowseScripts.ico" />
     <Content Include="Publish\TextFile1.txt" />
+    <Content Include="XML schema.txt" />
     <None Include="Resources\BrowseScriptsLauncher.png" />
   </ItemGroup>
   <ItemGroup>

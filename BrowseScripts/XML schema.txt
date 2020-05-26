@@ -1,0 +1,28 @@
+﻿KnowBrainer XML file format
+Commands table 1
+    primary key 0
+    Scope field 1
+    Module field 2 (example winword)
+    Company field 3
+    Module Description 4 (Example Microsoft Word)
+
+Command table 2
+    Description Field 0
+    Primary Key 1
+    Foreign key 5
+    Name Field 2 (for example Sample HeardWord)
+    Group field 3
+    Enabled field 4
+
+Table 3 Content 
+    Type 0 (example win wrap basic)
+    Content 1 (Code)
+    foreign key 2
+Table 4 Lists (single record container only)
+Table 5 List
+    PrimaryKey 0
+    Name 1
+    ListsFK 2 (always zero)
+Table 6 value
+    Value 0
+    ListFK 1
