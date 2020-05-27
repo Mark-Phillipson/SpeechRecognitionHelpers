@@ -180,6 +180,7 @@ namespace DictationBoxMSP
             this.FindtextBox.Name = "FindtextBox";
             this.FindtextBox.Size = new System.Drawing.Size(189, 48);
             this.FindtextBox.TabIndex = 16;
+            this.FindtextBox.TextChanged += new System.EventHandler(this.FindtextBox_TextChanged);
             // 
             // FindButton
             // 

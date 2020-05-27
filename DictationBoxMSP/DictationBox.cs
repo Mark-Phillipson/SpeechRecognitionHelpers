@@ -133,6 +133,13 @@ namespace DictationBoxMSP
 
         private void FindButton_Click(object sender, EventArgs e)
         {
+            SearchAndIdentifyText();
+        }
+
+        private void SearchAndIdentifyText()
+        {
+            richTextBox1.SelectAll();
+            richTextBox1.SelectionBackColor = Color.Black;
             if (FindtextBox.Text == null || FindtextBox.Text.Length == 0)
             {
                 return;
@@ -142,7 +149,6 @@ namespace DictationBoxMSP
             var successfulFinds = 0;
             while (position >= 0)
             {
-
                 position = FindMyText(FindtextBox.Text, searchFrom, richTextBox1.Text.Length);
                 if (position >= 0)
                 {
@@ -153,6 +159,7 @@ namespace DictationBoxMSP
                     richTextBox1.SelectionBackColor = Color.Red;
                 }
             }
+            richTextBox1.DeselectAll();
         }
 
         private void ReplaceButton_Click(object sender, EventArgs e)
@@ -193,7 +200,7 @@ namespace DictationBoxMSP
         private void DictationBoxForm_Load(object sender, EventArgs e)
         {
             GetClipboardIntoTextbox();
-
+            richTextBox1.SelectionBackColor = Color.Black;
         }
 
         private void GetClipboardIntoTextbox()
@@ -209,6 +216,11 @@ namespace DictationBoxMSP
         private void buttonPasteText_Click(object sender, EventArgs e)
         {
             GetClipboardIntoTextbox();
+        }
+
+        private void FindtextBox_TextChanged(object sender, EventArgs e)
+        {
+            SearchAndIdentifyText();
         }
     }
 }
