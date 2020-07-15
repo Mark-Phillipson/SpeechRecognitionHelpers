@@ -1,8 +1,12 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using VoiceLauncher.Models;
 
@@ -17,50 +21,40 @@ namespace VoiceLauncher
             db = new VoiceLauncherContext();
         }
 
-        private void Languages_Load(object sender, EventArgs e)
+        private void LanguagesForm_Load(object sender, EventArgs e)
         {
-            languageDataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            db.Languages.OrderBy(v => v.LanguageName).Load();
-            languageDataGridView.DataSource = db.Languages.Local.ToBindingList();
+            db.Languages.Include(i => i.CustomIntelliSenses).Include(i => i.CustomIntelliSenses).OrderBy(v => v.LanguageName).Load();
+            this.languageBindingSource.DataSource = db.Languages.Local.ToBindingList();
             languageDataGridView.Refresh();
+            customIntelliSensesDataGridView.Refresh();
             CustomTheme.SetDataGridViewTheme(languageDataGridView, "Tahoma", 9);
+            CustomTheme.SetDataGridViewTheme(customIntelliSensesDataGridView, "Tahoma", 9);
             BackColor = Color.FromArgb(100, 100, 100);
             ForeColor = Color.White;
             languageBindingNavigator.BackColor = Color.FromArgb(38, 38, 38);
             languageBindingNavigator.ForeColor = Color.White;
             foreach (DataGridViewColumn column in languageDataGridView.Columns)
             {
-                column.Width = 200;
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
-        }
-
-        private void languageBindingNavigatorSaveItem_Click(object sender, EventArgs e)
-        {
-            this.Validate();
-            languageBindingSource.EndEdit();
-            db.SaveChanges();
-            this.languageDataGridView.Refresh();
-            this.Text = $"Saved Successfully at {DateTime.Now.ToShortTimeString()}";
-
-        }
-
-        private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
-        {
-            if (languageBindingSource.Current != null)
+            foreach (DataGridViewColumn column in customIntelliSensesDataGridView.Columns)
             {
-                var current = (Language)languageBindingSource.Current;
-                languageBindingSource.RemoveCurrent();
-                db.Languages.Local.Remove(current);
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
-        }
+            DataGridViewComboBoxColumn cboBoxColumn = (DataGridViewComboBoxColumn)customIntelliSensesDataGridView.Columns[5];
+            db.Categories.OrderBy(o => o.CategoryName).Load();
+            cboBoxColumn.DataSource = db.Categories.Local.ToBindingList();
+            cboBoxColumn.DisplayMember = "CategoryName";  // the Name property in Choice class
+            cboBoxColumn.ValueMember = "ID";  // ditto for the Value property        }
+            //customIntelliSensesDataGridView.Columns[0].HeaderText = "Language";
+            customIntelliSensesDataGridView.Columns[2].HeaderText = "Display Value";
+            customIntelliSensesDataGridView.Columns[3].HeaderText = "SendKeys Value";
+            customIntelliSensesDataGridView.Columns[4].HeaderText = "Command Type";
+            customIntelliSensesDataGridView.Columns[5].HeaderText = "Category";
+            customIntelliSensesDataGridView.Columns[6].HeaderText = "Remarks";
+            customIntelliSensesDataGridView.Columns[7].HeaderText = "Delivery Type";
+            customIntelliSensesBindingSource.Sort = "CategoryID ASC, Display_Value ASC, SendKeys_Value ASC";
 
-        private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
-        {
-            languageDataGridView.ClearSelection();
-            int rowIndex = languageDataGridView.Rows.Count - 1;
-            languageDataGridView.Select();
-            languageBindingSource.MoveLast();
-            languageDataGridView.Rows[rowIndex].Cells[1].Selected = true;
         }
     }
 }

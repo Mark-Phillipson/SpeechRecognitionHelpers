@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LanguagesForm));
             this.languageBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
-            this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -45,13 +44,26 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.languageBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
             this.languageDataGridView = new System.Windows.Forms.DataGridView();
+            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.customIntelliSensesDataGridView = new System.Windows.Forms.DataGridView();
+            this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.iDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.languageIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.displayValueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sendKeysValueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.commandTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.categoryIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.remarksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.deliveryTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingNavigator)).BeginInit();
             this.languageBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // languageBindingNavigator
@@ -80,22 +92,18 @@
             this.languageBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.languageBindingNavigator.Name = "languageBindingNavigator";
             this.languageBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.languageBindingNavigator.Size = new System.Drawing.Size(800, 25);
+            this.languageBindingNavigator.Size = new System.Drawing.Size(965, 25);
             this.languageBindingNavigator.TabIndex = 0;
             this.languageBindingNavigator.Text = "bindingNavigator1";
             // 
             // bindingNavigatorAddNewItem
             // 
+            this.bindingNavigatorAddNewItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(76, 22);
-            this.bindingNavigatorAddNewItem.Text = "&Add New";
-            this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
-            // 
-            // languageBindingSource
-            // 
-            this.languageBindingSource.DataSource = typeof(VoiceLauncher.Models.Language);
+            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorAddNewItem.Text = "Add new";
             // 
             // bindingNavigatorCountItem
             // 
@@ -106,12 +114,12 @@
             // 
             // bindingNavigatorDeleteItem
             // 
+            this.bindingNavigatorDeleteItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(60, 22);
-            this.bindingNavigatorDeleteItem.Text = "&Delete";
-            this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
+            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorDeleteItem.Text = "Delete";
             // 
             // bindingNavigatorMoveFirstItem
             // 
@@ -176,11 +184,12 @@
             // 
             // languageBindingNavigatorSaveItem
             // 
+            this.languageBindingNavigatorSaveItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.languageBindingNavigatorSaveItem.Enabled = false;
             this.languageBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("languageBindingNavigatorSaveItem.Image")));
             this.languageBindingNavigatorSaveItem.Name = "languageBindingNavigatorSaveItem";
-            this.languageBindingNavigatorSaveItem.Size = new System.Drawing.Size(78, 22);
-            this.languageBindingNavigatorSaveItem.Text = "&Save Data";
-            this.languageBindingNavigatorSaveItem.Click += new System.EventHandler(this.languageBindingNavigatorSaveItem_Click);
+            this.languageBindingNavigatorSaveItem.Size = new System.Drawing.Size(23, 22);
+            this.languageBindingNavigatorSaveItem.Text = "Save Data";
             // 
             // languageDataGridView
             // 
@@ -191,11 +200,40 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewCheckBoxColumn1});
             this.languageDataGridView.DataSource = this.languageBindingSource;
-            this.languageDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.languageDataGridView.Dock = System.Windows.Forms.DockStyle.Left;
             this.languageDataGridView.Location = new System.Drawing.Point(0, 25);
             this.languageDataGridView.Name = "languageDataGridView";
-            this.languageDataGridView.Size = new System.Drawing.Size(800, 425);
+            this.languageDataGridView.Size = new System.Drawing.Size(300, 425);
             this.languageDataGridView.TabIndex = 1;
+            // 
+            // customIntelliSensesBindingSource
+            // 
+            this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
+            this.customIntelliSensesBindingSource.DataSource = this.languageBindingSource;
+            // 
+            // customIntelliSensesDataGridView
+            // 
+            this.customIntelliSensesDataGridView.AutoGenerateColumns = false;
+            this.customIntelliSensesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.customIntelliSensesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.iDDataGridViewTextBoxColumn,
+            this.languageIDDataGridViewTextBoxColumn,
+            this.displayValueDataGridViewTextBoxColumn,
+            this.sendKeysValueDataGridViewTextBoxColumn,
+            this.commandTypeDataGridViewTextBoxColumn,
+            this.categoryIDDataGridViewTextBoxColumn,
+            this.remarksDataGridViewTextBoxColumn,
+            this.deliveryTypeDataGridViewTextBoxColumn});
+            this.customIntelliSensesDataGridView.DataSource = this.customIntelliSensesBindingSource;
+            this.customIntelliSensesDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.customIntelliSensesDataGridView.Location = new System.Drawing.Point(300, 25);
+            this.customIntelliSensesDataGridView.Name = "customIntelliSensesDataGridView";
+            this.customIntelliSensesDataGridView.Size = new System.Drawing.Size(665, 425);
+            this.customIntelliSensesDataGridView.TabIndex = 2;
+            // 
+            // languageBindingSource
+            // 
+            this.languageBindingSource.DataSource = typeof(VoiceLauncher.Models.Language);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -216,21 +254,76 @@
             this.dataGridViewCheckBoxColumn1.HeaderText = "Active";
             this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
             // 
+            // iDDataGridViewTextBoxColumn
+            // 
+            this.iDDataGridViewTextBoxColumn.DataPropertyName = "ID";
+            this.iDDataGridViewTextBoxColumn.HeaderText = "ID";
+            this.iDDataGridViewTextBoxColumn.Name = "iDDataGridViewTextBoxColumn";
+            this.iDDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // languageIDDataGridViewTextBoxColumn
+            // 
+            this.languageIDDataGridViewTextBoxColumn.DataPropertyName = "LanguageID";
+            this.languageIDDataGridViewTextBoxColumn.HeaderText = "LanguageID";
+            this.languageIDDataGridViewTextBoxColumn.Name = "languageIDDataGridViewTextBoxColumn";
+            this.languageIDDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // displayValueDataGridViewTextBoxColumn
+            // 
+            this.displayValueDataGridViewTextBoxColumn.DataPropertyName = "Display_Value";
+            this.displayValueDataGridViewTextBoxColumn.HeaderText = "Display_Value";
+            this.displayValueDataGridViewTextBoxColumn.Name = "displayValueDataGridViewTextBoxColumn";
+            // 
+            // sendKeysValueDataGridViewTextBoxColumn
+            // 
+            this.sendKeysValueDataGridViewTextBoxColumn.DataPropertyName = "SendKeys_Value";
+            this.sendKeysValueDataGridViewTextBoxColumn.HeaderText = "SendKeys_Value";
+            this.sendKeysValueDataGridViewTextBoxColumn.Name = "sendKeysValueDataGridViewTextBoxColumn";
+            // 
+            // commandTypeDataGridViewTextBoxColumn
+            // 
+            this.commandTypeDataGridViewTextBoxColumn.DataPropertyName = "Command_Type";
+            this.commandTypeDataGridViewTextBoxColumn.HeaderText = "Command_Type";
+            this.commandTypeDataGridViewTextBoxColumn.Name = "commandTypeDataGridViewTextBoxColumn";
+            // 
+            // categoryIDDataGridViewTextBoxColumn
+            // 
+            this.categoryIDDataGridViewTextBoxColumn.DataPropertyName = "CategoryID";
+            this.categoryIDDataGridViewTextBoxColumn.HeaderText = "CategoryID";
+            this.categoryIDDataGridViewTextBoxColumn.Name = "categoryIDDataGridViewTextBoxColumn";
+            this.categoryIDDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.categoryIDDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // remarksDataGridViewTextBoxColumn
+            // 
+            this.remarksDataGridViewTextBoxColumn.DataPropertyName = "Remarks";
+            this.remarksDataGridViewTextBoxColumn.HeaderText = "Remarks";
+            this.remarksDataGridViewTextBoxColumn.Name = "remarksDataGridViewTextBoxColumn";
+            // 
+            // deliveryTypeDataGridViewTextBoxColumn
+            // 
+            this.deliveryTypeDataGridViewTextBoxColumn.DataPropertyName = "DeliveryType";
+            this.deliveryTypeDataGridViewTextBoxColumn.HeaderText = "DeliveryType";
+            this.deliveryTypeDataGridViewTextBoxColumn.Name = "deliveryTypeDataGridViewTextBoxColumn";
+            // 
             // LanguagesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(965, 450);
+            this.Controls.Add(this.customIntelliSensesDataGridView);
             this.Controls.Add(this.languageDataGridView);
             this.Controls.Add(this.languageBindingNavigator);
             this.Name = "LanguagesForm";
-            this.Text = "Languages";
-            this.Load += new System.EventHandler(this.Languages_Load);
+            this.Text = "LanguagesForm";
+            this.Load += new System.EventHandler(this.LanguagesForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingNavigator)).EndInit();
             this.languageBindingNavigator.ResumeLayout(false);
             this.languageBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -253,8 +346,18 @@
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.ToolStripButton languageBindingNavigatorSaveItem;
         private System.Windows.Forms.DataGridView languageDataGridView;
+        private System.Windows.Forms.BindingSource customIntelliSensesBindingSource;
+        private System.Windows.Forms.DataGridView customIntelliSensesDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn languageIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn displayValueDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sendKeysValueDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn commandTypeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewComboBoxColumn categoryIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn remarksDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn deliveryTypeDataGridViewTextBoxColumn;
     }
 }

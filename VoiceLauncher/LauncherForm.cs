@@ -110,12 +110,12 @@ namespace VoiceLauncher
 
         private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
         {
-            if (launcherBindingSource.Current != null)
-            {
-                var current = (Launcher)this.launcherBindingSource.Current;
-                launcherBindingSource.RemoveCurrent();
-                db.Launchers.Local.Remove(current);
-            }
+            //if (launcherBindingSource.Current != null)
+            //{
+            //    var current = (Launcher)this.launcherBindingSource.Current;
+            //    launcherBindingSource.RemoveCurrent();
+            //    db.Launchers.Local.Remove(current);
+            //}
         }
 
         private void toolStripTextBoxSearch_Leave(object sender, EventArgs e)

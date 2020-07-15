@@ -330,7 +330,7 @@ namespace VoiceLauncher
 
         private void customIntelliSenseDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (customIntelliSenseDataGridView.CurrentRow == null || customIntelliSenseDataGridView.CurrentRow.Cells == null)
+            if (customIntelliSenseDataGridView.CurrentRow == null || customIntelliSenseDataGridView.CurrentRow.Cells == null || customIntelliSenseDataGridView.CurrentRow.Cells[2].Value == null)
             {
                 return;
             }
