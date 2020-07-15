@@ -71,7 +71,6 @@ In addition to the above there is also the Multiple Launcher command, that can b
 
 # Video Demos
 
-To view some of the functionality in action on Twitch or YouTube please click the links:
+To view some of the functionality in action on YouTube please click the link  :
 
-https://www.twitch.tv/marcusvoiceprogrammer/videos
 https://www.youtube.com/channel/UCagNNvjqAX003KNIANSkGXA
