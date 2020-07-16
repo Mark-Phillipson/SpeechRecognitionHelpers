@@ -85,9 +85,17 @@ namespace VoiceLauncher
             if (e.ColumnIndex == customIntellisenseLauncherUnionsDataGridView.Columns["Launch"].Index)
             {
                 var commandline = (string)customIntellisenseLauncherUnionsDataGridView.Rows[e.RowIndex].Cells[5].Value;
+                var category = (string)customIntellisenseLauncherUnionsDataGridView.Rows[e.RowIndex].Cells[3].Value;
                 try
                 {
-                    Process.Start(commandline);
+                    if (category == "Folders")
+                    {
+                        Process.Start("explorer.exe", commandline);
+                    }
+                    else
+                    {
+                        Process.Start(commandline);
+                    }
                 }
                 catch (Exception exception)
                 {
