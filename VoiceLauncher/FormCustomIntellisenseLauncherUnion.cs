@@ -23,7 +23,7 @@ namespace VoiceLauncher
             this.BackColor = Color.Black;
             this.ForeColor = Color.White;
             FontFamily fontFamily = new FontFamily("Cascadia Code");
-            Font font = new Font(fontFamily, (float)9, FontStyle.Bold, GraphicsUnit.Point);
+            Font font = new Font(fontFamily, (float)11, FontStyle.Bold, GraphicsUnit.Point);
             var style = new DataGridViewCellStyle
             { BackColor = Color.Black, ForeColor = Color.White, Font = font };
             customIntellisenseLauncherUnionsDataGridView.DefaultCellStyle = style;
