@@ -45,7 +45,7 @@ namespace VoiceLauncher
             customIntellisenseLauncherUnionsDataGridView.RowTemplate.MinimumHeight = 30;
             foreach (DataGridViewColumn column in customIntellisenseLauncherUnionsDataGridView.Columns)
             {
-                if (column.Name.Contains("Button") || column.Name.Contains("3"))
+                if (column.Name.Contains("Button"))
                 {
                     //column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -53,6 +53,10 @@ namespace VoiceLauncher
                 else
                 {
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
+                if (column.Name.Contains("3")) // SendkeysValue
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }
                 customIntellisenseLauncherUnionsDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             }

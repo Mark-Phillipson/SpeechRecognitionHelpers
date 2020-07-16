@@ -28,8 +28,8 @@ namespace VoiceLauncher
                 //arguments = new string[] { args[0], "Add New", "Some new value" };
                 //arguments = new string[] { args[0], "Razor", "Snippet" };
                 //arguments = new string[] { args[0], "Todos", "All" };
-                //arguments = new string[] { args[0], "Union", "Blazor" };
-                arguments = new string[] { args[0], "Blazor", "Snippet" };
+                arguments = new string[] { args[0], "Union", "Blazor" };
+                //arguments = new string[] { args[0], "Blazor", "Snippet" };
             }
             else
             {

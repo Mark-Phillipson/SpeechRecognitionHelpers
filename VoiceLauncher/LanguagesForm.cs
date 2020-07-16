@@ -21,7 +21,7 @@ namespace VoiceLauncher
             db = new VoiceLauncherContext();
         }
 
-        private void LanguagesForm_Load(object sender, EventArgs e)
+        public void LanguagesForm_Load(object sender, EventArgs e)
         {
             db.Languages.Include(i => i.CustomIntelliSenses).Include(i => i.CustomIntelliSenses).OrderBy(v => v.LanguageName).Load();
             this.languageBindingSource.DataSource = db.Languages.Local.ToBindingList();
