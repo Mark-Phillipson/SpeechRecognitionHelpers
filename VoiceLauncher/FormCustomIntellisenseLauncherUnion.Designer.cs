@@ -263,6 +263,7 @@
             this.Launch.Name = "Launch";
             this.Launch.ReadOnly = true;
             this.Launch.Text = "Launch";
+            this.Launch.UseColumnTextForButtonValue = true;
             this.Launch.Width = 50;
             // 
             // FormCustomIntellisenseLauncherUnion
