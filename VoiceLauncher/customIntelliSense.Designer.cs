@@ -245,7 +245,7 @@ namespace VoiceLauncher
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(49, 22);
-            this.toolStripLabel1.Text = "&Search";
+            this.toolStripLabel1.Text = "&Filter";
             // 
             // toolStripTextBoxSearch
             // 
@@ -262,7 +262,7 @@ namespace VoiceLauncher
             // 
             this.toolStripLabel2.Name = "toolStripLabel2";
             this.toolStripLabel2.Size = new System.Drawing.Size(35, 22);
-            this.toolStripLabel2.Text = "&Find";
+            this.toolStripLabel2.Text = "Find";
             // 
             // toolStripTextBoxFind
             // 

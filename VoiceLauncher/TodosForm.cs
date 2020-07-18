@@ -23,7 +23,7 @@ namespace VoiceLauncher
             this.BackColor = Color.DarkGray;
             this.ForeColor = Color.White;
             FontFamily fontFamily = new FontFamily("Calibri");
-            Font font = new Font(fontFamily, (float)13, FontStyle.Bold, GraphicsUnit.Point);
+            Font font = new Font(fontFamily, (float)12, FontStyle.Bold, GraphicsUnit.Point);
             var style = new DataGridViewCellStyle
             { BackColor = Color.FromArgb(38, 38, 38), ForeColor = Color.White, Font = font };
             todosDataGridView.DefaultCellStyle = style;
@@ -44,8 +44,9 @@ namespace VoiceLauncher
             {
                 if (column.Name.Contains("3"))
                 {
-                    column.Width = 950;
+                    //column.Width = 950;
                     column.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }
                 else
                 {
@@ -53,22 +54,26 @@ namespace VoiceLauncher
                 }
                 todosDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             }
-            if (SearchTerm.Length > 0 && SearchTerm.ToLower() != "all")
+            SetUpADataSource();
+
+        }
+
+        private void SetUpADataSource()
+        {
+            Text = $"Todos Filter: {SearchTerm}";
+            db.Todos.Where(v => v.Archived == false).OrderBy(v => v.Project).ThenBy(v => v.Title).Load();
+
+            if (SearchTerm.ToLower() == "all")
             {
-                db.Todos.Where(v => v.Title.Contains(SearchTerm) || v.Description.Contains(SearchTerm) || v.Project.Contains(SearchTerm)).OrderBy(v => v.Project).ThenBy(v => v.Title).Load();
-                Text = $"Todos Filter: {SearchTerm}";
+                todosBindingSource.DataSource = db.Todos.Local.ToBindingList();
             }
             else
             {
-                Text = $"Todos Filter: {SearchTerm}";
-                db.Todos.Where(v => v.Archived == false).OrderBy(v => v.Project).ThenBy(v => v.Title).Load();
+                var filteredData = db.Todos.Local.ToBindingList()
+                    .Where(v => v.Title.Contains(SearchTerm) || v.Description.Contains(SearchTerm) || v.Project.Contains(SearchTerm));
+                todosBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
             }
-            todosBindingSource.DataSource = db.Todos.Local.ToBindingList();
-
             todosDataGridView.Refresh();
-
-
-
         }
 
         private void todosDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs anError)
@@ -134,6 +139,16 @@ namespace VoiceLauncher
             db.SaveChanges();
             this.todosDataGridView.Refresh();
             this.Text = $"Saved Successfully at {DateTime.Now.ToShortTimeString()}";
+
+        }
+
+        private void FilterTextBox_Leave(object sender, EventArgs e)
+        {
+            if (FilterTextBox.Text != null)
+            {
+                SearchTerm = FilterTextBox.Text;
+                SetUpADataSource();
+            }
 
         }
     }

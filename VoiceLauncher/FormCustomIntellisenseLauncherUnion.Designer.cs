@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCustomIntellisenseLauncherUnion));
             this.customIntellisenseLauncherUnionsBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
-            this.customIntellisenseLauncherUnionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -44,18 +43,21 @@
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.customIntellisenseLauncherUnionsBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.FilterTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.customIntellisenseLauncherUnionsDataGridView = new System.Windows.Forms.DataGridView();
+            this.Language = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Launch = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Language = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Launch = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.customIntellisenseLauncherUnionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingNavigator)).BeginInit();
             this.customIntellisenseLauncherUnionsBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // customIntellisenseLauncherUnionsBindingNavigator
@@ -76,7 +78,9 @@
             this.bindingNavigatorSeparator2,
             this.bindingNavigatorAddNewItem,
             this.bindingNavigatorDeleteItem,
-            this.customIntellisenseLauncherUnionsBindingNavigatorSaveItem});
+            this.customIntellisenseLauncherUnionsBindingNavigatorSaveItem,
+            this.toolStripLabel1,
+            this.FilterTextBox});
             this.customIntellisenseLauncherUnionsBindingNavigator.Location = new System.Drawing.Point(0, 0);
             this.customIntellisenseLauncherUnionsBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.customIntellisenseLauncherUnionsBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -97,10 +101,6 @@
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
             this.bindingNavigatorAddNewItem.Text = "Add new";
-            // 
-            // customIntellisenseLauncherUnionsBindingSource
-            // 
-            this.customIntellisenseLauncherUnionsBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntellisenseLauncherUnion);
             // 
             // bindingNavigatorCountItem
             // 
@@ -185,6 +185,20 @@
             this.customIntellisenseLauncherUnionsBindingNavigatorSaveItem.Size = new System.Drawing.Size(23, 22);
             this.customIntellisenseLauncherUnionsBindingNavigatorSaveItem.Text = "Save Data";
             // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(45, 22);
+            this.toolStripLabel1.Text = "&Filter";
+            // 
+            // FilterTextBox
+            // 
+            this.FilterTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.FilterTextBox.Name = "FilterTextBox";
+            this.FilterTextBox.Size = new System.Drawing.Size(300, 25);
+            this.FilterTextBox.Leave += new System.EventHandler(this.FilterTextBox_Leave);
+            // 
             // customIntellisenseLauncherUnionsDataGridView
             // 
             this.customIntellisenseLauncherUnionsDataGridView.AllowUserToAddRows = false;
@@ -210,6 +224,22 @@
             this.customIntellisenseLauncherUnionsDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.customIntellisenseLauncherUnionsDataGridView_CellClick);
             this.customIntellisenseLauncherUnionsDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.customIntellisenseLauncherUnionsDataGridView_DataError);
             // 
+            // Language
+            // 
+            this.Language.DataPropertyName = "Language";
+            this.Language.HeaderText = "Language";
+            this.Language.Name = "Language";
+            this.Language.ReadOnly = true;
+            // 
+            // Launch
+            // 
+            this.Launch.HeaderText = "Launch";
+            this.Launch.Name = "Launch";
+            this.Launch.ReadOnly = true;
+            this.Launch.Text = "Launch";
+            this.Launch.UseColumnTextForButtonValue = true;
+            this.Launch.Width = 50;
+            // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
@@ -224,13 +254,6 @@
             this.dataGridViewTextBoxColumn5.HeaderText = "Source";
             this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
             this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            // 
-            // Language
-            // 
-            this.Language.DataPropertyName = "Language";
-            this.Language.HeaderText = "Language";
-            this.Language.Name = "Language";
-            this.Language.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn4
             // 
@@ -257,14 +280,9 @@
             this.dataGridViewTextBoxColumn3.ReadOnly = true;
             this.dataGridViewTextBoxColumn3.Width = 106;
             // 
-            // Launch
+            // customIntellisenseLauncherUnionsBindingSource
             // 
-            this.Launch.HeaderText = "Launch";
-            this.Launch.Name = "Launch";
-            this.Launch.ReadOnly = true;
-            this.Launch.Text = "Launch";
-            this.Launch.UseColumnTextForButtonValue = true;
-            this.Launch.Width = 50;
+            this.customIntellisenseLauncherUnionsBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntellisenseLauncherUnion);
             // 
             // FormCustomIntellisenseLauncherUnion
             // 
@@ -280,8 +298,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingNavigator)).EndInit();
             this.customIntellisenseLauncherUnionsBindingNavigator.ResumeLayout(false);
             this.customIntellisenseLauncherUnionsBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -311,5 +329,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewButtonColumn Launch;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripTextBox FilterTextBox;
     }
 }

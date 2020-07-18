@@ -29,6 +29,9 @@ namespace VoiceLauncher
             categoryBindingNavigator.ForeColor = Color.White;
             BackColor = Color.FromArgb(100, 100, 100);
             ForeColor = Color.White;
+            FilterTextBox.BackColor = Color.FromArgb(38, 38, 38);
+            FilterTextBox.ForeColor = Color.White;
+            FilterTextBox.BorderStyle = BorderStyle.FixedSingle;
             //customIntelliSensesBindingSource.Sort = "LanguageID ASC, Display_Value ASC, SendKeys_Value ASC";
         }
         protected override void OnClosing(CancelEventArgs e)
@@ -132,6 +135,21 @@ namespace VoiceLauncher
             customIntelliSensesDataGridView.Columns[4].HeaderText = "Command Type";
             customIntelliSensesDataGridView.Columns[6].HeaderText = "Delivery Type";
             customIntelliSensesBindingSource.Sort = "LanguageID ASC, Display_Value ASC, SendKeys_Value ASC";
+        }
+
+        private void FilterTextBox_Leave(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(FilterTextBox.Text) == false)
+            {
+                var filteredData = db.Categories.Local.ToBindingList()
+                    .Where(v => v.CategoryName.Contains(FilterTextBox.Text));
+                this.categoryBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
+            }
+            else
+            {
+                categoryBindingSource.DataSource = db.Categories.Local.ToBindingList();
+            }
+            categoryDataGridView.Refresh();
         }
     }
 }

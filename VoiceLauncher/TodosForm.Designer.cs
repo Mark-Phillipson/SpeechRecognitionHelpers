@@ -42,8 +42,10 @@
             this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.todosDataGridView = new System.Windows.Forms.DataGridView();
             this.toolStripButtonSaveData = new System.Windows.Forms.ToolStripButton();
+            this.todosDataGridView = new System.Windows.Forms.DataGridView();
+            this.FilterTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -75,7 +77,9 @@
             this.bindingNavigatorSeparator2,
             this.bindingNavigatorAddNewItem,
             this.bindingNavigatorDeleteItem,
-            this.toolStripButtonSaveData});
+            this.toolStripButtonSaveData,
+            this.toolStripLabel1,
+            this.FilterTextBox});
             this.todosBindingNavigator.Location = new System.Drawing.Point(0, 0);
             this.todosBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.todosBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -138,6 +142,7 @@
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
+            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -169,6 +174,18 @@
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
             this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 28);
             // 
+            // toolStripButtonSaveData
+            // 
+            this.toolStripButtonSaveData.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonSaveData.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripButtonSaveData.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.toolStripButtonSaveData.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveData.Image")));
+            this.toolStripButtonSaveData.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonSaveData.Name = "toolStripButtonSaveData";
+            this.toolStripButtonSaveData.Size = new System.Drawing.Size(82, 25);
+            this.toolStripButtonSaveData.Text = "Sa&ve Data";
+            this.toolStripButtonSaveData.Click += new System.EventHandler(this.toolStripButtonSaveData_Click);
+            // 
             // todosDataGridView
             // 
             this.todosDataGridView.AutoGenerateColumns = false;
@@ -189,16 +206,19 @@
             this.todosDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.todosDataGridView_CellFormatting);
             this.todosDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.todosDataGridView_DataError);
             // 
-            // toolStripButtonSaveData
+            // FilterTextBox
             // 
-            this.toolStripButtonSaveData.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonSaveData.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.toolStripButtonSaveData.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveData.Image")));
-            this.toolStripButtonSaveData.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonSaveData.Name = "toolStripButtonSaveData";
-            this.toolStripButtonSaveData.Size = new System.Drawing.Size(82, 25);
-            this.toolStripButtonSaveData.Text = "Sa&ve Data";
-            this.toolStripButtonSaveData.Click += new System.EventHandler(this.toolStripButtonSaveData_Click);
+            this.FilterTextBox.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.FilterTextBox.Name = "FilterTextBox";
+            this.FilterTextBox.Size = new System.Drawing.Size(100, 28);
+            this.FilterTextBox.Leave += new System.EventHandler(this.FilterTextBox_Leave);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(45, 25);
+            this.toolStripLabel1.Text = "&Filter";
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -285,5 +305,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn2;
         private System.Windows.Forms.ToolStripButton toolStripButtonSaveData;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripTextBox FilterTextBox;
     }
 }

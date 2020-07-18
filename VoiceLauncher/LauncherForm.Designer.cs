@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LauncherForm));
             this.launcherBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
-            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -54,10 +53,11 @@
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewComboBoxColumn4 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataGridViewComboBoxColumn5 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).BeginInit();
             this.launcherBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // launcherBindingNavigator
@@ -79,10 +79,10 @@
             this.bindingNavigatorAddNewItem,
             this.bindingNavigatorDeleteItem,
             this.launcherBindingNavigatorSaveItem,
-            this.toolStripLabel1,
-            this.toolStripTextBoxSearch,
             this.toolStripLabel2,
-            this.toolStripComboBoxFilterByCategory});
+            this.toolStripComboBoxFilterByCategory,
+            this.toolStripLabel1,
+            this.toolStripTextBoxSearch});
             this.launcherBindingNavigator.Location = new System.Drawing.Point(0, 0);
             this.launcherBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.launcherBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -102,10 +102,6 @@
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(76, 22);
             this.bindingNavigatorAddNewItem.Text = "&Add New";
             this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
-            // 
-            // launcherBindingSource
-            // 
-            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
             // 
             // bindingNavigatorCountItem
             // 
@@ -150,6 +146,7 @@
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
+            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -194,12 +191,13 @@
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(42, 22);
-            this.toolStripLabel1.Text = "Searc&h";
+            this.toolStripLabel1.Size = new System.Drawing.Size(33, 22);
+            this.toolStripLabel1.Text = "&Filter";
             // 
             // toolStripTextBoxSearch
             // 
             this.toolStripTextBoxSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.toolStripTextBoxSearch.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBoxSearch.Name = "toolStripTextBoxSearch";
             this.toolStripTextBoxSearch.Size = new System.Drawing.Size(100, 25);
             this.toolStripTextBoxSearch.Leave += new System.EventHandler(this.toolStripTextBoxSearch_Leave);
@@ -208,7 +206,7 @@
             // 
             this.toolStripLabel2.Name = "toolStripLabel2";
             this.toolStripLabel2.Size = new System.Drawing.Size(100, 22);
-            this.toolStripLabel2.Text = "&Filter by Category";
+            this.toolStripLabel2.Text = "Filter by &Category";
             // 
             // toolStripComboBoxFilterByCategory
             // 
@@ -270,6 +268,10 @@
             this.dataGridViewComboBoxColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewComboBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // launcherBindingSource
+            // 
+            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
+            // 
             // LauncherForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -283,8 +285,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).EndInit();
             this.launcherBindingNavigator.ResumeLayout(false);
             this.launcherBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

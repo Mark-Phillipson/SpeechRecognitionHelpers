@@ -39,8 +39,9 @@ namespace VoiceLauncher
             bindingNavigatorPositionItem.BackColor = Color.Black;
             bindingNavigatorPositionItem.ForeColor = Color.White;
 
-            //toolStripTextBoxSearch.BackColor = Color.Black;
-            //toolStripTextBoxSearch.ForeColor = Color.White;
+            FilterTextBox.BackColor = Color.Black;
+            FilterTextBox.ForeColor = Color.White;
+            FilterTextBox.BorderStyle = BorderStyle.FixedSingle;
             customIntellisenseLauncherUnionsDataGridView.RowTemplate.Height = 30;
             customIntellisenseLauncherUnionsDataGridView.RowTemplate.MinimumHeight = 30;
             foreach (DataGridViewColumn column in customIntellisenseLauncherUnionsDataGridView.Columns)
@@ -61,23 +62,27 @@ namespace VoiceLauncher
                 customIntellisenseLauncherUnionsDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             }
 
-            if (SearchTerm.Length > 0)
+            SetUpDataSource();
+
+        }
+
+        private void SetUpDataSource()
+        {
+            db.CustomIntellisenseLauncherUnions.OrderBy(v => v.Category).ThenBy(v => v.DisplayValue).Load();
+            Text = $"{Text} Filter: {SearchTerm}";
+
+            if (SearchTerm.ToLower() == "all")
             {
-                db.CustomIntellisenseLauncherUnions.Where(v => v.DisplayValue.Contains(SearchTerm) || v.SendkeysValue.Contains(SearchTerm)).OrderBy(v => v.Category).ThenBy(v => v.DisplayValue).Load();
-                Text = $"{Text} Filter: {SearchTerm}";
+                customIntellisenseLauncherUnionsBindingSource.DataSource = db.CustomIntellisenseLauncherUnions.Local.ToBindingList();
             }
             else
             {
-                db.CustomIntellisenseLauncherUnions.OrderBy(v => v.Category).ThenBy(v => v.DisplayValue).Load();
+                var filteredData = db.CustomIntellisenseLauncherUnions.Local.ToBindingList()
+                    .Where(v => v.DisplayValue.Contains(SearchTerm) || v.SendkeysValue.Contains(SearchTerm));
+                customIntellisenseLauncherUnionsBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
             }
-            //foreach (DataGridViewColumn column in customIntellisenseLauncherUnionsDataGridView.Columns)
-            //{
-            //    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            //}
-            customIntellisenseLauncherUnionsBindingSource.DataSource = db.CustomIntellisenseLauncherUnions.Local.ToBindingList();
 
             customIntellisenseLauncherUnionsDataGridView.Refresh();
-
         }
 
         private void customIntellisenseLauncherUnionsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -132,6 +137,15 @@ namespace VoiceLauncher
                 anError.ThrowException = false;
             }
 
+        }
+
+        private void FilterTextBox_Leave(object sender, EventArgs e)
+        {
+            if (FilterTextBox.Text != null && FilterTextBox.Text.Length > 0)
+            {
+                SearchTerm = FilterTextBox.Text;
+                SetUpDataSource();
+            }
         }
     }
 }

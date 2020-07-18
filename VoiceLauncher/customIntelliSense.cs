@@ -54,20 +54,19 @@ namespace VoiceLauncher
 
         private void SetDataSourceForGrid(bool showAll = false)
         {
-            if (showAll)
+            db.CustomIntelliSenses.OrderBy(v => v.Language.LanguageName).ThenBy(v => v.Category.CategoryName).ThenBy(o => o.Display_Value).Load();
+            IEnumerable<CustomIntelliSense> filteredData;
+            if (SearchTerm != null)
             {
-                db.CustomIntelliSenses.OrderBy(v => v.Language.LanguageName).ThenBy(v => v.Category.CategoryName).ThenBy(o => o.Display_Value).Load();
-            }
-            else if (SearchTerm != null)
-            {
-                db.CustomIntelliSenses.Where(v => v.Display_Value.ToLower().Contains(SearchTerm.ToLower())).Load();
+                filteredData = db.CustomIntelliSenses.Local.ToBindingList()
+                        .Where(v => v.Display_Value.ToLower().Contains(SearchTerm.ToLower()));
             }
             else
             {
-                db.CustomIntelliSenses.Where(v => v.Category.ID == CategoryId && v.Language.ID == LanguageId).OrderBy(o => o.Display_Value).Load();
+                filteredData = db.CustomIntelliSenses.Local.ToBindingList()
+                .Where(v => v.Category.ID == CategoryId && v.Language.ID == LanguageId).OrderBy(o => o.Display_Value);
             }
-            this.customIntelliSenseBindingSource.DataSource = db.CustomIntelliSenses.Local
-                .ToBindingList();
+            this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
 
             customIntelliSenseDataGridView.Refresh();
         }

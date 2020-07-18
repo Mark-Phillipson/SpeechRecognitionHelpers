@@ -25,11 +25,18 @@ namespace VoiceLauncher
         {
             this.BackColor = Color.Black;
             this.ForeColor = Color.White;
+            FontFamily fontFamily = new FontFamily("Calibri");
+            Font font = new Font(fontFamily, (float)12, FontStyle.Bold, GraphicsUnit.Point);
+            var style = new DataGridViewCellStyle
+            { BackColor = Color.FromArgb(38, 38, 38), ForeColor = Color.White, Font = font };
+            launcherDataGridView.DefaultCellStyle = style;
+            launcherDataGridView.ColumnHeadersDefaultCellStyle = style;
+            launcherDataGridView.RowHeadersDefaultCellStyle = style;
+            launcherDataGridView.RowsDefaultCellStyle = style;
+            launcherDataGridView.EnableHeadersVisualStyles = false;
+
             launcherBindingNavigator.BackColor = Color.Black;
             launcherBindingNavigator.ForeColor = Color.White;
-            launcherDataGridView.EnableHeadersVisualStyles = false;
-            launcherDataGridView.BackgroundColor = Color.Black;
-            launcherDataGridView.ForeColor = Color.White;
             bindingNavigatorPositionItem.BackColor = Color.Black;
             bindingNavigatorPositionItem.ForeColor = Color.White;
             toolStripComboBoxFilterByCategory.BackColor = Color.Black;
@@ -38,24 +45,8 @@ namespace VoiceLauncher
             toolStripTextBoxSearch.BackColor = Color.Black;
             toolStripTextBoxSearch.ForeColor = Color.White;
 
-            var style = new DataGridViewCellStyle
-            { BackColor = Color.Black, ForeColor = Color.White };
-            launcherDataGridView.DefaultCellStyle = style;
-            launcherDataGridView.RowHeadersDefaultCellStyle = style;
-            launcherDataGridView.RowsDefaultCellStyle = style;
-            launcherDataGridView.ColumnHeadersDefaultCellStyle = style;
-            if (SearchTerm.Length > 0)
-            {
-                db.Launchers.Where(v => v.Name.Contains(SearchTerm)).OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
-            }
-            else if (CategoryFilter.Length > 0)
-            {
-                db.Launchers.Where(v => v.Category.CategoryName.Contains(CategoryFilter)).OrderBy(v => v.Name).Load();
-            }
-            else
-            {
-                db.Launchers.OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
-            }
+            db.Launchers.OrderBy(v => v.Category.CategoryName).ThenBy(v => v.Name).Load();
+
             db.Categories.Where(v => v.CategoryType == "Launch Applications").OrderBy(o => o.CategoryName).Load();
             ToolStripComboBox comboBox = this.toolStripComboBoxFilterByCategory;
             comboBox.ComboBox.DataSource = db.Categories.Local.ToBindingList();
@@ -86,8 +77,18 @@ namespace VoiceLauncher
             {
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
-            launcherBindingSource.DataSource = db.Launchers.Local.ToBindingList();
-
+            if (SearchTerm.Length > 0)
+            {
+                launcherBindingSource.DataSource = db.Launchers.Local.ToBindingList().Where(v => v.Name.Contains(SearchTerm));
+            }
+            else if (CategoryFilter.Length > 0)
+            {
+                launcherBindingSource.DataSource = db.Launchers.Local.ToBindingList().Where(v => v.Category.CategoryName.Contains(CategoryFilter));
+            }
+            else
+            {
+                launcherBindingSource.DataSource = db.Launchers.Local.ToBindingList();
+            }
             launcherDataGridView.Refresh();
         }
 
