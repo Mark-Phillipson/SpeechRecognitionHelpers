@@ -44,6 +44,9 @@
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.categoryBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.FilterTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripButtonRemoveFilter = new System.Windows.Forms.ToolStripButton();
             this.categoryDataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,8 +63,6 @@
             this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.FilterTextBox = new System.Windows.Forms.ToolStripTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.categoryBindingNavigator)).BeginInit();
             this.categoryBindingNavigator.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.categoryBindingSource)).BeginInit();
@@ -91,7 +92,8 @@
             this.bindingNavigatorDeleteItem,
             this.categoryBindingNavigatorSaveItem,
             this.toolStripLabel1,
-            this.FilterTextBox});
+            this.FilterTextBox,
+            this.toolStripButtonRemoveFilter});
             this.categoryBindingNavigator.Location = new System.Drawing.Point(0, 0);
             this.categoryBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.categoryBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -198,6 +200,29 @@
             this.categoryBindingNavigatorSaveItem.Text = "&Save Data";
             this.categoryBindingNavigatorSaveItem.Click += new System.EventHandler(this.categoryBindingNavigatorSaveItem_Click);
             // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(33, 22);
+            this.toolStripLabel1.Text = "&Filter";
+            // 
+            // FilterTextBox
+            // 
+            this.FilterTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.FilterTextBox.Name = "FilterTextBox";
+            this.FilterTextBox.Size = new System.Drawing.Size(100, 25);
+            this.FilterTextBox.Leave += new System.EventHandler(this.FilterTextBox_Leave);
+            // 
+            // toolStripButtonRemoveFilter
+            // 
+            this.toolStripButtonRemoveFilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonRemoveFilter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRemoveFilter.Image")));
+            this.toolStripButtonRemoveFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonRemoveFilter.Name = "toolStripButtonRemoveFilter";
+            this.toolStripButtonRemoveFilter.Size = new System.Drawing.Size(83, 22);
+            this.toolStripButtonRemoveFilter.Text = "&Remove Filter";
+            this.toolStripButtonRemoveFilter.Click += new System.EventHandler(this.toolStripButtonRemoveFilter_Click);
+            // 
             // categoryDataGridView
             // 
             this.categoryDataGridView.AutoGenerateColumns = false;
@@ -210,7 +235,7 @@
             this.Sensitive});
             this.categoryDataGridView.DataSource = this.categoryBindingSource;
             this.categoryDataGridView.Dock = System.Windows.Forms.DockStyle.Left;
-            this.categoryDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
+            this.categoryDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.categoryDataGridView.Location = new System.Drawing.Point(0, 25);
             this.categoryDataGridView.Name = "categoryDataGridView";
             this.categoryDataGridView.Size = new System.Drawing.Size(470, 626);
@@ -271,7 +296,7 @@
             this.dataGridViewTextBoxColumn13});
             this.customIntelliSensesDataGridView.DataSource = this.customIntelliSensesBindingSource;
             this.customIntelliSensesDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.customIntelliSensesDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.customIntelliSensesDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnKeystroke;
             this.customIntelliSensesDataGridView.Location = new System.Drawing.Point(470, 25);
             this.customIntelliSensesDataGridView.Name = "customIntelliSensesDataGridView";
             this.customIntelliSensesDataGridView.Size = new System.Drawing.Size(530, 626);
@@ -327,18 +352,6 @@
             // 
             this.languageBindingSource.DataSource = typeof(VoiceLauncher.Models.Language);
             // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(33, 22);
-            this.toolStripLabel1.Text = "&Filter";
-            // 
-            // FilterTextBox
-            // 
-            this.FilterTextBox.Name = "FilterTextBox";
-            this.FilterTextBox.Size = new System.Drawing.Size(100, 25);
-            this.FilterTextBox.Leave += new System.EventHandler(this.FilterTextBox_Leave);
-            // 
             // Categories
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -347,6 +360,7 @@
             this.Controls.Add(this.customIntelliSensesDataGridView);
             this.Controls.Add(this.categoryDataGridView);
             this.Controls.Add(this.categoryBindingNavigator);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Categories";
             this.Text = "Categories";
             this.Load += new System.EventHandler(this.Categories_Load);
@@ -397,5 +411,6 @@
         private System.Windows.Forms.DataGridViewCheckBoxColumn Sensitive;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripTextBox FilterTextBox;
+        private System.Windows.Forms.ToolStripButton toolStripButtonRemoveFilter;
     }
 }

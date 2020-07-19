@@ -49,6 +49,14 @@ namespace VoiceLauncher
             foreach (DataGridViewColumn column in customIntelliSenseDataGridView.Columns)
             {
                 column.DefaultCellStyle.Font = new Font("Cascadia Code", 10.5F, GraphicsUnit.Pixel);
+                if (column.Name.Contains("4"))
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
             }
         }
 
@@ -60,9 +68,11 @@ namespace VoiceLauncher
             {
                 filteredData = db.CustomIntelliSenses.Local.ToBindingList()
                         .Where(v => v.Display_Value.ToLower().Contains(SearchTerm.ToLower()));
+                this.Text = $"Custom IntelliSense Filter: {SearchTerm}";
             }
             else
             {
+                this.Text = $"Custom IntelliSense Filter: No Filter Applied";
                 filteredData = db.CustomIntelliSenses.Local.ToBindingList()
                 .Where(v => v.Category.ID == CategoryId && v.Language.ID == LanguageId).OrderBy(o => o.Display_Value);
             }
@@ -130,7 +140,7 @@ namespace VoiceLauncher
             // reference the combobox column
             DataGridViewComboBoxColumn cboBoxColumn = (DataGridViewComboBoxColumn)customIntelliSenseDataGridView.Columns[1];
             db.Languages.OrderBy(o => o.LanguageName).Load();
-            cboBoxColumn.DataSource = db.Languages.Local.ToBindingList();
+            cboBoxColumn.DataSource = db.Languages.Local.Where(v => v.Active).ToList();
             cboBoxColumn.DisplayMember = "LanguageName";  // the Name property in Choice class
             cboBoxColumn.ValueMember = "ID";  // ditto for the Value property        }
             var style = new DataGridViewCellStyle() { BackColor = Color.Black, ForeColor = Color.White, SelectionBackColor = Color.Black, SelectionForeColor = Color.Red };
@@ -160,11 +170,12 @@ namespace VoiceLauncher
             {
                 if (column.Name != "dataGridViewTextBoxColumn4")
                 {
-                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    column.MinimumWidth = 100;
                 }
                 else
                 {
-                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
             }
             this.customIntelliSenseDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
@@ -189,13 +200,9 @@ namespace VoiceLauncher
             {
                 var current = (CustomIntelliSense)this.customIntelliSenseBindingSource.Current;
                 this.customIntelliSenseBindingSource.RemoveCurrent();
-                if (string.IsNullOrEmpty(this.toolStripTextBoxSearch.Text))
+                if (!string.IsNullOrEmpty(this.toolStripTextBoxSearch.Text))
                 {
                     db.CustomIntelliSenses.Local.Remove(current);
-                }
-                else
-                {
-                    db.CustomIntelliSenses.Remove(current);
                 }
             }
         }
@@ -257,17 +264,14 @@ namespace VoiceLauncher
             IEnumerable<CustomIntelliSense> filteredData = null;
             if (string.IsNullOrEmpty(this.toolStripTextBoxSearch.Text))
             {
-                this.bindingNavigatorDeleteItem.Enabled = true;
                 filteredData = db.CustomIntelliSenses.Local.ToBindingList();
             }
             else if (toolStripTextBoxSearch.Text.Length > 0)
             {
-                this.bindingNavigatorDeleteItem.Enabled = false;
                 filteredData = db.CustomIntelliSenses.Local.ToBindingList().Where(v => v.Display_Value.Contains(this.toolStripTextBoxSearch.Text) || v.SendKeys_Value.Contains(this.toolStripTextBoxSearch.Text) || v.Category.CategoryName.Contains(this.toolStripTextBoxSearch.Text) || v.Language.LanguageName.Contains(this.toolStripTextBoxSearch.Text));
             }
             if (filteredData == null)
             {
-                this.bindingNavigatorDeleteItem.Enabled = true;
                 return;
             }
             this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
@@ -405,6 +409,29 @@ namespace VoiceLauncher
                 customIntelliSenseDataGridView.ClearSelection();
                 customIntelliSenseDataGridView.Rows[rowIndex].Cells[1].Selected = true;
 
+            }
+
+        }
+
+        private void CustomIntelliSenseForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            db.Dispose();
+        }
+
+        private void toolStripButtonRemoveFilter_Click(object sender, EventArgs e)
+        {
+            customIntelliSenseBindingSource.DataSource = db.CustomIntelliSenses.Local.ToBindingList();
+            foreach (DataGridViewColumn column in customIntelliSenseDataGridView.Columns)
+            {
+                if (column.Name != "dataGridViewTextBoxColumn4")
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    column.MinimumWidth = 100;
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
             }
 
         }

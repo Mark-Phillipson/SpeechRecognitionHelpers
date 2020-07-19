@@ -24,20 +24,22 @@ namespace VoiceLauncher
                 // Edit launchers with the word download contained in the display name
                 //arguments = new string[] { args[0], "Launcher", "Unknown", "Download" };
                 // Edit Launchers with Access Projects as the category
-                arguments = new string[] { args[0], "Launcher", "Access Projects", "Unknown" };
+                //arguments = new string[] { args[0], "Launcher", "Access Projects", "Unknown" };
                 // Show all IntelliSense with the word class in the display name or SendKeys value
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
+                //arguments = new string[] { args[0], "Unknown", "Unknown", "Bootstrap" };
                 // Create Custom IntelliSense
                 //arguments = new string[] { args[0], "Add New", "Some new value" };
                 // Edit Custom IntelliSense with Razor as the language and Snippet as the category
                 //arguments = new string[] { args[0], "Razor", "Snippet" };
                 // Edit all un-archived Todos
                 //arguments = new string[] { args[0], "Todos", "All" };
+                //arguments = new string[] { args[0], "Todos", "Blazor" };
                 // Search both custom IntelliSense and Launchers with Blazor in the name or in the SendKeys value or command line
                 //arguments = new string[] { args[0], "Union", "Blazor" };
                 //arguments = new string[] { args[0], "Union", "Access" };
                 // Edit custom IntelliSense with Blazor as a language and snippet as a category
-                //arguments = new string[] { args[0], "Blazor", "Snippet" };
+                arguments = new string[] { args[0], "Blazor", "Snippet" };
             }
             else
             {

@@ -151,5 +151,11 @@ namespace VoiceLauncher
             }
 
         }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            SearchTerm = "All";
+            SetUpADataSource();
+        }
     }
 }

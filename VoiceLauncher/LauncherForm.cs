@@ -26,9 +26,9 @@ namespace VoiceLauncher
             this.BackColor = Color.Black;
             this.ForeColor = Color.White;
             FontFamily fontFamily = new FontFamily("Calibri");
-            Font font = new Font(fontFamily, (float)12, FontStyle.Bold, GraphicsUnit.Point);
+            Font font = new Font(fontFamily, (float)12, FontStyle.Regular, GraphicsUnit.Point);
             var style = new DataGridViewCellStyle
-            { BackColor = Color.FromArgb(38, 38, 38), ForeColor = Color.White, Font = font };
+            { BackColor = Color.Black, ForeColor = Color.White, Font = font };
             launcherDataGridView.DefaultCellStyle = style;
             launcherDataGridView.ColumnHeadersDefaultCellStyle = style;
             launcherDataGridView.RowHeadersDefaultCellStyle = style;
@@ -75,8 +75,23 @@ namespace VoiceLauncher
 
             foreach (DataGridViewColumn column in launcherDataGridView.Columns)
             {
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                if (column.Name.Contains("3"))
+                {
+                    //column.Width = 950;
+                    column.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
             }
+            foreach (DataGridViewRow row in launcherDataGridView.Rows)
+            {
+                row.MinimumHeight = 10;
+            }
+            launcherDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            db.Configuration.ProxyCreationEnabled = false;
             if (SearchTerm.Length > 0)
             {
                 launcherBindingSource.DataSource = db.Launchers.Local.ToBindingList().Where(v => v.Name.Contains(SearchTerm));
@@ -111,27 +126,46 @@ namespace VoiceLauncher
 
         private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
         {
-            //if (launcherBindingSource.Current != null)
-            //{
-            //    var current = (Launcher)this.launcherBindingSource.Current;
-            //    launcherBindingSource.RemoveCurrent();
-            //    db.Launchers.Local.Remove(current);
-            //}
+            if (launcherBindingSource.Current != null)
+            {
+                var current = (Launcher)this.launcherBindingSource.Current;
+                launcherBindingSource.RemoveCurrent();
+                db.Launchers.Local.Remove(current);
+            }
         }
 
         private void toolStripTextBoxSearch_Leave(object sender, EventArgs e)
         {
+            ApplyFilter();
+        }
+
+        private void ApplyFilter()
+        {
             IEnumerable<Launcher> filteredData = null;
-            if (string.IsNullOrEmpty(toolStripTextBoxSearch.Text))
+
+            if (string.IsNullOrEmpty(toolStripTextBoxSearch.Text) && string.IsNullOrEmpty(toolStripComboBoxFilterByCategory.Text))
             {
                 bindingNavigatorDeleteItem.Enabled = true;
                 filteredData = db.Launchers.Local.ToBindingList();
+            }
+            else if (toolStripTextBoxSearch.Text.Length > 0 && toolStripComboBoxFilterByCategory.Text.Length > 0)
+            {
+                bindingNavigatorDeleteItem.Enabled = false;
+                var category = db.Categories.Where(v => v.CategoryName == toolStripComboBoxFilterByCategory.Text).FirstOrDefault();
+                filteredData = db.Launchers.Local.ToBindingList().Where(v => (v.Name.Contains(toolStripTextBoxSearch.Text) || v.Category.CategoryName.Contains(toolStripTextBoxSearch.Text) || v.CommandLine.Contains(toolStripTextBoxSearch.Text)) && v.CategoryID == category.ID);
             }
             else if (toolStripTextBoxSearch.Text.Length > 0)
             {
                 bindingNavigatorDeleteItem.Enabled = false;
                 filteredData = db.Launchers.Local.ToBindingList().Where(v => v.Name.Contains(toolStripTextBoxSearch.Text) || v.Category.CategoryName.Contains(toolStripTextBoxSearch.Text) || v.CommandLine.Contains(toolStripTextBoxSearch.Text));
             }
+            else if (toolStripComboBoxFilterByCategory.Text.Length > 0)
+            {
+                this.bindingNavigatorDeleteItem.Enabled = false;
+                var category = db.Categories.Where(v => v.CategoryName == toolStripComboBoxFilterByCategory.Text).FirstOrDefault();
+                filteredData = db.Launchers.Local.ToBindingList().Where(v => v.CategoryID == category.ID);
+            }
+
             if (filteredData == null)
             {
                 bindingNavigatorDeleteItem.Enabled = true;
@@ -156,24 +190,19 @@ namespace VoiceLauncher
 
         private void toolStripComboBoxFilterByCategory_Leave(object sender, EventArgs e)
         {
-            IEnumerable<Launcher> filteredData = null;
-            if (string.IsNullOrEmpty(toolStripComboBoxFilterByCategory.Text))
-            {
-                this.bindingNavigatorDeleteItem.Enabled = true;
-                filteredData = db.Launchers.Local.ToBindingList();
-            }
-            else if (toolStripComboBoxFilterByCategory.Text.Length > 0)
-            {
-                this.bindingNavigatorDeleteItem.Enabled = false;
-                var category = db.Categories.Where(v => v.CategoryName == toolStripComboBoxFilterByCategory.Text).FirstOrDefault();
-                filteredData = db.Launchers.Local.ToBindingList().Where(v => v.CategoryID == category.ID);
-            }
-            if (filteredData == null)
-            {
-                bindingNavigatorDeleteItem.Enabled = true;
-                return;
-            }
-            launcherBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
+            ApplyFilter();
+        }
+
+        private void toolStripButtonRemoveFilter_Click(object sender, EventArgs e)
+        {
+            toolStripComboBoxFilterByCategory.Text = null;
+            toolStripTextBoxSearch.Text = null;
+            ApplyFilter();
+        }
+
+        private void LauncherForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            db.Dispose();
         }
     }
 }

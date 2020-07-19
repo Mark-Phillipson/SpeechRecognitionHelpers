@@ -23,8 +23,23 @@ namespace VoiceLauncher
             db = new VoiceLauncherContext();
             db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
             this.categoryBindingSource.DataSource = db.Categories.Local.ToBindingList();
-            CustomTheme.SetDataGridViewTheme(categoryDataGridView, "Tahoma", 8);
-            CustomTheme.SetDataGridViewTheme(customIntelliSensesDataGridView, "Tahoma", 8);
+            this.BackColor = Color.Black;
+            this.ForeColor = Color.White;
+            FontFamily fontFamily = new FontFamily("Calibri");
+            Font font = new Font(fontFamily, (float)12, FontStyle.Regular, GraphicsUnit.Point);
+            var style = new DataGridViewCellStyle
+            { BackColor = Color.Black, ForeColor = Color.White, Font = font };
+
+            categoryDataGridView.DefaultCellStyle = style;
+            categoryDataGridView.ColumnHeadersDefaultCellStyle = style;
+            categoryDataGridView.RowHeadersDefaultCellStyle = style;
+            categoryDataGridView.RowsDefaultCellStyle = style;
+            categoryDataGridView.EnableHeadersVisualStyles = false;
+            customIntelliSensesDataGridView.DefaultCellStyle = style;
+            customIntelliSensesDataGridView.ColumnHeadersDefaultCellStyle = style;
+            customIntelliSensesDataGridView.RowHeadersDefaultCellStyle = style;
+            customIntelliSensesDataGridView.RowsDefaultCellStyle = style;
+            customIntelliSensesDataGridView.EnableHeadersVisualStyles = false;
             categoryBindingNavigator.BackColor = Color.FromArgb(38, 38, 38);
             categoryBindingNavigator.ForeColor = Color.White;
             BackColor = Color.FromArgb(100, 100, 100);
@@ -32,6 +47,10 @@ namespace VoiceLauncher
             FilterTextBox.BackColor = Color.FromArgb(38, 38, 38);
             FilterTextBox.ForeColor = Color.White;
             FilterTextBox.BorderStyle = BorderStyle.FixedSingle;
+            foreach (DataGridViewColumn column in categoryDataGridView.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
             //customIntelliSensesBindingSource.Sort = "LanguageID ASC, Display_Value ASC, SendKeys_Value ASC";
         }
         protected override void OnClosing(CancelEventArgs e)
@@ -127,7 +146,14 @@ namespace VoiceLauncher
             cboBoxColumn.ValueMember = "ID";  // ditto for the Value property        }
             foreach (DataGridViewColumn column in customIntelliSensesDataGridView.Columns)
             {
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                if (column.Name.Contains("3"))
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                }
             }
             customIntelliSensesDataGridView.Columns[0].HeaderText = "Language";
             customIntelliSensesDataGridView.Columns[2].HeaderText = "Display Value";
@@ -150,6 +176,11 @@ namespace VoiceLauncher
                 categoryBindingSource.DataSource = db.Categories.Local.ToBindingList();
             }
             categoryDataGridView.Refresh();
+        }
+
+        private void toolStripButtonRemoveFilter_Click(object sender, EventArgs e)
+        {
+            categoryBindingSource.DataSource = db.Categories.Local.ToBindingList();
         }
     }
 }
