@@ -12,6 +12,7 @@ namespace VoiceLauncher
     public partial class LauncherForm : Form
     {
         readonly VoiceLauncherContext db;
+        bool formIsClosed = false;
         public string SearchTerm { get; set; } = "";
         public string CategoryFilter { get; set; } = "";
         public LauncherForm()
@@ -88,7 +89,7 @@ namespace VoiceLauncher
             }
             foreach (DataGridViewRow row in launcherDataGridView.Rows)
             {
-                row.MinimumHeight = 10;
+                row.MinimumHeight = 15;
             }
             launcherDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             db.Configuration.ProxyCreationEnabled = false;
@@ -142,7 +143,10 @@ namespace VoiceLauncher
         private void ApplyFilter()
         {
             IEnumerable<Launcher> filteredData = null;
-
+            if (formIsClosed)
+            {
+                return;
+            }
             if (string.IsNullOrEmpty(toolStripTextBoxSearch.Text) && string.IsNullOrEmpty(toolStripComboBoxFilterByCategory.Text))
             {
                 bindingNavigatorDeleteItem.Enabled = true;
@@ -200,8 +204,9 @@ namespace VoiceLauncher
             ApplyFilter();
         }
 
-        private void LauncherForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void LauncherForm_FormClosed(object sender, FormClosedEventArgs e)
         {
+            formIsClosed = true;
             db.Dispose();
         }
     }

@@ -15,6 +15,7 @@ namespace VoiceLauncher
     public partial class CustomIntelliSenseForm : Form
     {
         private VoiceLauncherContext db;
+        bool formIsClosed = false;
         public int? LanguageId { get; internal set; } = 1;
         public int? CategoryId { get; internal set; } = 39;
         public string SearchTerm { get; set; }
@@ -84,6 +85,7 @@ namespace VoiceLauncher
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
+            formIsClosed = true;
             this.db.Dispose();
         }
 
@@ -261,6 +263,10 @@ namespace VoiceLauncher
 
         private void toolStripTextBoxSearch_Leave(object sender, EventArgs e)
         {
+            if (formIsClosed)
+            {
+                return;
+            }
             IEnumerable<CustomIntelliSense> filteredData = null;
             if (string.IsNullOrEmpty(this.toolStripTextBoxSearch.Text))
             {

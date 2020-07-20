@@ -12,6 +12,7 @@ namespace VoiceLauncher
     public partial class Categories : Form
     {
         private VoiceLauncherContext db;
+        bool formIsClosed = false;
         public Categories()
         {
             InitializeComponent();
@@ -56,6 +57,7 @@ namespace VoiceLauncher
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
+            formIsClosed = true;
             this.db.Dispose();
         }
 
@@ -165,6 +167,10 @@ namespace VoiceLauncher
 
         private void FilterTextBox_Leave(object sender, EventArgs e)
         {
+            if (formIsClosed)
+            {
+                return;
+            }
             if (String.IsNullOrWhiteSpace(FilterTextBox.Text) == false)
             {
                 var filteredData = db.Categories.Local.ToBindingList()
@@ -181,6 +187,11 @@ namespace VoiceLauncher
         private void toolStripButtonRemoveFilter_Click(object sender, EventArgs e)
         {
             categoryBindingSource.DataSource = db.Categories.Local.ToBindingList();
+        }
+
+        private void FilterTextBox_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

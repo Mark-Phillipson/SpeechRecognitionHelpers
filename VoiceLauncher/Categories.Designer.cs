@@ -212,6 +212,7 @@
             this.FilterTextBox.Name = "FilterTextBox";
             this.FilterTextBox.Size = new System.Drawing.Size(100, 25);
             this.FilterTextBox.Leave += new System.EventHandler(this.FilterTextBox_Leave);
+            this.FilterTextBox.Click += new System.EventHandler(this.FilterTextBox_Click);
             // 
             // toolStripButtonRemoveFilter
             // 

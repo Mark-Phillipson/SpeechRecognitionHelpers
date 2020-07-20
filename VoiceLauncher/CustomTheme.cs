@@ -5,7 +5,7 @@ namespace VoiceLauncher
 {
     public static class CustomTheme
     {
-        public static void SetDataGridViewTheme(DataGridView dataGridView, string fontName = "Cascadia Code", float fontSize= 11)
+        public static void SetDataGridViewTheme(DataGridView dataGridView, string fontName = "Cascadia Code", float fontSize = 11)
         {
             FontFamily fontFamily = new FontFamily(fontName);
             Font font = new Font(fontFamily, fontSize, FontStyle.Bold, GraphicsUnit.Point);

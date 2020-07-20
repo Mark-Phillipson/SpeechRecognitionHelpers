@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
 using System.Drawing;
@@ -12,6 +13,7 @@ namespace VoiceLauncher
     {
         public string SearchTerm { get; set; }
         readonly VoiceLauncherContext db;
+        bool formIsClosed = false;
         public TodosForm()
         {
             InitializeComponent();
@@ -57,7 +59,12 @@ namespace VoiceLauncher
             SetUpADataSource();
 
         }
-
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            db.Dispose();
+            formIsClosed = true;
+            base.OnClosing(e);
+        }
         private void SetUpADataSource()
         {
             Text = $"Todos Filter: {SearchTerm}";
@@ -144,6 +151,10 @@ namespace VoiceLauncher
 
         private void FilterTextBox_Leave(object sender, EventArgs e)
         {
+            if (formIsClosed)
+            {
+                return;
+            }
             if (FilterTextBox.Text != null)
             {
                 SearchTerm = FilterTextBox.Text;

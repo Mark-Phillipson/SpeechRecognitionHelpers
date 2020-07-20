@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LanguagesForm));
             this.languageBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -44,12 +45,11 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.languageBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
             this.languageDataGridView = new System.Windows.Forms.DataGridView();
-            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.customIntelliSensesDataGridView = new System.Windows.Forms.DataGridView();
-            this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.customIntelliSensesDataGridView = new System.Windows.Forms.DataGridView();
             this.iDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.languageIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.displayValueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,10 +60,10 @@
             this.deliveryTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingNavigator)).BeginInit();
             this.languageBindingNavigator.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesDataGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // languageBindingNavigator
@@ -98,12 +98,15 @@
             // 
             // bindingNavigatorAddNewItem
             // 
-            this.bindingNavigatorAddNewItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(74, 22);
             this.bindingNavigatorAddNewItem.Text = "Add new";
+            // 
+            // languageBindingSource
+            // 
+            this.languageBindingSource.DataSource = typeof(VoiceLauncher.Models.Language);
             // 
             // bindingNavigatorCountItem
             // 
@@ -114,11 +117,10 @@
             // 
             // bindingNavigatorDeleteItem
             // 
-            this.bindingNavigatorDeleteItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(60, 22);
             this.bindingNavigatorDeleteItem.Text = "Delete";
             // 
             // bindingNavigatorMoveFirstItem
@@ -148,7 +150,6 @@
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
-            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -184,11 +185,10 @@
             // 
             // languageBindingNavigatorSaveItem
             // 
-            this.languageBindingNavigatorSaveItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.languageBindingNavigatorSaveItem.Enabled = false;
             this.languageBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("languageBindingNavigatorSaveItem.Image")));
             this.languageBindingNavigatorSaveItem.Name = "languageBindingNavigatorSaveItem";
-            this.languageBindingNavigatorSaveItem.Size = new System.Drawing.Size(23, 22);
+            this.languageBindingNavigatorSaveItem.Size = new System.Drawing.Size(78, 22);
             this.languageBindingNavigatorSaveItem.Text = "Save Data";
             // 
             // languageDataGridView
@@ -205,6 +205,25 @@
             this.languageDataGridView.Name = "languageDataGridView";
             this.languageDataGridView.Size = new System.Drawing.Size(300, 425);
             this.languageDataGridView.TabIndex = 1;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "ID";
+            this.dataGridViewTextBoxColumn1.HeaderText = "ID";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.Visible = false;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "LanguageName";
+            this.dataGridViewTextBoxColumn2.HeaderText = "LanguageName";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            // 
+            // dataGridViewCheckBoxColumn1
+            // 
+            this.dataGridViewCheckBoxColumn1.DataPropertyName = "Active";
+            this.dataGridViewCheckBoxColumn1.HeaderText = "Active";
+            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
             // 
             // customIntelliSensesBindingSource
             // 
@@ -230,29 +249,6 @@
             this.customIntelliSensesDataGridView.Name = "customIntelliSensesDataGridView";
             this.customIntelliSensesDataGridView.Size = new System.Drawing.Size(665, 425);
             this.customIntelliSensesDataGridView.TabIndex = 2;
-            // 
-            // languageBindingSource
-            // 
-            this.languageBindingSource.DataSource = typeof(VoiceLauncher.Models.Language);
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "ID";
-            this.dataGridViewTextBoxColumn1.HeaderText = "ID";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.Visible = false;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "LanguageName";
-            this.dataGridViewTextBoxColumn2.HeaderText = "LanguageName";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            // 
-            // dataGridViewCheckBoxColumn1
-            // 
-            this.dataGridViewCheckBoxColumn1.DataPropertyName = "Active";
-            this.dataGridViewCheckBoxColumn1.HeaderText = "Active";
-            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
             // 
             // iDDataGridViewTextBoxColumn
             // 
@@ -320,10 +316,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingNavigator)).EndInit();
             this.languageBindingNavigator.ResumeLayout(false);
             this.languageBindingNavigator.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesDataGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

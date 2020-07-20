@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
 using System.Drawing;
@@ -60,6 +61,12 @@ namespace VoiceLauncher
             deliveryTypeComboBox.Items.Add("Send Keys");
             deliveryTypeComboBox.Items.Add("Executed as Script");
             deliveryTypeComboBox.Items.Add("Clipboard Only");
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            db.Dispose();
+            base.OnClosing(e);
         }
 
         private void customIntelliSenseBindingNavigatorSaveItem_Click(object sender, EventArgs e)

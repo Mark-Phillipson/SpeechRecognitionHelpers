@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
 using System.Diagnostics;
@@ -17,6 +18,7 @@ namespace VoiceLauncher
             db = new VoiceLauncherContext();
         }
         readonly VoiceLauncherContext db;
+        bool formIsClosed = false;
         public string SearchTerm { get; set; }
         private void FormCustomIntellisenseLauncherUnion_Load(object sender, EventArgs e)
         {
@@ -65,7 +67,12 @@ namespace VoiceLauncher
             SetUpDataSource();
 
         }
-
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            formIsClosed = true;
+            db.Dispose();
+            base.OnClosing(e);
+        }
         private void SetUpDataSource()
         {
             db.CustomIntellisenseLauncherUnions.OrderBy(v => v.Category).ThenBy(v => v.DisplayValue).Load();
@@ -141,6 +148,10 @@ namespace VoiceLauncher
 
         private void FilterTextBox_Leave(object sender, EventArgs e)
         {
+            if (formIsClosed)
+            {
+                return;
+            }
             if (FilterTextBox.Text != null && FilterTextBox.Text.Length > 0)
             {
                 SearchTerm = FilterTextBox.Text;

@@ -32,8 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LauncherForm));
             this.launcherBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
-            this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonRemoveFilter = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -42,23 +43,22 @@
             this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.launcherBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripComboBoxFilterByCategory = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
             this.launcherDataGridView = new System.Windows.Forms.DataGridView();
-            this.toolStripButtonRemoveFilter = new System.Windows.Forms.ToolStripButton();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewComboBoxColumn4 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataGridViewComboBoxColumn5 = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).BeginInit();
             this.launcherBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // launcherBindingNavigator
@@ -105,6 +105,10 @@
             this.bindingNavigatorAddNewItem.Text = "&Add New";
             this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
             // 
+            // launcherBindingSource
+            // 
+            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
+            // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
@@ -112,14 +116,15 @@
             this.bindingNavigatorCountItem.Text = "of {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number of items";
             // 
-            // bindingNavigatorDeleteItem
+            // toolStripButtonRemoveFilter
             // 
-            this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
-            this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
-            this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(60, 22);
-            this.bindingNavigatorDeleteItem.Text = "&Delete";
-            this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
+            this.toolStripButtonRemoveFilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonRemoveFilter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRemoveFilter.Image")));
+            this.toolStripButtonRemoveFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonRemoveFilter.Name = "toolStripButtonRemoveFilter";
+            this.toolStripButtonRemoveFilter.Size = new System.Drawing.Size(83, 22);
+            this.toolStripButtonRemoveFilter.Text = "&Remove Filter";
+            this.toolStripButtonRemoveFilter.Click += new System.EventHandler(this.toolStripButtonRemoveFilter_Click);
             // 
             // bindingNavigatorMoveFirstItem
             // 
@@ -182,6 +187,15 @@
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
             this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
+            // bindingNavigatorDeleteItem
+            // 
+            this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
+            this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
+            this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
+            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(60, 22);
+            this.bindingNavigatorDeleteItem.Text = "&Delete";
+            this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
+            // 
             // launcherBindingNavigatorSaveItem
             // 
             this.launcherBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("launcherBindingNavigatorSaveItem.Image")));
@@ -236,16 +250,6 @@
             this.launcherDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.launcherDataGridView_DataError);
             this.launcherDataGridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.launcherDataGridView_DefaultValuesNeeded);
             // 
-            // toolStripButtonRemoveFilter
-            // 
-            this.toolStripButtonRemoveFilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonRemoveFilter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRemoveFilter.Image")));
-            this.toolStripButtonRemoveFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonRemoveFilter.Name = "toolStripButtonRemoveFilter";
-            this.toolStripButtonRemoveFilter.Size = new System.Drawing.Size(83, 22);
-            this.toolStripButtonRemoveFilter.Text = "&Remove Filter";
-            this.toolStripButtonRemoveFilter.Click += new System.EventHandler(this.toolStripButtonRemoveFilter_Click);
-            // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "ID";
@@ -281,10 +285,6 @@
             this.dataGridViewComboBoxColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewComboBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
-            // launcherBindingSource
-            // 
-            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
-            // 
             // LauncherForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -295,13 +295,13 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LauncherForm";
             this.Text = "LauncherForm";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LauncherForm_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.LauncherForm_FormClosed);
             this.Load += new System.EventHandler(this.LauncherForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).EndInit();
             this.launcherBindingNavigator.ResumeLayout(false);
             this.launcherBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

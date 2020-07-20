@@ -15,6 +15,7 @@ namespace VoiceLauncher
     public partial class LanguagesForm : Form
     {
         private VoiceLauncherContext db;
+        bool formIsClosed = false;
         public LanguagesForm()
         {
             InitializeComponent();
@@ -55,6 +56,12 @@ namespace VoiceLauncher
             customIntelliSensesDataGridView.Columns[7].HeaderText = "Delivery Type";
             customIntelliSensesBindingSource.Sort = "CategoryID ASC, Display_Value ASC, SendKeys_Value ASC";
 
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            db.Dispose();
+            formIsClosed = true;
+            base.OnClosing(e);
         }
     }
 }
