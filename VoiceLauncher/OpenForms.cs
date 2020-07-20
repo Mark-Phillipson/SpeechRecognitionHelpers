@@ -34,9 +34,9 @@ namespace VoiceLauncher
                 //arguments = new string[] { args[0], "Razor", "Snippet" };
                 // Edit all un-archived Todos
                 //arguments = new string[] { args[0], "Todos", "All" };
-                arguments = new string[] { args[0], "Todos", "Blazor" };
+                //arguments = new string[] { args[0], "Todos", "Blazor" };
                 // Search both custom IntelliSense and Launchers with Blazor in the name or in the SendKeys value or command line
-                //arguments = new string[] { args[0], "Union", "Blazor" };
+                arguments = new string[] { args[0], "Union", "Blazor" };
                 //arguments = new string[] { args[0], "Union", "Access" };
                 // Edit custom IntelliSense with Blazor as a language and snippet as a category
                 //arguments = new string[] { args[0], "Blazor", "Snippet" };

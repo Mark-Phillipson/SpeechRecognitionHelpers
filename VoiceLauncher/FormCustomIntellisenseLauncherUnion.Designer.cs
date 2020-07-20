@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCustomIntellisenseLauncherUnion));
             this.customIntellisenseLauncherUnionsBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.customIntellisenseLauncherUnionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -46,18 +47,17 @@
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.FilterTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.customIntellisenseLauncherUnionsDataGridView = new System.Windows.Forms.DataGridView();
-            this.customIntellisenseLauncherUnionsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.Launch = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Language = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Launch = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingNavigator)).BeginInit();
             this.customIntellisenseLauncherUnionsBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
             // customIntellisenseLauncherUnionsBindingNavigator
@@ -102,6 +102,10 @@
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
             this.bindingNavigatorAddNewItem.Text = "Add new";
             // 
+            // customIntellisenseLauncherUnionsBindingSource
+            // 
+            this.customIntellisenseLauncherUnionsBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntellisenseLauncherUnion);
+            // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
@@ -144,7 +148,6 @@
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
-            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -194,7 +197,6 @@
             // 
             // FilterTextBox
             // 
-            this.FilterTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FilterTextBox.Name = "FilterTextBox";
             this.FilterTextBox.Size = new System.Drawing.Size(300, 25);
             this.FilterTextBox.Leave += new System.EventHandler(this.FilterTextBox_Leave);
@@ -207,13 +209,13 @@
             this.customIntellisenseLauncherUnionsDataGridView.AutoGenerateColumns = false;
             this.customIntellisenseLauncherUnionsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.customIntellisenseLauncherUnionsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Launch,
             this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn5,
             this.Language,
             this.dataGridViewTextBoxColumn4,
             this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.Launch});
+            this.dataGridViewTextBoxColumn3});
             this.customIntellisenseLauncherUnionsDataGridView.DataSource = this.customIntellisenseLauncherUnionsBindingSource;
             this.customIntellisenseLauncherUnionsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.customIntellisenseLauncherUnionsDataGridView.Location = new System.Drawing.Point(0, 25);
@@ -224,9 +226,15 @@
             this.customIntellisenseLauncherUnionsDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.customIntellisenseLauncherUnionsDataGridView_CellClick);
             this.customIntellisenseLauncherUnionsDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.customIntellisenseLauncherUnionsDataGridView_DataError);
             // 
-            // customIntellisenseLauncherUnionsBindingSource
+            // Launch
             // 
-            this.customIntellisenseLauncherUnionsBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntellisenseLauncherUnion);
+            this.Launch.Frozen = true;
+            this.Launch.HeaderText = "Launch";
+            this.Launch.Name = "Launch";
+            this.Launch.ReadOnly = true;
+            this.Launch.Text = "Launch";
+            this.Launch.UseColumnTextForButtonValue = true;
+            this.Launch.Width = 50;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -275,15 +283,6 @@
             this.dataGridViewTextBoxColumn3.ReadOnly = true;
             this.dataGridViewTextBoxColumn3.Width = 110;
             // 
-            // Launch
-            // 
-            this.Launch.HeaderText = "Launch";
-            this.Launch.Name = "Launch";
-            this.Launch.ReadOnly = true;
-            this.Launch.Text = "Launch";
-            this.Launch.UseColumnTextForButtonValue = true;
-            this.Launch.Width = 50;
-            // 
             // FormCustomIntellisenseLauncherUnion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,8 +297,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingNavigator)).EndInit();
             this.customIntellisenseLauncherUnionsBindingNavigator.ResumeLayout(false);
             this.customIntellisenseLauncherUnionsBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntellisenseLauncherUnionsDataGridView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -324,12 +323,12 @@
         private System.Windows.Forms.DataGridView customIntellisenseLauncherUnionsDataGridView;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripTextBox FilterTextBox;
+        private System.Windows.Forms.DataGridViewButtonColumn Launch;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn Language;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewButtonColumn Launch;
     }
 }

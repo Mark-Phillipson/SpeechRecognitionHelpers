@@ -52,9 +52,12 @@ namespace VoiceLauncher
                 {
                     //column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                    column.ReadOnly = false;
+                    column.Selected = true;
                 }
                 else
                 {
+                    column.ReadOnly = true;
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 }
                 if (column.Name.Contains("3")) // SendkeysValue
@@ -108,10 +111,17 @@ namespace VoiceLauncher
                     {
                         Process.Start(commandline);
                     }
+                    Application.Exit();
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show(exception.Message);
+                    if (exception.Message == "The system cannot find the file specified")
+                    {
+                        Clipboard.SetText(commandline);
+                        MessageBox.Show($"Command Line: {commandline}\r\rThis is not Launchable, it has been placed in the clipboard instead.", $"Cannot Launch", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                    MessageBox.Show($"Selected Command Line: {commandline}\r\r{exception.Message}", $"Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
