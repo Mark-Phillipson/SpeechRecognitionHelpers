@@ -88,7 +88,7 @@ namespace VoiceLauncher
             else
             {
                 var filteredData = db.CustomIntellisenseLauncherUnions.Local.ToBindingList()
-                    .Where(v => v.DisplayValue.Contains(SearchTerm) || v.SendkeysValue.Contains(SearchTerm));
+                    .Where(v => v.DisplayValue.ToLower().Contains(SearchTerm.ToLower()) || v.SendkeysValue.ToLower().Contains(SearchTerm.ToLower()));
                 customIntellisenseLauncherUnionsBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
             }
 
@@ -99,8 +99,8 @@ namespace VoiceLauncher
         {
             if (e.ColumnIndex == customIntellisenseLauncherUnionsDataGridView.Columns["Launch"].Index)
             {
-                var commandline = (string)customIntellisenseLauncherUnionsDataGridView.Rows[e.RowIndex].Cells[5].Value;
-                var category = (string)customIntellisenseLauncherUnionsDataGridView.Rows[e.RowIndex].Cells[3].Value;
+                var commandline = (string)customIntellisenseLauncherUnionsDataGridView.Rows[e.RowIndex].Cells[6].Value;
+                var category = (string)customIntellisenseLauncherUnionsDataGridView.Rows[e.RowIndex].Cells[4].Value;
                 try
                 {
                     if (category == "Folders")

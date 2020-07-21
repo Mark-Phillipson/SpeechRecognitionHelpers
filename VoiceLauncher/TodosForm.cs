@@ -40,6 +40,11 @@ namespace VoiceLauncher
             todosDataGridView.ForeColor = Color.White;
             bindingNavigatorPositionItem.BackColor = Color.Black;
             bindingNavigatorPositionItem.ForeColor = Color.White;
+            toolStripButtonSaveData.ForeColor = Color.White;
+            toolStripButtonSaveData.BackColor = Color.Black;
+            FilterTextBox.BackColor = Color.Black;
+            FilterTextBox.ForeColor = Color.White;
+            FilterTextBox.BorderStyle = BorderStyle.FixedSingle;
             todosDataGridView.RowTemplate.Height = 50;
             todosDataGridView.RowTemplate.MinimumHeight = 30;
             foreach (DataGridViewColumn column in todosDataGridView.Columns)
