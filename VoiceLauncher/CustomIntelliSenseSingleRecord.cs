@@ -1,3 +1,4 @@
+using SpeechRecognitionHelpersLibrary;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -24,9 +25,10 @@ namespace VoiceLauncher
 
         private void CustomIntelliSenseSingleRecord_Load(object sender, EventArgs e)
         {
+            db.Configuration.ProxyCreationEnabled = false;
             db.CustomIntelliSenses.Where(v => v.ID == CurrentId).Load();
             customIntelliSenseBindingSource.DataSource = db.CustomIntelliSenses.Local.ToBindingList();
-            if (CurrentId == 0)
+            if (CurrentId == 0 && LanguageId != null && CategoryId != null)
             {
                 CustomIntelliSense customIntelliSense = new CustomIntelliSense
                 {
@@ -38,25 +40,39 @@ namespace VoiceLauncher
                 };
                 db.CustomIntelliSenses.Local.Add(customIntelliSense);
             }
+            else
+            {
+                CustomIntelliSense customIntelliSense = new CustomIntelliSense
+                {
+                    SendKeys_Value = DefaultValueToSend,
+                    Command_Type = "SendKeys",
+                    DeliveryType = "Copy and Paste"
+                };
+                db.CustomIntelliSenses.Local.Add(customIntelliSense);
+            }
             db.Languages.OrderBy(o => o.LanguageName).Load();
             customIntelliSenseBindingNavigator.BackColor = Color.FromArgb(100, 100, 100);
             customIntelliSenseBindingNavigator.ForeColor = Color.White;
-            BindingSource bindingSourceLanguage = new BindingSource();
-            bindingSourceLanguage.DataSource = db.Languages.Local.ToBindingList();
-            languageIDComboBox.DataSource = bindingSourceLanguage;
             Text = $"Custom IntelliSense Single Record ID {CurrentId}";
-            languageIDComboBox.DisplayMember = "LanguageName";  // the Name property in Choice class
-            languageIDComboBox.ValueMember = "ID";  // ditto for the Value property        }
+
+            BindingSource bindingSourceLanguage = new BindingSource();
+            bindingSourceLanguage.DataSource = db.Languages.Where(v => v.Active == true).OrderBy(v => v.LanguageName).ToList();
             languageIDComboBox.DataBindings.Clear();
-            languageIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "LanguageId"));
+            languageIDComboBox.DataSource = db.Languages.Where(v => v.Active == true).OrderBy(v => v.LanguageName).ToList();
+            languageIDComboBox.DisplayMember = "LanguageName";  // the Name property in Language class
+            languageIDComboBox.ValueMember = "ID";  // ditto for the Value property        }
+            languageIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "LanguageID", true));
+
             db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
             BindingSource bindingSourceCategory = new BindingSource();
-            bindingSourceCategory.DataSource = db.Categories.Local.ToBindingList();
-            categoryIDComboBox.DataSource = bindingSourceCategory;
+            bindingSourceCategory.DataSource = db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(v => v.CategoryName).ToList();
+            categoryIDComboBox.DataBindings.Clear();
+            categoryIDComboBox.DataSource = db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(v => v.CategoryName).ToList(); ;
             categoryIDComboBox.DisplayMember = "CategoryName";
             categoryIDComboBox.ValueMember = "ID";
-            categoryIDComboBox.DataBindings.Clear();
-            categoryIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "CategoryId"));
+            categoryIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "CategoryID", true));
+
+
             deliveryTypeComboBox.Items.Add("Copy and Paste");
             deliveryTypeComboBox.Items.Add("Send Keys");
             deliveryTypeComboBox.Items.Add("Executed as Script");
@@ -79,19 +95,15 @@ namespace VoiceLauncher
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message);
+                var message = ExceptionHandling.GetShortErrorMessage(exception);
+                MessageBox.Show($"{message}", "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             this.Text = $"Saved Successfully at {DateTime.Now.ToShortTimeString()}";
-
         }
 
-        private void comboBoxLanguageID_SelectedIndexChanged(object sender, EventArgs e)
+        private void CustomIntelliSenseSingleRecord_Shown(object sender, EventArgs e)
         {
-        }
-
-        private void sendKeys_ValueLabel_Click(object sender, EventArgs e)
-        {
-
+            display_ValueTextBox.Focus();
         }
     }
 }

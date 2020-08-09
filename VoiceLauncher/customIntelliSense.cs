@@ -186,16 +186,6 @@ namespace VoiceLauncher
 
         }
 
-
-        private void customIntelliSense_Activated(object sender, EventArgs e)
-        {
-        }
-
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-        }
-
         private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
         {
             if (customIntelliSenseBindingSource.Current != null)
@@ -206,11 +196,23 @@ namespace VoiceLauncher
                 {
                     db.CustomIntelliSenses.Local.Remove(current);
                 }
+                db.CustomIntelliSenses.Remove(current);
+                db.SaveChanges();
             }
         }
 
         private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
         {
+            CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
+            customIntelliSenseSingleRecord.CurrentId = (int)0;
+            var clipboard = Clipboard.GetText();
+            customIntelliSenseSingleRecord.DefaultValueToSend = clipboard;
+            var languageId = (int)customIntelliSenseDataGridView.CurrentRow.Cells[1].Value;
+            customIntelliSenseSingleRecord.LanguageId = languageId;
+            var categoryId = (int)customIntelliSenseDataGridView.CurrentRow.Cells[2].Value;
+            customIntelliSenseSingleRecord.CategoryId = categoryId;
+            customIntelliSenseSingleRecord.ShowDialog();
+
         }
 
         public DataGridViewRow CloneWithValues(DataGridViewRow row)

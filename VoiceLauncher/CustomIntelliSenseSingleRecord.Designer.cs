@@ -135,7 +135,6 @@ namespace VoiceLauncher
             sendKeys_ValueLabel.Size = new System.Drawing.Size(109, 18);
             sendKeys_ValueLabel.TabIndex = 6;
             sendKeys_ValueLabel.Text = "Send &Keys Value";
-            sendKeys_ValueLabel.Click += new System.EventHandler(this.sendKeys_ValueLabel_Click);
             // 
             // deliveryTypeLabel1
             // 
@@ -174,7 +173,7 @@ namespace VoiceLauncher
             this.customIntelliSenseBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.customIntelliSenseBindingNavigator.Name = "customIntelliSenseBindingNavigator";
             this.customIntelliSenseBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.customIntelliSenseBindingNavigator.Size = new System.Drawing.Size(1087, 25);
+            this.customIntelliSenseBindingNavigator.Size = new System.Drawing.Size(1178, 25);
             this.customIntelliSenseBindingNavigator.TabIndex = 0;
             this.customIntelliSenseBindingNavigator.Text = "bindingNavigator1";
             // 
@@ -231,6 +230,7 @@ namespace VoiceLauncher
             // 
             this.bindingNavigatorPositionItem.AccessibleName = "Position";
             this.bindingNavigatorPositionItem.AutoSize = false;
+            this.bindingNavigatorPositionItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
             this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(65, 23);
             this.bindingNavigatorPositionItem.Text = "0";
@@ -277,12 +277,13 @@ namespace VoiceLauncher
             // 
             this.categoryIDComboBox.BackColor = System.Drawing.SystemColors.MenuText;
             this.categoryIDComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "CategoryID", true));
+            this.categoryIDComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.categoryIDComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.categoryIDComboBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.categoryIDComboBox.ForeColor = System.Drawing.SystemColors.Window;
             this.categoryIDComboBox.FormattingEnabled = true;
             this.categoryIDComboBox.Location = new System.Drawing.Point(148, 87);
-            this.categoryIDComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.categoryIDComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.categoryIDComboBox.Name = "categoryIDComboBox";
             this.categoryIDComboBox.Size = new System.Drawing.Size(493, 26);
             this.categoryIDComboBox.TabIndex = 3;
@@ -294,7 +295,7 @@ namespace VoiceLauncher
             this.command_TypeTextBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.command_TypeTextBox.ForeColor = System.Drawing.SystemColors.Window;
             this.command_TypeTextBox.Location = new System.Drawing.Point(145, 583);
-            this.command_TypeTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.command_TypeTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.command_TypeTextBox.Name = "command_TypeTextBox";
             this.command_TypeTextBox.Size = new System.Drawing.Size(760, 26);
             this.command_TypeTextBox.TabIndex = 15;
@@ -306,7 +307,7 @@ namespace VoiceLauncher
             this.display_ValueTextBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.display_ValueTextBox.ForeColor = System.Drawing.SystemColors.Window;
             this.display_ValueTextBox.Location = new System.Drawing.Point(145, 134);
-            this.display_ValueTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.display_ValueTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.display_ValueTextBox.Name = "display_ValueTextBox";
             this.display_ValueTextBox.Size = new System.Drawing.Size(760, 26);
             this.display_ValueTextBox.TabIndex = 5;
@@ -315,12 +316,13 @@ namespace VoiceLauncher
             // 
             this.languageIDComboBox.BackColor = System.Drawing.SystemColors.MenuText;
             this.languageIDComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "LanguageID", true));
+            this.languageIDComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.languageIDComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.languageIDComboBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.languageIDComboBox.ForeColor = System.Drawing.SystemColors.Window;
             this.languageIDComboBox.FormattingEnabled = true;
             this.languageIDComboBox.Location = new System.Drawing.Point(148, 40);
-            this.languageIDComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.languageIDComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.languageIDComboBox.Name = "languageIDComboBox";
             this.languageIDComboBox.Size = new System.Drawing.Size(493, 26);
             this.languageIDComboBox.TabIndex = 1;
@@ -332,7 +334,7 @@ namespace VoiceLauncher
             this.remarksTextBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.remarksTextBox.ForeColor = System.Drawing.SystemColors.Window;
             this.remarksTextBox.Location = new System.Drawing.Point(145, 444);
-            this.remarksTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.remarksTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.remarksTextBox.Name = "remarksTextBox";
             this.remarksTextBox.Size = new System.Drawing.Size(760, 26);
             this.remarksTextBox.TabIndex = 9;
@@ -344,7 +346,7 @@ namespace VoiceLauncher
             this.sendKeys_ValueTextBox.Font = new System.Drawing.Font("Cascadia Code", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sendKeys_ValueTextBox.ForeColor = System.Drawing.Color.White;
             this.sendKeys_ValueTextBox.Location = new System.Drawing.Point(145, 180);
-            this.sendKeys_ValueTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.sendKeys_ValueTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.sendKeys_ValueTextBox.Multiline = true;
             this.sendKeys_ValueTextBox.Name = "sendKeys_ValueTextBox";
             this.sendKeys_ValueTextBox.Size = new System.Drawing.Size(913, 250);
@@ -359,7 +361,7 @@ namespace VoiceLauncher
             this.deliveryTypeComboBox.ForeColor = System.Drawing.SystemColors.Window;
             this.deliveryTypeComboBox.FormattingEnabled = true;
             this.deliveryTypeComboBox.Location = new System.Drawing.Point(147, 490);
-            this.deliveryTypeComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deliveryTypeComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.deliveryTypeComboBox.Name = "deliveryTypeComboBox";
             this.deliveryTypeComboBox.Size = new System.Drawing.Size(269, 26);
             this.deliveryTypeComboBox.TabIndex = 11;
@@ -373,7 +375,7 @@ namespace VoiceLauncher
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1087, 620);
+            this.ClientSize = new System.Drawing.Size(1178, 631);
             this.Controls.Add(deliveryTypeLabel1);
             this.Controls.Add(this.deliveryTypeComboBox);
             this.Controls.Add(categoryIDLabel);
@@ -392,11 +394,12 @@ namespace VoiceLauncher
             this.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "CustomIntelliSenseSingleRecord";
             this.Text = "CustomIntelliSenseSingleRecord";
             this.Load += new System.EventHandler(this.CustomIntelliSenseSingleRecord_Load);
+            this.Shown += new System.EventHandler(this.CustomIntelliSenseSingleRecord_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).EndInit();
             this.customIntelliSenseBindingNavigator.ResumeLayout(false);
             this.customIntelliSenseBindingNavigator.PerformLayout();

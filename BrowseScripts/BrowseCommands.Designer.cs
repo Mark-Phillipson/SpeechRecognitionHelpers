@@ -216,16 +216,17 @@ namespace BrowseScripts
             // 
             // textBoxContent
             // 
+            this.textBoxContent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxContent.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.textBoxContent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBoxContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBoxContent.Font = new System.Drawing.Font("Cascadia Code", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxContent.ForeColor = System.Drawing.Color.White;
-            this.textBoxContent.Location = new System.Drawing.Point(0, 0);
+            this.textBoxContent.Location = new System.Drawing.Point(0, 18);
+            this.textBoxContent.Margin = new System.Windows.Forms.Padding(5);
             this.textBoxContent.Multiline = true;
             this.textBoxContent.Name = "textBoxContent";
             this.textBoxContent.ReadOnly = true;
-            this.textBoxContent.Size = new System.Drawing.Size(650, 746);
+            this.textBoxContent.Size = new System.Drawing.Size(650, 728);
             this.textBoxContent.TabIndex = 13;
             this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
             // 

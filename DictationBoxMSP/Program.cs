@@ -18,15 +18,6 @@ namespace DictationBoxMSP
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var processes = Process.GetProcessesByName("DictationBoxMSP");
-            foreach (var process in processes)
-            {
-                var currentProcess = Process.GetCurrentProcess();
-                if (process.Id != currentProcess.Id)
-                {
-                    currentProcess.Kill();
-                }
-            }
             Application.Run(new DictationBoxForm());
         }
     }
