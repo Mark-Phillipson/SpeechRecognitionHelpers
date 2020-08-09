@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -102,8 +102,18 @@ namespace DictationBoxMSP
 
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            var searchString = richTextBox1.Text.Replace("c#", "CSharp");
+            string searchString;
+            if (richTextBox1.SelectedText != null)
+            {
+                searchString = richTextBox1.SelectedText;
+            }
+            else
+            {
+                searchString = richTextBox1.Text;
+            }
             searchString = searchString.Replace("C#", "CSharp");
+            searchString = searchString.Replace("c#", "CSharp");
+
             Process.Start("https://www.google.com/search?client=firefox-b-d&q=" + searchString);
         }
         public int FindMyText(string searchText, int searchStart, int searchEnd)
@@ -221,6 +231,22 @@ namespace DictationBoxMSP
         private void FindtextBox_TextChanged(object sender, EventArgs e)
         {
             SearchAndIdentifyText();
+        }
+
+        private void buttonSaveToFile_Click(object sender, EventArgs e)
+        {
+            if (richTextBox1.Text != null && richTextBox1.Text.Length > 0)
+            {
+                int characters = 10;
+                if (richTextBox1.Text.Length < 10)
+                {
+                    characters = richTextBox1.Text.Length;
+                }
+                string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)).FullName;
+                var filename = $@"{path}\Documents\{richTextBox1.Text.Trim().Substring(0, characters)}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt";
+                File.WriteAllText(filename, richTextBox1.Text);
+                this.Text = $"Dictation Box Saved to: {filename}";
+            }
         }
     }
 }

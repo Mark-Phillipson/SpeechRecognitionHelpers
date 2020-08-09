@@ -46,12 +46,14 @@ namespace DictationBoxMSP
             this.TransferButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.buttonSaveToFile);
             this.panel1.Controls.Add(this.buttonPasteText);
             this.panel1.Controls.Add(this.buttonFrontSize);
             this.panel1.Controls.Add(this.CopyOnlyButton);
@@ -233,10 +235,10 @@ namespace DictationBoxMSP
             this.VariableButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.VariableButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.VariableButton.ForeColor = System.Drawing.Color.White;
-            this.VariableButton.Location = new System.Drawing.Point(7, 486);
+            this.VariableButton.Location = new System.Drawing.Point(100, 532);
             this.VariableButton.Margin = new System.Windows.Forms.Padding(4);
             this.VariableButton.Name = "VariableButton";
-            this.VariableButton.Size = new System.Drawing.Size(189, 38);
+            this.VariableButton.Size = new System.Drawing.Size(95, 38);
             this.VariableButton.TabIndex = 20;
             this.VariableButton.Text = "Variable";
             this.VariableButton.UseVisualStyleBackColor = false;
@@ -251,7 +253,7 @@ namespace DictationBoxMSP
             this.CamelButton.Location = new System.Drawing.Point(7, 532);
             this.CamelButton.Margin = new System.Windows.Forms.Padding(4);
             this.CamelButton.Name = "CamelButton";
-            this.CamelButton.Size = new System.Drawing.Size(189, 38);
+            this.CamelButton.Size = new System.Drawing.Size(94, 38);
             this.CamelButton.TabIndex = 21;
             this.CamelButton.Text = "Camel";
             this.CamelButton.UseVisualStyleBackColor = false;
@@ -297,6 +299,21 @@ namespace DictationBoxMSP
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
+            // buttonSaveToFile
+            // 
+            this.buttonSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSaveToFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonSaveToFile.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonSaveToFile.ForeColor = System.Drawing.Color.White;
+            this.buttonSaveToFile.Location = new System.Drawing.Point(6, 486);
+            this.buttonSaveToFile.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonSaveToFile.Name = "buttonSaveToFile";
+            this.buttonSaveToFile.Size = new System.Drawing.Size(189, 38);
+            this.buttonSaveToFile.TabIndex = 29;
+            this.buttonSaveToFile.Text = "Save to File";
+            this.buttonSaveToFile.UseVisualStyleBackColor = false;
+            this.buttonSaveToFile.Click += new System.EventHandler(this.buttonSaveToFile_Click);
+            // 
             // DictationBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
@@ -337,6 +354,7 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Button TransferButton;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button buttonSaveToFile;
     }
 }
 
