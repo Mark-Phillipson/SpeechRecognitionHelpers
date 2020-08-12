@@ -80,6 +80,10 @@ namespace BrowseScripts
         private void SetupContent()
         {
             var currentRow = bindingSourceCommands.Current;
+            if (currentRow == null)
+            {
+                return;
+            }
             bindingSourceCommand.Filter = "Commands_Id =" + ((DataRowView)currentRow).Row.ItemArray[Mapping.PrimaryKey_Commands];
             SetUpTiles(currentRow);
             bindingSourceContent.DataSource = dataSet;

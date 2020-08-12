@@ -103,7 +103,7 @@ namespace DictationBoxMSP
         private void SearchButton_Click(object sender, EventArgs e)
         {
             string searchString;
-            if (richTextBox1.SelectedText != null)
+            if (richTextBox1.SelectedText != null && richTextBox1.SelectedText.Length > 0)
             {
                 searchString = richTextBox1.SelectedText;
             }
