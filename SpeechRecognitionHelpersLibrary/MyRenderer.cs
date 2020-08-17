@@ -10,6 +10,7 @@ namespace SpeechRecognitionHelpersLibrary
     {
         public MyRenderer() : base(new MyColors()) { }
     }
+    
 
     public class MyColors : ProfessionalColorTable
     {
