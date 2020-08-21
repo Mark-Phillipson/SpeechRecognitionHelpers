@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -247,6 +248,61 @@ namespace DictationBoxMSP
                 File.WriteAllText(filename, richTextBox1.Text);
                 this.Text = $"Dictation Box Saved to: {filename}";
             }
+        }
+
+        private void buttonScreenCapture_Click(object sender, EventArgs e)
+        {
+            this.Opacity = 0;
+            string picturesFolder = CaptureImages();
+            this.Text = $"Dictation Box - Screen saved to {picturesFolder}";
+            this.Opacity = 1;
+        }
+
+        private static string CaptureImages()
+        {
+            //Create a new bitmap.
+            var bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
+                                           Screen.PrimaryScreen.Bounds.Height,
+                                           PixelFormat.Format32bppRgb
+                                           );
+
+            // Create a graphics object from the bitmap.
+            var gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+
+            // Take the screenshot from the upper left corner to the right bottom corner.
+            gfxScreenshot.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
+                                        Screen.PrimaryScreen.Bounds.Y,
+                                        0,
+                                        0,
+                                        Screen.PrimaryScreen.Bounds.Size,
+                                        CopyPixelOperation.SourceCopy);
+
+            // Save the screenshot to the specified path that the user has chosen.
+            var picturesFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            var filename = $@"{picturesFolder}\ScreenshotPrimary.jpg";
+            bmpScreenshot.Save(filename, ImageFormat.Jpeg);
+            Clipboard.SetText(filename);
+            //Create a new bitmap.
+            bmpScreenshot = new Bitmap(Screen.AllScreens[1].Bounds.Width,
+                                           Screen.AllScreens[1].Bounds.Height,
+                                           PixelFormat.Format32bppRgb
+                                           );
+
+            // Create a graphics object from the bitmap.
+            gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+
+            // Take the screenshot from the upper left corner to the right bottom corner.
+            gfxScreenshot.CopyFromScreen(Screen.AllScreens[1].Bounds.X,
+                                        Screen.AllScreens[1].Bounds.Y,
+                                        0,
+                                        0,
+                                        Screen.AllScreens[1].Bounds.Size,
+                                        CopyPixelOperation.SourceCopy);
+
+            // Save the screenshot to the specified path that the user has chosen.
+            filename = $@"{picturesFolder}\ScreenshotSecondary.jpg";
+            bmpScreenshot.Save(filename, ImageFormat.Jpeg);
+            return picturesFolder;
         }
     }
 }

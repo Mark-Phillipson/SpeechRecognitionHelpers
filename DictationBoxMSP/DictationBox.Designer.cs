@@ -30,6 +30,7 @@ namespace DictationBoxMSP
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DictationBoxForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.buttonPasteText = new System.Windows.Forms.Button();
             this.buttonFrontSize = new System.Windows.Forms.Button();
             this.CopyOnlyButton = new System.Windows.Forms.Button();
@@ -46,13 +47,14 @@ namespace DictationBoxMSP
             this.TransferButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.buttonSaveToFile = new System.Windows.Forms.Button();
+            this.buttonScreenCapture = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.buttonScreenCapture);
             this.panel1.Controls.Add(this.buttonSaveToFile);
             this.panel1.Controls.Add(this.buttonPasteText);
             this.panel1.Controls.Add(this.buttonFrontSize);
@@ -73,6 +75,21 @@ namespace DictationBoxMSP
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 626);
             this.panel1.TabIndex = 15;
+            // 
+            // buttonSaveToFile
+            // 
+            this.buttonSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSaveToFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonSaveToFile.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonSaveToFile.ForeColor = System.Drawing.Color.White;
+            this.buttonSaveToFile.Location = new System.Drawing.Point(6, 486);
+            this.buttonSaveToFile.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonSaveToFile.Name = "buttonSaveToFile";
+            this.buttonSaveToFile.Size = new System.Drawing.Size(189, 38);
+            this.buttonSaveToFile.TabIndex = 29;
+            this.buttonSaveToFile.Text = "Save to File";
+            this.buttonSaveToFile.UseVisualStyleBackColor = false;
+            this.buttonSaveToFile.Click += new System.EventHandler(this.buttonSaveToFile_Click);
             // 
             // buttonPasteText
             // 
@@ -223,7 +240,7 @@ namespace DictationBoxMSP
             this.WindowButton.Location = new System.Drawing.Point(7, 440);
             this.WindowButton.Margin = new System.Windows.Forms.Padding(4);
             this.WindowButton.Name = "WindowButton";
-            this.WindowButton.Size = new System.Drawing.Size(189, 38);
+            this.WindowButton.Size = new System.Drawing.Size(94, 38);
             this.WindowButton.TabIndex = 19;
             this.WindowButton.Text = "Window";
             this.WindowButton.UseVisualStyleBackColor = false;
@@ -299,20 +316,20 @@ namespace DictationBoxMSP
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
-            // buttonSaveToFile
+            // buttonScreenCapture
             // 
-            this.buttonSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSaveToFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.buttonSaveToFile.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonSaveToFile.ForeColor = System.Drawing.Color.White;
-            this.buttonSaveToFile.Location = new System.Drawing.Point(6, 486);
-            this.buttonSaveToFile.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonSaveToFile.Name = "buttonSaveToFile";
-            this.buttonSaveToFile.Size = new System.Drawing.Size(189, 38);
-            this.buttonSaveToFile.TabIndex = 29;
-            this.buttonSaveToFile.Text = "Save to File";
-            this.buttonSaveToFile.UseVisualStyleBackColor = false;
-            this.buttonSaveToFile.Click += new System.EventHandler(this.buttonSaveToFile_Click);
+            this.buttonScreenCapture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonScreenCapture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonScreenCapture.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonScreenCapture.ForeColor = System.Drawing.Color.White;
+            this.buttonScreenCapture.Location = new System.Drawing.Point(100, 440);
+            this.buttonScreenCapture.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonScreenCapture.Name = "buttonScreenCapture";
+            this.buttonScreenCapture.Size = new System.Drawing.Size(95, 38);
+            this.buttonScreenCapture.TabIndex = 30;
+            this.buttonScreenCapture.Text = "Capture";
+            this.buttonScreenCapture.UseVisualStyleBackColor = false;
+            this.buttonScreenCapture.Click += new System.EventHandler(this.buttonScreenCapture_Click);
             // 
             // DictationBoxForm
             // 
@@ -355,6 +372,7 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button buttonSaveToFile;
+        private System.Windows.Forms.Button buttonScreenCapture;
     }
 }
 
