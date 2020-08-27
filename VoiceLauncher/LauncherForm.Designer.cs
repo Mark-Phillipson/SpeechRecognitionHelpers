@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LauncherForm));
             this.launcherBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
-            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButtonRemoveFilter = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -50,15 +49,17 @@
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripTextBoxSearch = new System.Windows.Forms.ToolStripTextBox();
             this.launcherDataGridView = new System.Windows.Forms.DataGridView();
+            this.Launch = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewComboBoxColumn4 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.dataGridViewComboBoxColumn5 = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.launcherBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).BeginInit();
             this.launcherBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // launcherBindingNavigator
@@ -104,10 +105,6 @@
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(76, 22);
             this.bindingNavigatorAddNewItem.Text = "&Add New";
             this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
-            // 
-            // launcherBindingSource
-            // 
-            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
             // 
             // bindingNavigatorCountItem
             // 
@@ -239,7 +236,8 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.dataGridViewComboBoxColumn4,
-            this.dataGridViewComboBoxColumn5});
+            this.dataGridViewComboBoxColumn5,
+            this.Launch});
             this.launcherDataGridView.DataSource = this.launcherBindingSource;
             this.launcherDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.launcherDataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
@@ -247,8 +245,16 @@
             this.launcherDataGridView.Name = "launcherDataGridView";
             this.launcherDataGridView.Size = new System.Drawing.Size(1285, 680);
             this.launcherDataGridView.TabIndex = 1;
+            this.launcherDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.launcherDataGridView_CellClick);
             this.launcherDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.launcherDataGridView_DataError);
             this.launcherDataGridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.launcherDataGridView_DefaultValuesNeeded);
+            // 
+            // Launch
+            // 
+            this.Launch.HeaderText = "Launch";
+            this.Launch.Name = "Launch";
+            this.Launch.Text = "Launch";
+            this.Launch.UseColumnTextForButtonValue = true;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -285,6 +291,10 @@
             this.dataGridViewComboBoxColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewComboBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // launcherBindingSource
+            // 
+            this.launcherBindingSource.DataSource = typeof(VoiceLauncher.Models.Launcher);
+            // 
             // LauncherForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -300,8 +310,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.launcherBindingNavigator)).EndInit();
             this.launcherBindingNavigator.ResumeLayout(false);
             this.launcherBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.launcherDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.launcherBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -328,11 +338,12 @@
         private System.Windows.Forms.ToolStripTextBox toolStripTextBoxSearch;
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxFilterByCategory;
+        private System.Windows.Forms.ToolStripButton toolStripButtonRemoveFilter;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewComboBoxColumn4;
         private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewComboBoxColumn5;
-        private System.Windows.Forms.ToolStripButton toolStripButtonRemoveFilter;
+        private System.Windows.Forms.DataGridViewButtonColumn Launch;
     }
 }

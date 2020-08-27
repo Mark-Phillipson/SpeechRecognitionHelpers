@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -208,6 +209,37 @@ namespace VoiceLauncher
         {
             formIsClosed = true;
             db.Dispose();
+        }
+
+        private void launcherDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == launcherDataGridView.Columns["Launch"].Index)
+            {
+                var commandline = (string)launcherDataGridView.Rows[e.RowIndex].Cells[2].Value;
+                var category = (string)launcherDataGridView.Rows[e.RowIndex].Cells[1].Value;
+                try
+                {
+                    if (category == "Folders")
+                    {
+                        Process.Start("explorer.exe", commandline);
+                    }
+                    else
+                    {
+                        Process.Start(commandline);
+                    }
+                    Application.Exit();
+                }
+                catch (Exception exception)
+                {
+                    if (exception.Message == "The system cannot find the file specified")
+                    {
+                        Clipboard.SetText(commandline);
+                        MessageBox.Show($"Command Line: {commandline}\r\rThis is not Launchable, it has been placed in the clipboard instead.", $"Cannot Launch", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                    MessageBox.Show($"Selected Command Line: {commandline}\r\r{exception.Message}", $"Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
     }
 }

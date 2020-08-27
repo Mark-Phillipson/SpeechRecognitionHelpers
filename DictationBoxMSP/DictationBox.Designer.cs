@@ -30,6 +30,7 @@ namespace DictationBoxMSP
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DictationBoxForm));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonScreenCapture = new System.Windows.Forms.Button();
             this.buttonSaveToFile = new System.Windows.Forms.Button();
             this.buttonPasteText = new System.Windows.Forms.Button();
             this.buttonFrontSize = new System.Windows.Forms.Button();
@@ -47,13 +48,16 @@ namespace DictationBoxMSP
             this.TransferButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.buttonScreenCapture = new System.Windows.Forms.Button();
+            this.buttonBrowse = new System.Windows.Forms.Button();
+            this.buttonOpenFile = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.buttonOpenFile);
+            this.panel1.Controls.Add(this.buttonBrowse);
             this.panel1.Controls.Add(this.buttonScreenCapture);
             this.panel1.Controls.Add(this.buttonSaveToFile);
             this.panel1.Controls.Add(this.buttonPasteText);
@@ -76,6 +80,21 @@ namespace DictationBoxMSP
             this.panel1.Size = new System.Drawing.Size(200, 626);
             this.panel1.TabIndex = 15;
             // 
+            // buttonScreenCapture
+            // 
+            this.buttonScreenCapture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonScreenCapture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonScreenCapture.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonScreenCapture.ForeColor = System.Drawing.Color.White;
+            this.buttonScreenCapture.Location = new System.Drawing.Point(101, 440);
+            this.buttonScreenCapture.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonScreenCapture.Name = "buttonScreenCapture";
+            this.buttonScreenCapture.Size = new System.Drawing.Size(94, 38);
+            this.buttonScreenCapture.TabIndex = 30;
+            this.buttonScreenCapture.Text = "Capture";
+            this.buttonScreenCapture.UseVisualStyleBackColor = false;
+            this.buttonScreenCapture.Click += new System.EventHandler(this.buttonScreenCapture_Click);
+            // 
             // buttonSaveToFile
             // 
             this.buttonSaveToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -85,7 +104,7 @@ namespace DictationBoxMSP
             this.buttonSaveToFile.Location = new System.Drawing.Point(6, 486);
             this.buttonSaveToFile.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSaveToFile.Name = "buttonSaveToFile";
-            this.buttonSaveToFile.Size = new System.Drawing.Size(189, 38);
+            this.buttonSaveToFile.Size = new System.Drawing.Size(94, 38);
             this.buttonSaveToFile.TabIndex = 29;
             this.buttonSaveToFile.Text = "Save to File";
             this.buttonSaveToFile.UseVisualStyleBackColor = false;
@@ -225,7 +244,7 @@ namespace DictationBoxMSP
             this.SearchButton.Location = new System.Drawing.Point(7, 394);
             this.SearchButton.Margin = new System.Windows.Forms.Padding(4);
             this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(189, 38);
+            this.SearchButton.Size = new System.Drawing.Size(94, 38);
             this.SearchButton.TabIndex = 18;
             this.SearchButton.Text = "Search";
             this.SearchButton.UseVisualStyleBackColor = false;
@@ -252,10 +271,10 @@ namespace DictationBoxMSP
             this.VariableButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.VariableButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.VariableButton.ForeColor = System.Drawing.Color.White;
-            this.VariableButton.Location = new System.Drawing.Point(100, 532);
+            this.VariableButton.Location = new System.Drawing.Point(101, 532);
             this.VariableButton.Margin = new System.Windows.Forms.Padding(4);
             this.VariableButton.Name = "VariableButton";
-            this.VariableButton.Size = new System.Drawing.Size(95, 38);
+            this.VariableButton.Size = new System.Drawing.Size(94, 38);
             this.VariableButton.TabIndex = 20;
             this.VariableButton.Text = "Variable";
             this.VariableButton.UseVisualStyleBackColor = false;
@@ -316,20 +335,35 @@ namespace DictationBoxMSP
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
-            // buttonScreenCapture
+            // buttonBrowse
             // 
-            this.buttonScreenCapture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonScreenCapture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
-            this.buttonScreenCapture.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonScreenCapture.ForeColor = System.Drawing.Color.White;
-            this.buttonScreenCapture.Location = new System.Drawing.Point(100, 440);
-            this.buttonScreenCapture.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonScreenCapture.Name = "buttonScreenCapture";
-            this.buttonScreenCapture.Size = new System.Drawing.Size(95, 38);
-            this.buttonScreenCapture.TabIndex = 30;
-            this.buttonScreenCapture.Text = "Capture";
-            this.buttonScreenCapture.UseVisualStyleBackColor = false;
-            this.buttonScreenCapture.Click += new System.EventHandler(this.buttonScreenCapture_Click);
+            this.buttonBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBrowse.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonBrowse.ForeColor = System.Drawing.Color.White;
+            this.buttonBrowse.Location = new System.Drawing.Point(101, 394);
+            this.buttonBrowse.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonBrowse.Name = "buttonBrowse";
+            this.buttonBrowse.Size = new System.Drawing.Size(94, 38);
+            this.buttonBrowse.TabIndex = 31;
+            this.buttonBrowse.Text = "Browse";
+            this.buttonBrowse.UseVisualStyleBackColor = false;
+            this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
+            // 
+            // buttonOpenFile
+            // 
+            this.buttonOpenFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOpenFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonOpenFile.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonOpenFile.ForeColor = System.Drawing.Color.White;
+            this.buttonOpenFile.Location = new System.Drawing.Point(100, 486);
+            this.buttonOpenFile.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonOpenFile.Name = "buttonOpenFile";
+            this.buttonOpenFile.Size = new System.Drawing.Size(94, 38);
+            this.buttonOpenFile.TabIndex = 32;
+            this.buttonOpenFile.Text = "Open File";
+            this.buttonOpenFile.UseVisualStyleBackColor = false;
+            this.buttonOpenFile.Click += new System.EventHandler(this.buttonOpenFile_Click);
             // 
             // DictationBoxForm
             // 
@@ -373,6 +407,8 @@ namespace DictationBoxMSP
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button buttonSaveToFile;
         private System.Windows.Forms.Button buttonScreenCapture;
+        private System.Windows.Forms.Button buttonBrowse;
+        private System.Windows.Forms.Button buttonOpenFile;
     }
 }
 

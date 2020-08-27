@@ -304,5 +304,40 @@ namespace DictationBoxMSP
             bmpScreenshot.Save(filename, ImageFormat.Jpeg);
             return picturesFolder;
         }
+
+        private void buttonBrowse_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        private void OpenFile()
+        {
+            string webAddress;
+            if (richTextBox1.SelectedText != null && richTextBox1.SelectedText.Length > 0)
+            {
+                webAddress = richTextBox1.SelectedText;
+            }
+            else
+            {
+                webAddress = richTextBox1.Text;
+            }
+
+            if (!string.IsNullOrEmpty(webAddress))
+            {
+                try
+                {
+                    Process.Start(webAddress);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message, "Error has occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void buttonOpenFile_Click(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
     }
 }
