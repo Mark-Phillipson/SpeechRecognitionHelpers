@@ -443,5 +443,32 @@ namespace VoiceLauncher
             }
 
         }
+
+        private void customIntelliSenseDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == customIntelliSenseDataGridView.Columns["Inject"].Index)
+            {
+                var value = (string)customIntelliSenseDataGridView.Rows[e.RowIndex].Cells[4].Value;
+                var delivery = (string)customIntelliSenseDataGridView.Rows[e.RowIndex].Cells[6].Value;
+                try
+                {
+                    SendKeys.SendWait("%{Tab}");
+                    if (delivery == "Copy and Paste")
+                    {
+                        Clipboard.SetText(value);
+                        SendKeys.SendWait("^v");
+                    }
+                    else
+                    {
+                        SendKeys.Send(value);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Clipboard.SetText(value);
+                    MessageBox.Show($"Error occurred with: {value}\r\r{exception.Message}", $"Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
     }
 }
