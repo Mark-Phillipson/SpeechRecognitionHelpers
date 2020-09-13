@@ -122,6 +122,7 @@
     <Compile Include="Models\MultipleLauncher.cs" />
     <Compile Include="Models\ValuesToInsert.cs" />
     <Compile Include="Models\VoiceLauncherContext.cs" />
+    <Compile Include="ShowValidationErrors.cs" />
     <Compile Include="TodosForm.cs">
       <SubType>Form</SubType>
     </Compile>

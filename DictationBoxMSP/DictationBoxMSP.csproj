@@ -51,6 +51,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Voice-Search256.ico</ApplicationIcon>
@@ -91,6 +92,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingleInstance.cs" />
+    <Compile Include="User33API.cs" />
     <EmbeddedResource Include="DictationBox.resx">
       <DependentUpon>DictationBox.cs</DependentUpon>
     </EmbeddedResource>

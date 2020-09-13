@@ -16,9 +16,13 @@ namespace DictationBoxMSP
         [STAThread]
         static void Main()
         {
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DictationBoxForm());
+            if (!SingleInstance.AlreadyRunning())
+            {
+                Application.Run(new DictationBoxForm());
+            }
         }
     }
 }

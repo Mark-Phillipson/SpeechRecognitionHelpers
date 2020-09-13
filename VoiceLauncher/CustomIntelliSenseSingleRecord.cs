@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Common.CommandTrees;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -88,6 +89,15 @@ namespace VoiceLauncher
         private void customIntelliSenseBindingNavigatorSaveItem_Click(object sender, EventArgs e)
         {
             this.Validate();
+            var local= db.CustomIntelliSenses.Local.ToBindingList();
+            if (local.Count > 1)
+            {
+                var emptyOne = local.FirstOrDefault(v => v.Display_Value == null);
+                if (emptyOne!= null )
+                {
+                    local.Remove(emptyOne);
+                }
+            }
             customIntelliSenseBindingSource.EndEdit();
             try
             {
@@ -95,6 +105,7 @@ namespace VoiceLauncher
             }
             catch (Exception exception)
             {
+
                 var message = ExceptionHandling.GetShortErrorMessage(exception);
                 MessageBox.Show($"{message}", "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

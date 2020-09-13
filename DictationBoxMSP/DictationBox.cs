@@ -247,6 +247,7 @@ namespace DictationBoxMSP
                 var filename = $@"{path}\Documents\{richTextBox1.Text.Trim().Substring(0, characters)}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt";
                 File.WriteAllText(filename, richTextBox1.Text);
                 this.Text = $"Dictation Box Saved to: {filename}";
+                Process.Start(filename);
             }
         }
 
@@ -330,7 +331,7 @@ namespace DictationBoxMSP
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show(exception.Message, "Error has occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(exception.Message, "Filename or Web Address Required!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

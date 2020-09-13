@@ -124,7 +124,12 @@ namespace VoiceLauncher
                 DataGridView view = (DataGridView)sender;
                 view.Rows[anError.RowIndex].ErrorText = "an error";
                 view.Rows[anError.RowIndex].Cells[anError.ColumnIndex].ErrorText = "an error";
-                MessageBox.Show(anError.Exception.Message);
+                var message = anError.Exception.Message;
+                if (anError.Exception.InnerException!= null )
+                {
+                    message = $"{message} Inner Exception {anError.Exception.InnerException.Message}";
+                }
+                MessageBox.Show(message);
                 anError.ThrowException = false;
             }
         }
@@ -466,7 +471,13 @@ namespace VoiceLauncher
                 catch (Exception exception)
                 {
                     Clipboard.SetText(value);
-                    MessageBox.Show($"Error occurred with: {value}\r\r{exception.Message}", $"Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    var message = exception.Message;
+                    if (exception.InnerException != null)
+                    {
+                        message = $"{message} Inner Exception {exception.InnerException.Message}";
+                    }
+
+                    MessageBox.Show($"Error occurred with: {value}\r\r{message}", $"Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
