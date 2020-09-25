@@ -238,8 +238,8 @@ namespace DictationBoxMSP
         {
             if (richTextBox1.Text != null && richTextBox1.Text.Length > 0)
             {
-                int characters = 10;
-                if (richTextBox1.Text.Length < 10)
+                int characters = 30;
+                if (richTextBox1.Text.Length < 30)
                 {
                     characters = richTextBox1.Text.Length;
                 }
