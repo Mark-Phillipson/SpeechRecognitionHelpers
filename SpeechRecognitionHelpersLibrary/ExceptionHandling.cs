@@ -18,7 +18,7 @@ namespace SpeechRecognitionHelpersLibrary
             {
                 message = exception.Message;
             }
-            message = message + GetEntityValidationErrors((DbEntityValidationException)exception);
+            message = $"{message}{GetEntityValidationErrors((DbEntityValidationException)exception)}";
             return message;
         }
         public static string GetEntityValidationErrors(DbEntityValidationException e)

@@ -1,3 +1,4 @@
+using SpeechRecognitionHelpersLibrary;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -244,7 +245,8 @@ namespace DictationBoxMSP
                     characters = richTextBox1.Text.Length;
                 }
                 string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)).FullName;
-                var filename = $@"{path}\Documents\{richTextBox1.Text.Trim().Substring(0, characters)}_{DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")}.txt";
+                var filename = FileUtilities.RemoveIllegalCharacters(richTextBox1.Text.Trim().Substring(0, characters));
+                filename = $@"{path}\Documents\{filename}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.txt";
                 File.WriteAllText(filename, richTextBox1.Text);
                 this.Text = $"Dictation Box Saved to: {filename}";
                 Process.Start(filename);
