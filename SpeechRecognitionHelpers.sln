@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictationBoxMSP", "Dictatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillApplications", "KillApplications\KillApplications.csproj", "{116AD54F-797E-49E6-A898-F6F1AEBC87EA}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SpeechRecognitionHelpers", "Setup\Setup.vdproj", "{03064C76-257B-4F6E-9D2D-0164B28FF0AE}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SpeechRecognitionHelpersSetup", "Setup\Setup.vdproj", "{03064C76-257B-4F6E-9D2D-0164B28FF0AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowseScripts", "BrowseScripts\BrowseScripts.csproj", "{B8EC6E9C-11E5-420D-93B0-57302C39A907}"
 EndProject

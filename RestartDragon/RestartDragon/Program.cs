@@ -38,6 +38,8 @@ namespace RestartDragon
             KillAllProcesses(name);
             name = "KBPro";
             KillAllProcesses(name);
+            name = "dragonlogger";
+            KillAllProcesses(name);
             try
             {
                 Process process = new Process();
@@ -49,16 +51,13 @@ namespace RestartDragon
                     process.StartInfo.FileName = filename;
                     process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                     process.Start();
-
                 }
-
                 else
                 {
                     IntPtr hwnd = GetForegroundWindow();
                     uint pid;
                     GetWindowThreadProcessId(hwnd, out pid);
                     Process currentProcess = Process.GetProcessById((int)pid);
-
                     List<string> keysKB = new List<string>(new string[] { "^+k" });
                     SendKeysCustom(null, null, keysKB, currentProcess.ProcessName);
                 }
@@ -103,7 +102,7 @@ namespace RestartDragon
                     }
                 }
 
-                // Make Application the foreground application and send it 
+                // Make Application the foreground application and send it
                 // a set of Keys.
                 SetForegroundWindow(applicationHandle);
                 foreach (var item in keys)
