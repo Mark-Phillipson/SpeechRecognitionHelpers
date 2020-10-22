@@ -15,10 +15,13 @@ namespace ExecuteCommands
 
         internal static void ShowCursor()
         {
+            ShowCursor(false);
+            ShowCursor(true);
             while (ShowCursor(true) < 0)
             {
                 ShowCursor(true);
             }
+            System.Windows.Forms.Cursor.Show();
         }
 
         internal static void HideCursor()

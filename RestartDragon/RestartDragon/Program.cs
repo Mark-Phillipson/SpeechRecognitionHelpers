@@ -28,18 +28,18 @@ namespace RestartDragon
 
         static void Main(string[] args)
         {
-            var name = "nsbrowse";
-            KillAllProcesses(name);
-            name = "dragonbar";
-            KillAllProcesses(name);
-            name = "natspeak";
-            KillAllProcesses(name);
-            name = "ProcHandler";
-            KillAllProcesses(name);
-            name = "KBPro";
-            KillAllProcesses(name);
-            name = "dragonlogger";
-            KillAllProcesses(name);
+            var processName = "nsbrowse";
+            KillAllProcesses(processName);
+            processName = "dragonbar";
+            KillAllProcesses(processName);
+            processName = "natspeak";
+            KillAllProcesses(processName);
+            processName = "ProcHandler";
+            KillAllProcesses(processName);
+            processName = "KBPro";
+            KillAllProcesses(processName);
+            processName = "dragonlogger";
+            KillAllProcesses(processName);
             try
             {
                 Process process = new Process();

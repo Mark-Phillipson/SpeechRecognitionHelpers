@@ -17,8 +17,9 @@ namespace ExecuteCommands
 
             if (args.Count() < 2)
             {
-                arguments = new string[] { args[0], "Error Message: There is an error in the program!" };
+                //arguments = new string[] { args[0], "Error Message: There is an error in the program!" };
                 //arguments = new string[] { args[0], "explorer" };
+                arguments = new string[] { args[0], "show cursor" };
             }
             else
             {
@@ -45,6 +46,7 @@ namespace ExecuteCommands
             else if (arguments[1].ToLower() == "show cursor")
             {
                 WinCursors.ShowCursor();
+                return "The cursor should now be Visible";
             }
             else if (arguments[1].StartsWith("Error Message:"))
             {
