@@ -19,7 +19,14 @@ namespace ControlWSR.Speech
 			availableCommands = $"{availableCommands}\nShutdown Windows";
 			CreateDictationGrammar(speechRecogniser, "Shut down Windows", "Shutdown Windows");
 			CreateDictationGrammar(speechRecogniser, "Shutdown Windows", "Shutdown Windows");
+			CreateDictationGrammar(speechRecogniser, "Shutdown", "Shutdown Windows");
+			CreateDictationGrammar(speechRecogniser, "Short Dictation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Begin Short Dictation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
+			availableCommands = $"{availableCommands}\nShort Dictation";
 			CreateDictationGrammar(speechRecogniser, "Testing", "Testing");
+			CreateDictationGrammar(speechRecogniser, "Restart Dragon", "Restart Dragon");
+			availableCommands = $"{availableCommands}\nRestart Dragon";
 			Grammar grammar = new Grammar(new GrammarBuilder(choices));
 			speechRecogniser.LoadGrammarAsync(grammar);
 			return availableCommands;
@@ -46,6 +53,16 @@ namespace ControlWSR.Speech
 			Grammar grammar = new Grammar((GrammarBuilder)grammarBuilder);
 			grammar.Name = grammarName;
 			speechRecognizer.LoadGrammarAsync(grammar);
+		}
+		public string SetupConfirmationCommands(string originalCommand,SpeechRecognizer speechRecogniser)
+		{
+			speechRecogniser.UnloadAllGrammars();
+			CreateDictationGrammar(speechRecogniser, "Yes Please", "Confirmed");
+			CreateDictationGrammar(speechRecogniser, "No Thank You", "Denied");
+			var availableCommands = "";
+			availableCommands = $"{availableCommands}\nYes Please";
+			availableCommands = $"{availableCommands}\nNo Thank You";
+			return availableCommands;
 		}
 
 	}

@@ -148,7 +148,7 @@ namespace RestartDragon
                     {
                         process.Kill();
                     }
-                    catch (Exception exception)
+                    catch (Exception)
                     {
                         //System.Windows.MessageBox.Show(exception.Message);
                     }

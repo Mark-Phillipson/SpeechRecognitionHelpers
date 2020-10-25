@@ -1,6 +1,8 @@
-﻿using System;
+﻿using ControlWSR.Speech.Azure;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Speech.Recognition;
@@ -10,11 +12,13 @@ using System.Threading.Tasks;
 using System.Windows;
 //using System.Windows;
 using System.Windows.Forms;
+using WindowsInput;
+using WindowsInput.Native;
 
 namespace ControlWSR.Speech
 {
-    public class PerformVoiceCommands
-    {
+	public class PerformVoiceCommands
+	{
 		[DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
 		public static extern IntPtr FindWindow(string lpClassName,
 	string lpWindowName);
@@ -29,18 +33,78 @@ namespace ControlWSR.Speech
 		private static extern IntPtr GetForegroundWindow();
 
 		public Process currentProcess { get; set; }
+		private readonly SpeechSetup speechSetup = new SpeechSetup();
 		public PerformVoiceCommands()
 		{
 			UpdateCurrentProcess();
 		}
 
-		public void PerformCommand(SpeechRecognizedEventArgs e)
+		private void RestartDragon()
+		{
+			var processName = "nsbrowse";
+			KillAllProcesses(processName);
+			processName = "dragonbar";
+			KillAllProcesses(processName);
+			processName = "natspeak";
+			KillAllProcesses(processName);
+			processName = "ProcHandler";
+			KillAllProcesses(processName);
+			processName = "KBPro";
+			KillAllProcesses(processName);
+			processName = "dragonlogger";
+			KillAllProcesses(processName);
+			try
+			{
+				Process process = new Process();
+				var filename = "C:\\Program Files(x86)\\KnowBrainer\\KnowBrainer Professional 2017\\KBPro.exe";
+				if (File.Exists(filename))
+				{
+					process.StartInfo.UseShellExecute = true;
+					process.StartInfo.WorkingDirectory = "C:\\Program Files (x86)\\KnowBrainer\\KnowBrainer Professional 2017\\";
+					process.StartInfo.FileName = filename;
+					process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+					process.Start();
+				}
+				else
+				{
+					IntPtr hwnd = GetForegroundWindow();
+					uint pid;
+					GetWindowThreadProcessId(hwnd, out pid);
+					Process currentProcess = Process.GetProcessById((int)pid);
+					List<string> keysKB = new List<string>(new string[] { "^+k" });
+					SendKeysCustom(null, null, keysKB, currentProcess.ProcessName);
+				}
+			}
+			catch (Exception exception)
+			{
+				System.Windows.Forms.MessageBox.Show(exception.Message);
+			}
+		}
+		private void KillAllProcesses(string name)
+		{
+			var processName = (name);
+			if (processName.Length > 0)
+			{
+				foreach (var process in Process.GetProcessesByName(processName))
+				{
+					try
+					{
+						process.Kill();
+					}
+					catch (Exception)
+					{
+						//System.Windows.MessageBox.Show(exception.Message);
+					}
+				}
+			}
+		}
+
+		public async void PerformCommand(SpeechRecognizedEventArgs e, AvailableCommandsForm form, SpeechRecognizer speechRecogniser)
 		{
 			UpdateCurrentProcess();
 			try
 			{
 				SpeechUI.SendTextFeedback(e.Result, $"Recognised: {e.Result.Text} {e.Result.Confidence:P1}", true);
-
 			}
 			catch (Exception)
 			{
@@ -50,17 +114,48 @@ namespace ControlWSR.Speech
 			{
 				QuitApplication();
 			}
-			else if (e.Result.Grammar.Name=="Shutdown Windows" && e.Result.Confidence>0.5)
+			else if (e.Result.Grammar.Name == "Shutdown Windows" && e.Result.Confidence > 0.5)
 			{
-				ShutdownWindows();
+				ShutdownWindows(speechRecogniser, form);
 			}
-		}
-		void ShutdownWindows()
-		{
-			if (System.Windows.MessageBox.Show("Please Confirm","Shutdown Windows",MessageBoxButton.YesNo,MessageBoxImage.Question,MessageBoxResult.Yes)==MessageBoxResult.Yes)
+			else if (e.Result.Grammar.Name == "Short Dictation" && e.Result.Confidence > 0.4)
+			{
+				InputSimulator inputSimulator = new InputSimulator();
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+				var result = await DictateSpeech.RecognizeSpeechAsync();
+				form.TextBoxResults = result.Text;
+				if (result.Text.Length>0)
+				{
+					inputSimulator.Keyboard.TextEntry(result.Text);
+				}
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+			}
+			else if (e.Result.Grammar.Name == "Confirmed")
 			{
 				Process.Start("shutdown", "/s /t 0");
 			}
+			else if (e.Result.Grammar.Name=="Denied")
+			{
+				var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
+				form.RichTextBoxAvailableCommands = availableCommands;
+			}
+			else if (e.Result.Grammar.Name=="Restart Dragon" && e.Result.Confidence>0.5)
+			{
+				RestartDragon();
+			}
+		}
+
+		public static void ToggleSpeechRecognitionListeningMode(InputSimulator inputSimulator)
+		{
+			inputSimulator.Keyboard.KeyDown(VirtualKeyCode.CONTROL);
+			inputSimulator.Keyboard.KeyPress(VirtualKeyCode.LWIN);
+			inputSimulator.Keyboard.KeyUp(VirtualKeyCode.CONTROL);
+		}
+
+		void ShutdownWindows(SpeechRecognizer speechRecogniser, AvailableCommandsForm availableCommandsForm)
+		{
+			var availableCommands = speechSetup.SetupConfirmationCommands("Shutdown Windows", speechRecogniser);
+			availableCommandsForm.AvailableCommands = availableCommands;
 		}
 		private void UpdateCurrentProcess()
 		{
@@ -79,7 +174,7 @@ namespace ControlWSR.Speech
 			}
 			catch (Exception exception)
 			{
-				System.Windows.MessageBox.Show(exception.Message, "Error trying to shut down", MessageBoxButton.OK,MessageBoxImage.Error);
+				System.Windows.MessageBox.Show(exception.Message, "Error trying to shut down", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 		private void SendKeysCustom(string applicationClass, string applicationCaption, List<string> keys, string processName, string applicationToLaunch = "", int delay = 0)
