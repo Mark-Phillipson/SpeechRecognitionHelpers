@@ -19,6 +19,11 @@ namespace ControlWSR.Speech
 {
 	public class PerformVoiceCommands
 	{
+		private const int MOUSEEVENTF_LEFTDOWN = 0x02;
+		private const int MOUSEEVENTF_LEFTUP = 0x04;
+		private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+		private const int MOUSEEVENTF_RIGHTUP = 0x10;
+
 		[DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
 		public static extern IntPtr FindWindow(string lpClassName,
 	string lpWindowName);
@@ -38,7 +43,64 @@ namespace ControlWSR.Speech
 		{
 			UpdateCurrentProcess();
 		}
+		public async void PerformCommand(SpeechRecognizedEventArgs e, AvailableCommandsForm form, SpeechRecognizer speechRecogniser)
+		{
+			UpdateCurrentProcess();
+			try
+			{
+				SpeechUI.SendTextFeedback(e.Result, $"Recognised: {e.Result.Text} {e.Result.Confidence:P1}", true);
+			}
+			catch (Exception)
+			{
+				//This will fail if were using the engine
+			}
+			if (e.Result.Text.ToLower() == "quit application" && e.Result.Confidence > 0.6)
+			{
+				QuitApplication();
+			}
+			else if (e.Result.Grammar.Name == "Shutdown Windows" && e.Result.Confidence > 0.5)
+			{
+				ShutdownWindows(speechRecogniser, form);
+			}
+			else if (e.Result.Grammar.Name == "Short Dictation" && e.Result.Confidence > 0.4)
+			{
+				InputSimulator inputSimulator = new InputSimulator();
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+				var result = await DictateSpeech.RecognizeSpeechAsync();
+				form.TextBoxResults = result.Text;
+				if (result.Text.Length > 0)
+				{
+					inputSimulator.Keyboard.TextEntry(result.Text);
+				}
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+			}
+			else if (e.Result.Grammar.Name == "Confirmed")
+			{
+				Process.Start("shutdown", "/s /t 0");
+			}
+			else if (e.Result.Grammar.Name == "Denied")
+			{
+				var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
+				form.RichTextBoxAvailableCommands = availableCommands;
+			}
+			else if (e.Result.Grammar.Name == "Restart Dragon" && e.Result.Confidence > 0.5)
+			{
+				RestartDragon();
+			}
+			else if (e.Result.Grammar.Name == "Horizontal Position Mouse Command" && e.Result.Confidence > 0.3)
+			{
+				PerformHorizontalPositionMouseCommand(e);
+			}
+			else if (e.Result.Grammar.Name == "Mouse Command" && e.Result.Confidence > 0.3)
+			{
+				PerformMouseCommand(e);
+			}
+			else if (e.Result.Grammar.Name.Contains("Phonetic Alphabet" )) // Could be lower mixed or upper
+			{
+				ProcessKeyboardCommand(e);
+			}
 
+		}
 		private void RestartDragon()
 		{
 			var processName = "nsbrowse";
@@ -99,51 +161,7 @@ namespace ControlWSR.Speech
 			}
 		}
 
-		public async void PerformCommand(SpeechRecognizedEventArgs e, AvailableCommandsForm form, SpeechRecognizer speechRecogniser)
-		{
-			UpdateCurrentProcess();
-			try
-			{
-				SpeechUI.SendTextFeedback(e.Result, $"Recognised: {e.Result.Text} {e.Result.Confidence:P1}", true);
-			}
-			catch (Exception)
-			{
-				//This will fail if were using the engine
-			}
-			if (e.Result.Text.ToLower() == "quit application" && e.Result.Confidence > 0.6)
-			{
-				QuitApplication();
-			}
-			else if (e.Result.Grammar.Name == "Shutdown Windows" && e.Result.Confidence > 0.5)
-			{
-				ShutdownWindows(speechRecogniser, form);
-			}
-			else if (e.Result.Grammar.Name == "Short Dictation" && e.Result.Confidence > 0.4)
-			{
-				InputSimulator inputSimulator = new InputSimulator();
-				ToggleSpeechRecognitionListeningMode(inputSimulator);
-				var result = await DictateSpeech.RecognizeSpeechAsync();
-				form.TextBoxResults = result.Text;
-				if (result.Text.Length>0)
-				{
-					inputSimulator.Keyboard.TextEntry(result.Text);
-				}
-				ToggleSpeechRecognitionListeningMode(inputSimulator);
-			}
-			else if (e.Result.Grammar.Name == "Confirmed")
-			{
-				Process.Start("shutdown", "/s /t 0");
-			}
-			else if (e.Result.Grammar.Name=="Denied")
-			{
-				var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
-				form.RichTextBoxAvailableCommands = availableCommands;
-			}
-			else if (e.Result.Grammar.Name=="Restart Dragon" && e.Result.Confidence>0.5)
-			{
-				RestartDragon();
-			}
-		}
+
 
 		public static void ToggleSpeechRecognitionListeningMode(InputSimulator inputSimulator)
 		{
@@ -230,6 +248,625 @@ namespace ControlWSR.Speech
 					System.Windows.MessageBox.Show(exception.Message, "Error trying to shut down", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
 			}
+		}
+		private void PerformHorizontalPositionMouseCommand(SpeechRecognizedEventArgs e)
+		{
+			Win32.POINT p = new Win32.POINT();
+			p.x = 100;
+			p.y = 100;
+			var horizontalCoordinate = e.Result.Words[1].Text;
+			if (horizontalCoordinate == "Zero")
+			{
+				p.x = 5;
+			}
+			else if (horizontalCoordinate == "Alpha")
+			{
+				p.x = 50;
+			}
+			else if (horizontalCoordinate == "Bravo")
+			{
+				p.x = 100;
+			}
+			else if (horizontalCoordinate == "Charlie")
+			{
+				p.x = 150;
+			}
+			else if (horizontalCoordinate == "Delta")
+			{
+				p.x = 200;
+			}
+			else if (horizontalCoordinate == "Echo")
+			{
+				p.x = 250;
+			}
+			else if (horizontalCoordinate == "Foxtrot")
+			{
+				p.x = 300;
+			}
+			else if (horizontalCoordinate == "Golf")
+			{
+				p.x = 350;
+			}
+			else if (horizontalCoordinate == "Hotel")
+			{
+				p.x = 400;
+			}
+			else if (horizontalCoordinate == "India")
+			{
+				p.x = 450;
+			}
+			else if (horizontalCoordinate == "Juliet")
+			{
+				p.x = 500;
+			}
+			else if (horizontalCoordinate == "Kilo")
+			{
+				p.x = 550;
+			}
+			else if (horizontalCoordinate == "Lima")
+			{
+				p.x = 600;
+			}
+			else if (horizontalCoordinate == "Mike")
+			{
+				p.x = 650;
+			}
+			else if (horizontalCoordinate == "November")
+			{
+				p.x = 700;
+			}
+			else if (horizontalCoordinate == "Oscar")
+			{
+				p.x = 750;
+			}
+			else if (horizontalCoordinate == "Papa")
+			{
+				p.x = 800;
+			}
+			else if (horizontalCoordinate == "Qubec")
+			{
+				p.x = 850;
+			}
+			else if (horizontalCoordinate == "Romeo")
+			{
+				p.x = 900;
+			}
+			else if (horizontalCoordinate == "Sierra")
+			{
+				p.x = 950;
+			}
+			else if (horizontalCoordinate == "Tango")
+			{
+				p.x = 1000;
+			}
+			else if (horizontalCoordinate == "Uniform")
+			{
+				p.x = 1050;
+			}
+			else if (horizontalCoordinate == "Victor")
+			{
+				p.x = 1100;
+			}
+			else if (horizontalCoordinate == "Whiskey")
+			{
+				p.x = 1150;
+			}
+			else if (horizontalCoordinate == "X-ray")
+			{
+				p.x = 1200;
+			}
+			else if (horizontalCoordinate == "Yankee")
+			{
+				p.x = 1250;
+			}
+			else if (horizontalCoordinate == "Zulu")
+			{
+				p.x = 1300;
+			}
+			else if (horizontalCoordinate == "1")
+			{
+				p.x = 1350;
+			}
+			else if (horizontalCoordinate == "2")
+			{
+				p.x = 1400;
+			}
+			else if (horizontalCoordinate == "3")
+			{
+				p.x = 1450;
+			}
+			else if (horizontalCoordinate == "4")
+			{
+				p.x = 1500;
+			}
+			else if (horizontalCoordinate == "5")
+			{
+				p.x = 1550;
+			}
+			else if (horizontalCoordinate == "6")
+			{
+				p.x = 1600;
+			}
+			else if (horizontalCoordinate == "7")
+			{
+				p.x = 1650;
+			}
+			if (e.Result.Words[0].Text == "Taskbar")
+			{
+				p.y = 1030;
+			}
+			else if (e.Result.Words[0].Text == "Ribbon" || e.Result.Words[0].Text == "Menu")
+			{
+				p.y = 85;
+			}
+			Win32.SetCursorPos(p.x, p.y);
+			SpeechUI.SendTextFeedback(e.Result, $" {e.Result.Text} H{p.x} V{p.y}", true);
+			Win32.mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, (uint)p.x, (uint)p.y, 0, 0);
+		}
+		private void PerformMouseCommand(SpeechRecognizedEventArgs e)
+		{
+			Win32.POINT p = new Win32.POINT();
+			p.x = 100;
+			p.y = 100;
+			var horizontalCoordinate = e.Result.Words[1].Text;
+			if (horizontalCoordinate == "Zero")
+			{
+				p.x = 5;
+			}
+			else if (horizontalCoordinate == "Alpha")
+			{
+				p.x = 50;
+			}
+			else if (horizontalCoordinate == "Bravo")
+			{
+				p.x = 100;
+			}
+			else if (horizontalCoordinate == "Charlie")
+			{
+				p.x = 150;
+			}
+			else if (horizontalCoordinate == "Delta")
+			{
+				p.x = 200;
+			}
+			else if (horizontalCoordinate == "Echo")
+			{
+				p.x = 250;
+			}
+			else if (horizontalCoordinate == "Foxtrot")
+			{
+				p.x = 300;
+			}
+			else if (horizontalCoordinate == "Golf")
+			{
+				p.x = 350;
+			}
+			else if (horizontalCoordinate == "Hotel")
+			{
+				p.x = 400;
+			}
+			else if (horizontalCoordinate == "India")
+			{
+				p.x = 450;
+			}
+			else if (horizontalCoordinate == "Juliet")
+			{
+				p.x = 500;
+			}
+			else if (horizontalCoordinate == "Kilo")
+			{
+				p.x = 550;
+			}
+			else if (horizontalCoordinate == "Lima")
+			{
+				p.x = 600;
+			}
+			else if (horizontalCoordinate == "Mike")
+			{
+				p.x = 650;
+			}
+			else if (horizontalCoordinate == "November")
+			{
+				p.x = 700;
+			}
+			else if (horizontalCoordinate == "Oscar")
+			{
+				p.x = 750;
+			}
+			else if (horizontalCoordinate == "Papa")
+			{
+				p.x = 800;
+			}
+			else if (horizontalCoordinate == "Qubec")
+			{
+				p.x = 850;
+			}
+			else if (horizontalCoordinate == "Romeo")
+			{
+				p.x = 900;
+			}
+			else if (horizontalCoordinate == "Sierra")
+			{
+				p.x = 950;
+			}
+			else if (horizontalCoordinate == "Tango")
+			{
+				p.x = 1000;
+			}
+			else if (horizontalCoordinate == "Uniform")
+			{
+				p.x = 1050;
+			}
+			else if (horizontalCoordinate == "Victor")
+			{
+				p.x = 1100;
+			}
+			else if (horizontalCoordinate == "Whiskey")
+			{
+				p.x = 1150;
+			}
+			else if (horizontalCoordinate == "X-ray")
+			{
+				p.x = 1200;
+			}
+			else if (horizontalCoordinate == "Yankee")
+			{
+				p.x = 1250;
+			}
+			else if (horizontalCoordinate == "Zulu")
+			{
+				p.x = 1300;
+			}
+			else if (horizontalCoordinate == "1")
+			{
+				p.x = 1350;
+			}
+			else if (horizontalCoordinate == "2")
+			{
+				p.x = 1400;
+			}
+			else if (horizontalCoordinate == "3")
+			{
+				p.x = 1450;
+			}
+			else if (horizontalCoordinate == "4")
+			{
+				p.x = 1500;
+			}
+			else if (horizontalCoordinate == "5")
+			{
+				p.x = 1550;
+			}
+			else if (horizontalCoordinate == "6")
+			{
+				p.x = 1600;
+			}
+			else if (horizontalCoordinate == "7")
+			{
+				p.x = 1650;
+			}
+			var verticalCoordinate = e.Result.Words[2].Text;
+			if (verticalCoordinate == "Zero")
+			{
+				p.y = 5;
+			}
+			else if (verticalCoordinate == "Alpha")
+			{
+				p.y = 50;
+			}
+			else if (verticalCoordinate == "Bravo")
+			{
+				p.y = 100;
+			}
+			else if (verticalCoordinate == "Charlie")
+			{
+				p.y = 150;
+			}
+			else if (verticalCoordinate == "Delta")
+			{
+				p.y = 200;
+			}
+			else if (verticalCoordinate == "Echo")
+			{
+				p.y = 250;
+			}
+			else if (verticalCoordinate == "Foxtrot")
+			{
+				p.y = 300;
+			}
+			else if (verticalCoordinate == "Golf")
+			{
+				p.y = 350;
+			}
+			else if (verticalCoordinate == "Hotel")
+			{
+				p.y = 400;
+			}
+			else if (verticalCoordinate == "India")
+			{
+				p.y = 450;
+			}
+			else if (verticalCoordinate == "Juliet")
+			{
+				p.y = 500;
+			}
+			else if (verticalCoordinate == "Kilo")
+			{
+				p.y = 550;
+			}
+			else if (verticalCoordinate == "Lima")
+			{
+				p.y = 600;
+			}
+			else if (verticalCoordinate == "Mike")
+			{
+				p.y = 650;
+			}
+			else if (verticalCoordinate == "November")
+			{
+				p.y = 700;
+			}
+			else if (verticalCoordinate == "Oscar")
+			{
+				p.y = 750;
+			}
+			else if (verticalCoordinate == "Papa")
+			{
+				p.y = 800;
+			}
+			else if (verticalCoordinate == "Qubec")
+			{
+				p.y = 850;
+			}
+			else if (verticalCoordinate == "Romeo")
+			{
+				p.y = 900;
+			}
+			else if (verticalCoordinate == "Sierra")
+			{
+				p.y = 950;
+			}
+			else if (verticalCoordinate == "Tango")
+			{
+				p.y = 1000;
+			}
+			else if (verticalCoordinate == "Uniform")
+			{
+				p.y = 1050;
+			}
+			else if (verticalCoordinate == "Victor")
+			{
+				p.y = 1100;
+			}
+			else if (verticalCoordinate == "Whiskey")
+			{
+				p.y = 1150;
+			}
+			else if (verticalCoordinate == "X-ray")
+			{
+				p.y = 1200;
+			}
+			else if (verticalCoordinate == "Yankee")
+			{
+				p.y = 1250;
+			}
+			else if (verticalCoordinate == "Zulu")
+			{
+				p.y = 1300;
+			}
+			else if (verticalCoordinate == "1")
+			{
+				p.y = 1350;
+			}
+			else if (verticalCoordinate == "2")
+			{
+				p.y = 1400;
+			}
+			else if (verticalCoordinate == "3")
+			{
+				p.y = 1450;
+			}
+			else if (verticalCoordinate == "4")
+			{
+				p.y = 1500;
+			}
+			else if (verticalCoordinate == "5")
+			{
+				p.y = 1550;
+			}
+			else if (verticalCoordinate == "6")
+			{
+				p.y = 1600;
+			}
+			else if (verticalCoordinate == "7")
+			{
+				p.y = 1650;
+			}
+			var screen = e.Result.Words[0].Text;
+			if (screen == "Right" || screen == "Touch")
+			{
+				p.x += 1680;
+			}
+
+			Win32.SetCursorPos(p.x, p.y);
+			SpeechUI.SendTextFeedback(e.Result, $" {e.Result.Text} H{p.x} V{p.y}", true);
+			if (screen == "Click" || screen == "Touch")
+			{
+				Win32.mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, (uint)p.x, (uint)p.y, 0, 0);
+			}
+		}
+		private void ProcessKeyboardCommand(SpeechRecognizedEventArgs e)
+		{
+			var value = e.Result.Text;
+			List<string> phoneticAlphabet = new List<string> { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Qubec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu" };
+			foreach (var item in phoneticAlphabet)
+			{
+				if (value.IndexOf("Shift") > 0)
+				{
+					value = value.Replace(item, item.ToUpper().Substring(0, 1));
+				}
+				else
+				{
+					value = value.Replace(item, item.ToLower().Substring(0, 1));
+				}
+			}
+			value = value.Replace("Press ", "");
+			value = value.Replace("Semicolon", ";");
+			value = value.Replace("Control", "^");
+			value = value.Replace("Alt Space", "% ");
+			value = value.Replace("Alt", "%");
+			value = value.Replace("Escape", "{Esc}");
+			value = value.Replace("Zero", "0");
+			value = value.Replace("Stop", ".");
+			value = value.Replace("Tab", "{Tab}");
+			value = value.Replace("Backspace", "{Backspace}");
+			value = value.Replace("Enter", "{Enter}");
+			value = value.Replace("Page Down", "{PgDn}");
+			if (value.IndexOf("Page Up") >= 0)
+			{
+				value = value.Replace("Page Up", "{PgUp}");
+			}
+			else
+			{
+				value = value.Replace("Up", "{Up}");
+			}
+			value = value.Replace("Right", "{Right}");
+			value = value.Replace("Left", "{Left}");
+			value = value.Replace("Down", "{Down}");
+			value = value.Replace("Delete", "{Del}");
+			value = value.Replace("Home", "{Home}");
+			value = value.Replace("End", "{End}");
+			value = value.Replace("Hyphen", "-");
+			value = value.Replace("Colon", ":");
+			value = value.Replace("Ampersand", "&");
+			value = value.Replace("Dollar", "$");
+			value = value.Replace("Exclamation Mark", "!");
+			value = value.Replace("Double Quote", "\"");
+			value = value.Replace("Pound", "£");
+			value = value.Replace("Asterix", "*");
+			value = value.Replace("Apostrophe", "'");
+			value = value.Replace("Equal", "=");
+			value = value.Replace("Open Bracket", "(");
+			value = value.Replace("Close Bracket", ")");
+
+
+
+
+			for (int i = 12; i > 0; i--)
+			{
+				value = value.Replace($"Function {i}", "{F" + i + "}");
+			}
+			value = value.Replace("Shift", "+");
+			if (value != "% ")
+			{
+				value = value.Replace(" ", "");
+			}
+			if (value == "Space")
+			{
+				value = value.Replace("Space", " ");
+			}
+			if (value.Contains("{Up}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
+			{
+				value = "{Up " + value.Substring(value.IndexOf("}") + 1) + "}";
+			}
+			if (value.Contains("{Down}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
+			{
+				value = "{Down " + value.Substring(value.IndexOf("}") + 1) + "}";
+			}
+			if (value.Contains("{Left}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
+			{
+				value = "{Left " + value.Substring(value.IndexOf("}") + 1) + "}";
+			}
+			if (value.Contains("{Right}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
+			{
+				value = "{Right " + value.Substring(value.IndexOf("}") + 1) + "}";
+			}
+			value = value.Replace("Percent", "{%}");
+			value = value.Replace("Plus", "{+}");
+			if (e.Result.Grammar.Name.Contains("Phonetic Alphabet"))
+			{
+				value = Get1stLetterFromPhoneticAlphabet(e, value);
+			}
+
+			//this.WriteLine($"*****Sending Keys: {value.Replace("{", "").Replace("}", "").ToString()}*******");
+
+			List<string> keys = new List<string>(new string[] { value });
+			SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+		}
+		private static string Get1stLetterFromPhoneticAlphabet(SpeechRecognizedEventArgs e, string value)
+		{
+			if (e.Result.Grammar.Name == "Phonetic Alphabet")
+			{
+				value = "";
+				foreach (var word in e.Result.Words)
+				{
+					value = value + word.Text.Substring(0, 1);
+				}
+			}
+			else if (e.Result.Grammar.Name == "Phonetic Alphabet Lower")
+			{
+				value = "";
+				foreach (var word in e.Result.Words)
+				{
+					if (word.Text != "Lower")
+					{
+						value = value + word.Text.ToLower().Substring(0, 1);
+					}
+				}
+			}
+			else if (e.Result.Grammar.Name == "Phonetic Alphabet Mixed")
+			{
+				value = "";var counter = 0;
+				foreach (var word in e.Result.Words)
+				{
+					if (word.Text != "Mixed")
+					{
+						counter++;
+						if (counter==1)
+						{
+							value = value + word.Text.ToUpper().Substring(0, 1);
+						}
+						else
+						{
+							value = value + word.Text.ToLower().Substring(0, 1);
+						}
+					}
+				}
+			}
+
+			else if (e.Result.Grammar.Name == "Replace Letters")
+			{
+				value = "";
+				var upper = false;
+				foreach (var word in e.Result.Words)
+				{
+					if (word.Text == "Upper")
+					{
+						upper = true;
+					}
+					else if (word.Text == "Replace" || word.Text == "With" || word.Text == "this")
+					{
+						//Do nothing
+					}
+					else
+					{
+						if (upper == true)
+						{
+							value = value + word.Text.ToUpper().Substring(0, 1);
+							upper = false;
+						}
+						else
+						{
+							value = value + word.Text.ToLower().Substring(0, 1);
+						}
+					}
+				}
+			}
+			return value;
+		}
+		public Boolean IsNumber(String value)
+		{
+			return value.All(Char.IsDigit);
 		}
 
 	}

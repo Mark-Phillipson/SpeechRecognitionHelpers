@@ -18,16 +18,16 @@ namespace ControlWSR.Speech.Azure
 			SPEECH__SERVICE__KEY = ConfigurationManager.AppSettings.Get("SpeechAzureKey");
 			SPEECH__SERVICE__REGION = ConfigurationManager.AppSettings.Get("SpeechAzureRegion");
 			var config = SpeechConfig.FromSubscription(SPEECH__SERVICE__KEY, SPEECH__SERVICE__REGION);
-			//System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\Start.mp3");
-			//soundPlayer.Play();
-			using (var recognizer = new SpeechRecognizer(config))
+			System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\Start.wav");
+			soundPlayer.Play();
+			using (var recogniser = new SpeechRecognizer(config))
 			{
-				var result = await recognizer.RecognizeOnceAsync();
+				var result = await recogniser.RecognizeOnceAsync();
 
 				if (result.Reason == ResultReason.RecognizedSpeech)
 				{
-					//soundPlayer.SoundLocation=@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\End.mp3";
-					//soundPlayer.Play();
+					soundPlayer.SoundLocation=@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\End.wav";
+					soundPlayer.Play();
 					return result;
 				}
 				else if (result.Reason == ResultReason.NoMatch)

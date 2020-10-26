@@ -36,25 +36,27 @@
 			// 
 			// richTextBoxAvailableCommands
 			// 
+			this.richTextBoxAvailableCommands.Font = new System.Drawing.Font("Cascadia Code SemiBold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.richTextBoxAvailableCommands.Location = new System.Drawing.Point(1, 21);
 			this.richTextBoxAvailableCommands.Name = "richTextBoxAvailableCommands";
 			this.richTextBoxAvailableCommands.ReadOnly = true;
-			this.richTextBoxAvailableCommands.Size = new System.Drawing.Size(385, 427);
+			this.richTextBoxAvailableCommands.Size = new System.Drawing.Size(565, 521);
 			this.richTextBoxAvailableCommands.TabIndex = 0;
 			this.richTextBoxAvailableCommands.Text = "";
 			// 
 			// textBoxResults
 			// 
-			this.textBoxResults.Location = new System.Drawing.Point(393, 20);
+			this.textBoxResults.Font = new System.Drawing.Font("Cascadia Code SemiBold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.textBoxResults.Location = new System.Drawing.Point(572, 20);
 			this.textBoxResults.Multiline = true;
 			this.textBoxResults.Name = "textBoxResults";
 			this.textBoxResults.ReadOnly = true;
-			this.textBoxResults.Size = new System.Drawing.Size(399, 390);
+			this.textBoxResults.Size = new System.Drawing.Size(396, 390);
 			this.textBoxResults.TabIndex = 1;
 			// 
 			// TestingBtn
 			// 
-			this.TestingBtn.Location = new System.Drawing.Point(706, 416);
+			this.TestingBtn.Location = new System.Drawing.Point(807, 500);
 			this.TestingBtn.Name = "TestingBtn";
 			this.TestingBtn.Size = new System.Drawing.Size(86, 32);
 			this.TestingBtn.TabIndex = 2;
@@ -66,7 +68,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(800, 450);
+			this.ClientSize = new System.Drawing.Size(976, 544);
 			this.Controls.Add(this.TestingBtn);
 			this.Controls.Add(this.textBoxResults);
 			this.Controls.Add(this.richTextBoxAvailableCommands);

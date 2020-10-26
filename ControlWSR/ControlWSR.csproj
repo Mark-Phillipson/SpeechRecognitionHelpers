@@ -93,10 +93,11 @@
     <Compile Include="Speech\Azure\DictateSpeech.cs" />
     <Compile Include="Speech\PerformVoiceCommands.cs" />
     <Compile Include="Speech\SpeechSetup.cs" />
-    <Content Include="Media\Start.mp3">
+    <Compile Include="Speech\Win32.cs" />
+    <Content Include="Media\Start.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Media\End.mp3">
+    <Content Include="Media\End.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="AvailableCommandsForm.resx">
@@ -111,7 +112,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="App.Debug.config" />
+    <Content Include="App.DEBUG.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -124,7 +127,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Content Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.CognitiveServices.Speech.1.13.0\build\net461\Microsoft.CognitiveServices.Speech.targets" Condition="Exists('..\packages\Microsoft.CognitiveServices.Speech.1.13.0\build\net461\Microsoft.CognitiveServices.Speech.targets')" />

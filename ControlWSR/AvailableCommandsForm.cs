@@ -42,8 +42,14 @@ namespace ControlWSR
 			var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
 			richTextBoxAvailableCommands.Text = availableCommands;
 			speechRecogniser.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(SpeechRecognizer_SpeechRecognised);
-
+			speechRecogniser.SpeechRecognitionRejected += SpeechRecogniser_SpeechRecognitionRejected;
 		}
+
+		private void SpeechRecogniser_SpeechRecognitionRejected(object sender, SpeechRecognitionRejectedEventArgs e)
+		{
+			textBoxResults.Text = $"{e.Result.Text} {e.Result.Confidence:P}";
+		}
+
 		private void SpeechRecognizer_SpeechRecognised(object sender, SpeechRecognizedEventArgs e)
 		{
 			textBoxResults.Text = "";
