@@ -10,6 +10,7 @@ namespace ControlWSR.Speech
 {
     public class SpeechSetup
     {
+		SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
 		public string SetUpMainCommands(SpeechRecognizer speechRecogniser)
 		{
 			var availableCommands = "Quit Application";
@@ -23,18 +24,35 @@ namespace ControlWSR.Speech
 			CreateDictationGrammar(speechRecogniser, "Short Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Begin Short Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Variable Dictation", "Short Dictation");
 			availableCommands = $"{availableCommands}\nShort Dictation";
+			availableCommands = $"{availableCommands}\nCamel Dictation";
+			availableCommands = $"{availableCommands}\nVariable Dictation";
 			CreateDictationGrammar(speechRecogniser, "Testing", "Testing");
 			CreateDictationGrammar(speechRecogniser, "Restart Dragon", "Restart Dragon");
 			availableCommands = $"{availableCommands}\nRestart Dragon";
 			BuildPhoneticAlphabetGrammars(speechRecogniser);
-			availableCommands = $"{availableCommands}\n";
+			availableCommands = $"{availableCommands}\nClick: Say <Click/Double-Click/Right Click/Mouse Click> ";
+			CreateMouseMoveAndClickCommandGrammar(speechRecogniser);
+			LoadMoveCommandsGrammar(speechRecogniser);
+
 
 			LoadGrammarMouseCommands(speechRecogniser);
 			availableCommands = $"{availableCommands}\nMOUSE COMMANDS";
 			availableCommands = $"{availableCommands}\nPosition: Say < Left / Right > < Alpha - 7 > < Alpha - Tango > ";
 			LoadGrammarMouseHorizontalPositionCommands(speechRecogniser);
-			availableCommands = $"{availableCommands}\nPosition / Click: Say < Taskbar / Ribbon / Menu > < Alpha - 7 > ";
+			availableCommands = $"{availableCommands}\nPosition / Click: Say <Taskbar / Ribbon / Menu > < Alpha - 7 > ";
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Backspace", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Left", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Right", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Down", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Up", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Tab", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Delete", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Enter", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Page Down", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Page Up", "Repeat Keys", 30);
 
 
 			Grammar grammar = new Grammar(new GrammarBuilder(choices));
@@ -206,5 +224,54 @@ namespace ControlWSR.Speech
 			grammarPhoneticAlphabets.Name = grammarName;
 			speechRecognizer.LoadGrammarAsync(grammarPhoneticAlphabets);
 		}
+
+		public void LoadMoveCommandsGrammar(SpeechRecognizer speechRecognizer)
+		{
+			Choices choices = new Choices();
+			choices.Add("Move Down");
+			choices.Add("Move Up");
+			choices.Add("Move Left");
+			choices.Add("Move Right");
+			for (int counter = 1; counter < 50; counter++)
+			{
+				choices.Add($"Move Down {counter}");
+				choices.Add($"Move Up {counter}");
+				choices.Add($"Move Left {counter}");
+				choices.Add($"Move Right {counter}");
+			}
+			Grammar grammar = new Grammar(choices) { Name = "Move Command" };
+			speechRecognizer.LoadGrammarAsync(grammar);
+		}
+		public void CreateMouseMoveAndClickCommandGrammar(SpeechRecognizer speechRecognizer)
+		{
+			Choices choices = new Choices();
+			for (int counter = 1; counter < 100; counter++)
+			{
+				choices.Add($"Mouse Down {counter}");
+				choices.Add($"Mouse Up {counter}");
+				choices.Add($"Mouse Left {counter}");
+				choices.Add($"Mouse Right {counter}");
+			}
+			for (int counter = 150; counter < 800; counter = counter + 50)
+			{
+				choices.Add($"Mouse Down {counter}");
+				choices.Add($"Mouse Up {counter}");
+				choices.Add($"Mouse Left {counter}");
+				choices.Add($"Mouse Right {counter}");
+			}
+			Grammar grammar = new Grammar(choices);
+			grammar.Name = "Mouse Move Command";
+			speechRecognizer.LoadGrammarAsync(grammar);
+			Choices choicesClick = new Choices();
+			choicesClick.Add("Mouse Click");
+			choicesClick.Add("Click");
+			choicesClick.Add("Left Click");
+			choicesClick.Add("Right Click");
+			choicesClick.Add("Double Click");
+			Grammar grammarClick = new Grammar(choicesClick);
+			grammarClick.Name = "Mouse Click Command";
+			speechRecognizer.LoadGrammarAsync(grammarClick);
+		}
+
 	}
 }

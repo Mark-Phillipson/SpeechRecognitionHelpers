@@ -19,6 +19,7 @@ namespace ControlWSR.Speech
 {
 	public class PerformVoiceCommands
 	{
+		SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
 		private const int MOUSEEVENTF_LEFTDOWN = 0x02;
 		private const int MOUSEEVENTF_LEFTUP = 0x04;
 		private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
@@ -68,9 +69,43 @@ namespace ControlWSR.Speech
 				ToggleSpeechRecognitionListeningMode(inputSimulator);
 				var result = await DictateSpeech.RecognizeSpeechAsync();
 				form.TextBoxResults = result.Text;
-				if (result.Text.Length > 0)
+				var rawResult = result.Text;
+				rawResult = rawResult.Replace(",","");
+				rawResult = rawResult.Replace(";","");
+				rawResult = rawResult.Replace(":","");
+				rawResult = rawResult.Replace("?","");
+				rawResult = rawResult.Replace(".","");
+				string[] stringSeparators = new string[] { " " };
+				List<string> words = rawResult.Split(stringSeparators ,StringSplitOptions.None).ToList();
+				if (e.Result.Text.ToLower().Contains("camel"))
 				{
-					inputSimulator.Keyboard.TextEntry(result.Text);
+					var counter = 0; string value = "";
+					foreach (var word in words)
+					{
+						counter++;
+						if (counter != 1)
+						{
+							value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
+						}
+						else
+						{
+							value = value + word.ToLower();
+						}
+						rawResult = value;
+					}
+				}
+				else if (e.Result.Text.ToLower().Contains("variable"))
+				{
+					string value = "";
+					foreach (var word in words)
+					{
+						value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
+						rawResult = value;
+					}
+				}
+				if (rawResult.Length > 0)
+				{
+					inputSimulator.Keyboard.TextEntry(rawResult);
 				}
 				ToggleSpeechRecognitionListeningMode(inputSimulator);
 			}
@@ -95,11 +130,24 @@ namespace ControlWSR.Speech
 			{
 				PerformMouseCommand(e);
 			}
-			else if (e.Result.Grammar.Name.Contains("Phonetic Alphabet" )) // Could be lower mixed or upper
+			else if (e.Result.Grammar.Name.Contains("Phonetic Alphabet" )) // Could be lower, mixed or upper
 			{
 				ProcessKeyboardCommand(e);
 			}
-
+			else if (e.Result.Grammar.Name == "Mouse Click Command" && e.Result.Confidence > 0.3)
+			{
+				PerformMouseClickCommand(e);
+			}
+			else if (e.Result.Grammar.Name == "Mouse Move Command" && e.Result.Confidence > 0.3)
+			{
+				PerformMouseMoveCommand(e);
+			}
+			else if (e.Result.Grammar.Name == "Repeat Keys" && e.Result.Confidence > 0.6)
+			{
+				List<string> keys= new List<string>();
+				SpeechCommandsHelper.BuildRepeatSendkeys(e, keys);
+				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+			}
 		}
 		private void RestartDragon()
 		{
@@ -868,6 +916,47 @@ namespace ControlWSR.Speech
 		{
 			return value.All(Char.IsDigit);
 		}
-
+		private void PerformMouseMoveCommand(SpeechRecognizedEventArgs e)
+		{
+			Win32.POINT p = new Win32.POINT();
+			Win32.GetCursorPos(out p);
+			var direction = e.Result.Words[1].Text;
+			var counter = int.Parse(e.Result.Words[2].Text);
+			if (direction == "Down")
+			{
+				p.y = p.y + counter;
+			}
+			else if (direction == "Up")
+			{
+				p.y = p.y - counter;
+			}
+			else if (direction == "Left")
+			{
+				p.x = p.x - counter;
+			}
+			else if (direction == "Right")
+			{
+				p.x = p.x + counter;
+			}
+			Win32.SetCursorPos(p.x, p.y);
+		}
+		private void PerformMouseClickCommand(SpeechRecognizedEventArgs e)
+		{
+			Win32.POINT p = new Win32.POINT();
+			Win32.GetCursorPos(out p);
+			if (e.Result.Text == "Left Click" || e.Result.Text == "Mouse Click" || e.Result.Text == "Click")
+			{
+				Win32.mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, (uint)p.x, (uint)p.y, 0, 0);
+			}
+			else if (e.Result.Text == "Double Click")
+			{
+				Win32.mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, (uint)p.x, (uint)p.y, 0, 0);
+				Win32.mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, (uint)p.x, (uint)p.y, 0, 0);
+			}
+			else
+			{
+				Win32.mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, (uint)p.x, (uint)p.y, 0, 0);
+			}
+		}
 	}
 }

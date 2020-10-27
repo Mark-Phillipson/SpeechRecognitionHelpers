@@ -47,7 +47,7 @@ namespace ControlWSR
 
 		private void SpeechRecogniser_SpeechRecognitionRejected(object sender, SpeechRecognitionRejectedEventArgs e)
 		{
-			textBoxResults.Text = $"{e.Result.Text} {e.Result.Confidence:P}";
+			textBoxResults.Text = $"REJECTED: {e.Result.Grammar?.Name} {e.Result.Confidence:P} {DateTime.Now.TimeOfDay}";
 		}
 
 		private void SpeechRecognizer_SpeechRecognised(object sender, SpeechRecognizedEventArgs e)

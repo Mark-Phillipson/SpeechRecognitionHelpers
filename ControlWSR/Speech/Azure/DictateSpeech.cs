@@ -23,7 +23,6 @@ namespace ControlWSR.Speech.Azure
 			using (var recogniser = new SpeechRecognizer(config))
 			{
 				var result = await recogniser.RecognizeOnceAsync();
-
 				if (result.Reason == ResultReason.RecognizedSpeech)
 				{
 					soundPlayer.SoundLocation=@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\End.wav";
