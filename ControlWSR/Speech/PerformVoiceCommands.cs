@@ -112,6 +112,7 @@ namespace ControlWSR.Speech
 			else if (e.Result.Grammar.Name == "Confirmed")
 			{
 				Process.Start("shutdown", "/s /t 0");
+				QuitApplication();
 			}
 			else if (e.Result.Grammar.Name == "Denied")
 			{
