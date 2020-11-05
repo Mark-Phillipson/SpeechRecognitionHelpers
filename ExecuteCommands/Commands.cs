@@ -28,7 +28,7 @@ namespace ExecuteCommands
                 arguments[1] = arguments[1].Trim();
             }
             //MessageBox.Show("Got here With argument " + arguments[1]);
-            if (arguments[1] == "explorer" || arguments[1] == "excel" || arguments[1] == "winword" || arguments[1] == "msaccess")
+            if (arguments[1] == "explorer" || arguments[1] == "excel" || arguments[1] == "winword" || arguments[1] == "msaccess" || arguments[1]=="upwork")
             {
                 _handleProcesses.CloseAllProcesses(arguments[1]);
                 return $"Closed all Processes of {arguments[1]}";

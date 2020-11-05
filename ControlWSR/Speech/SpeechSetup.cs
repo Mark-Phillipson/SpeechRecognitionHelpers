@@ -21,28 +21,35 @@ namespace ControlWSR.Speech
 			CreateDictationGrammar(speechRecogniser, "Shut down Windows", "Shutdown Windows");
 			CreateDictationGrammar(speechRecogniser, "Shutdown Windows", "Shutdown Windows");
 			CreateDictationGrammar(speechRecogniser, "Shutdown", "Shutdown Windows");
+			availableCommands = $"{availableCommands}\nRestart Windows";
+			CreateDictationGrammar(speechRecogniser, "Restart Windows", "Restart Windows");
 			CreateDictationGrammar(speechRecogniser, "Short Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Begin Short Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Title Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Variable Dictation", "Short Dictation");
 			availableCommands = $"{availableCommands}\nShort Dictation";
 			availableCommands = $"{availableCommands}\nCamel Dictation";
 			availableCommands = $"{availableCommands}\nVariable Dictation";
 			CreateDictationGrammar(speechRecogniser, "Testing", "Testing");
+			CreateDictationGrammar(speechRecogniser, "Select Left", "Selection");
+			CreateDictationGrammar(speechRecogniser, "Select Right", "Selection");
+			CreateDictationGrammar(speechRecogniser, "Left Select", "Selection");
+			CreateDictationGrammar(speechRecogniser, "Right Select", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Restart Dragon", "Restart Dragon");
 			availableCommands = $"{availableCommands}\nRestart Dragon";
+			CreateDictationGrammar(speechRecogniser, "Show Recent", "Show Recent");
+			availableCommands = $"{availableCommands}\nShow Recent";
+			CreateDictationGrammar(speechRecogniser, "Solution Explorer", "Solution Explorer");
+			availableCommands = $"{availableCommands}\nSolution Explorer";
+			CreateDictationGrammar(speechRecogniser, "Show Recent", "Show Recent");
+			availableCommands = $"{availableCommands}\nShow Recent";
 			BuildPhoneticAlphabetGrammars(speechRecogniser);
 			availableCommands = $"{availableCommands}\nClick: Say <Click/Double-Click/Right Click/Mouse Click> ";
 			CreateMouseMoveAndClickCommandGrammar(speechRecogniser);
 			LoadMoveCommandsGrammar(speechRecogniser);
 
-
-			LoadGrammarMouseCommands(speechRecogniser);
-			availableCommands = $"{availableCommands}\nMOUSE COMMANDS";
-			availableCommands = $"{availableCommands}\nPosition: Say < Left / Right > < Alpha - 7 > < Alpha - Tango > ";
-			LoadGrammarMouseHorizontalPositionCommands(speechRecogniser);
-			availableCommands = $"{availableCommands}\nPosition / Click: Say <Taskbar / Ribbon / Menu > < Alpha - 7 > ";
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Backspace", "Repeat Keys", 30);
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Left", "Repeat Keys", 30);
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Right", "Repeat Keys", 30);
@@ -53,8 +60,16 @@ namespace ControlWSR.Speech
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Enter", "Repeat Keys", 30);
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Page Down", "Repeat Keys", 30);
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Page Up", "Repeat Keys", 30);
+			availableCommands = $"{availableCommands}\n<1to30> Items";
+			SpeechCommandsHelper.CreateItemCommands(speechRecogniser, "Items", "Select Items", 30);
+			SetUpSymbolGrammarCommands(speechRecogniser);
+			availableCommands = $"{availableCommands}\nSymbols In/Out";
 
-
+			LoadGrammarMouseCommands(speechRecogniser);
+			availableCommands = $"{availableCommands}\nMOUSE COMMANDS";
+			availableCommands = $"{availableCommands}\nPosition: Say < Left / Right > < Alpha - 7 > < Alpha - Tango > ";
+			LoadGrammarMouseHorizontalPositionCommands(speechRecogniser);
+			availableCommands = $"{availableCommands}\nPosition / Click: Say <Taskbar / Ribbon / Menu > < Alpha - 7 > ";
 			Grammar grammar = new Grammar(new GrammarBuilder(choices));
 			speechRecogniser.LoadGrammarAsync(grammar);
 			return availableCommands;
@@ -87,8 +102,8 @@ namespace ControlWSR.Speech
 			speechRecogniser.UnloadAllGrammars();
 			CreateDictationGrammar(speechRecogniser, "Yes Please", "Confirmed");
 			CreateDictationGrammar(speechRecogniser, "No Thank You", "Denied");
-			var availableCommands = "";
-			availableCommands = $"{availableCommands}\nYes Please";
+			var availableCommands = $"{originalCommand.ToUpper()}";
+			availableCommands = $"{availableCommands}\n\nYes Please";
 			availableCommands = $"{availableCommands}\nNo Thank You";
 			return availableCommands;
 		}
@@ -271,6 +286,33 @@ namespace ControlWSR.Speech
 			Grammar grammarClick = new Grammar(choicesClick);
 			grammarClick.Name = "Mouse Click Command";
 			speechRecognizer.LoadGrammarAsync(grammarClick);
+		}
+		public void SetUpSymbolGrammarCommands(SpeechRecognizer speechRecognizer)
+		{
+			Choices choices = new Choices();
+			choices.Add("Square Brackets");
+			choices.Add("Brackets");
+			choices.Add("Curly Brackets");
+			choices.Add("Single Quotes");
+			choices.Add("Apostrophes");
+			choices.Add("Quotes");
+			choices.Add("At Signs");
+			choices.Add("Chevrons");
+			choices.Add("Equals");
+			choices.Add("Not Equal");
+			choices.Add("Plus");
+			choices.Add("Dollar");
+			choices.Add("Hash");
+			choices.Add("Pipes");
+			choices.Add("Ampersands");
+
+			Choices choicesInOut = new Choices("In", "Out");
+
+			GrammarBuilder grammarBuilder = new GrammarBuilder();
+			grammarBuilder.Append(choices);
+			grammarBuilder.Append(choicesInOut);
+			Grammar grammarSymbols = new Grammar(grammarBuilder) { Name = "Symbols" };
+			speechRecognizer.LoadGrammarAsync(grammarSymbols);
 		}
 
 	}

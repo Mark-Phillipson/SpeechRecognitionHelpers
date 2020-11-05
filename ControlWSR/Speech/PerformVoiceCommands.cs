@@ -20,6 +20,10 @@ namespace ControlWSR.Speech
 	public class PerformVoiceCommands
 	{
 		SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
+		InputSimulator inputSimulator = new InputSimulator();
+		private readonly IEnumerable<VirtualKeyCode> all3Modifiers = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT, VirtualKeyCode.MENU };
+		private readonly IEnumerable<VirtualKeyCode> controlAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT };
+		public string CommandToBeConfirmed { get; set; } = null;
 		private const int MOUSEEVENTF_LEFTDOWN = 0x02;
 		private const int MOUSEEVENTF_LEFTUP = 0x04;
 		private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
@@ -61,22 +65,35 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Shutdown Windows" && e.Result.Confidence > 0.5)
 			{
-				ShutdownWindows(speechRecogniser, form);
+				CommandToBeConfirmed = e.Result.Grammar.Name;
+				SetupConfirmationCommands(speechRecogniser, form);
+			}
+			else if (e.Result.Grammar.Name == "Restart Windows" && e.Result.Confidence > 0.5)
+			{
+				CommandToBeConfirmed = e.Result.Grammar.Name;
+				SetupConfirmationCommands(speechRecogniser, form);
+			}
+			else if (e.Result.Grammar.Name == "Confirmed")
+			{
+				if (CommandToBeConfirmed == "Shutdown Windows")
+				{
+					Process.Start("shutdown", "/s /t 10");
+				}
+				else if (CommandToBeConfirmed == "Restart Windows")
+				{
+					Process.Start("shutdown", "/r /t 10");
+				}
+				QuitApplication();
 			}
 			else if (e.Result.Grammar.Name == "Short Dictation" && e.Result.Confidence > 0.4)
 			{
-				InputSimulator inputSimulator = new InputSimulator();
 				ToggleSpeechRecognitionListeningMode(inputSimulator);
 				var result = await DictateSpeech.RecognizeSpeechAsync();
 				form.TextBoxResults = result.Text;
 				var rawResult = result.Text;
-				rawResult = rawResult.Replace(",","");
-				rawResult = rawResult.Replace(";","");
-				rawResult = rawResult.Replace(":","");
-				rawResult = rawResult.Replace("?","");
-				rawResult = rawResult.Replace(".","");
+				rawResult = RemovePunctuation(rawResult);
 				string[] stringSeparators = new string[] { " " };
-				List<string> words = rawResult.Split(stringSeparators ,StringSplitOptions.None).ToList();
+				List<string> words = rawResult.Split(stringSeparators, StringSplitOptions.None).ToList();
 				if (e.Result.Text.ToLower().Contains("camel"))
 				{
 					var counter = 0; string value = "";
@@ -100,19 +117,23 @@ namespace ControlWSR.Speech
 					foreach (var word in words)
 					{
 						value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
-						rawResult = value;
 					}
+					rawResult = value;
+				}
+				else if (e.Result.Text.ToLower().Contains("title"))
+				{
+					string value = "";
+					foreach (var word in words)
+					{
+						value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower() + " ";
+					}
+					rawResult = value;
 				}
 				if (rawResult.Length > 0)
 				{
 					inputSimulator.Keyboard.TextEntry(rawResult);
 				}
 				ToggleSpeechRecognitionListeningMode(inputSimulator);
-			}
-			else if (e.Result.Grammar.Name == "Confirmed")
-			{
-				Process.Start("shutdown", "/s /t 0");
-				QuitApplication();
 			}
 			else if (e.Result.Grammar.Name == "Denied")
 			{
@@ -149,7 +170,58 @@ namespace ControlWSR.Speech
 				SpeechCommandsHelper.BuildRepeatSendkeys(e, keys);
 				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
 			}
+			else if (e.Result.Grammar.Name == "Select Items" && e.Result.Confidence > 0.6)
+			{
+				PerformSelectItemsCommand(e);
+			}
+			else if (e.Result.Grammar.Name == "Symbols" && e.Result.Confidence > 0.3)
+			{
+				PerformanceSymbolsCommand(e);
+			}
+			else if (e.Result.Grammar.Name == "Show Recent" && e.Result.Confidence > 0.3)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LMENU,VirtualKeyCode.VK_F);
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.VK_J);
+			}
+			else if (e.Result.Grammar.Name == "Solution Explorer" && e.Result.Confidence > 0.3)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(all3Modifiers,VirtualKeyCode.VK_R);
+			}
+			else if (e.Result.Grammar.Name=="Selection" && e.Result.Confidence>0.5)
+			{
+				if (e.Result.Text.ToLower().Contains("left"))
+				{
+					inputSimulator.Keyboard.ModifiedKeyStroke(controlAndShift, VirtualKeyCode.LEFT);
+				}
+				else if (e.Result.Text.ToLower().Contains("right"))
+				{
+					inputSimulator.Keyboard.ModifiedKeyStroke(controlAndShift, VirtualKeyCode.RIGHT);
+				}
+			}
+
 		}
+
+		private static string RemovePunctuation(string rawResult)
+		{
+			rawResult = rawResult.Replace(",", "");
+			rawResult = rawResult.Replace(";", "");
+			rawResult = rawResult.Replace(":", "");
+			rawResult = rawResult.Replace("?", "");
+			rawResult = rawResult.Replace(".", "");
+			return rawResult;
+		}
+
+		private void PerformSelectItemsCommand(SpeechRecognizedEventArgs e)
+		{
+			var repeatCount = Int32.Parse(e.Result.Words[0].Text);
+			inputSimulator.Keyboard.KeyDown(VirtualKeyCode.SHIFT);
+			for (int i = 0; i < repeatCount; i++)
+			{
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.DOWN);
+			}
+			inputSimulator.Keyboard.KeyUp(VirtualKeyCode.SHIFT);
+		}
+
 		private void RestartDragon()
 		{
 			var processName = "nsbrowse";
@@ -219,9 +291,9 @@ namespace ControlWSR.Speech
 			inputSimulator.Keyboard.KeyUp(VirtualKeyCode.CONTROL);
 		}
 
-		void ShutdownWindows(SpeechRecognizer speechRecogniser, AvailableCommandsForm availableCommandsForm)
+		void SetupConfirmationCommands(SpeechRecognizer speechRecogniser, AvailableCommandsForm availableCommandsForm)
 		{
-			var availableCommands = speechSetup.SetupConfirmationCommands("Shutdown Windows", speechRecogniser);
+			var availableCommands = speechSetup.SetupConfirmationCommands(CommandToBeConfirmed, speechRecogniser);
 			availableCommandsForm.AvailableCommands = availableCommands;
 		}
 		private void UpdateCurrentProcess()
@@ -233,8 +305,7 @@ namespace ControlWSR.Speech
 		}
 		private void QuitApplication()
 		{
-			List<string> keys = new List<string>(new string[] { "{DIVIDE}" });
-			SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+			inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DIVIDE);
 			try
 			{
 				System.Windows.Forms.Application.Exit();
@@ -957,6 +1028,76 @@ namespace ControlWSR.Speech
 			else
 			{
 				Win32.mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, (uint)p.x, (uint)p.y, 0, 0);
+			}
+		}
+		private void PerformanceSymbolsCommand(SpeechRecognizedEventArgs e)
+		{
+			List<string> keys = new List<string>();
+			var text = e.Result.Text.ToLower();
+			if (text.Contains("square brackets"))
+			{
+				keys.Add("[]");
+			}
+			else if (text.Contains("curly brackets"))
+			{
+				keys.Add("{{}");
+				keys.Add("{}}");
+			}
+			else if (text.Contains("brackets"))
+			{
+				keys.Add("(");
+				keys.Add(")");
+			}
+			else if (text.Contains("apostrophes"))
+			{
+				keys.Add("''");
+			}
+			else if (text.Contains("quotes"))
+			{
+				keys.Add("\"");
+				keys.Add("\"");
+			}
+			else if (text.Contains("at signs"))
+			{
+				keys.Add("@@");
+			}
+			else if (text.Contains("chevrons"))
+			{
+				keys.Add("<>");
+			}
+			else if (text.Contains("equals"))
+			{
+				keys.Add("==");
+			}
+			else if (text.Contains("not equal"))
+			{
+				keys.Add("!=");
+			}
+			else if (text.Contains("plus"))
+			{
+				keys.Add("++");
+			}
+			else if (text.Contains("dollar"))
+			{
+				keys.Add("$$");
+			}
+			else if (text.Contains("hash"))
+			{
+				keys.Add("##");
+			}
+			else if (text.Contains("question marks"))
+			{
+				keys.Add("??");
+			}
+			else if (text.Contains("pipes"))
+			{
+				keys.Add("||");
+			}
+			SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+			if (text.EndsWith("in"))
+			{
+				List<string> keysLeft = new List<string> { "{Left}" };
+				SendKeysCustom(null, null, keysLeft, currentProcess.ProcessName);
 			}
 		}
 	}

@@ -70,11 +70,19 @@ namespace ControlWSR
 		private void AvailableCommandsForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			PerformVoiceCommands.ToggleSpeechRecognitionListeningMode(inputSimulator);
-			speechRecogniser.Enabled = false;
-			speechRecogniser.Dispose();
-			inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DIVIDE);
-			Thread.Sleep(1000);
-			inputSimulator.Keyboard.KeyUp(VirtualKeyCode.DIVIDE);
+			try
+			{
+				speechRecogniser.Enabled = false;
+				speechRecogniser.Dispose();
+
+			}
+			catch (Exception)
+			{
+				// Just ignore
+			}
+			//inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DIVIDE);
+			//Thread.Sleep(1000);
+			//inputSimulator.Keyboard.KeyUp(VirtualKeyCode.DIVIDE);
 		}
 
 		private void AvailableCommandsForm_Load(object sender, EventArgs e)

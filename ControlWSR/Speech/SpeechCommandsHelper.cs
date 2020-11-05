@@ -24,7 +24,21 @@ namespace ControlWSR.Speech
 			}
 			grammar.Name = grammarName;
 			speechRecognizer.LoadGrammarAsync(grammar);
-
+		}
+		public void CreateItemCommands(SpeechRecognizer speechRecognizer, string spokenCommand, string grammarName = null, int maximumRepeat = 10)
+		{
+			Choices choices = new Choices();
+			for (int counter = 1; counter < maximumRepeat; counter++)
+			{
+				choices.Add($"{counter} {spokenCommand}");
+			}
+			Grammar grammar = new Grammar(choices);
+			if (grammarName == null)
+			{
+				grammarName = spokenCommand;
+			}
+			grammar.Name = grammarName;
+			speechRecognizer.LoadGrammarAsync(grammar);
 		}
 
 		public static void BuildRepeatSendkeys(SpeechRecognizedEventArgs e, List<string> keys)

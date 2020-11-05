@@ -25,8 +25,8 @@ namespace ControlWSR.Speech.Azure
 				var result = await recogniser.RecognizeOnceAsync();
 				if (result.Reason == ResultReason.RecognizedSpeech)
 				{
-					soundPlayer.SoundLocation=@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\End.wav";
-					soundPlayer.Play();
+					//soundPlayer.SoundLocation=@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\End.wav";
+					//soundPlayer.Play();
 					return result;
 				}
 				else if (result.Reason == ResultReason.NoMatch)
