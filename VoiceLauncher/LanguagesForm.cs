@@ -15,7 +15,6 @@ namespace VoiceLauncher
     public partial class LanguagesForm : Form
     {
         private VoiceLauncherContext db;
-        bool formIsClosed = false;
         public LanguagesForm()
         {
             InitializeComponent();

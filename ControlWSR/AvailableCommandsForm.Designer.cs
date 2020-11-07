@@ -29,6 +29,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AvailableCommandsForm));
 			this.richTextBoxAvailableCommands = new System.Windows.Forms.RichTextBox();
 			this.textBoxResults = new System.Windows.Forms.TextBox();
 			this.TestingBtn = new System.Windows.Forms.Button();
@@ -62,6 +63,7 @@
 			this.TestingBtn.TabIndex = 2;
 			this.TestingBtn.Text = "Testing";
 			this.TestingBtn.UseVisualStyleBackColor = true;
+			this.TestingBtn.Visible = false;
 			this.TestingBtn.Click += new System.EventHandler(this.TestingBtn_Click);
 			// 
 			// AvailableCommandsForm
@@ -72,7 +74,11 @@
 			this.Controls.Add(this.TestingBtn);
 			this.Controls.Add(this.textBoxResults);
 			this.Controls.Add(this.richTextBoxAvailableCommands);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
 			this.Name = "AvailableCommandsForm";
+			this.Opacity = 0.9D;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Available Commands";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AvailableCommandsForm_FormClosing);
 			this.Load += new System.EventHandler(this.AvailableCommandsForm_Load);

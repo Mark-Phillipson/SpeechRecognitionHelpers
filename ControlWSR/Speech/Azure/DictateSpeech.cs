@@ -17,6 +17,10 @@ namespace ControlWSR.Speech.Azure
 			string SPEECH__SERVICE__REGION;
 			SPEECH__SERVICE__KEY = ConfigurationManager.AppSettings.Get("SpeechAzureKey");
 			SPEECH__SERVICE__REGION = ConfigurationManager.AppSettings.Get("SpeechAzureRegion");
+			if (SPEECH__SERVICE__KEY=="TBC" || SPEECH__SERVICE__REGION=="TBC")
+			{
+				throw new Exception("Please register the Speech Service on Windows Azure and enter the key and region into the application settings file, and then try again to use this service!");
+			}
 			var config = SpeechConfig.FromSubscription(SPEECH__SERVICE__KEY, SPEECH__SERVICE__REGION);
 			System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\Start.wav");
 			soundPlayer.Play();

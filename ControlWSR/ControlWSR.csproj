@@ -94,13 +94,16 @@
     <Compile Include="Speech\PerformVoiceCommands.cs" />
     <Compile Include="Speech\SpeechCommandsHelper.cs" />
     <Compile Include="Speech\SpeechSetup.cs" />
+    <Compile Include="Speech\SuperDuperDuperClassName.cs" />
     <Compile Include="Speech\Win32.cs" />
+    <Compile Include="Testing.cs" />
     <Content Include="Media\End.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Media\Start.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\commands.txt" />
     <EmbeddedResource Include="AvailableCommandsForm.resx">
       <DependentUpon>AvailableCommandsForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-//using System.Windows;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
@@ -19,8 +18,8 @@ namespace ControlWSR.Speech
 {
 	public class PerformVoiceCommands
 	{
-		SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
-		InputSimulator inputSimulator = new InputSimulator();
+		readonly SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
+		readonly InputSimulator inputSimulator = new InputSimulator();
 		private readonly IEnumerable<VirtualKeyCode> all3Modifiers = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT, VirtualKeyCode.MENU };
 		private readonly IEnumerable<VirtualKeyCode> controlAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT };
 		public string CommandToBeConfirmed { get; set; } = null;
@@ -59,7 +58,7 @@ namespace ControlWSR.Speech
 			{
 				//This will fail if were using the engine
 			}
-			if (e.Result.Text.ToLower() == "quit application" && e.Result.Confidence > 0.6)
+			if (e.Result.Grammar.Name == "Quit Application" && e.Result.Confidence > 0.6)
 			{
 				QuitApplication();
 			}
@@ -87,53 +86,7 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Short Dictation" && e.Result.Confidence > 0.4)
 			{
-				ToggleSpeechRecognitionListeningMode(inputSimulator);
-				var result = await DictateSpeech.RecognizeSpeechAsync();
-				form.TextBoxResults = result.Text;
-				var rawResult = result.Text;
-				rawResult = RemovePunctuation(rawResult);
-				string[] stringSeparators = new string[] { " " };
-				List<string> words = rawResult.Split(stringSeparators, StringSplitOptions.None).ToList();
-				if (e.Result.Text.ToLower().Contains("camel"))
-				{
-					var counter = 0; string value = "";
-					foreach (var word in words)
-					{
-						counter++;
-						if (counter != 1)
-						{
-							value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
-						}
-						else
-						{
-							value = value + word.ToLower();
-						}
-						rawResult = value;
-					}
-				}
-				else if (e.Result.Text.ToLower().Contains("variable"))
-				{
-					string value = "";
-					foreach (var word in words)
-					{
-						value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
-					}
-					rawResult = value;
-				}
-				else if (e.Result.Text.ToLower().Contains("title"))
-				{
-					string value = "";
-					foreach (var word in words)
-					{
-						value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower() + " ";
-					}
-					rawResult = value;
-				}
-				if (rawResult.Length > 0)
-				{
-					inputSimulator.Keyboard.TextEntry(rawResult);
-				}
-				ToggleSpeechRecognitionListeningMode(inputSimulator);
+				await PerformShortDictation(e, form);
 			}
 			else if (e.Result.Grammar.Name == "Denied")
 			{
@@ -143,6 +96,10 @@ namespace ControlWSR.Speech
 			else if (e.Result.Grammar.Name == "Restart Dragon" && e.Result.Confidence > 0.5)
 			{
 				RestartDragon();
+			}
+			else if (e.Result.Grammar.Name == "Studio Command" && e.Result.Confidence > 0.5)
+			{
+				RunVisualStudioCommand();
 			}
 			else if (e.Result.Grammar.Name == "Horizontal Position Mouse Command" && e.Result.Confidence > 0.3)
 			{
@@ -178,10 +135,15 @@ namespace ControlWSR.Speech
 			{
 				PerformanceSymbolsCommand(e);
 			}
-			else if (e.Result.Grammar.Name == "Show Recent" && e.Result.Confidence > 0.3)
+			else if (e.Result.Grammar.Name == "Show Recent" && e.Result.Confidence > 0.5)
 			{
 				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LMENU,VirtualKeyCode.VK_F);
 				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.VK_J);
+			}
+			else if (e.Result.Grammar.Name == "Fresh Line" && e.Result.Confidence > 0.5)
+			{
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.END);
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.RETURN);
 			}
 			else if (e.Result.Grammar.Name == "Solution Explorer" && e.Result.Confidence > 0.3)
 			{
@@ -199,6 +161,78 @@ namespace ControlWSR.Speech
 				}
 			}
 
+		}
+
+		private void RunVisualStudioCommand()
+		{
+			if (currentProcess.ProcessName == "devenv")
+			{
+				List<string> keys = new List<string>() { "%v" };
+				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+				Thread.Sleep(2000);
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+			}
+		}
+
+		private async Task PerformShortDictation(SpeechRecognizedEventArgs e, AvailableCommandsForm form)
+		{
+			ToggleSpeechRecognitionListeningMode(inputSimulator);
+			var result = await DictateSpeech.RecognizeSpeechAsync();
+			form.TextBoxResults = result.Text;
+			var rawResult = result.Text;
+			rawResult = RemovePunctuation(rawResult);
+			string[] stringSeparators = new string[] { " " };
+			List<string> words = rawResult.Split(stringSeparators, StringSplitOptions.None).ToList();
+			if (e.Result.Text.ToLower().Contains("camel"))
+			{
+				var counter = 0; string value = "";
+				foreach (var word in words)
+				{
+					counter++;
+					if (counter != 1)
+					{
+						value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
+					}
+					else
+					{
+						value += word.ToLower();
+					}
+					rawResult = value;
+				}
+			}
+			else if (e.Result.Text.ToLower().Contains("variable"))
+			{
+				string value = "";
+				foreach (var word in words)
+				{
+					value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
+				}
+				rawResult = value;
+			}
+			else if (e.Result.Text.ToLower().Contains("title"))
+			{
+				string value = "";
+				foreach (var word in words)
+				{
+					value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower() + " ";
+				}
+				rawResult = value;
+			}
+			else if (e.Result.Text.ToLower().StartsWith("upper"))
+			{
+				string value = "";
+				foreach (var word in words)
+				{
+					value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToUpper() + " ";
+				}
+				rawResult = value;
+			}
+			if (rawResult.Length > 0)
+			{
+				inputSimulator.Keyboard.TextEntry(rawResult);
+			}
+			ToggleSpeechRecognitionListeningMode(inputSimulator);
 		}
 
 		private static string RemovePunctuation(string rawResult)
