@@ -1,0 +1,13 @@
+﻿[x] Line or go to line <#>
+[x] Dot Notation Dictation
+[x] New with space
+[x] phonetic alphabet needs to include a space so that it will appear at the end Et cetera
+[x] For most of the dictation commands need to remove the last space
+[x] create a new command window monitor switch
+[x] create a new command Select Line
+[x] Change the icon to something more unique
+[x] test with Visual Studio code.
+[?] Check out how much the Windows Azure Speech SDK will cost
+[x] Mouse Down (So we can move windows around)
+[] prepare and create a video to show The Windows speech recognition in action
+[] show the video to BBB and ask for a code review

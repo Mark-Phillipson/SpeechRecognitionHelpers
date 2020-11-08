@@ -22,6 +22,7 @@ namespace ControlWSR.Speech
 		readonly InputSimulator inputSimulator = new InputSimulator();
 		private readonly IEnumerable<VirtualKeyCode> all3Modifiers = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT, VirtualKeyCode.MENU };
 		private readonly IEnumerable<VirtualKeyCode> controlAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT };
+		private readonly IEnumerable<VirtualKeyCode> windowAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.LWIN, VirtualKeyCode.SHIFT };
 		public string CommandToBeConfirmed { get; set; } = null;
 		private const int MOUSEEVENTF_LEFTDOWN = 0x02;
 		private const int MOUSEEVENTF_LEFTUP = 0x04;
@@ -61,6 +62,24 @@ namespace ControlWSR.Speech
 			if (e.Result.Grammar.Name == "Quit Application" && e.Result.Confidence > 0.6)
 			{
 				QuitApplication();
+			}
+			if (e.Result.Grammar.Name == "New with Space" && e.Result.Confidence > 0.6)
+			{
+				inputSimulator.Keyboard.TextEntry(" new ");
+				inputSimulator.Keyboard.KeyDown(VirtualKeyCode.ESCAPE);
+			}
+			if (e.Result.Grammar.Name == "Window Monitor Switch" && e.Result.Confidence > 0.6)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(windowAndShift, VirtualKeyCode.RIGHT);
+			}
+			if (e.Result.Grammar.Name == "Select Line" && e.Result.Confidence > 0.6)
+			{
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.HOME);
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.SHIFT, VirtualKeyCode.END);
+			}
+			if (e.Result.Grammar.Name == "Mouse Down" && e.Result.Confidence > 0.6)
+			{
+				inputSimulator.Mouse.LeftButtonDown();
 			}
 			else if (e.Result.Grammar.Name == "Shutdown Windows" && e.Result.Confidence > 0.5)
 			{
@@ -126,6 +145,31 @@ namespace ControlWSR.Speech
 				List<string> keys= new List<string>();
 				SpeechCommandsHelper.BuildRepeatSendkeys(e, keys);
 				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+			}
+			else if (e.Result.Grammar.Name == "Go to Line" && e.Result.Confidence > 0.6)
+			{
+				var wordStartPosition = 3;
+				if (e.Result.Text.StartsWith("Line"))
+				{
+					wordStartPosition = 1;
+				}
+				var lineNumber = "";
+				for (int i = wordStartPosition; i < e.Result.Words.Count; i++)
+				{
+					lineNumber += e.Result.Words[i].Text + " ";
+				}
+				var numericLineNumberTest=  WordsToNumbers.ConvertToNumbers(lineNumber.ToString());
+				lineNumber = numericLineNumberTest.ToString();
+				//lineNumber = SpeechCommandsHelper.ConvertTextToNumber(lineNumber);
+				bool isANumber = int.TryParse(lineNumber, out int numericLineNumber);
+				if (isANumber)
+				{
+					inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_G);
+					Thread.Sleep(100);
+					inputSimulator.Keyboard.TextEntry(numericLineNumber.ToString());
+					Thread.Sleep(100);
+					inputSimulator.Keyboard.KeyPress(VirtualKeyCode.RETURN);
+				}
 			}
 			else if (e.Result.Grammar.Name == "Select Items" && e.Result.Confidence > 0.6)
 			{
@@ -210,6 +254,15 @@ namespace ControlWSR.Speech
 				}
 				rawResult = value;
 			}
+			else if (e.Result.Text.ToLower().Contains("dot notation"))
+			{
+				string value = "";
+				foreach (var word in words)
+				{
+					value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower() + ".";
+				}
+				rawResult = value.Substring(0,value.Length-1);
+			}
 			else if (e.Result.Text.ToLower().Contains("title"))
 			{
 				string value = "";
@@ -227,6 +280,10 @@ namespace ControlWSR.Speech
 					value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToUpper() + " ";
 				}
 				rawResult = value;
+			}
+			if (!e.Result.Text.ToLower().StartsWith("short") && e.Result.Text.ToLower()!="dictation")
+			{
+				rawResult = rawResult.Trim();
 			}
 			if (rawResult.Length > 0)
 			{
@@ -904,8 +961,6 @@ namespace ControlWSR.Speech
 			value = value.Replace("Close Bracket", ")");
 
 
-
-
 			for (int i = 12; i > 0; i--)
 			{
 				value = value.Replace($"Function {i}", "{F" + i + "}");
@@ -915,15 +970,15 @@ namespace ControlWSR.Speech
 			{
 				value = value.Replace(" ", "");
 			}
-			if (value == "Space")
+			if (value.ToLower().Contains("space"))
 			{
-				value = value.Replace("Space", " ");
+				value = value.ToLower().Replace("space", " ");
 			}
 			if (value.Contains("{Up}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
 			{
 				value = "{Up " + value.Substring(value.IndexOf("}") + 1) + "}";
 			}
-			if (value.Contains("{Down}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
+		if (value.Contains("{Down}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
 			{
 				value = "{Down " + value.Substring(value.IndexOf("}") + 1) + "}";
 			}
@@ -954,7 +1009,14 @@ namespace ControlWSR.Speech
 				value = "";
 				foreach (var word in e.Result.Words)
 				{
-					value = value + word.Text.Substring(0, 1);
+					if (word.Text!="Space")
+					{
+						value = value + word.Text.Substring(0, 1);
+					}
+					else
+					{
+						value += " ";
+					}
 				}
 			}
 			else if (e.Result.Grammar.Name == "Phonetic Alphabet Lower")
@@ -964,7 +1026,14 @@ namespace ControlWSR.Speech
 				{
 					if (word.Text != "Lower")
 					{
-						value = value + word.Text.ToLower().Substring(0, 1);
+						if (word.Text != "Space")
+						{
+							value = value + word.Text.ToLower().Substring(0, 1);
+						}
+						else
+						{
+							value += " ";
+						}
 					}
 				}
 			}
@@ -976,18 +1045,24 @@ namespace ControlWSR.Speech
 					if (word.Text != "Mixed")
 					{
 						counter++;
-						if (counter==1)
+						if (word.Text != "Space")
 						{
-							value = value + word.Text.ToUpper().Substring(0, 1);
+							if (counter==1)
+							{
+								value = value + word.Text.ToUpper().Substring(0, 1);
+							}
+							else
+							{
+								value = value + word.Text.ToLower().Substring(0, 1);
+							}
 						}
 						else
 						{
-							value = value + word.Text.ToLower().Substring(0, 1);
+							value += " ";
 						}
 					}
 				}
 			}
-
 			else if (e.Result.Grammar.Name == "Replace Letters")
 			{
 				value = "";

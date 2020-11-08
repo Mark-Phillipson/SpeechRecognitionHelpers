@@ -12,7 +12,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UnitTestProjectDotNetFramework</RootNamespace>
     <AssemblyName>UnitTestProjectDotNetFramework</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExecuteCommandsTests.cs" />
+    <Compile Include="WordsToNumbersTest.cs" />
     <Compile Include="ListManagementTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -109,6 +110,10 @@
     <ProjectReference Include="..\BrowseScripts\BrowseScripts.csproj">
       <Project>{b8ec6e9c-11e5-420d-93b0-57302c39a907}</Project>
       <Name>BrowseScripts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ControlWSR\ControlWSR.csproj">
+      <Project>{03df9f58-0bc4-49f7-aea9-3dde773d3e40}</Project>
+      <Name>ControlWSR</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExecuteCommands\ExecuteCommands.csproj">
       <Project>{85975b05-aeb0-4e87-b4df-9e41422d325a}</Project>

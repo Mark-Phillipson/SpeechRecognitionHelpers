@@ -67,7 +67,7 @@ namespace RestartDragon
                 MessageBox.Show(exception.Message);
             }
 
-            void SendKeysCustom(string applicationClass, string applicationCaption, List<string> keys, string processName, string applicationToLaunch = "", int delay = 0)
+            void SendKeysCustom(string applicationClass, string applicationCaption, List<string> keys, string processNameToUse, string applicationToLaunch = "", int delay = 0)
             {
                 // Get a handle to the application. The window class
                 // and window name can be obtained using the Spy++ tool.
@@ -91,7 +91,7 @@ namespace RestartDragon
                         {
                             //       System.Windows.MessageBox.Show($"{applicationCaption} is not running.");
                             //ActivateApp(processName);
-                            Process process = Process.GetProcessesByName(processName)[0];
+                            Process process = Process.GetProcessesByName(processNameToUse)[0];
                             applicationHandle = process.Handle;
                             break;
                         }

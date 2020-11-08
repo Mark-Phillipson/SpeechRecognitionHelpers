@@ -8,13 +8,13 @@ using System.Windows;
 
 namespace ControlWSR.Speech
 {
-    public class SpeechSetup
-    {
-		SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
+	public class SpeechSetup
+	{
+		readonly SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
 		public string SetUpMainCommands(SpeechRecognizer speechRecogniser)
 		{
 			speechRecogniser.UnloadAllGrammars();
-			List<string> simpleCommands = new List<string>() {"yes","no", "Shutdown Windows", "Quit Application","Restart Windows","Restart Dragon","Show Recent","Fresh Line" };
+			List<string> simpleCommands = new List<string>() { "yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down" };
 			var availableCommands = "";
 			foreach (var simpleCommand in simpleCommands)
 			{
@@ -27,10 +27,8 @@ namespace ControlWSR.Speech
 			CreateDictationGrammar(speechRecogniser, "Title Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Variable Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Upper Dictation", "Short Dictation");
-			availableCommands = $"{availableCommands}\nShort Dictation";
-			availableCommands = $"{availableCommands}\nCamel Dictation";
-			availableCommands = $"{availableCommands}\nVariable Dictation";
-			availableCommands = $"{availableCommands}\nTitle Dictation";
+			CreateDictationGrammar(speechRecogniser, "Dot Notation", "Short Dictation");
+			availableCommands = $"{availableCommands}\nShort/Upper/Title/Camel/Variable Dictation or Dot Notation";
 			CreateDictationGrammar(speechRecogniser, "Select Left", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Select Right", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Left Select", "Selection");
@@ -38,6 +36,8 @@ namespace ControlWSR.Speech
 			CreateDictationGrammar(speechRecogniser, "Studio Command", "Studio Command");
 			CreateDictationGrammar(speechRecogniser, "Command", "Studio Command");
 			CreateDictationGrammar(speechRecogniser, "Studio", "Studio Command");
+			CreateDictationGrammar(speechRecogniser, "Go to Line", "Go to Line", true);
+			CreateDictationGrammar(speechRecogniser, "Line", "Go to Line", true);
 			BuildPhoneticAlphabetGrammars(speechRecogniser);
 			LoadMoveCommandsGrammar(speechRecogniser);
 
@@ -60,9 +60,9 @@ namespace ControlWSR.Speech
 			availableCommands = $"{availableCommands}\nMOUSE COMMANDS";
 			availableCommands = $"{availableCommands}\nClick: Say <Click/Double-Click/Right Click/Mouse Click> ";
 			CreateMouseMoveAndClickCommandGrammar(speechRecogniser);
-			availableCommands = $"{availableCommands}\nPosition: Say < Left / Right > < Alpha - 7 > < Alpha - Tango > ";
+			availableCommands = $"{availableCommands}\nPosition: Say <Left/Right> <Alpha-7> <Alpha-Tango>";
 			LoadGrammarMouseHorizontalPositionCommands(speechRecogniser);
-			availableCommands = $"{availableCommands}\nPosition / Click: Say <Taskbar / Ribbon / Menu > < Alpha - 7 > ";
+			availableCommands = $"{availableCommands}\nPosition / Click: Say <Taskbar/Ribbon/Menu> <Alpha-7>";
 			return availableCommands;
 		}
 		public SpeechRecognizer StartWindowsSpeechRecognition()
@@ -75,10 +75,10 @@ namespace ControlWSR.Speech
 			catch (Exception exception)
 			{
 				System.Windows.MessageBox.Show($"Error loading Windows Speech Recognition {exception.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				return  null ;
+				return null;
 			}
 		}
-		private void CreateDictationGrammar(SpeechRecognizer speechRecognizer, string initialPhrase, string grammarName,bool openEnded=false)
+		private void CreateDictationGrammar(SpeechRecognizer speechRecognizer, string initialPhrase, string grammarName, bool openEnded = false)
 		{
 			GrammarBuilder grammarBuilder = new GrammarBuilder();
 			grammarBuilder.Append(new Choices(initialPhrase));
@@ -91,7 +91,7 @@ namespace ControlWSR.Speech
 			grammar.Name = grammarName;
 			speechRecognizer.LoadGrammarAsync(grammar);
 		}
-		public string SetupConfirmationCommands(string originalCommand,SpeechRecognizer speechRecogniser)
+		public string SetupConfirmationCommands(string originalCommand, SpeechRecognizer speechRecogniser)
 		{
 			speechRecogniser.UnloadAllGrammars();
 			CreateDictationGrammar(speechRecogniser, "Yes Please", "Confirmed");
@@ -142,9 +142,9 @@ namespace ControlWSR.Speech
 			grammar.Name = "Horizontal Position Mouse Command";
 			speechRecognizer.LoadGrammarAsync(grammar);
 		}
-		public void BuildPhoneticAlphabetGrammars( SpeechRecognizer speechRecogniser)
+		public void BuildPhoneticAlphabetGrammars(SpeechRecognizer speechRecogniser)
 		{
-			Choices phoneticAlphabet = new Choices(new string[] { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Qubec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu" });
+			Choices phoneticAlphabet = new Choices(new string[] { "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet", "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Qubec", "Romeo", "Sierra", "Tango", "Uniform", "Victor", "Whiskey", "X-ray", "Yankee", "Zulu", "Space" });
 			GrammarBuilder grammarBuilder2 = new GrammarBuilder();
 			grammarBuilder2.Append(phoneticAlphabet);
 			grammarBuilder2.Append(phoneticAlphabet);
@@ -185,9 +185,9 @@ namespace ControlWSR.Speech
 			Choices choicesLower = new Choices("Lower");
 			BuildPhoneticAlphabetGrammars(speechRecogniser, phoneticAlphabet, choicesLower, "Phonetic Alphabet Lower");
 			Choices choicesMixed = new Choices("Mixed");
-			BuildPhoneticAlphabetGrammars( speechRecogniser, phoneticAlphabet, choicesMixed, "Phonetic Alphabet Mixed");
+			BuildPhoneticAlphabetGrammars(speechRecogniser, phoneticAlphabet, choicesMixed, "Phonetic Alphabet Mixed");
 		}
-		private static void BuildPhoneticAlphabetGrammars( SpeechRecognizer speechRecognizer, Choices phoneticAlphabet, Choices choices, string grammarName)
+		private static void BuildPhoneticAlphabetGrammars(SpeechRecognizer speechRecognizer, Choices phoneticAlphabet, Choices choices, string grammarName)
 		{
 			GrammarBuilder grammarBuilderLower2 = new GrammarBuilder();
 			grammarBuilderLower2.Append(choices);

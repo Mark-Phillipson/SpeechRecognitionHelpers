@@ -59,7 +59,7 @@ namespace VoiceLauncher
         protected override void OnClosing(CancelEventArgs e)
         {
             db.Dispose();
-            formIsClosed = true;
+            // formIsClosed = true;
             base.OnClosing(e);
         }
     }

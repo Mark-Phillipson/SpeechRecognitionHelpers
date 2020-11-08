@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Speech.Recognition;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ControlWSR.Speech
 {
-	public class SpeechCommandsHelper
+	public partial class SpeechCommandsHelper
 	{
 
 		public void CreateRepeatableCommand(SpeechRecognizer speechRecognizer, string spokenCommand, string grammarName = null, int maximumRepeat = 10)
@@ -58,6 +56,53 @@ namespace ControlWSR.Speech
 			{
 				keys.Add(sendkeysCommand);
 			}
+		}
+		public string ConvertTextToNumber(string lineNumber)
+		{
+			var possible2 = new List<string> { "two", "to", "too" };
+			var possible4 = new List<string> { "four", "for"};
+			lineNumber = lineNumber.ToLower();
+			if (lineNumber=="one")
+			{
+				return "1";
+			}
+			else if (possible2.Contains(lineNumber))
+			{
+				return "2";
+			}
+			else if (lineNumber=="three")
+			{
+				return "3";
+			}
+			else if (possible4.Contains(lineNumber))
+			{
+				return "4";
+			}
+			else if (lineNumber == "five")
+			{
+				return "5";
+			}
+			else if (lineNumber == "six")
+			{
+				return "6";
+			}
+			else if (lineNumber == "seven")
+			{
+				return "7";
+			}
+			else if (lineNumber == "eight")
+			{
+				return "8";
+			}
+			else if (lineNumber == "nine")
+			{
+				return "9";
+			}
+			else if (lineNumber == "ten")
+			{
+				return "10";
+			}
+			return lineNumber;
 		}
 
 	}
