@@ -14,7 +14,7 @@ namespace ControlWSR.Speech
 		public string SetUpMainCommands(SpeechRecognizer speechRecogniser)
 		{
 			speechRecogniser.UnloadAllGrammars();
-			List<string> simpleCommands = new List<string>() { "yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down" };
+			List<string> simpleCommands = new List<string>() { "yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" };
 			var availableCommands = "";
 			foreach (var simpleCommand in simpleCommands)
 			{

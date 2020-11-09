@@ -189,9 +189,9 @@ namespace ControlWSR.Speech
 				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.END);
 				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.RETURN);
 			}
-			else if (e.Result.Grammar.Name == "Solution Explorer" && e.Result.Confidence > 0.3)
+			else if (e.Result.Grammar.Name == "Semi Colon" && e.Result.Confidence > 0.3)
 			{
-				inputSimulator.Keyboard.ModifiedKeyStroke(all3Modifiers,VirtualKeyCode.VK_R);
+				inputSimulator.Keyboard.TextEntry(";");
 			}
 			else if (e.Result.Grammar.Name=="Selection" && e.Result.Confidence>0.5)
 			{
