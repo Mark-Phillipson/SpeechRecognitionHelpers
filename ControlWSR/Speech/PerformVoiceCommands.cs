@@ -118,7 +118,11 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Studio Command" && e.Result.Confidence > 0.5)
 			{
-				RunVisualStudioCommand();
+				RunVisualStudioCommand(speechRecogniser);
+			}
+			else if (e.Result.Grammar.Name == "Get and Set" && e.Result.Confidence > 0.5)
+			{
+				inputSimulator.Keyboard.TextEntry(" { get; set; }");
 			}
 			else if (e.Result.Grammar.Name == "Horizontal Position Mouse Command" && e.Result.Confidence > 0.3)
 			{
@@ -204,10 +208,9 @@ namespace ControlWSR.Speech
 					inputSimulator.Keyboard.ModifiedKeyStroke(controlAndShift, VirtualKeyCode.RIGHT);
 				}
 			}
-
 		}
 
-		private void RunVisualStudioCommand()
+		private void RunVisualStudioCommand(SpeechRecognizer speechRecogniser)
 		{
 			if (currentProcess.ProcessName == "devenv")
 			{
@@ -217,6 +220,11 @@ namespace ControlWSR.Speech
 				Thread.Sleep(2000);
 				ToggleSpeechRecognitionListeningMode(inputSimulator);
 			}
+			else
+			{
+				speechRecogniser.EmulateRecognize("Switch to Visual Studio");
+			}
+
 		}
 
 		private async Task PerformShortDictation(SpeechRecognizedEventArgs e, AvailableCommandsForm form)
@@ -277,7 +285,16 @@ namespace ControlWSR.Speech
 				string value = "";
 				foreach (var word in words)
 				{
-					value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToUpper() + " ";
+					value = value + word.ToUpper() + " ";
+				}
+				rawResult = value;
+			}
+			else if (e.Result.Text.ToLower().StartsWith("lower"))
+			{
+				string value = "";
+				foreach (var word in words)
+				{
+					value = value + word.ToLower() + " ";
 				}
 				rawResult = value;
 			}

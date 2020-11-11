@@ -22,15 +22,21 @@ namespace ControlWSR.Speech.Azure
 				throw new Exception("Please register the Speech Service on Windows Azure and enter the key and region into the application settings file, and then try again to use this service!");
 			}
 			var config = SpeechConfig.FromSubscription(SPEECH__SERVICE__KEY, SPEECH__SERVICE__REGION);
-			System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\Start.wav");
-			soundPlayer.Play();
+
+			try
+			{
+				System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\Start.wav");
+				soundPlayer.Play();
+			}
+			catch (Exception)
+			{
+				// Just ignore
+			}
 			using (var recogniser = new SpeechRecognizer(config))
 			{
 				var result = await recogniser.RecognizeOnceAsync();
 				if (result.Reason == ResultReason.RecognizedSpeech)
 				{
-					//soundPlayer.SoundLocation=@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\End.wav";
-					//soundPlayer.Play();
 					return result;
 				}
 				else if (result.Reason == ResultReason.NoMatch)

@@ -9,5 +9,7 @@
 [x] test with Visual Studio code.
 [?] Check out how much the Windows Azure Speech SDK will cost
 [x] Mouse Down (So we can move windows around)
+[] add a space for the symbols command
+[] Add a command to launch the Default box and the DB 2
 [] prepare and create a video to show The Windows speech recognition in action
 [] show the video to BBB and ask for a code review

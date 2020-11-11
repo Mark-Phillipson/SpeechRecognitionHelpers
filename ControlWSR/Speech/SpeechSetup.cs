@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Speech.Recognition;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,28 +15,25 @@ namespace ControlWSR.Speech
 		public string SetUpMainCommands(SpeechRecognizer speechRecogniser)
 		{
 			speechRecogniser.UnloadAllGrammars();
-			List<string> simpleCommands = new List<string>() { "yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" };
+			List<string> simpleCommands = new List<string>() { "yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set"};
 			var availableCommands = "";
 			foreach (var simpleCommand in simpleCommands)
 			{
 				availableCommands = $"{availableCommands}\n{simpleCommand}";
 				CreateDictationGrammar(speechRecogniser, simpleCommand, simpleCommand);
 			}
-			CreateDictationGrammar(speechRecogniser, "Short Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Title Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Variable Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Upper Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Dot Notation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Lower Dictation", "Short Dictation");
 			availableCommands = $"{availableCommands}\nShort/Upper/Title/Camel/Variable Dictation or Dot Notation";
 			CreateDictationGrammar(speechRecogniser, "Select Left", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Select Right", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Left Select", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Right Select", "Selection");
-			CreateDictationGrammar(speechRecogniser, "Studio Command", "Studio Command");
-			CreateDictationGrammar(speechRecogniser, "Command", "Studio Command");
-			CreateDictationGrammar(speechRecogniser, "Studio", "Studio Command");
 			CreateDictationGrammar(speechRecogniser, "Go to Line", "Go to Line", true);
 			CreateDictationGrammar(speechRecogniser, "Line", "Go to Line", true);
 			BuildPhoneticAlphabetGrammars(speechRecogniser);

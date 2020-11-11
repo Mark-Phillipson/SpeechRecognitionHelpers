@@ -12,11 +12,11 @@ namespace ControlWSR
 		{
 
 		}
-		int invoiceNumber = 2;
+
 		private void TestMethod()
 		{
-			var invoiceNumber = 0;
-			//THIS SHOULD ALL BE IN UPPER CASE TAN VERY VERY SWEARY
+
+
 
 
 		}
