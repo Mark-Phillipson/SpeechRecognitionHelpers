@@ -116,7 +116,7 @@ namespace ControlWSR.Speech
 			{
 				RestartDragon();
 			}
-			else if (e.Result.Grammar.Name == "Studio Command" && e.Result.Confidence > 0.5)
+			else if (e.Result.Grammar.Name == "Studio" && e.Result.Confidence > 0.5)
 			{
 				RunVisualStudioCommand(speechRecogniser);
 			}
@@ -1222,8 +1222,13 @@ namespace ControlWSR.Speech
 			SendKeysCustom(null, null, keys, currentProcess.ProcessName);
 			if (text.EndsWith("in"))
 			{
-				List<string> keysLeft = new List<string> { "{Left}" };
-				SendKeysCustom(null, null, keysLeft, currentProcess.ProcessName);
+				//List<string> keysLeft = new List<string> { "{Left}" };
+				//SendKeysCustom(null, null, keysLeft, currentProcess.ProcessName);
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.LEFT);
+			}
+			else if (text.EndsWith("space"))
+			{
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.SPACE);
 			}
 		}
 	}
