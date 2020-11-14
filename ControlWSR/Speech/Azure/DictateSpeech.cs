@@ -25,8 +25,8 @@ namespace ControlWSR.Speech.Azure
 
 			try
 			{
-				System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\Start.wav");
-				soundPlayer.Play();
+				//System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\ControlWSR\Media\Start.wav");
+				//soundPlayer.Play();
 			}
 			catch (Exception)
 			{

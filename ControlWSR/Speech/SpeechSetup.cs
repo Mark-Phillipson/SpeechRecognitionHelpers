@@ -27,13 +27,15 @@ namespace ControlWSR.Speech
 				CreateDictationGrammar(speechRecogniser, simpleCommand, simpleCommand);
 			}
 			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Camel", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Title Dictation", "Short Dictation");
+			CreateDictationGrammar(speechRecogniser, "Variable", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Variable Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Upper Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Dot Notation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Lower Dictation", "Short Dictation");
-			availableCommands = $"{availableCommands}\nShort/Upper/Title/Camel/Variable Dictation or Dot Notation";
+			availableCommands = $"{availableCommands}\nAzure: Upper/Title/Camel/Variable Dictation or Dot Notation";
 			CreateDictationGrammar(speechRecogniser, "Select Left", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Select Right", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Left Select", "Selection");
