@@ -26,6 +26,9 @@ namespace ControlWSR.Speech
 				availableCommands = $"{availableCommands}\n{simpleCommand}";
 				CreateDictationGrammar(speechRecogniser, simpleCommand, simpleCommand);
 			}
+
+			CreateDictationGrammar(speechRecogniser, "Find Following", "Search Code",true);
+			CreateDictationGrammar(speechRecogniser, "Find Previous", "Search Code",true);
 			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Camel", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");

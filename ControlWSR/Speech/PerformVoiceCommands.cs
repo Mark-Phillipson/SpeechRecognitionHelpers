@@ -120,6 +120,27 @@ namespace ControlWSR.Speech
 			{
 				RunVisualStudioCommand(speechRecogniser);
 			}
+			else if (e.Result.Grammar.Name == "Search Code" && e.Result.Confidence > 0.5)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_F);
+				var searchTerm = "";
+				var counter = 0;
+				foreach (var word in e.Result.Words)
+				{
+					if (counter>=2)
+					{
+						searchTerm = $"{searchTerm} {word.Text}";
+					}
+					counter++;
+				}
+				inputSimulator.Keyboard.TextEntry(searchTerm.Trim());
+				if (e.Result.Words[1].Text=="Previous")
+				{
+					inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.SHIFT, VirtualKeyCode.F3);
+				}
+				Thread.Sleep(100);
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+			}
 			else if (e.Result.Grammar.Name == "Default Box" && e.Result.Confidence > 0.5)
 			{
 				Process.Start(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\DictationBoxMSP\bin\Release\DictationBoxMSP.exe");
