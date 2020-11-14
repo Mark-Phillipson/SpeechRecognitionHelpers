@@ -16,7 +16,10 @@ namespace ControlWSR.Speech
 		{
 			speechRecogniser.UnloadAllGrammars();
 			// Simple commands will also create a grammar name of the same name
-			List<string> simpleCommands = new List<string>() { "yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set"};
+			List<string> simpleCommands = new List<string>()
+			{
+				"yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set","Default Box","Dictation Box"
+			};
 			var availableCommands = "";
 			foreach (var simpleCommand in simpleCommands)
 			{
@@ -298,7 +301,7 @@ namespace ControlWSR.Speech
 			choices.Add("Hash");
 			choices.Add("Pipes");
 			choices.Add("Ampersands");
-			Choices choicesInOut = new Choices("In", "Out","Space");
+			Choices choicesInOut = new Choices("In", "Out", "Space");
 			GrammarBuilder grammarBuilder = new GrammarBuilder();
 			grammarBuilder.Append(choices);
 			grammarBuilder.Append(choicesInOut);

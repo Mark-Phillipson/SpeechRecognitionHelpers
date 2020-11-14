@@ -120,6 +120,14 @@ namespace ControlWSR.Speech
 			{
 				RunVisualStudioCommand(speechRecogniser);
 			}
+			else if (e.Result.Grammar.Name == "Default Box" && e.Result.Confidence > 0.5)
+			{
+				Process.Start(@"C:\Users\MPhil\Source\Repos\SpeechRecognitionHelpers\DictationBoxMSP\bin\Release\DictationBoxMSP.exe");
+			}
+			else if (e.Result.Grammar.Name == "Dictation Box" && e.Result.Confidence > 0.5)
+			{
+				Process.Start(@"C:\Program Files (x86)\Speech Productivity\dictation box default\dictation box.exe");
+			}
 			else if (e.Result.Grammar.Name == "Get and Set" && e.Result.Confidence > 0.5)
 			{
 				inputSimulator.Keyboard.TextEntry(" { get; set; }");

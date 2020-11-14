@@ -17,7 +17,8 @@ namespace ControlWSR
 
 		private void TestMethod()
 		{
-			
+			var myReallyStrangeVariableNameIsThis = "This is a string";
+
 
 
 
