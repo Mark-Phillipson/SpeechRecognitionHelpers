@@ -14,7 +14,8 @@
 [] Need a command to restart speech recognition. Maybe kill the process? To be done in Dragon only
 [x] prepare and create a video to show The Windows speech recognition in action
 [x] Add find following commands in Visual Studio and Visual Studio code please
-[] Incorporate the launcher forms so we can launch directly
+[x] Incorporate the launcher forms so we can launch directly
+[] add functionality to open the custom IntelliSense forms
 [] Look into a local database option for a standalone version
 [] Incorporate with serenade in Visual Studio code
 [] Look into building a code dictation box using Blazor/ .Net 5

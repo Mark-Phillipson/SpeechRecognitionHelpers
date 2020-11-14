@@ -15,10 +15,10 @@ namespace ControlWSR.Speech
 		public string SetUpMainCommands(SpeechRecognizer speechRecogniser)
 		{
 			speechRecogniser.UnloadAllGrammars();
-			// Simple commands will also create a grammar name of the same name
+			// Simple commands will also create a Grammar of the same name
 			List<string> simpleCommands = new List<string>()
 			{
-				"yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set","Default Box","Dictation Box"
+				"yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set"
 			};
 			var availableCommands = "";
 			foreach (var simpleCommand in simpleCommands)
@@ -27,6 +27,15 @@ namespace ControlWSR.Speech
 				CreateDictationGrammar(speechRecogniser, simpleCommand, simpleCommand);
 			}
 
+			if (Environment.MachineName== "DESKTOP-UROO8T1")// These are only really applicable for my machine
+			{
+				CreateDictationGrammar(speechRecogniser, "Default Box", "Default Box", true);
+				availableCommands = $"{availableCommands}\nDefault Box (MSP)";
+				CreateDictationGrammar(speechRecogniser, "Dictation Box", "Dictation Box", true);
+				availableCommands = $"{availableCommands}\nDictation Box (Speech Productivity)";
+				CreateDictationGrammar(speechRecogniser, "Search Union", "Search Union", true);
+				availableCommands = $"{availableCommands}\nSearch Union <dictation>";
+			}
 			CreateDictationGrammar(speechRecogniser, "Find Following", "Search Code",true);
 			CreateDictationGrammar(speechRecogniser, "Find Previous", "Search Code",true);
 			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");

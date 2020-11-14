@@ -120,6 +120,22 @@ namespace ControlWSR.Speech
 			{
 				RunVisualStudioCommand(speechRecogniser);
 			}
+			else if (e.Result.Grammar.Name == "Search Union" && e.Result.Confidence > 0.5)
+			{
+				var searchTerm = "";
+				var counter = 0;
+				foreach (var word in e.Result.Words)
+				{
+					if (counter >= 2)
+					{
+						searchTerm = $"{searchTerm} {word.Text}";
+					}
+					counter++;
+				}
+				string arguments = $@"""/ Union "" ""/{searchTerm.Trim()}""";
+			Process.Start(@"C:\Users\MPhil\source\repos\SpeechRecognitionHelpers\VoiceLauncher\bin\Release\VoiceLauncher.exe",
+					arguments);
+			}
 			else if (e.Result.Grammar.Name == "Search Code" && e.Result.Confidence > 0.5)
 			{
 				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_F);
@@ -127,14 +143,14 @@ namespace ControlWSR.Speech
 				var counter = 0;
 				foreach (var word in e.Result.Words)
 				{
-					if (counter>=2)
+					if (counter >= 2)
 					{
 						searchTerm = $"{searchTerm} {word.Text}";
 					}
 					counter++;
 				}
 				inputSimulator.Keyboard.TextEntry(searchTerm.Trim());
-				if (e.Result.Words[1].Text=="Previous")
+				if (e.Result.Words[1].Text == "Previous")
 				{
 					inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.SHIFT, VirtualKeyCode.F3);
 				}
@@ -161,7 +177,7 @@ namespace ControlWSR.Speech
 			{
 				PerformMouseCommand(e);
 			}
-			else if (e.Result.Grammar.Name.Contains("Phonetic Alphabet" )) // Could be lower, mixed or upper
+			else if (e.Result.Grammar.Name.Contains("Phonetic Alphabet")) // Could be lower, mixed or upper
 			{
 				ProcessKeyboardCommand(e);
 			}
@@ -175,7 +191,7 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Repeat Keys" && e.Result.Confidence > 0.6)
 			{
-				List<string> keys= new List<string>();
+				List<string> keys = new List<string>();
 				SpeechCommandsHelper.BuildRepeatSendkeys(e, keys);
 				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
 			}
@@ -191,7 +207,7 @@ namespace ControlWSR.Speech
 				{
 					lineNumber += e.Result.Words[i].Text + " ";
 				}
-				var numericLineNumberTest=  WordsToNumbers.ConvertToNumbers(lineNumber.ToString());
+				var numericLineNumberTest = WordsToNumbers.ConvertToNumbers(lineNumber.ToString());
 				lineNumber = numericLineNumberTest.ToString();
 				//lineNumber = SpeechCommandsHelper.ConvertTextToNumber(lineNumber);
 				bool isANumber = int.TryParse(lineNumber, out int numericLineNumber);
@@ -214,7 +230,7 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Show Recent" && e.Result.Confidence > 0.5)
 			{
-				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LMENU,VirtualKeyCode.VK_F);
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LMENU, VirtualKeyCode.VK_F);
 				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.VK_J);
 			}
 			else if (e.Result.Grammar.Name == "Fresh Line" && e.Result.Confidence > 0.5)
@@ -226,7 +242,7 @@ namespace ControlWSR.Speech
 			{
 				inputSimulator.Keyboard.TextEntry(";");
 			}
-			else if (e.Result.Grammar.Name=="Selection" && e.Result.Confidence>0.5)
+			else if (e.Result.Grammar.Name == "Selection" && e.Result.Confidence > 0.5)
 			{
 				if (e.Result.Text.ToLower().Contains("left"))
 				{
@@ -298,7 +314,7 @@ namespace ControlWSR.Speech
 				{
 					value = value + word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower() + ".";
 				}
-				rawResult = value.Substring(0,value.Length-1);
+				rawResult = value.Substring(0, value.Length - 1);
 			}
 			else if (e.Result.Text.ToLower().Contains("title"))
 			{
@@ -327,7 +343,7 @@ namespace ControlWSR.Speech
 				}
 				rawResult = value;
 			}
-			if (!e.Result.Text.ToLower().StartsWith("short") && e.Result.Text.ToLower()!="dictation")
+			if (!e.Result.Text.ToLower().StartsWith("short") && e.Result.Text.ToLower() != "dictation")
 			{
 				rawResult = rawResult.Trim();
 			}
@@ -1024,7 +1040,7 @@ namespace ControlWSR.Speech
 			{
 				value = "{Up " + value.Substring(value.IndexOf("}") + 1) + "}";
 			}
-		if (value.Contains("{Down}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
+			if (value.Contains("{Down}") && IsNumber(value.Substring(value.IndexOf("}") + 1)))
 			{
 				value = "{Down " + value.Substring(value.IndexOf("}") + 1) + "}";
 			}
@@ -1055,7 +1071,7 @@ namespace ControlWSR.Speech
 				value = "";
 				foreach (var word in e.Result.Words)
 				{
-					if (word.Text!="Space")
+					if (word.Text != "Space")
 					{
 						value = value + word.Text.Substring(0, 1);
 					}
@@ -1085,7 +1101,7 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Phonetic Alphabet Mixed")
 			{
-				value = "";var counter = 0;
+				value = ""; var counter = 0;
 				foreach (var word in e.Result.Words)
 				{
 					if (word.Text != "Mixed")
@@ -1093,7 +1109,7 @@ namespace ControlWSR.Speech
 						counter++;
 						if (word.Text != "Space")
 						{
-							if (counter==1)
+							if (counter == 1)
 							{
 								value = value + word.Text.ToUpper().Substring(0, 1);
 							}
