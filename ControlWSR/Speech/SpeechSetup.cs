@@ -29,12 +29,18 @@ namespace ControlWSR.Speech
 
 			if (Environment.MachineName== "DESKTOP-UROO8T1")// These are only really applicable for my machine
 			{
-				CreateDictationGrammar(speechRecogniser, "Default Box", "Default Box", true);
+				CreateDictationGrammar(speechRecogniser, "Default Box", "Default Box", false);
 				availableCommands = $"{availableCommands}\nDefault Box (MSP)";
-				CreateDictationGrammar(speechRecogniser, "Dictation Box", "Dictation Box", true);
+				CreateDictationGrammar(speechRecogniser, "Dictation Box", "Dictation Box", false);
 				availableCommands = $"{availableCommands}\nDictation Box (Speech Productivity)";
 				CreateDictationGrammar(speechRecogniser, "Search Union", "Search Union", true);
 				availableCommands = $"{availableCommands}\nSearch Union <dictation>";
+				CreateDictationGrammar(speechRecogniser, "List Items", "List Items", true);
+				availableCommands = $"{availableCommands}\nList Items <dictation>";
+				CreateDictationGrammar(speechRecogniser, "Create Custom IntelliSense", "Create Custom IntelliSense");
+				availableCommands = $"{availableCommands}\nCreate Custom IntelliSense";
+				CreateDictationGrammar(speechRecogniser, "Serenade", "Serenade");
+				availableCommands = $"{availableCommands}\nSerenade";
 			}
 			CreateDictationGrammar(speechRecogniser, "Find Following", "Search Code",true);
 			CreateDictationGrammar(speechRecogniser, "Find Previous", "Search Code",true);

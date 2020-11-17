@@ -23,11 +23,13 @@ namespace ControlWSR.Speech
 		private readonly IEnumerable<VirtualKeyCode> all3Modifiers = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT, VirtualKeyCode.MENU };
 		private readonly IEnumerable<VirtualKeyCode> controlAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT };
 		private readonly IEnumerable<VirtualKeyCode> windowAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.LWIN, VirtualKeyCode.SHIFT };
+		private readonly IEnumerable<VirtualKeyCode> altAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.MENU, VirtualKeyCode.SHIFT };
 		public string CommandToBeConfirmed { get; set; } = null;
 		private const int MOUSEEVENTF_LEFTDOWN = 0x02;
 		private const int MOUSEEVENTF_LEFTUP = 0x04;
 		private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
 		private const int MOUSEEVENTF_RIGHTUP = 0x10;
+		const string VOICE_LAUNCHER = @"C:\Users\MPhil\source\repos\SpeechRecognitionHelpers\VoiceLauncher\bin\Release\VoiceLauncher.exe";
 
 		[DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
 		public static extern IntPtr FindWindow(string lpClassName,
@@ -107,6 +109,10 @@ namespace ControlWSR.Speech
 			{
 				await PerformShortDictation(e, form);
 			}
+			else if (e.Result.Grammar.Name == "Serenade" && e.Result.Confidence > 0.4)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(altAndShift, VirtualKeyCode.SPACE);
+			}
 			else if (e.Result.Grammar.Name == "Denied")
 			{
 				var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
@@ -133,8 +139,30 @@ namespace ControlWSR.Speech
 					counter++;
 				}
 				string arguments = $@"""/ Union "" ""/{searchTerm.Trim()}""";
-			Process.Start(@"C:\Users\MPhil\source\repos\SpeechRecognitionHelpers\VoiceLauncher\bin\Release\VoiceLauncher.exe",
-					arguments);
+				Process.Start(VOICE_LAUNCHER,arguments);
+			}
+			else if (e.Result.Grammar.Name == "List Items" && e.Result.Confidence > 0.5)
+			{
+				var searchTerm = "";
+				var counter = 0;
+				foreach (var word in e.Result.Words)
+				{
+					if (counter >= 2)
+					{
+						searchTerm = $"{searchTerm} {word.Text}";
+					}
+					counter++;
+				}
+				string arguments = $@"""/ Unknown "" ""/ Unknown "" ""/{searchTerm.Trim()}""";
+				Process.Start(VOICE_LAUNCHER,arguments);
+			}
+			else if (e.Result.Grammar.Name == "Create Custom IntelliSense" && e.Result.Confidence > 0.5)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_C);
+				var itemToAdd = Clipboard.GetText();
+
+				string arguments = $@"""/ Add New"" ""/{itemToAdd.Trim()}""";
+				Process.Start(VOICE_LAUNCHER, arguments);
 			}
 			else if (e.Result.Grammar.Name == "Search Code" && e.Result.Confidence > 0.5)
 			{
@@ -458,7 +486,17 @@ namespace ControlWSR.Speech
 		}
 		private void QuitApplication()
 		{
-			inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DIVIDE);
+			//inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DIVIDE);
+			var processes = Process.GetProcessesByName("sapisvr");
+			if (processes!= null )
+			{
+				foreach (var process in processes)
+				{
+					process.Kill();
+					//process.CloseMainWindow();
+					//process.Close();
+				}
+			}
 			try
 			{
 				System.Windows.Forms.Application.Exit();
