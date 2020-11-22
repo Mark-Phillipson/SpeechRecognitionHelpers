@@ -25,7 +25,6 @@ namespace ControlWSR.Speech.Azure
 			using (var recogniser = new SpeechRecognizer(config))
 			{
 
-				Grammar grammar = Grammar.FromStorageId("");
 				var result = await recogniser.RecognizeOnceAsync();
 				if (result.Reason == ResultReason.RecognizedSpeech)
 				{
