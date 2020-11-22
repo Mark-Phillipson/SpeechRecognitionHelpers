@@ -16,5 +16,5 @@
 [x] Add find following commands in Visual Studio and Visual Studio code please
 [x] Incorporate the launcher forms so we can launch directly
 [x] add functionality to open the custom IntelliSense forms
-[] Incorporate with serenade in Visual Studio code
+[x] Incorporate with serenade in Visual Studio code
 [] Look into a local database option for a standalone version

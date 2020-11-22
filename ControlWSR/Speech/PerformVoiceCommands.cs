@@ -111,7 +111,11 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Serenade" && e.Result.Confidence > 0.4)
 			{
-				inputSimulator.Keyboard.ModifiedKeyStroke(altAndShift, VirtualKeyCode.SPACE);
+				Process.Start(@"C:\Users\MPhil\AppData\Local\Programs\Serenade\Serenade.exe");
+				speechRecogniser.EmulateRecognize("minimise speech recognition");
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+				List<string> keys = new List<string>() { "^% " };
+				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
 			}
 			else if (e.Result.Grammar.Name == "Denied")
 			{

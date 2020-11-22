@@ -18,7 +18,7 @@ namespace ControlWSR.Speech
 			// Simple commands will also create a Grammar of the same name
 			List<string> simpleCommands = new List<string>()
 			{
-				"yes", "no", "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set"
+				 "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set"
 			};
 			var availableCommands = "";
 			foreach (var simpleCommand in simpleCommands)
