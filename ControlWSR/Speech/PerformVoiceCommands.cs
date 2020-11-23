@@ -50,7 +50,7 @@ namespace ControlWSR.Speech
 		{
 			UpdateCurrentProcess();
 		}
-		public async void PerformCommand(SpeechRecognizedEventArgs e, AvailableCommandsForm form, SpeechRecognizer speechRecogniser)
+		public async void PerformCommand(SpeechRecognizedEventArgs e, AvailableCommandsForm form, SpeechRecognizer speechRecogniser,DictateSpeech dictateSpeech, Microsoft.CognitiveServices.Speech.SpeechRecognizer speechRecognizer)
 		{
 			UpdateCurrentProcess();
 			try
@@ -107,15 +107,11 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Short Dictation" && e.Result.Confidence > 0.4)
 			{
-				await PerformShortDictation(e, form);
+				await PerformShortDictation(e, form, dictateSpeech,speechRecognizer);
 			}
 			else if (e.Result.Grammar.Name == "Serenade" && e.Result.Confidence > 0.4)
 			{
-				Process.Start(@"C:\Users\MPhil\AppData\Local\Programs\Serenade\Serenade.exe");
-				speechRecogniser.EmulateRecognize("minimise speech recognition");
-				ToggleSpeechRecognitionListeningMode(inputSimulator);
-				List<string> keys = new List<string>() { "^% " };
-				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+				PerformSerenadeCommand(speechRecogniser);
 			}
 			else if (e.Result.Grammar.Name == "Denied")
 			{
@@ -132,62 +128,19 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Search Union" && e.Result.Confidence > 0.5)
 			{
-				var searchTerm = "";
-				var counter = 0;
-				foreach (var word in e.Result.Words)
-				{
-					if (counter >= 2)
-					{
-						searchTerm = $"{searchTerm} {word.Text}";
-					}
-					counter++;
-				}
-				string arguments = $@"""/ Union "" ""/{searchTerm.Trim()}""";
-				Process.Start(VOICE_LAUNCHER,arguments);
+				PerformSearchUnionCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "List Items" && e.Result.Confidence > 0.5)
 			{
-				var searchTerm = "";
-				var counter = 0;
-				foreach (var word in e.Result.Words)
-				{
-					if (counter >= 2)
-					{
-						searchTerm = $"{searchTerm} {word.Text}";
-					}
-					counter++;
-				}
-				string arguments = $@"""/ Unknown "" ""/ Unknown "" ""/{searchTerm.Trim()}""";
-				Process.Start(VOICE_LAUNCHER,arguments);
+				PerformListItemsCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "Create Custom IntelliSense" && e.Result.Confidence > 0.5)
 			{
-				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_C);
-				var itemToAdd = Clipboard.GetText();
-
-				string arguments = $@"""/ Add New"" ""/{itemToAdd.Trim()}""";
-				Process.Start(VOICE_LAUNCHER, arguments);
+				PerformCreateCustomIntellisenseCommand();
 			}
 			else if (e.Result.Grammar.Name == "Search Code" && e.Result.Confidence > 0.5)
 			{
-				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_F);
-				var searchTerm = "";
-				var counter = 0;
-				foreach (var word in e.Result.Words)
-				{
-					if (counter >= 2)
-					{
-						searchTerm = $"{searchTerm} {word.Text}";
-					}
-					counter++;
-				}
-				inputSimulator.Keyboard.TextEntry(searchTerm.Trim());
-				if (e.Result.Words[1].Text == "Previous")
-				{
-					inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.SHIFT, VirtualKeyCode.F3);
-				}
-				Thread.Sleep(100);
-				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+				PerformSearchCodeCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "Default Box" && e.Result.Confidence > 0.5)
 			{
@@ -223,34 +176,11 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Repeat Keys" && e.Result.Confidence > 0.6)
 			{
-				List<string> keys = new List<string>();
-				SpeechCommandsHelper.BuildRepeatSendkeys(e, keys);
-				SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+				PerformRepeatKeysCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "Go to Line" && e.Result.Confidence > 0.6)
 			{
-				var wordStartPosition = 3;
-				if (e.Result.Text.StartsWith("Line"))
-				{
-					wordStartPosition = 1;
-				}
-				var lineNumber = "";
-				for (int i = wordStartPosition; i < e.Result.Words.Count; i++)
-				{
-					lineNumber += e.Result.Words[i].Text + " ";
-				}
-				var numericLineNumberTest = WordsToNumbers.ConvertToNumbers(lineNumber.ToString());
-				lineNumber = numericLineNumberTest.ToString();
-				//lineNumber = SpeechCommandsHelper.ConvertTextToNumber(lineNumber);
-				bool isANumber = int.TryParse(lineNumber, out int numericLineNumber);
-				if (isANumber)
-				{
-					inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_G);
-					Thread.Sleep(100);
-					inputSimulator.Keyboard.TextEntry(numericLineNumber.ToString());
-					Thread.Sleep(100);
-					inputSimulator.Keyboard.KeyPress(VirtualKeyCode.RETURN);
-				}
+				PerformGoToLineCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "Select Items" && e.Result.Confidence > 0.6)
 			{
@@ -276,15 +206,124 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Selection" && e.Result.Confidence > 0.5)
 			{
-				if (e.Result.Text.ToLower().Contains("left"))
-				{
-					inputSimulator.Keyboard.ModifiedKeyStroke(controlAndShift, VirtualKeyCode.LEFT);
-				}
-				else if (e.Result.Text.ToLower().Contains("right"))
-				{
-					inputSimulator.Keyboard.ModifiedKeyStroke(controlAndShift, VirtualKeyCode.RIGHT);
-				}
+				PerformSelectionCommand(e);
 			}
+		}
+
+		private void PerformSelectionCommand(SpeechRecognizedEventArgs e)
+		{
+			if (e.Result.Text.ToLower().Contains("left"))
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(controlAndShift, VirtualKeyCode.LEFT);
+			}
+			else if (e.Result.Text.ToLower().Contains("right"))
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(controlAndShift, VirtualKeyCode.RIGHT);
+			}
+		}
+
+		private void PerformGoToLineCommand(SpeechRecognizedEventArgs e)
+		{
+			var wordStartPosition = 3;
+			if (e.Result.Text.StartsWith("Line"))
+			{
+				wordStartPosition = 1;
+			}
+			var lineNumber = "";
+			for (int i = wordStartPosition; i < e.Result.Words.Count; i++)
+			{
+				lineNumber += e.Result.Words[i].Text + " ";
+			}
+			var numericLineNumberTest = WordsToNumbers.ConvertToNumbers(lineNumber.ToString());
+			lineNumber = numericLineNumberTest.ToString();
+			//lineNumber = SpeechCommandsHelper.ConvertTextToNumber(lineNumber);
+			bool isANumber = int.TryParse(lineNumber, out int numericLineNumber);
+			if (isANumber)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_G);
+				Thread.Sleep(100);
+				inputSimulator.Keyboard.TextEntry(numericLineNumber.ToString());
+				Thread.Sleep(100);
+				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.RETURN);
+			}
+		}
+
+		private void PerformRepeatKeysCommand(SpeechRecognizedEventArgs e)
+		{
+			List<string> keys = new List<string>();
+			SpeechCommandsHelper.BuildRepeatSendkeys(e, keys);
+			SendKeysCustom(null, null, keys, currentProcess.ProcessName);
+		}
+
+		private void PerformSearchCodeCommand(SpeechRecognizedEventArgs e)
+		{
+			inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_F);
+			var searchTerm = "";
+			var counter = 0;
+			foreach (var word in e.Result.Words)
+			{
+				if (counter >= 2)
+				{
+					searchTerm = $"{searchTerm} {word.Text}";
+				}
+				counter++;
+			}
+			inputSimulator.Keyboard.TextEntry(searchTerm.Trim());
+			if (e.Result.Words[1].Text == "Previous")
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.SHIFT, VirtualKeyCode.F3);
+			}
+			Thread.Sleep(100);
+			inputSimulator.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
+		}
+
+		private void PerformCreateCustomIntellisenseCommand()
+		{
+			inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_C);
+			var itemToAdd = Clipboard.GetText();
+			string arguments = $@"""/ Add New"" ""/{itemToAdd.Trim()}""";
+			Process.Start(VOICE_LAUNCHER, arguments);
+		}
+
+		private static void PerformListItemsCommand(SpeechRecognizedEventArgs e)
+		{
+			var searchTerm = "";
+			var counter = 0;
+			foreach (var word in e.Result.Words)
+			{
+				if (counter >= 2)
+				{
+					searchTerm = $"{searchTerm} {word.Text}";
+				}
+				counter++;
+			}
+			string arguments = $@"""/ Unknown "" ""/ Unknown "" ""/{searchTerm.Trim()}""";
+			Process.Start(VOICE_LAUNCHER, arguments);
+		}
+
+		private static void PerformSearchUnionCommand(SpeechRecognizedEventArgs e)
+		{
+			var searchTerm = "";
+			var counter = 0;
+			foreach (var word in e.Result.Words)
+			{
+				if (counter >= 2)
+				{
+					searchTerm = $"{searchTerm} {word.Text}";
+				}
+				counter++;
+			}
+			string arguments = $@"""/ Union "" ""/{searchTerm.Trim()}""";
+			Process.Start(VOICE_LAUNCHER, arguments);
+		}
+
+		private void PerformSerenadeCommand(SpeechRecognizer speechRecogniser)
+		{
+			Process.Start(@"C:\Users\MPhil\AppData\Local\Programs\Serenade\Serenade.exe");
+			speechRecogniser.EmulateRecognize("minimise speech recognition");
+			ToggleSpeechRecognitionListeningMode(inputSimulator);
+			List<string> keys = new List<string>() { "^% " };
+			SendKeysCustom(null, null, keys, currentProcess.ProcessName);
 		}
 
 		private void RunVisualStudioCommand(SpeechRecognizer speechRecogniser)
@@ -304,10 +343,10 @@ namespace ControlWSR.Speech
 
 		}
 
-		private async Task PerformShortDictation(SpeechRecognizedEventArgs e, AvailableCommandsForm form)
+		private async Task PerformShortDictation(SpeechRecognizedEventArgs e, AvailableCommandsForm form,DictateSpeech dictateSpeech, Microsoft.CognitiveServices.Speech.SpeechRecognizer azureSpeechRecogniser)
 		{
 			ToggleSpeechRecognitionListeningMode(inputSimulator);
-			var result = await DictateSpeech.RecognizeSpeechAsync();
+			var result = await dictateSpeech.RecognizeSpeechAsync(azureSpeechRecogniser);
 			form.TextBoxResults = result.Text;
 			var rawResult = result.Text;
 			rawResult = RemovePunctuation(rawResult);
