@@ -18,7 +18,7 @@ namespace ControlWSR.Speech
 			// Simple commands will also create a Grammar of the same name
 			List<string> simpleCommands = new List<string>()
 			{
-				 "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set"
+				 "Shutdown Windows", "Quit Application", "Restart Windows", "Restart Dragon", "Show Recent", "Fresh Line", "New with Space", "Window Monitor Switch", "Select Line", "Mouse Down","Semi Colon" ,"Studio","Get and Set","Use Dragon","Step Over","Step Into","Reset Code"
 			};
 			var availableCommands = "";
 			foreach (var simpleCommand in simpleCommands)
@@ -44,6 +44,7 @@ namespace ControlWSR.Speech
 			}
 			CreateDictationGrammar(speechRecogniser, "Find Following", "Search Code",true);
 			CreateDictationGrammar(speechRecogniser, "Find Previous", "Search Code",true);
+
 			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Camel", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");
@@ -53,12 +54,13 @@ namespace ControlWSR.Speech
 			CreateDictationGrammar(speechRecogniser, "Upper Dictation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Dot Notation", "Short Dictation");
 			CreateDictationGrammar(speechRecogniser, "Lower Dictation", "Short Dictation");
+
 			availableCommands = $"{availableCommands}\nAzure: Upper/Title/Camel/Variable Dictation or Dot Notation";
 			CreateDictationGrammar(speechRecogniser, "Select Left", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Select Right", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Left Select", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Right Select", "Selection");
-			CreateDictationGrammar(speechRecogniser, "Go to Line", "Go to Line", true);
+			CreateDictationGrammar(speechRecogniser, "Go To Line", "Go To Line", true);
 			CreateDictationGrammar(speechRecogniser, "Line", "Go to Line", true);
 			BuildPhoneticAlphabetGrammars(speechRecogniser);
 			LoadMoveCommandsGrammar(speechRecogniser);
@@ -73,6 +75,7 @@ namespace ControlWSR.Speech
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Enter", "Repeat Keys", 30);
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Page Down", "Repeat Keys", 30);
 			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Press Page Up", "Repeat Keys", 30);
+			SpeechCommandsHelper.CreateRepeatableCommand(speechRecogniser, "Step Over", "Repeat Keys", 30);
 			availableCommands = $"{availableCommands}\n<1to30> Items";
 			SpeechCommandsHelper.CreateItemCommands(speechRecogniser, "Items", "Select Items", 30);
 			SetUpSymbolGrammarCommands(speechRecogniser);
@@ -87,6 +90,7 @@ namespace ControlWSR.Speech
 			availableCommands = $"{availableCommands}\nPosition / Click: Say <Taskbar/Ribbon/Menu> <Alpha-7>";
 			return availableCommands;
 		}
+
 		public SpeechRecognizer StartWindowsSpeechRecognition()
 		{
 			try
@@ -144,7 +148,7 @@ namespace ControlWSR.Speech
 			}
 			GrammarBuilder grammarBuilder = new GrammarBuilder(choices);
 			Grammar grammar = new Grammar((GrammarBuilder)grammarBuilder);
-			grammar.Name = "Mouse Command";
+			grammar.Name = "Mouse";
 			speechRecognizer.LoadGrammarAsync(grammar);
 		}
 		public void LoadGrammarMouseHorizontalPositionCommands(SpeechRecognizer speechRecognizer)
@@ -161,7 +165,7 @@ namespace ControlWSR.Speech
 			}
 			GrammarBuilder grammarBuilder = new GrammarBuilder(choices);
 			Grammar grammar = new Grammar((GrammarBuilder)grammarBuilder);
-			grammar.Name = "Horizontal Position Mouse Command";
+			grammar.Name = "Horizontal Position Mouse";
 			speechRecognizer.LoadGrammarAsync(grammar);
 		}
 		public void BuildPhoneticAlphabetGrammars(SpeechRecognizer speechRecogniser)
@@ -291,7 +295,7 @@ namespace ControlWSR.Speech
 				choices.Add($"Mouse Right {counter}");
 			}
 			Grammar grammar = new Grammar(choices);
-			grammar.Name = "Mouse Move Command";
+			grammar.Name = "Mouse Move";
 			speechRecognizer.LoadGrammarAsync(grammar);
 			Choices choicesClick = new Choices();
 			choicesClick.Add("Mouse Click");
@@ -300,7 +304,7 @@ namespace ControlWSR.Speech
 			choicesClick.Add("Right Click");
 			choicesClick.Add("Double Click");
 			Grammar grammarClick = new Grammar(choicesClick);
-			grammarClick.Name = "Mouse Click Command";
+			grammarClick.Name = "Mouse Click";
 			speechRecognizer.LoadGrammarAsync(grammarClick);
 		}
 		public void SetUpSymbolGrammarCommands(SpeechRecognizer speechRecognizer)

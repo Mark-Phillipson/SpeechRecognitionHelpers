@@ -41,15 +41,24 @@ namespace ControlWSR.Speech
 
 		public static void BuildRepeatSendkeys(SpeechRecognizedEventArgs e, List<string> keys)
 		{
-			var counter = int.Parse(e.Result.Words[1].Text);
+			int numberIndexPosition = 1;
+			if (e.Result.Text.ToUpper().Contains("STEP OVER"))
+			{
+				numberIndexPosition = 2;
+			}
+				var counter = int.Parse(e.Result.Words[numberIndexPosition].Text);
 			var sendkeysCommand = $"{{{e.Result.Words[0].Text.ToUpper()}}}";
 			if (e.Result.Text.ToUpper().Contains("PAGE UP"))
 			{
-				sendkeysCommand = "PGUP";
+				sendkeysCommand = "{PGUP}";
 			}
 			else if (e.Result.Text.ToUpper().Contains("PAGE DOWN"))
 			{
-				sendkeysCommand = "PGDN";
+				sendkeysCommand = "{PGDN}";
+			}
+			else if (e.Result.Text.ToUpper().Contains("STEP OVER"))
+			{
+				sendkeysCommand = "{F10}";
 			}
 			sendkeysCommand = sendkeysCommand.Replace("Press", "");
 			for (int i = 0; i < counter; i++)

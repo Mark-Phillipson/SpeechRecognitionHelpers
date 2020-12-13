@@ -140,7 +140,7 @@ namespace ControlWSR
 
 		private void TestingBtn_Click(object sender, EventArgs e)
 		{
-
+			AutoClosingMessageBox.Show("Testing", "This should close in three seconds", 3000);
 		}
 
 		private void AvailableCommandsForm_FormClosing(object sender, FormClosingEventArgs e)

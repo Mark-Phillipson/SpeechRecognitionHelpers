@@ -41,7 +41,7 @@
 			this.richTextBoxAvailableCommands.Location = new System.Drawing.Point(1, 21);
 			this.richTextBoxAvailableCommands.Name = "richTextBoxAvailableCommands";
 			this.richTextBoxAvailableCommands.ReadOnly = true;
-			this.richTextBoxAvailableCommands.Size = new System.Drawing.Size(565, 521);
+			this.richTextBoxAvailableCommands.Size = new System.Drawing.Size(565, 631);
 			this.richTextBoxAvailableCommands.TabIndex = 0;
 			this.richTextBoxAvailableCommands.Text = "";
 			// 
@@ -70,7 +70,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(976, 544);
+			this.ClientSize = new System.Drawing.Size(976, 658);
 			this.Controls.Add(this.TestingBtn);
 			this.Controls.Add(this.textBoxResults);
 			this.Controls.Add(this.richTextBoxAvailableCommands);

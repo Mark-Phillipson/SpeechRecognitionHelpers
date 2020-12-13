@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Speech.Recognition;
 using System.Text;
@@ -50,36 +51,49 @@ namespace ControlWSR.Speech
 		{
 			UpdateCurrentProcess();
 		}
-		public async void PerformCommand(SpeechRecognizedEventArgs e, AvailableCommandsForm form, SpeechRecognizer speechRecogniser,DictateSpeech dictateSpeech, Microsoft.CognitiveServices.Speech.SpeechRecognizer speechRecognizer)
+		public async void PerformCommand(SpeechRecognizedEventArgs e, AvailableCommandsForm form, SpeechRecognizer speechRecogniser, DictateSpeech dictateSpeech, Microsoft.CognitiveServices.Speech.SpeechRecognizer speechRecognizer)
 		{
 			UpdateCurrentProcess();
 			try
 			{
 				SpeechUI.SendTextFeedback(e.Result, $"Recognised: {e.Result.Text} {e.Result.Confidence:P1}", true);
 			}
-			catch (Exception)
+			catch (Exception exception)
 			{
-				//This will fail if were using the engine
-			}
-			if (e.Result.Grammar.Name == "Quit Application" && e.Result.Confidence > 0.6)
-			{
-				QuitApplication();
+				AutoClosingMessageBox.Show(exception.Message, "Error Sending feedback to speech recognition", 3000);
 			}
 			if (e.Result.Grammar.Name == "New with Space" && e.Result.Confidence > 0.6)
 			{
 				inputSimulator.Keyboard.TextEntry(" new ");
 				inputSimulator.Keyboard.KeyDown(VirtualKeyCode.ESCAPE);
 			}
-			if (e.Result.Grammar.Name == "Window Monitor Switch" && e.Result.Confidence > 0.6)
+			else if (e.Result.Grammar.Name == "Step Over" && e.Result.Confidence > 0.6)
+			{
+				inputSimulator.Keyboard.KeyDown(VirtualKeyCode.F10);
+			}
+			else if (e.Result.Grammar.Name == "Step Into" && e.Result.Confidence > 0.6)
+			{
+				inputSimulator.Keyboard.KeyDown(VirtualKeyCode.F11);
+			}
+			else if (e.Result.Grammar.Name == "Reset Code" && e.Result.Confidence > 0.6)
+			{
+				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.SHIFT, VirtualKeyCode.F5);
+			}
+			else if (e.Result.Grammar.Name == "Use Dragon" && e.Result.Confidence > 0.6)
+			{
+				ToggleSpeechRecognitionListeningMode(inputSimulator);
+				inputSimulator.Keyboard.KeyDown(VirtualKeyCode.ADD);
+			}
+			else if (e.Result.Grammar.Name == "Window Monitor Switch" && e.Result.Confidence > 0.6)
 			{
 				inputSimulator.Keyboard.ModifiedKeyStroke(windowAndShift, VirtualKeyCode.RIGHT);
 			}
-			if (e.Result.Grammar.Name == "Select Line" && e.Result.Confidence > 0.6)
+			else if (e.Result.Grammar.Name == "Select Line" && e.Result.Confidence > 0.6)
 			{
 				inputSimulator.Keyboard.KeyPress(VirtualKeyCode.HOME);
 				inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.SHIFT, VirtualKeyCode.END);
 			}
-			if (e.Result.Grammar.Name == "Mouse Down" && e.Result.Confidence > 0.6)
+			else if (e.Result.Grammar.Name == "Mouse Down" && e.Result.Confidence > 0.6)
 			{
 				inputSimulator.Mouse.LeftButtonDown();
 			}
@@ -103,11 +117,11 @@ namespace ControlWSR.Speech
 				{
 					Process.Start("shutdown", "/r /t 10");
 				}
-				QuitApplication();
+				PerformQuitApplicationCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "Short Dictation" && e.Result.Confidence > 0.4)
 			{
-				await PerformShortDictation(e, form, dictateSpeech,speechRecognizer);
+				await PerformShortDictation(e, form, dictateSpeech, speechRecognizer);
 			}
 			else if (e.Result.Grammar.Name == "Serenade" && e.Result.Confidence > 0.4)
 			{
@@ -118,29 +132,9 @@ namespace ControlWSR.Speech
 				var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
 				form.RichTextBoxAvailableCommands = availableCommands;
 			}
-			else if (e.Result.Grammar.Name == "Restart Dragon" && e.Result.Confidence > 0.5)
-			{
-				RestartDragon();
-			}
 			else if (e.Result.Grammar.Name == "Studio" && e.Result.Confidence > 0.5)
 			{
 				RunVisualStudioCommand(speechRecogniser);
-			}
-			else if (e.Result.Grammar.Name == "Search Union" && e.Result.Confidence > 0.5)
-			{
-				PerformSearchUnionCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "List Items" && e.Result.Confidence > 0.5)
-			{
-				PerformListItemsCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Create Custom IntelliSense" && e.Result.Confidence > 0.5)
-			{
-				PerformCreateCustomIntellisenseCommand();
-			}
-			else if (e.Result.Grammar.Name == "Search Code" && e.Result.Confidence > 0.5)
-			{
-				PerformSearchCodeCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "Default Box" && e.Result.Confidence > 0.5)
 			{
@@ -154,41 +148,9 @@ namespace ControlWSR.Speech
 			{
 				inputSimulator.Keyboard.TextEntry(" { get; set; }");
 			}
-			else if (e.Result.Grammar.Name == "Horizontal Position Mouse Command" && e.Result.Confidence > 0.3)
-			{
-				PerformHorizontalPositionMouseCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Mouse Command" && e.Result.Confidence > 0.3)
-			{
-				PerformMouseCommand(e);
-			}
 			else if (e.Result.Grammar.Name.Contains("Phonetic Alphabet")) // Could be lower, mixed or upper
 			{
 				ProcessKeyboardCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Mouse Click Command" && e.Result.Confidence > 0.3)
-			{
-				PerformMouseClickCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Mouse Move Command" && e.Result.Confidence > 0.3)
-			{
-				PerformMouseMoveCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Repeat Keys" && e.Result.Confidence > 0.6)
-			{
-				PerformRepeatKeysCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Go to Line" && e.Result.Confidence > 0.6)
-			{
-				PerformGoToLineCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Select Items" && e.Result.Confidence > 0.6)
-			{
-				PerformSelectItemsCommand(e);
-			}
-			else if (e.Result.Grammar.Name == "Symbols" && e.Result.Confidence > 0.3)
-			{
-				PerformanceSymbolsCommand(e);
 			}
 			else if (e.Result.Grammar.Name == "Show Recent" && e.Result.Confidence > 0.5)
 			{
@@ -204,9 +166,26 @@ namespace ControlWSR.Speech
 			{
 				inputSimulator.Keyboard.TextEntry(";");
 			}
-			else if (e.Result.Grammar.Name == "Selection" && e.Result.Confidence > 0.5)
+			// where the grammar name is the same Click cancelas the method Without the perform and command, with the spaces remove use reflection to call it
+			else if (e.Result.Confidence > 0.6)
 			{
-				PerformSelectionCommand(e);
+				string methodName = $"Perform{e.Result.Grammar.Name.Replace(" ", "")}Command";
+				Type thisType = this.GetType();
+				//MethodInfo theMethod = thisType.GetMethod(methodName,BindingFlags.NonPublic  | BindingFlags.Instance);
+				try
+				{
+					thisType.InvokeMember(methodName,
+						BindingFlags.DeclaredOnly |
+		BindingFlags.Public | BindingFlags.NonPublic |
+		BindingFlags.Instance | BindingFlags.InvokeMethod
+				, null, this, new Object[] { e });
+
+				}
+				catch (Exception exception)
+				{
+					//AutoClosingMessageBox.Show(exception.Message, $"Error Running a method {exception.Source}", 3000);
+					System.Windows.Forms.MessageBox.Show(exception.Message, "Error running a method", MessageBoxButtons.OK);
+				}
 			}
 		}
 
@@ -277,7 +256,7 @@ namespace ControlWSR.Speech
 			inputSimulator.Keyboard.KeyPress(VirtualKeyCode.ESCAPE);
 		}
 
-		private void PerformCreateCustomIntellisenseCommand()
+		private void PerformCreateCustomIntelliSenseCommand(SpeechRecognizedEventArgs e)
 		{
 			inputSimulator.Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_C);
 			var itemToAdd = Clipboard.GetText();
@@ -285,7 +264,7 @@ namespace ControlWSR.Speech
 			Process.Start(VOICE_LAUNCHER, arguments);
 		}
 
-		private static void PerformListItemsCommand(SpeechRecognizedEventArgs e)
+		private void PerformListItemsCommand(SpeechRecognizedEventArgs e)
 		{
 			var searchTerm = "";
 			var counter = 0;
@@ -301,7 +280,7 @@ namespace ControlWSR.Speech
 			Process.Start(VOICE_LAUNCHER, arguments);
 		}
 
-		private static void PerformSearchUnionCommand(SpeechRecognizedEventArgs e)
+		private void PerformSearchUnionCommand(SpeechRecognizedEventArgs e)
 		{
 			var searchTerm = "";
 			var counter = 0;
@@ -343,7 +322,7 @@ namespace ControlWSR.Speech
 
 		}
 
-		private async Task PerformShortDictation(SpeechRecognizedEventArgs e, AvailableCommandsForm form,DictateSpeech dictateSpeech, Microsoft.CognitiveServices.Speech.SpeechRecognizer azureSpeechRecogniser)
+		private async Task PerformShortDictation(SpeechRecognizedEventArgs e, AvailableCommandsForm form, DictateSpeech dictateSpeech, Microsoft.CognitiveServices.Speech.SpeechRecognizer azureSpeechRecogniser)
 		{
 			ToggleSpeechRecognitionListeningMode(inputSimulator);
 			var result = await dictateSpeech.RecognizeSpeechAsync(azureSpeechRecogniser);
@@ -446,7 +425,7 @@ namespace ControlWSR.Speech
 			inputSimulator.Keyboard.KeyUp(VirtualKeyCode.SHIFT);
 		}
 
-		private void RestartDragon()
+		private void PerformRestartDragonCommand(SpeechRecognizedEventArgs e)
 		{
 			var processName = "nsbrowse";
 			KillAllProcesses(processName);
@@ -484,7 +463,8 @@ namespace ControlWSR.Speech
 			}
 			catch (Exception exception)
 			{
-				System.Windows.Forms.MessageBox.Show(exception.Message);
+				// 	System.Windows.Forms.MessageBox.Show(exception.Message);
+				AutoClosingMessageBox.Show(exception.Message, "Error trying to start a process", 3000);
 			}
 		}
 		private void KillAllProcesses(string name)
@@ -505,9 +485,6 @@ namespace ControlWSR.Speech
 				}
 			}
 		}
-
-
-
 		public static void ToggleSpeechRecognitionListeningMode(InputSimulator inputSimulator)
 		{
 			inputSimulator.Keyboard.KeyDown(VirtualKeyCode.CONTROL);
@@ -527,11 +504,11 @@ namespace ControlWSR.Speech
 			GetWindowThreadProcessId(hwnd, out pid);
 			currentProcess = Process.GetProcessById((int)pid);
 		}
-		private void QuitApplication()
+		public void PerformQuitApplicationCommand(SpeechRecognizedEventArgs e)
 		{
 			//inputSimulator.Keyboard.KeyDown(VirtualKeyCode.DIVIDE);
 			var processes = Process.GetProcessesByName("sapisvr");
-			if (processes!= null )
+			if (processes != null)
 			{
 				foreach (var process in processes)
 				{
@@ -1282,7 +1259,7 @@ namespace ControlWSR.Speech
 				Win32.mouse_event(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP, (uint)p.x, (uint)p.y, 0, 0);
 			}
 		}
-		private void PerformanceSymbolsCommand(SpeechRecognizedEventArgs e)
+		private void PerformSymbolsCommand(SpeechRecognizedEventArgs e)
 		{
 			List<string> keys = new List<string>();
 			var text = e.Result.Text.ToLower();
