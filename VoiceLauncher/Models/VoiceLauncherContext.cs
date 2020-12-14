@@ -1,15 +1,31 @@
 namespace VoiceLauncher.Models
 {
-    using System.Data.Entity;
+	using System.Configuration;
+	using System.Data.Common;
+	using System.Data.Entity;
 
     public partial class VoiceLauncherContext : DbContext
     {
         public VoiceLauncherContext()
-            : base("name=VoiceLauncher")
+            : base(GetConnection(),false)
         {
         }
 
-        public virtual DbSet<Computer> Computers { get; set; }
+		public static DbConnection GetConnection()
+		{
+			var connection = ConfigurationManager.ConnectionStrings["SQLiteConnection"];
+			var factory = DbProviderFactories.GetFactory(connection.ProviderName);
+			var dbCon = factory.CreateConnection();
+			dbCon.ConnectionString = connection.ConnectionString;
+			return dbCon;
+
+		}
+		//public VoiceLauncherContext()
+		//    : base("name=VoiceLauncher")
+		//{
+		//}
+
+		public virtual DbSet<Computer> Computers { get; set; }
         public virtual DbSet<CurrentWindow> CurrentWindows { get; set; }
         public virtual DbSet<GeneralLookup> GeneralLookups { get; set; }
         public virtual DbSet<HtmlTag> HtmlTags { get; set; }
