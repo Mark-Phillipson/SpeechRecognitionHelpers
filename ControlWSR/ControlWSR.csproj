@@ -87,27 +87,6 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Azure.Core, Version=1.6.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
-      <HintPath>..\packages\Azure.Core.1.6.0\lib\net461\Azure.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.Cosmos.Client, Version=3.15.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\lib\netstandard2.0\Microsoft.Azure.Cosmos.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.Cosmos.Core, Version=2.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\lib\netstandard2.0\Microsoft.Azure.Cosmos.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.Cosmos.Direct, Version=3.15.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\lib\netstandard2.0\Microsoft.Azure.Cosmos.Direct.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.Cosmos.Serialization.HybridRow, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\lib\netstandard2.0\Microsoft.Azure.Cosmos.Serialization.HybridRow.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.Cosmos.Table, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.Cosmos.Table.1.0.8\lib\netstandard2.0\Microsoft.Azure.Cosmos.Table.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Azure.DocumentDB.Core, Version=2.11.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Azure.DocumentDB.Core.2.11.2\lib\netstandard1.6\Microsoft.Azure.DocumentDB.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -413,7 +392,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\commands.txt" />
-    <Content Include="ThirdPartyNotice.txt" />
     <Content Include="To-do items.txt" />
     <EmbeddedResource Include="AvailableCommandsForm.resx">
       <DependentUpon>AvailableCommandsForm.cs</DependentUpon>
@@ -466,11 +444,5 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CognitiveServices.Speech.1.14.0\build\net461\Microsoft.CognitiveServices.Speech.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CognitiveServices.Speech.1.14.0\build\net461\Microsoft.CognitiveServices.Speech.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Azure.Cosmos.Direct.3.15.4\build\netstandard2.0\Microsoft.Azure.Cosmos.Direct.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Cosmos.Direct.3.15.4\build\netstandard2.0\Microsoft.Azure.Cosmos.Direct.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\build\netstandard2.0\Microsoft.Azure.Cosmos.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\build\netstandard2.0\Microsoft.Azure.Cosmos.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Azure.DocumentDB.Core.2.11.2\build\Microsoft.Azure.DocumentDB.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.DocumentDB.Core.2.11.2\build\Microsoft.Azure.DocumentDB.Core.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.Azure.Cosmos.Direct.3.15.4\build\netstandard2.0\Microsoft.Azure.Cosmos.Direct.targets" Condition="Exists('..\packages\Microsoft.Azure.Cosmos.Direct.3.15.4\build\netstandard2.0\Microsoft.Azure.Cosmos.Direct.targets')" />
-  <Import Project="..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\build\netstandard2.0\Microsoft.Azure.Cosmos.targets" Condition="Exists('..\packages\Microsoft.Azure.Cosmos.3.15.2-preview\build\netstandard2.0\Microsoft.Azure.Cosmos.targets')" />
-  <Import Project="..\packages\Microsoft.Azure.DocumentDB.Core.2.11.2\build\Microsoft.Azure.DocumentDB.Core.targets" Condition="Exists('..\packages\Microsoft.Azure.DocumentDB.Core.2.11.2\build\Microsoft.Azure.DocumentDB.Core.targets')" />
 </Project>
