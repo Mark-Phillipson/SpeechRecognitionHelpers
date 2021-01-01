@@ -18,3 +18,4 @@
 [x] add functionality to open the custom IntelliSense forms
 [x] Incorporate with serenade in Visual Studio code
 [] Look into a local database option for a standalone version
+[] SQLite will only work with the latest version of.net Core at least the migrations part

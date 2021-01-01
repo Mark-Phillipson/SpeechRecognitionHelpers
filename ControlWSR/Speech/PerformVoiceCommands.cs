@@ -21,10 +21,14 @@ namespace ControlWSR.Speech
 	{
 		readonly SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
 		readonly InputSimulator inputSimulator = new InputSimulator();
-		private readonly IEnumerable<VirtualKeyCode> all3Modifiers = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT, VirtualKeyCode.MENU };
-		private readonly IEnumerable<VirtualKeyCode> controlAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT };
-		private readonly IEnumerable<VirtualKeyCode> windowAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.LWIN, VirtualKeyCode.SHIFT };
-		private readonly IEnumerable<VirtualKeyCode> altAndShift = new List<VirtualKeyCode>() { VirtualKeyCode.MENU, VirtualKeyCode.SHIFT };
+		private readonly IEnumerable<VirtualKeyCode> all3Modifiers = new List<VirtualKeyCode>()
+		{ VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT, VirtualKeyCode.MENU };
+		private readonly IEnumerable<VirtualKeyCode> controlAndShift = new List<VirtualKeyCode>()
+		{ VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT };
+		private readonly IEnumerable<VirtualKeyCode> windowAndShift = new List<VirtualKeyCode>()
+		{ VirtualKeyCode.LWIN, VirtualKeyCode.SHIFT };
+		private readonly IEnumerable<VirtualKeyCode> altAndShift = new List<VirtualKeyCode>()
+		{ VirtualKeyCode.MENU, VirtualKeyCode.SHIFT };
 		public string CommandToBeConfirmed { get; set; } = null;
 		private const int MOUSEEVENTF_LEFTDOWN = 0x02;
 		private const int MOUSEEVENTF_LEFTUP = 0x04;
@@ -129,7 +133,7 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Denied")
 			{
-				var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
+				var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser, form.UseAzureSpeech);
 				form.RichTextBoxAvailableCommands = availableCommands;
 			}
 			else if (e.Result.Grammar.Name == "Studio" && e.Result.Confidence > 0.5)
@@ -328,7 +332,11 @@ namespace ControlWSR.Speech
 			var result = await dictateSpeech.RecognizeSpeechAsync(azureSpeechRecogniser);
 			form.TextBoxResults = result.Text;
 			var rawResult = result.Text;
-			rawResult = RemovePunctuation(rawResult);
+
+			if (!e.Result.Text.ToLower().Contains("punctuation"))
+			{
+				rawResult = RemovePunctuation(rawResult);
+			}
 			string[] stringSeparators = new string[] { " " };
 			List<string> words = rawResult.Split(stringSeparators, StringSplitOptions.None).ToList();
 			if (e.Result.Text.ToLower().Contains("camel"))

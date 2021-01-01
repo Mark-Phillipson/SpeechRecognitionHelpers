@@ -26,7 +26,7 @@ namespace ControlWSR
 		private readonly SpeechSetup speechSetup = new SpeechSetup();
 		private readonly InputSimulator inputSimulator = new InputSimulator();
 		DictateSpeech dictateSpeech = new DictateSpeech();
-
+		public bool UseAzureSpeech { get; private set; }
 		private Microsoft.CognitiveServices.Speech.SpeechRecognizer AzureRecognizer;
 		string textBoxResultsLocal;
 		private string availableCommands;
@@ -37,8 +37,13 @@ namespace ControlWSR
 		{
 			get => textBoxResultsLocal; set { textBoxResultsLocal = value; textBoxResults.Text = value; }
 		}
-		public string AvailableCommands { get => availableCommands; set { availableCommands = value; richTextBoxAvailableCommands.Text = value; } }
-		public string RichTextBoxAvailableCommands { get => richTextBoxAvailableCommandsLocal; set { richTextBoxAvailableCommandsLocal = value; richTextBoxAvailableCommands.Text = value; } }
+		public string AvailableCommands
+		{ get => availableCommands; set { availableCommands = value; richTextBoxAvailableCommands.Text = value; } }
+		public string RichTextBoxAvailableCommands
+		{
+			get => richTextBoxAvailableCommandsLocal;
+			set { richTextBoxAvailableCommandsLocal = value; richTextBoxAvailableCommands.Text = value; }
+		}
 		public AvailableCommandsForm()
 		{
 			string SPEECH__SERVICE__KEY;
@@ -47,17 +52,22 @@ namespace ControlWSR
 			SPEECH__SERVICE__REGION = ConfigurationManager.AppSettings.Get("SpeechAzureRegion");
 			if (SPEECH__SERVICE__KEY == "TBC" || SPEECH__SERVICE__REGION == "TBC")
 			{
-				throw new Exception("Please register the Speech Service on Windows Azure and enter the key and region into the application settings file, and then try again to use this service!");
+				UseAzureSpeech = false;
+				AutoClosingMessageBox.Show("Please register the Speech Service on Windows Azure and enter the key and region into the application settings file, and then try again to use this service!", "Accurate Dictation via the Cloud", 8000);
 			}
-			var config = SpeechConfig.FromSubscription(SPEECH__SERVICE__KEY, SPEECH__SERVICE__REGION);
-			AzureRecognizer= new Microsoft.CognitiveServices.Speech.SpeechRecognizer(config);
-			AzureRecognizer.Recognizing += AzureRecognizer_Recognizing;
-			AzureRecognizer.Canceled += AzureRecognizer_Canceled;
+			else
+			{
+				UseAzureSpeech = true;
+				var config = SpeechConfig.FromSubscription(SPEECH__SERVICE__KEY, SPEECH__SERVICE__REGION);
+				AzureRecognizer = new Microsoft.CognitiveServices.Speech.SpeechRecognizer(config);
+				AzureRecognizer.Recognizing += AzureRecognizer_Recognizing;
+				AzureRecognizer.Canceled += AzureRecognizer_Canceled;
+			}
 
 			PerformVoiceCommands.ToggleSpeechRecognitionListeningMode(inputSimulator);
 			InitializeComponent();
 			speechRecogniser = speechSetup.StartWindowsSpeechRecognition();
-			var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser);
+			var availableCommands = speechSetup.SetUpMainCommands(speechRecogniser, UseAzureSpeech);
 			richTextBoxAvailableCommands.Text = availableCommands;
 			speechRecogniser.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(SpeechRecognizer_SpeechRecognised);
 			speechRecogniser.SpeechRecognitionRejected += SpeechRecogniser_SpeechRecognitionRejected;
@@ -77,13 +87,13 @@ namespace ControlWSR
 
 		private void SpeechRecogniser_StateChanged(object sender, StateChangedEventArgs e)
 		{
-			this.textBoxResults.Text ="State has changed to:" + e.RecognizerState.ToString();
+			this.textBoxResults.Text = "State has changed to:" + e.RecognizerState.ToString();
 		}
 
 		private void SpeechRecogniser_SpeechHypothesized(object sender, SpeechHypothesizedEventArgs e)
 		{
 
-				this.textBoxResults.Text = "Hypothesized. I'm listening... (" + e.Result.Text + " " + Math.Round(e.Result.Confidence * 100) + "%)";
+			this.textBoxResults.Text = "Hypothesized. I'm listening... (" + e.Result.Text + " " + Math.Round(e.Result.Confidence * 100) + "%)";
 			if (string.IsNullOrEmpty(_rejected))
 			{
 				if (e.Result.Text != "yes" && e.Result.Confidence > 0.5F)
@@ -108,12 +118,12 @@ namespace ControlWSR
 		{
 
 			speechRecogniser.PauseRecognizerOnRecognition = true;
-			if (e.Result.Grammar.Name=="no")
+			if (e.Result.Grammar.Name == "no")
 			{
 				_rejected = null;
 				return;
 			}
-			if (e.Result.Grammar.Name=="yes")
+			if (e.Result.Grammar.Name == "yes")
 			{
 				speechRecogniser.EmulateRecognizeAsync(_rejected);
 				_rejected = null;
@@ -127,7 +137,7 @@ namespace ControlWSR
 				text += $"{alternate.Text} {alternate.Confidence:P}{Environment.NewLine}";
 			}
 			textBoxResults.Text = text;
-			performVoiceCommands.PerformCommand(e, this, speechRecogniser, dictateSpeech,AzureRecognizer);
+			performVoiceCommands.PerformCommand(e, this, speechRecogniser, dictateSpeech, AzureRecognizer);
 			try
 			{
 				speechRecogniser.PauseRecognizerOnRecognition = false;
@@ -166,7 +176,7 @@ namespace ControlWSR
 			FontFamily fontFamily = new FontFamily("Cascadia Code");
 			Font font = new Font(fontFamily, (float)11, FontStyle.Bold, GraphicsUnit.Point);
 			richTextBoxAvailableCommands.Font = font;
-			richTextBoxAvailableCommands.BackColor = Color.FromArgb(38,38,38);
+			richTextBoxAvailableCommands.BackColor = Color.FromArgb(38, 38, 38);
 			richTextBoxAvailableCommands.ForeColor = Color.White;
 			textBoxResults.Font = font;
 			textBoxResults.BackColor = Color.Black;

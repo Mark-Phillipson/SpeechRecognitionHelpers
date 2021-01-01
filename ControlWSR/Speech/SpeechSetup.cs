@@ -12,7 +12,7 @@ namespace ControlWSR.Speech
 	public class SpeechSetup
 	{
 		readonly SpeechCommandsHelper SpeechCommandsHelper = new SpeechCommandsHelper();
-		public string SetUpMainCommands(SpeechRecognizer speechRecogniser)
+		public string SetUpMainCommands(SpeechRecognizer speechRecogniser,bool UseAzureSpeech)
 		{
 			speechRecogniser.UnloadAllGrammars();
 			// Simple commands will also create a Grammar of the same name
@@ -45,23 +45,27 @@ namespace ControlWSR.Speech
 			CreateDictationGrammar(speechRecogniser, "Find Following", "Search Code",true);
 			CreateDictationGrammar(speechRecogniser, "Find Previous", "Search Code",true);
 
-			CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Camel", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Title Dictation", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Variable", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Variable Dictation", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Upper Dictation", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Dot Notation", "Short Dictation");
-			CreateDictationGrammar(speechRecogniser, "Lower Dictation", "Short Dictation");
+			if (UseAzureSpeech)
+			{
+				CreateDictationGrammar(speechRecogniser, "Dictation", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Punctuation", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Camel", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Camel Dictation", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Title Dictation", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Variable", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Variable Dictation", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Upper Dictation", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Dot Notation", "Short Dictation");
+				CreateDictationGrammar(speechRecogniser, "Lower Dictation", "Short Dictation");
 
-			availableCommands = $"{availableCommands}\nAzure: Upper/Title/Camel/Variable Dictation or Dot Notation";
+				availableCommands = $"{availableCommands}\nAzure: Upper/Title/Camel/Variable Dictation or Dot Notation";
+			}
 			CreateDictationGrammar(speechRecogniser, "Select Left", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Select Right", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Left Select", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Right Select", "Selection");
 			CreateDictationGrammar(speechRecogniser, "Go To Line", "Go To Line", true);
-			CreateDictationGrammar(speechRecogniser, "Line", "Go to Line", true);
+			CreateDictationGrammar(speechRecogniser, "Line", "Go To Line", true);
 			BuildPhoneticAlphabetGrammars(speechRecogniser);
 			LoadMoveCommandsGrammar(speechRecogniser);
 

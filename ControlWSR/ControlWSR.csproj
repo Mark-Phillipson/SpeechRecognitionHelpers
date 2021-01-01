@@ -388,9 +388,6 @@
     <Compile Include="Speech\Win32.cs" />
     <Compile Include="Speech\WordsToNumbers.cs" />
     <Compile Include="Testing.cs" />
-    <Content Include="Media\Start.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\commands.txt" />
     <Content Include="To-do items.txt" />
     <EmbeddedResource Include="AvailableCommandsForm.resx">
