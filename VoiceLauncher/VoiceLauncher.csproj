@@ -62,9 +62,6 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.SqlServerCompact.6.2.0\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -103,6 +100,7 @@
       <DependentUpon>CustomIntelliSenseSingleRecord.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomTheme.cs" />
+    <Compile Include="ExceptionHandling.cs" />
     <Compile Include="FormCustomIntellisenseLauncherUnion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,6 +129,7 @@
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\MousePosition.cs" />
     <Compile Include="Models\Todo.cs" />
+    <Compile Include="MyRenderer.cs" />
     <Compile Include="ObservableListSource.cs" />
     <Compile Include="OpenForms.cs" />
     <Compile Include="Program.cs" />
@@ -144,7 +143,6 @@
     <Compile Include="Models\MultipleLauncher.cs" />
     <Compile Include="Models\ValuesToInsert.cs" />
     <Compile Include="Models\VoiceLauncherContext.cs" />
-    <Compile Include="ShowValidationErrors.cs" />
     <Compile Include="TodosForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,12 +211,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SpeechRecognitionHelpersLibrary\SpeechRecognitionHelpersLibrary.csproj">
-      <Project>{fa141aac-0af2-4cb4-a9a8-fabe0bddbc66}</Project>
-      <Name>SpeechRecognitionHelpersLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

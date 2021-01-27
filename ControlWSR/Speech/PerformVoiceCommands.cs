@@ -447,6 +447,8 @@ namespace ControlWSR.Speech
 			KillAllProcesses(processName);
 			processName = "dragonlogger";
 			KillAllProcesses(processName);
+			ToggleSpeechRecognitionListeningMode(inputSimulator);
+
 			try
 			{
 				Process process = new Process();
