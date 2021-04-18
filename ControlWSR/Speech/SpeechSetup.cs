@@ -121,7 +121,7 @@ namespace ControlWSR.Speech
 			grammar.Name = grammarName;
 			speechRecognizer.LoadGrammarAsync(grammar);
 		}
-		public string SetupConfirmationCommands(string originalCommand, SpeechRecognizer speechRecogniser)
+		public string SetupConfirmationCommands(string originalCommand, SpeechRecognizer speechRecogniser,AvailableCommandsForm availableCommandsForm)
 		{
 			speechRecogniser.UnloadAllGrammars();
 			CreateDictationGrammar(speechRecogniser, "Yes Please", "Confirmed");
@@ -129,6 +129,7 @@ namespace ControlWSR.Speech
 			var availableCommands = $"{originalCommand.ToUpper()}";
 			availableCommands = $"{availableCommands}\n\nYes Please";
 			availableCommands = $"{availableCommands}\nNo Thank You";
+			PerformVoiceCommands.SetForegroundWindow(availableCommandsForm.Handle);
 			return availableCommands;
 		}
 		public void LoadGrammarMouseCommands(SpeechRecognizer speechRecognizer)

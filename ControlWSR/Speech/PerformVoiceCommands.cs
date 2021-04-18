@@ -113,6 +113,7 @@ namespace ControlWSR.Speech
 			}
 			else if (e.Result.Grammar.Name == "Confirmed")
 			{
+				
 				if (CommandToBeConfirmed == "Shutdown Windows")
 				{
 					Process.Start("shutdown", "/s /t 10");
@@ -504,7 +505,7 @@ namespace ControlWSR.Speech
 
 		void SetupConfirmationCommands(SpeechRecognizer speechRecogniser, AvailableCommandsForm availableCommandsForm)
 		{
-			var availableCommands = speechSetup.SetupConfirmationCommands(CommandToBeConfirmed, speechRecogniser);
+			var availableCommands = speechSetup.SetupConfirmationCommands(CommandToBeConfirmed, speechRecogniser,availableCommandsForm);
 			availableCommandsForm.AvailableCommands = availableCommands;
 		}
 		private void UpdateCurrentProcess()
