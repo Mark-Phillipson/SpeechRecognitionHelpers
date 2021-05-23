@@ -63,6 +63,12 @@ namespace ExecuteCommands
 				inputSimulator.Mouse.LeftButtonClick();
 				return "mouseclick performed";
 			}
+			else if (arguments[1].StartsWith("Speak Message"))
+			{
+				var message = arguments[1].Replace("Speak Message", "");
+				SpeakMessage.TextToSpeech(message);
+				return "Message Spoken";
+			}
 			else
 			{
 				return "The arguments supplied does not support any commands in the system";
@@ -70,3 +76,4 @@ namespace ExecuteCommands
 		}
 	}
 }
+

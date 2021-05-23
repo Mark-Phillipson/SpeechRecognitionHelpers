@@ -112,10 +112,6 @@
       <Project>{b8ec6e9c-11e5-420d-93b0-57302c39a907}</Project>
       <Name>BrowseScripts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ControlWSR\ControlWSR.csproj">
-      <Project>{03df9f58-0bc4-49f7-aea9-3dde773d3e40}</Project>
-      <Name>ControlWSR</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ExecuteCommands\ExecuteCommands.csproj">
       <Project>{85975b05-aeb0-4e87-b4df-9e41422d325a}</Project>
       <Name>ExecuteCommands</Name>
