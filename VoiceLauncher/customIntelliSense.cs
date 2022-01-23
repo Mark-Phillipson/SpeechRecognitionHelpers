@@ -74,8 +74,15 @@ namespace VoiceLauncher
 			else
 			{
 				this.Text = $"Custom IntelliSense Filter: No Filter Applied";
-				filteredData = db.CustomIntelliSenses.Local.ToBindingList()
-				.Where(v => v.Category.ID == CategoryId && v.Language.ID == LanguageId).OrderBy(o => o.Display_Value);
+				filteredData = db.CustomIntelliSenses.Local.ToBindingList();
+
+				filteredData = db.CustomIntelliSenses.Local
+					.ToBindingList()
+					.Where(c =>  c.Language.ID == LanguageId)
+					.Where(c => c.Category.ID == CategoryId)
+					.OrderBy(v => v.Category.CategoryName)
+					.ThenBy(o => o.Display_Value);
+				
 			}
 			this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
 

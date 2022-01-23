@@ -38,8 +38,8 @@ namespace VoiceLauncher.Models
 
         public virtual Computer Computer { get; set; }
 
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
-        public Language Language { get; set; }
+        public virtual Language Language { get; set; }
     }
 }
