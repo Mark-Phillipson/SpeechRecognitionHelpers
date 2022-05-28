@@ -120,6 +120,7 @@
       <DependentUpon>LauncherForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AdditionalCommand.cs" />
     <Compile Include="Models\Computer.cs" />
     <Compile Include="Models\CurrentWindow.cs" />
     <Compile Include="Models\CustomIntellisenseLauncherUnion.cs" />

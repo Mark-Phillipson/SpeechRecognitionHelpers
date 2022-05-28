@@ -9,6 +9,7 @@ namespace VoiceLauncher.Models
         {
         }
 
+        public virtual DbSet<VoiceLauncher.Models.AdditionalCommand> AdditionalCommands { get; set; }
         public virtual DbSet<Computer> Computers { get; set; }
         public virtual DbSet<CurrentWindow> CurrentWindows { get; set; }
         public virtual DbSet<GeneralLookup> GeneralLookups { get; set; }
