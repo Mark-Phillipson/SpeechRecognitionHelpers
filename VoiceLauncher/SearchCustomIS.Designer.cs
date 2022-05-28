@@ -64,6 +64,9 @@
             // 
             // customIntelliSenseListBox
             // 
+            this.customIntelliSenseListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.customIntelliSenseListBox.BackColor = System.Drawing.SystemColors.WindowText;
             this.customIntelliSenseListBox.DataSource = this.customIntelliSenseBindingSource1;
             this.customIntelliSenseListBox.DisplayMember = "Display_Value";
@@ -81,8 +84,9 @@
             // 
             // textBoxSearch
             // 
+            this.textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSearch.BackColor = System.Drawing.SystemColors.WindowText;
-            this.textBoxSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.textBoxSearch.Font = new System.Drawing.Font("Cascadia Code", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxSearch.ForeColor = System.Drawing.SystemColors.Window;
             this.textBoxSearch.Location = new System.Drawing.Point(0, 0);
@@ -99,22 +103,23 @@
             // 
             // textBoxResult
             // 
+            this.textBoxResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxResult.BackColor = System.Drawing.SystemColors.WindowText;
-            this.textBoxResult.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.textBoxResult.Font = new System.Drawing.Font("Cascadia Code", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxResult.ForeColor = System.Drawing.SystemColors.Window;
             this.textBoxResult.Location = new System.Drawing.Point(0, 418);
             this.textBoxResult.Multiline = true;
             this.textBoxResult.Name = "textBoxResult";
-            this.textBoxResult.Size = new System.Drawing.Size(535, 162);
-            this.textBoxResult.TabIndex = 2;
+            this.textBoxResult.Size = new System.Drawing.Size(535, 147);
+            this.textBoxResult.TabIndex = 3;
             // 
             // SearchCustomIS
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(535, 580);
+            this.ClientSize = new System.Drawing.Size(535, 566);
             this.Controls.Add(this.textBoxResult);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.customIntelliSenseListBox);

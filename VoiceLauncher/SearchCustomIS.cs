@@ -77,7 +77,7 @@ namespace VoiceLauncher
                 var currentItem = (DataRowView)customIntelliSenseListBox.SelectedItem;
                 string delivery = currentItem.Row["DeliveryType"].ToString();
                 value = currentItem.Row["SendKeys_Value"].ToString();
-                var id=Int32.Parse( currentItem.Row["ID"].ToString());
+                var id = Int32.Parse(currentItem.Row["ID"].ToString());
                 try
                 {
                     SendKeys.SendWait("%{Tab}");
@@ -94,7 +94,7 @@ namespace VoiceLauncher
                     var additionalCommands = db.AdditionalCommands.Where(w => w.CustomIntelliSenseId == id).ToList();
                     foreach (AdditionalCommand item in additionalCommands)
                     {
-                        if (item.WaitBefore>0)
+                        if (item.WaitBefore > 0)
                         {
                             int msec = (int)(item.WaitBefore * 100);
                             Thread.Sleep(msec);
@@ -143,9 +143,13 @@ namespace VoiceLauncher
 
         private void textBoxSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode==Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 customIntelliSenseListBox_KeyDown(sender, e);
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                customIntelliSenseListBox.Focus();
             }
         }
     }
