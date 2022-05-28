@@ -32,7 +32,7 @@ namespace VoiceLauncher
             // TODO: This line of code loads data into the 'voiceLauncherDataSet.CustomIntelliSense' table. You can move, or remove it, as needed.
             if (!string .IsNullOrEmpty(SearchTerm))
             {
-                customIntelliSenseBindingSource.Filter = $"[Display_Value] like '%{SearchTerm}%'";
+                customIntelliSenseBindingSource1.Filter = $"[Display_Value] like '%{SearchTerm}%'";
             }
             this.customIntelliSenseTableAdapter.Fill(this.voiceLauncherDataSet.CustomIntelliSense);
             //// TODO: This line of code loads data into the 'voiceLauncherDataSet.CustomIntelliSense' table. You can move, or remove it, as needed.

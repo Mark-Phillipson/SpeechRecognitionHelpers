@@ -43,26 +43,17 @@
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.customIntelliSenseBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
-            this.customIntelliSenseDataGridView = new System.Windows.Forms.DataGridView();
-            this.fillByDisplayValueToolStrip = new System.Windows.Forms.ToolStrip();
-            this.fillByDisplayValueToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.voiceLauncherDataSet = new VoiceLauncher.VoiceLauncherDataSet();
             this.customIntelliSenseTableAdapter = new VoiceLauncher.VoiceLauncherDataSetTableAdapters.CustomIntelliSenseTableAdapter();
             this.tableAdapterManager = new VoiceLauncher.VoiceLauncherDataSetTableAdapters.TableAdapterManager();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.customIntelliSenseBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.customIntelliSenseListBox = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).BeginInit();
             this.customIntelliSenseBindingNavigator.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).BeginInit();
-            this.fillByDisplayValueToolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.voiceLauncherDataSet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // customIntelliSenseBindingNavigator
@@ -190,74 +181,6 @@
             this.customIntelliSenseBindingNavigatorSaveItem.Text = "Save Data";
             this.customIntelliSenseBindingNavigatorSaveItem.Click += new System.EventHandler(this.customIntelliSenseBindingNavigatorSaveItem_Click_1);
             // 
-            // customIntelliSenseDataGridView
-            // 
-            this.customIntelliSenseDataGridView.AutoGenerateColumns = false;
-            this.customIntelliSenseDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.customIntelliSenseDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1,
-            this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5});
-            this.customIntelliSenseDataGridView.DataSource = this.customIntelliSenseBindingSource;
-            this.customIntelliSenseDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.customIntelliSenseDataGridView.Location = new System.Drawing.Point(0, 25);
-            this.customIntelliSenseDataGridView.Name = "customIntelliSenseDataGridView";
-            this.customIntelliSenseDataGridView.Size = new System.Drawing.Size(535, 425);
-            this.customIntelliSenseDataGridView.TabIndex = 1;
-            // 
-            // fillByDisplayValueToolStrip
-            // 
-            this.fillByDisplayValueToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fillByDisplayValueToolStripButton,
-            this.toolStripSeparator1,
-            this.toolStripTextBox1});
-            this.fillByDisplayValueToolStrip.Location = new System.Drawing.Point(0, 25);
-            this.fillByDisplayValueToolStrip.Name = "fillByDisplayValueToolStrip";
-            this.fillByDisplayValueToolStrip.Size = new System.Drawing.Size(535, 25);
-            this.fillByDisplayValueToolStrip.TabIndex = 2;
-            this.fillByDisplayValueToolStrip.Text = "fillByDisplayValueToolStrip";
-            // 
-            // fillByDisplayValueToolStripButton
-            // 
-            this.fillByDisplayValueToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.fillByDisplayValueToolStripButton.Name = "fillByDisplayValueToolStripButton";
-            this.fillByDisplayValueToolStripButton.Size = new System.Drawing.Size(105, 22);
-            this.fillByDisplayValueToolStripButton.Text = "FillByDisplayValue";
-            this.fillByDisplayValueToolStripButton.Click += new System.EventHandler(this.fillByDisplayValueToolStripButton_Click);
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.DataPropertyName = "ID";
-            this.dataGridViewTextBoxColumn1.HeaderText = "ID";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.DataPropertyName = "Display_Value";
-            this.dataGridViewTextBoxColumn2.HeaderText = "Display_Value";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.DataPropertyName = "SendKeys_Value";
-            this.dataGridViewTextBoxColumn3.HeaderText = "SendKeys_Value";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.DataPropertyName = "Command_Type";
-            this.dataGridViewTextBoxColumn4.HeaderText = "Command_Type";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.DataPropertyName = "DeliveryType";
-            this.dataGridViewTextBoxColumn5.HeaderText = "DeliveryType";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            // 
             // customIntelliSenseBindingSource
             // 
             this.customIntelliSenseBindingSource.DataMember = "CustomIntelliSense";
@@ -278,24 +201,29 @@
             this.tableAdapterManager.CustomIntelliSenseTableAdapter = this.customIntelliSenseTableAdapter;
             this.tableAdapterManager.UpdateOrder = VoiceLauncher.VoiceLauncherDataSetTableAdapters.TableAdapterManager.UpdateOrderOption.InsertUpdateDelete;
             // 
-            // toolStripSeparator1
+            // customIntelliSenseBindingSource1
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.customIntelliSenseBindingSource1.DataMember = "CustomIntelliSense";
+            this.customIntelliSenseBindingSource1.DataSource = this.voiceLauncherDataSet;
             // 
-            // toolStripTextBox1
+            // customIntelliSenseListBox
             // 
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 25);
-            this.toolStripTextBox1.Click += new System.EventHandler(this.toolStripTextBox1_Click);
+            this.customIntelliSenseListBox.DataSource = this.customIntelliSenseBindingSource1;
+            this.customIntelliSenseListBox.DisplayMember = "Display_Value";
+            this.customIntelliSenseListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.customIntelliSenseListBox.FormattingEnabled = true;
+            this.customIntelliSenseListBox.Location = new System.Drawing.Point(0, 25);
+            this.customIntelliSenseListBox.Name = "customIntelliSenseListBox";
+            this.customIntelliSenseListBox.Size = new System.Drawing.Size(535, 425);
+            this.customIntelliSenseListBox.TabIndex = 1;
+            this.customIntelliSenseListBox.ValueMember = "ID";
             // 
             // SearchCustomIS
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(535, 450);
-            this.Controls.Add(this.fillByDisplayValueToolStrip);
-            this.Controls.Add(this.customIntelliSenseDataGridView);
+            this.Controls.Add(this.customIntelliSenseListBox);
             this.Controls.Add(this.customIntelliSenseBindingNavigator);
             this.Name = "SearchCustomIS";
             this.Text = "SearchCustomIS";
@@ -303,11 +231,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).EndInit();
             this.customIntelliSenseBindingNavigator.ResumeLayout(false);
             this.customIntelliSenseBindingNavigator.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).EndInit();
-            this.fillByDisplayValueToolStrip.ResumeLayout(false);
-            this.fillByDisplayValueToolStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.voiceLauncherDataSet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -332,15 +258,7 @@
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.ToolStripButton customIntelliSenseBindingNavigatorSaveItem;
-        private System.Windows.Forms.DataGridView customIntelliSenseDataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.ToolStrip fillByDisplayValueToolStrip;
-        private System.Windows.Forms.ToolStripButton fillByDisplayValueToolStripButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.BindingSource customIntelliSenseBindingSource1;
+        private System.Windows.Forms.ListBox customIntelliSenseListBox;
     }
 }
