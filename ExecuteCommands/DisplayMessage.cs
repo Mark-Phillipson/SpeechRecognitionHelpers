@@ -13,12 +13,12 @@ namespace DictationBoxMSP
     public partial class DisplayMessage : Form
     {
         public string Message { get; set; }
-        public DisplayMessage(string message)
+        public DisplayMessage(string message,int interval=3000)
         {
             InitializeComponent();
             this.richTextBoxMessage.Text = message;
             Text = "Error Message (Will hide in three seconds)";
-            timer1.Interval = 3000;
+            timer1.Interval = interval;
             timer1.Enabled=true;
         }
         private void timer1_Tick(object sender, EventArgs e)

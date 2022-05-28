@@ -212,6 +212,12 @@
   <ItemGroup>
     <Folder Include="Data\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExecuteCommands\ExecuteCommands.csproj">
+      <Project>{85975b05-aeb0-4e87-b4df-9e41422d325a}</Project>
+      <Name>ExecuteCommands</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

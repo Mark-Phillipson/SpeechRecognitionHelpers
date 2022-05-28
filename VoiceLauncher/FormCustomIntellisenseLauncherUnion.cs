@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DictationBoxMSP;
+using System;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity;
@@ -46,19 +47,22 @@ namespace VoiceLauncher
             FilterTextBox.BorderStyle = BorderStyle.FixedSingle;
             customIntellisenseLauncherUnionsDataGridView.RowTemplate.Height = 30;
             customIntellisenseLauncherUnionsDataGridView.RowTemplate.MinimumHeight = 30;
+            SetUpDataSource();
             foreach (DataGridViewColumn column in customIntellisenseLauncherUnionsDataGridView.Columns)
             {
-                if (column.Name.Contains("Button"))
+                if (column.Name.Contains("Launch"))
                 {
                     //column.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     column.ReadOnly = false;
                     column.Selected = true;
+
                 }
                 else
                 {
                     column.ReadOnly = true;
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
                 }
                 if (column.Name.Contains("3")) // SendkeysValue
                 {
@@ -67,8 +71,8 @@ namespace VoiceLauncher
                 customIntellisenseLauncherUnionsDataGridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             }
 
-            SetUpDataSource();
-
+            
+            
         }
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -91,8 +95,8 @@ namespace VoiceLauncher
                     .Where(v => v.DisplayValue.ToLower().Contains(SearchTerm.ToLower()) || v.SendkeysValue.ToLower().Contains(SearchTerm.ToLower()));
                 customIntellisenseLauncherUnionsBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
             }
-
             customIntellisenseLauncherUnionsDataGridView.Refresh();
+            setRowNumber(customIntellisenseLauncherUnionsDataGridView);
         }
 
         private void customIntellisenseLauncherUnionsDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -118,10 +122,16 @@ namespace VoiceLauncher
                     if (exception.Message == "The system cannot find the file specified")
                     {
                         Clipboard.SetText(commandline);
-                        MessageBox.Show($"Command Line: {commandline}\r\rThis is not Launchable, it has been placed in the clipboard instead.", $"Cannot Launch", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        DisplayMessage displayExpectedMessage = new DisplayMessage($"Command Line: {commandline}\r\rCOPIED!");
+
+                        displayExpectedMessage.ShowDialog();
+                        Application.Exit();
                         return;
                     }
-                    MessageBox.Show($"Selected Command Line: {commandline}\r\r{exception.Message}", $"Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    DisplayMessage displayMessage = new DisplayMessage($"Error Message: {exception.Message}");
+                    displayMessage.ShowDialog();
+
+                    
                 }
             }
         }
@@ -166,6 +176,18 @@ namespace VoiceLauncher
             {
                 SearchTerm = FilterTextBox.Text;
                 SetUpDataSource();
+            }
+        }
+
+        private void customIntellisenseLauncherUnionsDataGridView_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        private void setRowNumber(DataGridView dgv)
+        {
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                row.HeaderCell.Value = (row.Index + 1).ToString();
             }
         }
     }

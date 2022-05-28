@@ -14,9 +14,11 @@ namespace DictationBoxMSP
 {
     public partial class DictationBoxForm : Form
     {
+        string path;
         public DictationBoxForm()
         {
             InitializeComponent();
+            path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)).FullName;
         }
 
         private void TransferButton_Click(object sender, EventArgs e)
@@ -341,6 +343,16 @@ namespace DictationBoxMSP
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
             OpenFile();
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(richTextBox1.Text))
+            {
+                var filename = $@"{path}\Documents\CustomDictationBox\{DateTime.Now.ToString("yyyy-MM-dd-HH-mm")}.txt";
+                File.WriteAllText(filename, richTextBox1.Text);
+                this.Text = $"Dictation Box Saved to: {filename} at {DateTime.Now.ToString("HH:mm:ss")}";
+            }
         }
     }
 }

@@ -38,6 +38,7 @@ namespace VoiceLauncher
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.customIntelliSenseBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
+            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
@@ -59,14 +60,6 @@ namespace VoiceLauncher
             this.toolStripButtonDuplicate = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonRemoveFilter = new System.Windows.Forms.ToolStripButton();
             this.customIntelliSenseDataGridView = new System.Windows.Forms.DataGridView();
-            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.launchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Inject = new System.Windows.Forms.DataGridViewButtonColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.languageBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -81,15 +74,22 @@ namespace VoiceLauncher
             this.dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.Inject = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.customIntelliSensesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.categoriesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.singleCustomIntelliSenseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.launchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.languageBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).BeginInit();
             this.customIntelliSenseBindingNavigator.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -133,10 +133,14 @@ namespace VoiceLauncher
             this.customIntelliSenseBindingNavigator.TabIndex = 0;
             this.customIntelliSenseBindingNavigator.Text = "bindingNavigator1";
             // 
+            // customIntelliSenseBindingSource
+            // 
+            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
+            // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(50, 22);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(49, 22);
             this.bindingNavigatorCountItem.Text = "of {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number of items";
             // 
@@ -145,7 +149,7 @@ namespace VoiceLauncher
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(98, 22);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(97, 22);
             this.bindingNavigatorMoveFirstItem.Text = "Move first";
             // 
             // bindingNavigatorMovePreviousItem
@@ -193,7 +197,7 @@ namespace VoiceLauncher
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(91, 22);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(90, 22);
             this.bindingNavigatorMoveLastItem.Text = "Move last";
             // 
             // bindingNavigatorSeparator2
@@ -207,7 +211,7 @@ namespace VoiceLauncher
             this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(77, 22);
+            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(76, 22);
             this.bindingNavigatorAddNewItem.Text = "&Add New";
             this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
             // 
@@ -217,7 +221,7 @@ namespace VoiceLauncher
             this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(70, 22);
+            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(69, 22);
             this.bindingNavigatorDeleteItem.Text = "&Delete";
             this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
             // 
@@ -226,7 +230,7 @@ namespace VoiceLauncher
             this.customIntelliSenseBindingNavigatorSaveItem.BackColor = System.Drawing.Color.SlateBlue;
             this.customIntelliSenseBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("customIntelliSenseBindingNavigatorSaveItem.Image")));
             this.customIntelliSenseBindingNavigatorSaveItem.Name = "customIntelliSenseBindingNavigatorSaveItem";
-            this.customIntelliSenseBindingNavigatorSaveItem.Size = new System.Drawing.Size(91, 22);
+            this.customIntelliSenseBindingNavigatorSaveItem.Size = new System.Drawing.Size(90, 22);
             this.customIntelliSenseBindingNavigatorSaveItem.Text = "Sa&ve Data";
             this.customIntelliSenseBindingNavigatorSaveItem.Click += new System.EventHandler(this.customIntelliSenseBindingNavigatorSaveItem_Click);
             // 
@@ -236,14 +240,14 @@ namespace VoiceLauncher
             this.toolStripButtonShowAll.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonShowAll.Image")));
             this.toolStripButtonShowAll.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonShowAll.Name = "toolStripButtonShowAll";
-            this.toolStripButtonShowAll.Size = new System.Drawing.Size(124, 22);
+            this.toolStripButtonShowAll.Size = new System.Drawing.Size(123, 22);
             this.toolStripButtonShowAll.Text = "Show All Records";
             this.toolStripButtonShowAll.Click += new System.EventHandler(this.toolStripButtonShowAll_Click);
             // 
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(50, 22);
+            this.toolStripLabel1.Size = new System.Drawing.Size(49, 22);
             this.toolStripLabel1.Text = "&Filter";
             // 
             // toolStripTextBoxSearch
@@ -255,12 +259,13 @@ namespace VoiceLauncher
             this.toolStripTextBoxSearch.Name = "toolStripTextBoxSearch";
             this.toolStripTextBoxSearch.Size = new System.Drawing.Size(100, 25);
             this.toolStripTextBoxSearch.Leave += new System.EventHandler(this.toolStripTextBoxSearch_Leave);
+            this.toolStripTextBoxSearch.Click += new System.EventHandler(this.toolStripTextBoxSearch_Click);
             this.toolStripTextBoxSearch.TextChanged += new System.EventHandler(this.toolStripTextBoxSearch_TextChanged);
             // 
             // toolStripLabel2
             // 
             this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(36, 22);
+            this.toolStripLabel2.Size = new System.Drawing.Size(35, 22);
             this.toolStripLabel2.Text = "Find";
             // 
             // toolStripTextBoxFind
@@ -281,7 +286,7 @@ namespace VoiceLauncher
             this.Focus.Image = ((System.Drawing.Image)(resources.GetObject("Focus.Image")));
             this.Focus.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Focus.Name = "Focus";
-            this.Focus.Size = new System.Drawing.Size(47, 22);
+            this.Focus.Size = new System.Drawing.Size(46, 22);
             this.Focus.Text = "F&ocus";
             this.Focus.Click += new System.EventHandler(this.Focus_Click);
             // 
@@ -291,7 +296,7 @@ namespace VoiceLauncher
             this.toolStripButtonDuplicate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonDuplicate.Image")));
             this.toolStripButtonDuplicate.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonDuplicate.Name = "toolStripButtonDuplicate";
-            this.toolStripButtonDuplicate.Size = new System.Drawing.Size(75, 22);
+            this.toolStripButtonDuplicate.Size = new System.Drawing.Size(74, 22);
             this.toolStripButtonDuplicate.Text = "Duplica&te";
             this.toolStripButtonDuplicate.Click += new System.EventHandler(this.toolStripButtonDuplicate_Click);
             // 
@@ -301,7 +306,7 @@ namespace VoiceLauncher
             this.toolStripButtonRemoveFilter.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonRemoveFilter.Image")));
             this.toolStripButtonRemoveFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonRemoveFilter.Name = "toolStripButtonRemoveFilter";
-            this.toolStripButtonRemoveFilter.Size = new System.Drawing.Size(103, 22);
+            this.toolStripButtonRemoveFilter.Size = new System.Drawing.Size(102, 22);
             this.toolStripButtonRemoveFilter.Text = "&Remove Filter";
             this.toolStripButtonRemoveFilter.Click += new System.EventHandler(this.toolStripButtonRemoveFilter_Click);
             // 
@@ -378,68 +383,6 @@ namespace VoiceLauncher
             this.customIntelliSenseDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.customIntelliSenseDataGridView_DataError);
             this.customIntelliSenseDataGridView.DefaultValuesNeeded += new System.Windows.Forms.DataGridViewRowEventHandler(this.customIntelliSenseDataGridView_DefaultValuesNeeded);
             this.customIntelliSenseDataGridView.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.customIntelliSenseDataGridView_EditingControlShowing);
-            // 
-            // customIntelliSensesBindingSource
-            // 
-            this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
-            this.customIntelliSensesBindingSource.DataSource = this.languageBindingSource;
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exitToolStripMenuItem,
-            this.categoriesToolStripMenuItem,
-            this.singleCustomIntelliSenseToolStripMenuItem,
-            this.languagesToolStripMenuItem,
-            this.launchesToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1380, 24);
-            this.menuStrip1.TabIndex = 8;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
-            this.exitToolStripMenuItem.Text = "E&xit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
-            // categoriesToolStripMenuItem
-            // 
-            this.categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
-            this.categoriesToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
-            this.categoriesToolStripMenuItem.Text = "&Categories";
-            this.categoriesToolStripMenuItem.Click += new System.EventHandler(this.categoriesToolStripMenuItem_Click);
-            // 
-            // singleCustomIntelliSenseToolStripMenuItem
-            // 
-            this.singleCustomIntelliSenseToolStripMenuItem.Name = "singleCustomIntelliSenseToolStripMenuItem";
-            this.singleCustomIntelliSenseToolStripMenuItem.Size = new System.Drawing.Size(160, 20);
-            this.singleCustomIntelliSenseToolStripMenuItem.Text = "Single Custom &IntelliSense";
-            this.singleCustomIntelliSenseToolStripMenuItem.Click += new System.EventHandler(this.singleCustomIntelliSenseToolStripMenuItem_Click);
-            // 
-            // languagesToolStripMenuItem
-            // 
-            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
-            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
-            this.languagesToolStripMenuItem.Text = "&Languages";
-            this.languagesToolStripMenuItem.Click += new System.EventHandler(this.languagesToolStripMenuItem_Click);
-            // 
-            // launchesToolStripMenuItem
-            // 
-            this.launchesToolStripMenuItem.Name = "launchesToolStripMenuItem";
-            this.launchesToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
-            this.launchesToolStripMenuItem.Text = "La&unches";
-            this.launchesToolStripMenuItem.Click += new System.EventHandler(this.launchesToolStripMenuItem_Click);
-            // 
-            // Inject
-            // 
-            this.Inject.HeaderText = "Inject";
-            this.Inject.Name = "Inject";
-            this.Inject.Text = "Inject";
-            this.Inject.UseColumnTextForButtonValue = true;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -546,9 +489,67 @@ namespace VoiceLauncher
             this.dataGridViewTextBoxColumn13.HeaderText = "Language";
             this.dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
             // 
-            // customIntelliSenseBindingSource
+            // Inject
             // 
-            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
+            this.Inject.HeaderText = "Inject";
+            this.Inject.Name = "Inject";
+            this.Inject.Text = "Inject";
+            this.Inject.UseColumnTextForButtonValue = true;
+            // 
+            // customIntelliSensesBindingSource
+            // 
+            this.customIntelliSensesBindingSource.DataMember = "CustomIntelliSenses";
+            this.customIntelliSensesBindingSource.DataSource = this.languageBindingSource;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exitToolStripMenuItem,
+            this.categoriesToolStripMenuItem,
+            this.singleCustomIntelliSenseToolStripMenuItem,
+            this.languagesToolStripMenuItem,
+            this.launchesToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1380, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // categoriesToolStripMenuItem
+            // 
+            this.categoriesToolStripMenuItem.Name = "categoriesToolStripMenuItem";
+            this.categoriesToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.categoriesToolStripMenuItem.Text = "&Categories";
+            this.categoriesToolStripMenuItem.Click += new System.EventHandler(this.categoriesToolStripMenuItem_Click);
+            // 
+            // singleCustomIntelliSenseToolStripMenuItem
+            // 
+            this.singleCustomIntelliSenseToolStripMenuItem.Name = "singleCustomIntelliSenseToolStripMenuItem";
+            this.singleCustomIntelliSenseToolStripMenuItem.Size = new System.Drawing.Size(160, 20);
+            this.singleCustomIntelliSenseToolStripMenuItem.Text = "Single Custom &IntelliSense";
+            this.singleCustomIntelliSenseToolStripMenuItem.Click += new System.EventHandler(this.singleCustomIntelliSenseToolStripMenuItem_Click);
+            // 
+            // languagesToolStripMenuItem
+            // 
+            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
+            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
+            this.languagesToolStripMenuItem.Text = "&Languages";
+            this.languagesToolStripMenuItem.Click += new System.EventHandler(this.languagesToolStripMenuItem_Click);
+            // 
+            // launchesToolStripMenuItem
+            // 
+            this.launchesToolStripMenuItem.Name = "launchesToolStripMenuItem";
+            this.launchesToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.launchesToolStripMenuItem.Text = "La&unches";
+            this.launchesToolStripMenuItem.Click += new System.EventHandler(this.launchesToolStripMenuItem_Click);
             // 
             // languageBindingSource1
             // 
@@ -575,12 +576,12 @@ namespace VoiceLauncher
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingNavigator)).EndInit();
             this.customIntelliSenseBindingNavigator.ResumeLayout(false);
             this.customIntelliSenseBindingNavigator.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseDataGridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSensesBindingSource)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.languageBindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
