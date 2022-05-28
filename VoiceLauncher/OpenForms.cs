@@ -93,7 +93,7 @@ namespace VoiceLauncher
             }
             else if (arguments[1].Contains("SearchIntellisense"))
             {
-                VoiceLauncher.CustomIntelliSenseForm customIntelliSense = new VoiceLauncher.CustomIntelliSenseForm();
+                VoiceLauncher.SearchCustomIS customIntelliSense = new VoiceLauncher.SearchCustomIS();
                 customIntelliSense.SearchTerm = arguments[2].Replace("/", "").Trim();
                 //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} SearchTerm:{customIntelliSense.SearchTerm}");
                 customIntelliSense.Text = $"Custom IntelliSense Search Term: {searchTerm}";

@@ -248,6 +248,7 @@ namespace VoiceLauncher
         }
         private void toolStripTextBoxSearch_TextChanged(object sender, EventArgs e)
         {
+
         }
 
         private void toolStripButtonShowAll_Click(object sender, EventArgs e)
@@ -297,6 +298,8 @@ namespace VoiceLauncher
                 return;
             }
             this.customIntelliSenseBindingSource.DataSource = filteredData.Count() > 0 ? filteredData : filteredData.ToArray();
+            customIntelliSenseDataGridView.CurrentCell = customIntelliSenseDataGridView.Rows[0].Cells[13];
+            customIntelliSenseDataGridView.Select();
         }
 
         private void toolStripTextBoxFind_Leave(object sender, EventArgs e)

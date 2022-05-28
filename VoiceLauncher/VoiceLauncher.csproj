@@ -143,11 +143,22 @@
     <Compile Include="Models\MultipleLauncher.cs" />
     <Compile Include="Models\ValuesToInsert.cs" />
     <Compile Include="Models\VoiceLauncherContext.cs" />
+    <Compile Include="SearchCustomIS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SearchCustomIS.Designer.cs">
+      <DependentUpon>SearchCustomIS.cs</DependentUpon>
+    </Compile>
     <Compile Include="TodosForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TodosForm.Designer.cs">
       <DependentUpon>TodosForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VoiceLauncherDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VoiceLauncherDataSet.xsd</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Categories.resx">
       <DependentUpon>Categories.cs</DependentUpon>
@@ -176,6 +187,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SearchCustomIS.resx">
+      <DependentUpon>SearchCustomIS.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TodosForm.resx">
       <DependentUpon>TodosForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -205,6 +219,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="VoiceLauncherDataSet.xsc">
+      <DependentUpon>VoiceLauncherDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="VoiceLauncherDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>VoiceLauncherDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="VoiceLauncherDataSet.xss">
+      <DependentUpon>VoiceLauncherDataSet.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
