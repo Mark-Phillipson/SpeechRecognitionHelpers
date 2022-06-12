@@ -19,10 +19,10 @@ namespace DictationBoxMSP
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if (!SingleInstance.AlreadyRunning())
-            {
+            //if (!SingleInstance.AlreadyRunning())
+            //{
                 Application.Run(new DictationBoxForm());
-            }
+            //}
         }
     }
 }

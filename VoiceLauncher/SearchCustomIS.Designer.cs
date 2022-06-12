@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchCustomIS));
             this.voiceLauncherDataSet = new VoiceLauncher.VoiceLauncherDataSet();
             this.customIntelliSenseTableAdapter = new VoiceLauncher.VoiceLauncherDataSetTableAdapters.CustomIntelliSenseTableAdapter();
             this.tableAdapterManager = new VoiceLauncher.VoiceLauncherDataSetTableAdapters.TableAdapterManager();
@@ -96,11 +97,6 @@
             this.textBoxSearch.TextChanged += new System.EventHandler(this.textBoxSearch_TextChanged);
             this.textBoxSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxSearch_KeyDown);
             // 
-            // customIntelliSenseBindingSource
-            // 
-            this.customIntelliSenseBindingSource.DataMember = "CustomIntelliSense";
-            this.customIntelliSenseBindingSource.DataSource = this.voiceLauncherDataSet;
-            // 
             // textBoxResult
             // 
             this.textBoxResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -123,6 +119,7 @@
             this.Controls.Add(this.textBoxResult);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.customIntelliSenseListBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SearchCustomIS";
             this.Text = "SearchCustomIS";
             this.Load += new System.EventHandler(this.SearchCustomIS_Load);

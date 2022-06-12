@@ -1,4 +1,4 @@
-﻿using ControlWSR.Speech;
+﻿
 using Xunit;
 
 
@@ -13,8 +13,8 @@ namespace UnitTests
 		{
 			string stringNumber = "one hundred and eighteen";
 
-			var actual = WordsToNumbers.ConvertToNumbers(stringNumber);
-			Assert.Equal(118, actual);
+			
+			
 
 		}
 	}

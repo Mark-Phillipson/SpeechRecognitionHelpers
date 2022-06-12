@@ -17,6 +17,7 @@ namespace VoiceLauncher
 {
     public partial class SearchCustomIS : Form
     {
+        VoiceLauncherContext db = new VoiceLauncherContext();
         public string SearchTerm { get; set; }
         public SearchCustomIS()
         {
@@ -34,7 +35,7 @@ namespace VoiceLauncher
         private void SearchCustomIS_Load(object sender, EventArgs e)
         {
 
-            // TODO: This line of code loads data into the 'voiceLauncherDataSet.CustomIntelliSense' table. You can move, or remove it, as needed.
+
             textBoxSearch.Text = SearchTerm;
             if (!string.IsNullOrEmpty(SearchTerm))
             {
@@ -79,18 +80,21 @@ namespace VoiceLauncher
                 value = currentItem.Row["SendKeys_Value"].ToString();
                 var id = Int32.Parse(currentItem.Row["ID"].ToString());
                 try
-                {
+                    {
                     SendKeys.SendWait("%{Tab}");
                     if (delivery == "Copy and Paste")
                     {
                         Clipboard.SetText(value);
                         SendKeys.SendWait("^v");
+                        Text = $"{value} has been pasted";
                     }
                     else
                     {
-                        SendKeys.SendWait(value);
+                        int msec = (int)(1000);
+                        Thread.Sleep(msec);
+                        SendKeys.SendWait(value.Replace("{Space}"," "));
                     }
-                    VoiceLauncherContext db = new VoiceLauncherContext();
+
                     var additionalCommands = db.AdditionalCommands.Where(w => w.CustomIntelliSenseId == id).ToList();
                     foreach (AdditionalCommand item in additionalCommands)
                     {
@@ -102,11 +106,11 @@ namespace VoiceLauncher
                         if (item.DeliveryType == "Copy and Paste")
                         {
                             Clipboard.SetText(item.SendKeysValue);
-                            SendKeys.SendWait("^v");
+                            SendKeys.Send("^V");
                         }
                         else
                         {
-                            SendKeys.SendWait(item.SendKeysValue);
+                            SendKeys.SendWait(item.SendKeysValue.Replace("{Space}"," "));
                         }
                     }
                 }
@@ -122,6 +126,15 @@ namespace VoiceLauncher
                     Application.Run(displayMessage);
                 }
                 Application.Exit();
+                
+            }
+            else if (e.KeyCode == Keys.Delete)
+            {
+                CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord= new CustomIntelliSenseSingleRecord();
+                var currentItem = (DataRowView)customIntelliSenseListBox.SelectedItem;
+                var id = Int32.Parse(currentItem.Row["ID"].ToString());
+                customIntelliSenseSingleRecord.CurrentId = id;
+                customIntelliSenseSingleRecord.ShowDialog();
             }
         }
 
@@ -138,6 +151,14 @@ namespace VoiceLauncher
             {
                 value = currentItem.Row["SendKeys_Value"].ToString();
                 textBoxResult.Text = value;
+                var  languageId = Int32.Parse(currentItem.Row["LanguageID"].ToString());
+                var  categoryId = Int32.Parse(currentItem.Row["CategoryID"].ToString());
+                var language = db.Languages.Where(c => c.ID == languageId).FirstOrDefault();
+                var category = db.Categories.Where(v => v.ID == categoryId).FirstOrDefault();
+                if (language != null && category != null)
+                {
+                    Text = $"Language: {language.LanguageName} Category: {category.CategoryName} Press Delete to Edit";
+                }
             }
         }
 

@@ -36,7 +36,7 @@ namespace VoiceLauncher
                 //arguments = new string[] { args[0], "Not Applicable", "Blocks" };
                 // Edit all un-archived Todos
                 //arguments = new string[] { args[0], "Todos", "All" };
-                arguments = new string[] { args[0], "SearchIntellisense", "Rome" };
+                arguments = new string[] { args[0], "SearchIntelliSense", "using" };
                 //arguments = new string[] { args[0], "Todos", "Blazor" };
                 // Search both custom IntelliSense and Launchers with Blazor in the name or in the SendKeys value or command line
                 //arguments = new string[] { args[0], "Union", "Blazor" };
@@ -91,7 +91,7 @@ namespace VoiceLauncher
                 Application.Run(launcherForm);
                 return;
             }
-            else if (arguments[1].Contains("SearchIntellisense"))
+            else if (arguments[1].Contains("SearchIntelliSense"))
             {
                 VoiceLauncher.SearchCustomIS customIntelliSense = new VoiceLauncher.SearchCustomIS();
                 customIntelliSense.SearchTerm = arguments[2].Replace("/", "").Trim();

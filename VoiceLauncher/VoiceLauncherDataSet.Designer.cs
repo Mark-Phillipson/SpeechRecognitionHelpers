@@ -289,6 +289,10 @@ namespace VoiceLauncher {
             
             private global::System.Data.DataColumn columnDeliveryType;
             
+            private global::System.Data.DataColumn columnLanguageID;
+            
+            private global::System.Data.DataColumn columnCategoryID;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public CustomIntelliSenseDataTable() {
@@ -364,6 +368,22 @@ namespace VoiceLauncher {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn LanguageIDColumn {
+                get {
+                    return this.columnLanguageID;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn CategoryIDColumn {
+                get {
+                    return this.columnCategoryID;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -399,14 +419,16 @@ namespace VoiceLauncher {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public CustomIntelliSenseRow AddCustomIntelliSenseRow(string Display_Value, string SendKeys_Value, string Command_Type, string DeliveryType) {
+            public CustomIntelliSenseRow AddCustomIntelliSenseRow(string Display_Value, string SendKeys_Value, string Command_Type, string DeliveryType, int LanguageID, int CategoryID) {
                 CustomIntelliSenseRow rowCustomIntelliSenseRow = ((CustomIntelliSenseRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         Display_Value,
                         SendKeys_Value,
                         Command_Type,
-                        DeliveryType};
+                        DeliveryType,
+                        LanguageID,
+                        CategoryID};
                 rowCustomIntelliSenseRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowCustomIntelliSenseRow);
                 return rowCustomIntelliSenseRow;
@@ -441,6 +463,8 @@ namespace VoiceLauncher {
                 this.columnSendKeys_Value = base.Columns["SendKeys_Value"];
                 this.columnCommand_Type = base.Columns["Command_Type"];
                 this.columnDeliveryType = base.Columns["DeliveryType"];
+                this.columnLanguageID = base.Columns["LanguageID"];
+                this.columnCategoryID = base.Columns["CategoryID"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -456,6 +480,10 @@ namespace VoiceLauncher {
                 base.Columns.Add(this.columnCommand_Type);
                 this.columnDeliveryType = new global::System.Data.DataColumn("DeliveryType", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDeliveryType);
+                this.columnLanguageID = new global::System.Data.DataColumn("LanguageID", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLanguageID);
+                this.columnCategoryID = new global::System.Data.DataColumn("CategoryID", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCategoryID);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnID}, true));
                 this.columnID.AutoIncrement = true;
@@ -470,6 +498,8 @@ namespace VoiceLauncher {
                 this.columnCommand_Type.MaxLength = 255;
                 this.columnDeliveryType.AllowDBNull = false;
                 this.columnDeliveryType.MaxLength = 30;
+                this.columnLanguageID.AllowDBNull = false;
+                this.columnCategoryID.AllowDBNull = false;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -677,6 +707,28 @@ namespace VoiceLauncher {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public int LanguageID {
+                get {
+                    return ((int)(this[this.tableCustomIntelliSense.LanguageIDColumn]));
+                }
+                set {
+                    this[this.tableCustomIntelliSense.LanguageIDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public int CategoryID {
+                get {
+                    return ((int)(this[this.tableCustomIntelliSense.CategoryIDColumn]));
+                }
+                set {
+                    this[this.tableCustomIntelliSense.CategoryIDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsSendKeys_ValueNull() {
                 return this.IsNull(this.tableCustomIntelliSense.SendKeys_ValueColumn);
             }
@@ -864,30 +916,49 @@ namespace VoiceLauncher.VoiceLauncherDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("SendKeys_Value", "SendKeys_Value");
             tableMapping.ColumnMappings.Add("Command_Type", "Command_Type");
             tableMapping.ColumnMappings.Add("DeliveryType", "DeliveryType");
+            tableMapping.ColumnMappings.Add("LanguageID", "LanguageID");
+            tableMapping.ColumnMappings.Add("CategoryID", "CategoryID");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[CustomIntelliSense] WHERE (([ID] = @Original_ID) AND ([Display_Value] = @Original_Display_Value) AND ((@IsNull_Command_Type = 1 AND [Command_Type] IS NULL) OR ([Command_Type] = @Original_Command_Type)) AND ([DeliveryType] = @Original_DeliveryType))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[CustomIntelliSense] WHERE (([ID] = @Original_ID) AND ([Display_Value] = @Original_Display_Value) AND ((@IsNull_Command_Type = 1 AND [Command_Type] IS NULL) OR ([Command_Type] = @Original_Command_Type)) AND ([DeliveryType] = @Original_DeliveryType) AND ([LanguageID] = @Original_LanguageID) AND ([CategoryID] = @Original_CategoryID))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Display_Value", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Display_Value", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Command_Type", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Command_Type", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Command_Type", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Command_Type", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DeliveryType", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DeliveryType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LanguageID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LanguageID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CategoryID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CategoryID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
+            this._adapter.InsertCommand.Connection = this.Connection;
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[CustomIntelliSense] ([Display_Value], [SendKeys_Value], [Command_Type], [DeliveryType], [LanguageID], [CategoryID]) VALUES (@Display_Value, @SendKeys_Value, @Command_Type, @DeliveryType, @LanguageID, @CategoryID);
+SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType, LanguageID, CategoryID FROM CustomIntelliSense WHERE (ID = SCOPE_IDENTITY())";
+            this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Display_Value", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Display_Value", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SendKeys_Value", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SendKeys_Value", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Command_Type", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Command_Type", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DeliveryType", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DeliveryType", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LanguageID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LanguageID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CategoryID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CategoryID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[CustomIntelliSense] SET [Display_Value] = @Display_Value, [SendKeys_Value] = @SendKeys_Value, [Command_Type] = @Command_Type, [DeliveryType] = @DeliveryType WHERE (([ID] = @Original_ID) AND ([Display_Value] = @Original_Display_Value) AND ((@IsNull_Command_Type = 1 AND [Command_Type] IS NULL) OR ([Command_Type] = @Original_Command_Type)) AND ([DeliveryType] = @Original_DeliveryType));
-SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM CustomIntelliSense WHERE (ID = @ID)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[CustomIntelliSense] SET [Display_Value] = @Display_Value, [SendKeys_Value] = @SendKeys_Value, [Command_Type] = @Command_Type, [DeliveryType] = @DeliveryType, [LanguageID] = @LanguageID, [CategoryID] = @CategoryID WHERE (([ID] = @Original_ID) AND ([Display_Value] = @Original_Display_Value) AND ((@IsNull_Command_Type = 1 AND [Command_Type] IS NULL) OR ([Command_Type] = @Original_Command_Type)) AND ([DeliveryType] = @Original_DeliveryType) AND ([LanguageID] = @Original_LanguageID) AND ([CategoryID] = @Original_CategoryID));
+SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType, LanguageID, CategoryID FROM CustomIntelliSense WHERE (ID = @ID)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Display_Value", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Display_Value", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SendKeys_Value", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "SendKeys_Value", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Command_Type", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Command_Type", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@DeliveryType", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DeliveryType", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@LanguageID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LanguageID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@CategoryID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CategoryID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_ID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "ID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Display_Value", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Display_Value", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Command_Type", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Command_Type", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Command_Type", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Command_Type", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_DeliveryType", global::System.Data.SqlDbType.NVarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "DeliveryType", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_LanguageID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "LanguageID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_CategoryID", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "CategoryID", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "ID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
@@ -904,13 +975,13 @@ SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM Custom
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[2];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM dbo.Cus" +
-                "tomIntelliSense";
+            this._commandCollection[0].CommandText = "SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType,LanguageID,C" +
+                "ategoryID FROM dbo.CustomIntelliSense";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM dbo.Cus" +
-                "tomIntelliSense\r\nWHERE Display_Value Like \'%@Search%\'";
+            this._commandCollection[1].CommandText = "SELECT CategoryID, Command_Type, DeliveryType, Display_Value, ID, LanguageID, Sen" +
+                "dKeys_Value FROM CustomIntelliSense WHERE (Display_Value LIKE \'%@Search%\')";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -984,7 +1055,7 @@ SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM Custom
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(int Original_ID, string Original_Display_Value, string Original_Command_Type, string Original_DeliveryType) {
+        public virtual int Delete(int Original_ID, string Original_Display_Value, string Original_Command_Type, string Original_DeliveryType, int Original_LanguageID, int Original_CategoryID) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((int)(Original_ID));
             if ((Original_Display_Value == null)) {
                 throw new global::System.ArgumentNullException("Original_Display_Value");
@@ -1006,6 +1077,8 @@ SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM Custom
             else {
                 this.Adapter.DeleteCommand.Parameters[4].Value = ((string)(Original_DeliveryType));
             }
+            this.Adapter.DeleteCommand.Parameters[5].Value = ((int)(Original_LanguageID));
+            this.Adapter.DeleteCommand.Parameters[6].Value = ((int)(Original_CategoryID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -1025,8 +1098,55 @@ SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM Custom
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
+        public virtual int Insert(string Display_Value, string SendKeys_Value, string Command_Type, string DeliveryType, int LanguageID, int CategoryID) {
+            if ((Display_Value == null)) {
+                throw new global::System.ArgumentNullException("Display_Value");
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[0].Value = ((string)(Display_Value));
+            }
+            if ((SendKeys_Value == null)) {
+                this.Adapter.InsertCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[1].Value = ((string)(SendKeys_Value));
+            }
+            if ((Command_Type == null)) {
+                this.Adapter.InsertCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[2].Value = ((string)(Command_Type));
+            }
+            if ((DeliveryType == null)) {
+                throw new global::System.ArgumentNullException("DeliveryType");
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[3].Value = ((string)(DeliveryType));
+            }
+            this.Adapter.InsertCommand.Parameters[4].Value = ((int)(LanguageID));
+            this.Adapter.InsertCommand.Parameters[5].Value = ((int)(CategoryID));
+            global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
+            if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                this.Adapter.InsertCommand.Connection.Open();
+            }
+            try {
+                int returnValue = this.Adapter.InsertCommand.ExecuteNonQuery();
+                return returnValue;
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    this.Adapter.InsertCommand.Connection.Close();
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string Display_Value, string SendKeys_Value, string Command_Type, string DeliveryType, int Original_ID, string Original_Display_Value, string Original_Command_Type, string Original_DeliveryType, int ID) {
+        public virtual int Update(string Display_Value, string SendKeys_Value, string Command_Type, string DeliveryType, int LanguageID, int CategoryID, int Original_ID, string Original_Display_Value, string Original_Command_Type, string Original_DeliveryType, int Original_LanguageID, int Original_CategoryID, int ID) {
             if ((Display_Value == null)) {
                 throw new global::System.ArgumentNullException("Display_Value");
             }
@@ -1051,28 +1171,32 @@ SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM Custom
             else {
                 this.Adapter.UpdateCommand.Parameters[3].Value = ((string)(DeliveryType));
             }
-            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(Original_ID));
+            this.Adapter.UpdateCommand.Parameters[4].Value = ((int)(LanguageID));
+            this.Adapter.UpdateCommand.Parameters[5].Value = ((int)(CategoryID));
+            this.Adapter.UpdateCommand.Parameters[6].Value = ((int)(Original_ID));
             if ((Original_Display_Value == null)) {
                 throw new global::System.ArgumentNullException("Original_Display_Value");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[5].Value = ((string)(Original_Display_Value));
+                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_Display_Value));
             }
             if ((Original_Command_Type == null)) {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[7].Value = global::System.DBNull.Value;
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[9].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[6].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[7].Value = ((string)(Original_Command_Type));
+                this.Adapter.UpdateCommand.Parameters[8].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[9].Value = ((string)(Original_Command_Type));
             }
             if ((Original_DeliveryType == null)) {
                 throw new global::System.ArgumentNullException("Original_DeliveryType");
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[8].Value = ((string)(Original_DeliveryType));
+                this.Adapter.UpdateCommand.Parameters[10].Value = ((string)(Original_DeliveryType));
             }
-            this.Adapter.UpdateCommand.Parameters[9].Value = ((int)(ID));
+            this.Adapter.UpdateCommand.Parameters[11].Value = ((int)(Original_LanguageID));
+            this.Adapter.UpdateCommand.Parameters[12].Value = ((int)(Original_CategoryID));
+            this.Adapter.UpdateCommand.Parameters[13].Value = ((int)(ID));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -1093,8 +1217,8 @@ SELECT ID, Display_Value, SendKeys_Value, Command_Type, DeliveryType FROM Custom
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(string Display_Value, string SendKeys_Value, string Command_Type, string DeliveryType, int Original_ID, string Original_Display_Value, string Original_Command_Type, string Original_DeliveryType) {
-            return this.Update(Display_Value, SendKeys_Value, Command_Type, DeliveryType, Original_ID, Original_Display_Value, Original_Command_Type, Original_DeliveryType, Original_ID);
+        public virtual int Update(string Display_Value, string SendKeys_Value, string Command_Type, string DeliveryType, int LanguageID, int CategoryID, int Original_ID, string Original_Display_Value, string Original_Command_Type, string Original_DeliveryType, int Original_LanguageID, int Original_CategoryID) {
+            return this.Update(Display_Value, SendKeys_Value, Command_Type, DeliveryType, LanguageID, CategoryID, Original_ID, Original_Display_Value, Original_Command_Type, Original_DeliveryType, Original_LanguageID, Original_CategoryID, Original_ID);
         }
     }
     

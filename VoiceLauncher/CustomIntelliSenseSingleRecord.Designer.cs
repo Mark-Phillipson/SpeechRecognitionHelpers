@@ -50,6 +50,7 @@ namespace VoiceLauncher
             this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.customIntelliSenseBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonAddedNewRecord = new System.Windows.Forms.ToolStripButton();
             this.categoryIDComboBox = new System.Windows.Forms.ComboBox();
             this.command_TypeTextBox = new System.Windows.Forms.TextBox();
             this.display_ValueTextBox = new System.Windows.Forms.TextBox();
@@ -165,7 +166,8 @@ namespace VoiceLauncher
             this.bindingNavigatorSeparator2,
             this.bindingNavigatorAddNewItem,
             this.bindingNavigatorDeleteItem,
-            this.customIntelliSenseBindingNavigatorSaveItem});
+            this.customIntelliSenseBindingNavigatorSaveItem,
+            this.toolStripButtonAddedNewRecord});
             this.customIntelliSenseBindingNavigator.Location = new System.Drawing.Point(0, 0);
             this.customIntelliSenseBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
             this.customIntelliSenseBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
@@ -179,12 +181,14 @@ namespace VoiceLauncher
             // 
             // bindingNavigatorAddNewItem
             // 
+            this.bindingNavigatorAddNewItem.Enabled = false;
             this.bindingNavigatorAddNewItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
             this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
             this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(74, 22);
             this.bindingNavigatorAddNewItem.Text = "&Add new";
+            this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
             // 
             // bindingNavigatorCountItem
             // 
@@ -202,6 +206,7 @@ namespace VoiceLauncher
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(60, 22);
             this.bindingNavigatorDeleteItem.Text = "&Delete";
+            this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
             // 
             // bindingNavigatorMoveFirstItem
             // 
@@ -272,6 +277,18 @@ namespace VoiceLauncher
             this.customIntelliSenseBindingNavigatorSaveItem.Size = new System.Drawing.Size(78, 22);
             this.customIntelliSenseBindingNavigatorSaveItem.Text = "&Save Data";
             this.customIntelliSenseBindingNavigatorSaveItem.Click += new System.EventHandler(this.customIntelliSenseBindingNavigatorSaveItem_Click);
+            // 
+            // toolStripButtonAddedNewRecord
+            // 
+            this.toolStripButtonAddedNewRecord.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonAddedNewRecord.Font = new System.Drawing.Font("Segoe UI Black", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripButtonAddedNewRecord.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.toolStripButtonAddedNewRecord.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddedNewRecord.Image")));
+            this.toolStripButtonAddedNewRecord.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonAddedNewRecord.Name = "toolStripButtonAddedNewRecord";
+            this.toolStripButtonAddedNewRecord.Size = new System.Drawing.Size(110, 22);
+            this.toolStripButtonAddedNewRecord.Text = "&Add New Record";
+            this.toolStripButtonAddedNewRecord.Click += new System.EventHandler(this.toolStripButtonAddedNewRecord_Click);
             // 
             // categoryIDComboBox
             // 
@@ -432,5 +449,6 @@ namespace VoiceLauncher
         private System.Windows.Forms.TextBox remarksTextBox;
         private System.Windows.Forms.TextBox sendKeys_ValueTextBox;
         private System.Windows.Forms.ComboBox deliveryTypeComboBox;
+        private System.Windows.Forms.ToolStripButton toolStripButtonAddedNewRecord;
     }
 }

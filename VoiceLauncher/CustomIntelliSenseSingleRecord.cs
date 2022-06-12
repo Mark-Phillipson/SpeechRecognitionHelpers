@@ -7,6 +7,7 @@ using System.Data.Entity.Core.Common.CommandTrees;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+
 using VoiceLauncher.Models;
 
 namespace VoiceLauncher
@@ -63,7 +64,8 @@ namespace VoiceLauncher
             languageIDComboBox.DisplayMember = "LanguageName";  // the Name property in Language class
             languageIDComboBox.ValueMember = "ID";  // ditto for the Value property        }
             languageIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "LanguageID", true));
-
+            var language = db.Languages.FirstOrDefault(v => v.LanguageName == "Not Applicable");
+            languageIDComboBox.SelectedItem = language;
             db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(o => o.CategoryName).Load();
             BindingSource bindingSourceCategory = new BindingSource();
             bindingSourceCategory.DataSource = db.Categories.Where(v => v.CategoryType == "IntelliSense Command").OrderBy(v => v.CategoryName).ToList();
@@ -72,7 +74,8 @@ namespace VoiceLauncher
             categoryIDComboBox.DisplayMember = "CategoryName";
             categoryIDComboBox.ValueMember = "ID";
             categoryIDComboBox.DataBindings.Add(new Binding("SelectedValue", customIntelliSenseBindingSource, "CategoryID", true));
-
+            var category = db.Categories.FirstOrDefault(v => v.CategoryName == "Words");
+            categoryIDComboBox.SelectedItem = category;
 
             deliveryTypeComboBox.Items.Add("Copy and Paste");
             deliveryTypeComboBox.Items.Add("Send Keys");
@@ -89,11 +92,11 @@ namespace VoiceLauncher
         private void customIntelliSenseBindingNavigatorSaveItem_Click(object sender, EventArgs e)
         {
             this.Validate();
-            var local= db.CustomIntelliSenses.Local.ToBindingList();
+            var local = db.CustomIntelliSenses.Local.ToBindingList();
             if (local.Count > 1)
             {
                 var emptyOne = local.FirstOrDefault(v => v.Display_Value == null);
-                if (emptyOne!= null )
+                if (emptyOne != null)
                 {
                     local.Remove(emptyOne);
                 }
@@ -115,6 +118,39 @@ namespace VoiceLauncher
         private void CustomIntelliSenseSingleRecord_Shown(object sender, EventArgs e)
         {
             display_ValueTextBox.Focus();
+        }
+
+        private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
+        {
+
+            if (customIntelliSenseBindingSource.Current != null)
+            {
+                var current = (CustomIntelliSense)this.customIntelliSenseBindingSource.Current;
+                this.customIntelliSenseBindingSource.RemoveCurrent();
+                db.CustomIntelliSenses.Local.Remove(current);
+                //db.CustomIntelliSenses.Remove(current);
+                db.SaveChanges();
+            }
+
+        }
+
+        private void bindingNavigatorAddNewItem_Click(object sender, EventArgs e)
+        {
+        }
+        private void toolStripButtonAddedNewRecord_Click(object sender, EventArgs e)
+        {
+            CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
+            customIntelliSenseSingleRecord.CurrentId = (int)0;
+            var clipboard = Clipboard.GetText();
+            customIntelliSenseSingleRecord.DefaultValueToSend = clipboard;
+            var language = db.Languages.FirstOrDefault(v => v.LanguageName == "Not Applicable");
+            var languageId = language.ID;
+            customIntelliSenseSingleRecord.LanguageId = languageId;
+            var category = db.Categories.FirstOrDefault(v => v.CategoryName == "Words");
+            var categoryId = category.ID;
+            customIntelliSenseSingleRecord.CategoryId = categoryId;
+            customIntelliSenseSingleRecord.ShowDialog();
+
         }
     }
 }
