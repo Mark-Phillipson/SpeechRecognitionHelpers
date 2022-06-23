@@ -19,7 +19,7 @@ namespace VoiceLauncher
         public string DefaultValueToSend { get; set; }
         public int? LanguageId { get; internal set; }
         public int? CategoryId { get; internal set; }
-
+        
         public CustomIntelliSenseSingleRecord()
         {
             InitializeComponent();

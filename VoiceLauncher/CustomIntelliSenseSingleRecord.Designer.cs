@@ -38,7 +38,7 @@ namespace VoiceLauncher
             System.Windows.Forms.Label deliveryTypeLabel1;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomIntelliSenseSingleRecord));
             this.customIntelliSenseBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
-            this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
             this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
@@ -58,7 +58,6 @@ namespace VoiceLauncher
             this.remarksTextBox = new System.Windows.Forms.TextBox();
             this.sendKeys_ValueTextBox = new System.Windows.Forms.TextBox();
             this.deliveryTypeComboBox = new System.Windows.Forms.ComboBox();
-            this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             categoryIDLabel = new System.Windows.Forms.Label();
             command_TypeLabel = new System.Windows.Forms.Label();
             display_ValueLabel = new System.Windows.Forms.Label();
@@ -75,7 +74,7 @@ namespace VoiceLauncher
             // 
             categoryIDLabel.AutoSize = true;
             categoryIDLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            categoryIDLabel.Location = new System.Drawing.Point(16, 98);
+            categoryIDLabel.Location = new System.Drawing.Point(16, 118);
             categoryIDLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             categoryIDLabel.Name = "categoryIDLabel";
             categoryIDLabel.Size = new System.Drawing.Size(63, 18);
@@ -86,7 +85,7 @@ namespace VoiceLauncher
             // 
             command_TypeLabel.AutoSize = true;
             command_TypeLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            command_TypeLabel.Location = new System.Drawing.Point(20, 593);
+            command_TypeLabel.Location = new System.Drawing.Point(20, 613);
             command_TypeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             command_TypeLabel.Name = "command_TypeLabel";
             command_TypeLabel.Size = new System.Drawing.Size(107, 18);
@@ -97,7 +96,7 @@ namespace VoiceLauncher
             // 
             display_ValueLabel.AutoSize = true;
             display_ValueLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            display_ValueLabel.Location = new System.Drawing.Point(16, 144);
+            display_ValueLabel.Location = new System.Drawing.Point(16, 164);
             display_ValueLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             display_ValueLabel.Name = "display_ValueLabel";
             display_ValueLabel.Size = new System.Drawing.Size(91, 18);
@@ -108,7 +107,7 @@ namespace VoiceLauncher
             // 
             languageIDLabel.AutoSize = true;
             languageIDLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            languageIDLabel.Location = new System.Drawing.Point(16, 51);
+            languageIDLabel.Location = new System.Drawing.Point(16, 71);
             languageIDLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             languageIDLabel.Name = "languageIDLabel";
             languageIDLabel.Size = new System.Drawing.Size(66, 18);
@@ -119,7 +118,7 @@ namespace VoiceLauncher
             // 
             remarksLabel.AutoSize = true;
             remarksLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            remarksLabel.Location = new System.Drawing.Point(16, 454);
+            remarksLabel.Location = new System.Drawing.Point(16, 474);
             remarksLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             remarksLabel.Name = "remarksLabel";
             remarksLabel.Size = new System.Drawing.Size(61, 18);
@@ -130,7 +129,7 @@ namespace VoiceLauncher
             // 
             sendKeys_ValueLabel.AutoSize = true;
             sendKeys_ValueLabel.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            sendKeys_ValueLabel.Location = new System.Drawing.Point(16, 184);
+            sendKeys_ValueLabel.Location = new System.Drawing.Point(16, 204);
             sendKeys_ValueLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             sendKeys_ValueLabel.Name = "sendKeys_ValueLabel";
             sendKeys_ValueLabel.Size = new System.Drawing.Size(109, 18);
@@ -141,7 +140,7 @@ namespace VoiceLauncher
             // 
             deliveryTypeLabel1.AutoSize = true;
             deliveryTypeLabel1.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            deliveryTypeLabel1.Location = new System.Drawing.Point(20, 501);
+            deliveryTypeLabel1.Location = new System.Drawing.Point(20, 521);
             deliveryTypeLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             deliveryTypeLabel1.Name = "deliveryTypeLabel1";
             deliveryTypeLabel1.Size = new System.Drawing.Size(92, 18);
@@ -150,7 +149,7 @@ namespace VoiceLauncher
             // 
             // customIntelliSenseBindingNavigator
             // 
-            this.customIntelliSenseBindingNavigator.AddNewItem = this.bindingNavigatorAddNewItem;
+            this.customIntelliSenseBindingNavigator.AddNewItem = null;
             this.customIntelliSenseBindingNavigator.BindingSource = this.customIntelliSenseBindingSource;
             this.customIntelliSenseBindingNavigator.CountItem = this.bindingNavigatorCountItem;
             this.customIntelliSenseBindingNavigator.DeleteItem = this.bindingNavigatorDeleteItem;
@@ -164,7 +163,6 @@ namespace VoiceLauncher
             this.bindingNavigatorMoveNextItem,
             this.bindingNavigatorMoveLastItem,
             this.bindingNavigatorSeparator2,
-            this.bindingNavigatorAddNewItem,
             this.bindingNavigatorDeleteItem,
             this.customIntelliSenseBindingNavigatorSaveItem,
             this.toolStripButtonAddedNewRecord});
@@ -175,36 +173,31 @@ namespace VoiceLauncher
             this.customIntelliSenseBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
             this.customIntelliSenseBindingNavigator.Name = "customIntelliSenseBindingNavigator";
             this.customIntelliSenseBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-            this.customIntelliSenseBindingNavigator.Size = new System.Drawing.Size(1178, 25);
+            this.customIntelliSenseBindingNavigator.Size = new System.Drawing.Size(1178, 36);
             this.customIntelliSenseBindingNavigator.TabIndex = 0;
             this.customIntelliSenseBindingNavigator.Text = "bindingNavigator1";
             // 
-            // bindingNavigatorAddNewItem
+            // customIntelliSenseBindingSource
             // 
-            this.bindingNavigatorAddNewItem.Enabled = false;
-            this.bindingNavigatorAddNewItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
-            this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
-            this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(74, 22);
-            this.bindingNavigatorAddNewItem.Text = "&Add new";
-            this.bindingNavigatorAddNewItem.Click += new System.EventHandler(this.bindingNavigatorAddNewItem_Click);
+            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
             // 
             // bindingNavigatorCountItem
             // 
             this.bindingNavigatorCountItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(35, 22);
+            this.bindingNavigatorCountItem.Size = new System.Drawing.Size(35, 33);
             this.bindingNavigatorCountItem.Text = "of {0}";
             this.bindingNavigatorCountItem.ToolTipText = "Total number of items";
             // 
             // bindingNavigatorDeleteItem
             // 
-            this.bindingNavigatorDeleteItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.bindingNavigatorDeleteItem.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.bindingNavigatorDeleteItem.Font = new System.Drawing.Font("Comic Sans MS", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bindingNavigatorDeleteItem.ForeColor = System.Drawing.Color.Red;
             this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
             this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(60, 22);
+            this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(97, 33);
             this.bindingNavigatorDeleteItem.Text = "&Delete";
             this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
             // 
@@ -214,7 +207,7 @@ namespace VoiceLauncher
             this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
             this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
             this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(23, 33);
             this.bindingNavigatorMoveFirstItem.Text = "Move first";
             // 
             // bindingNavigatorMovePreviousItem
@@ -223,13 +216,13 @@ namespace VoiceLauncher
             this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
             this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
             this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(23, 33);
             this.bindingNavigatorMovePreviousItem.Text = "Move previous";
             // 
             // bindingNavigatorSeparator
             // 
             this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
-            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 25);
+            this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 36);
             // 
             // bindingNavigatorPositionItem
             // 
@@ -244,7 +237,7 @@ namespace VoiceLauncher
             // bindingNavigatorSeparator1
             // 
             this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
-            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 36);
             // 
             // bindingNavigatorMoveNextItem
             // 
@@ -252,7 +245,7 @@ namespace VoiceLauncher
             this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
             this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
             this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(23, 33);
             this.bindingNavigatorMoveNextItem.Text = "Move next";
             // 
             // bindingNavigatorMoveLastItem
@@ -261,32 +254,35 @@ namespace VoiceLauncher
             this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
             this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
             this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(23, 22);
+            this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(23, 33);
             this.bindingNavigatorMoveLastItem.Text = "Move last";
             // 
             // bindingNavigatorSeparator2
             // 
             this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
-            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 36);
             // 
             // customIntelliSenseBindingNavigatorSaveItem
             // 
-            this.customIntelliSenseBindingNavigatorSaveItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.customIntelliSenseBindingNavigatorSaveItem.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.customIntelliSenseBindingNavigatorSaveItem.Font = new System.Drawing.Font("Comic Sans MS", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.customIntelliSenseBindingNavigatorSaveItem.ForeColor = System.Drawing.Color.Lime;
             this.customIntelliSenseBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("customIntelliSenseBindingNavigatorSaveItem.Image")));
             this.customIntelliSenseBindingNavigatorSaveItem.Name = "customIntelliSenseBindingNavigatorSaveItem";
-            this.customIntelliSenseBindingNavigatorSaveItem.Size = new System.Drawing.Size(78, 22);
+            this.customIntelliSenseBindingNavigatorSaveItem.Size = new System.Drawing.Size(133, 33);
             this.customIntelliSenseBindingNavigatorSaveItem.Text = "&Save Data";
             this.customIntelliSenseBindingNavigatorSaveItem.Click += new System.EventHandler(this.customIntelliSenseBindingNavigatorSaveItem_Click);
             // 
             // toolStripButtonAddedNewRecord
             // 
+            this.toolStripButtonAddedNewRecord.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.toolStripButtonAddedNewRecord.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButtonAddedNewRecord.Font = new System.Drawing.Font("Segoe UI Black", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.toolStripButtonAddedNewRecord.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.toolStripButtonAddedNewRecord.Font = new System.Drawing.Font("Comic Sans MS", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.toolStripButtonAddedNewRecord.ForeColor = System.Drawing.Color.Yellow;
             this.toolStripButtonAddedNewRecord.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAddedNewRecord.Image")));
             this.toolStripButtonAddedNewRecord.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonAddedNewRecord.Name = "toolStripButtonAddedNewRecord";
-            this.toolStripButtonAddedNewRecord.Size = new System.Drawing.Size(110, 22);
+            this.toolStripButtonAddedNewRecord.Size = new System.Drawing.Size(182, 33);
             this.toolStripButtonAddedNewRecord.Text = "&Add New Record";
             this.toolStripButtonAddedNewRecord.Click += new System.EventHandler(this.toolStripButtonAddedNewRecord_Click);
             // 
@@ -299,7 +295,7 @@ namespace VoiceLauncher
             this.categoryIDComboBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.categoryIDComboBox.ForeColor = System.Drawing.SystemColors.Window;
             this.categoryIDComboBox.FormattingEnabled = true;
-            this.categoryIDComboBox.Location = new System.Drawing.Point(148, 87);
+            this.categoryIDComboBox.Location = new System.Drawing.Point(148, 107);
             this.categoryIDComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.categoryIDComboBox.Name = "categoryIDComboBox";
             this.categoryIDComboBox.Size = new System.Drawing.Size(493, 26);
@@ -311,7 +307,7 @@ namespace VoiceLauncher
             this.command_TypeTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "Command_Type", true));
             this.command_TypeTextBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.command_TypeTextBox.ForeColor = System.Drawing.SystemColors.Window;
-            this.command_TypeTextBox.Location = new System.Drawing.Point(145, 583);
+            this.command_TypeTextBox.Location = new System.Drawing.Point(145, 603);
             this.command_TypeTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.command_TypeTextBox.Name = "command_TypeTextBox";
             this.command_TypeTextBox.Size = new System.Drawing.Size(760, 26);
@@ -323,7 +319,7 @@ namespace VoiceLauncher
             this.display_ValueTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "Display_Value", true));
             this.display_ValueTextBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.display_ValueTextBox.ForeColor = System.Drawing.SystemColors.Window;
-            this.display_ValueTextBox.Location = new System.Drawing.Point(145, 134);
+            this.display_ValueTextBox.Location = new System.Drawing.Point(145, 154);
             this.display_ValueTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.display_ValueTextBox.Name = "display_ValueTextBox";
             this.display_ValueTextBox.Size = new System.Drawing.Size(760, 26);
@@ -338,7 +334,7 @@ namespace VoiceLauncher
             this.languageIDComboBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.languageIDComboBox.ForeColor = System.Drawing.SystemColors.Window;
             this.languageIDComboBox.FormattingEnabled = true;
-            this.languageIDComboBox.Location = new System.Drawing.Point(148, 40);
+            this.languageIDComboBox.Location = new System.Drawing.Point(148, 60);
             this.languageIDComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.languageIDComboBox.Name = "languageIDComboBox";
             this.languageIDComboBox.Size = new System.Drawing.Size(493, 26);
@@ -350,7 +346,7 @@ namespace VoiceLauncher
             this.remarksTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "Remarks", true));
             this.remarksTextBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.remarksTextBox.ForeColor = System.Drawing.SystemColors.Window;
-            this.remarksTextBox.Location = new System.Drawing.Point(145, 444);
+            this.remarksTextBox.Location = new System.Drawing.Point(145, 464);
             this.remarksTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.remarksTextBox.Name = "remarksTextBox";
             this.remarksTextBox.Size = new System.Drawing.Size(760, 26);
@@ -360,9 +356,9 @@ namespace VoiceLauncher
             // 
             this.sendKeys_ValueTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
             this.sendKeys_ValueTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "SendKeys_Value", true));
-            this.sendKeys_ValueTextBox.Font = new System.Drawing.Font("Cascadia Code", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sendKeys_ValueTextBox.Font = new System.Drawing.Font("Cascadia Code", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sendKeys_ValueTextBox.ForeColor = System.Drawing.Color.White;
-            this.sendKeys_ValueTextBox.Location = new System.Drawing.Point(145, 180);
+            this.sendKeys_ValueTextBox.Location = new System.Drawing.Point(145, 200);
             this.sendKeys_ValueTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.sendKeys_ValueTextBox.Multiline = true;
             this.sendKeys_ValueTextBox.Name = "sendKeys_ValueTextBox";
@@ -374,25 +370,21 @@ namespace VoiceLauncher
             this.deliveryTypeComboBox.BackColor = System.Drawing.SystemColors.MenuText;
             this.deliveryTypeComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.customIntelliSenseBindingSource, "DeliveryType", true));
             this.deliveryTypeComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.deliveryTypeComboBox.Font = new System.Drawing.Font("Calibri", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.deliveryTypeComboBox.Font = new System.Drawing.Font("Cascadia Code", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.deliveryTypeComboBox.ForeColor = System.Drawing.SystemColors.Window;
             this.deliveryTypeComboBox.FormattingEnabled = true;
-            this.deliveryTypeComboBox.Location = new System.Drawing.Point(147, 490);
+            this.deliveryTypeComboBox.Location = new System.Drawing.Point(147, 510);
             this.deliveryTypeComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.deliveryTypeComboBox.Name = "deliveryTypeComboBox";
-            this.deliveryTypeComboBox.Size = new System.Drawing.Size(269, 26);
+            this.deliveryTypeComboBox.Size = new System.Drawing.Size(269, 29);
             this.deliveryTypeComboBox.TabIndex = 11;
-            // 
-            // customIntelliSenseBindingSource
-            // 
-            this.customIntelliSenseBindingSource.DataSource = typeof(VoiceLauncher.Models.CustomIntelliSense);
             // 
             // CustomIntelliSenseSingleRecord
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(1178, 631);
+            this.ClientSize = new System.Drawing.Size(1178, 641);
             this.Controls.Add(deliveryTypeLabel1);
             this.Controls.Add(this.deliveryTypeComboBox);
             this.Controls.Add(categoryIDLabel);
@@ -430,7 +422,6 @@ namespace VoiceLauncher
 
         private System.Windows.Forms.BindingSource customIntelliSenseBindingSource;
         private System.Windows.Forms.BindingNavigator customIntelliSenseBindingNavigator;
-        private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
         private System.Windows.Forms.ToolStripLabel bindingNavigatorCountItem;
         private System.Windows.Forms.ToolStripButton bindingNavigatorDeleteItem;
         private System.Windows.Forms.ToolStripButton bindingNavigatorMoveFirstItem;
