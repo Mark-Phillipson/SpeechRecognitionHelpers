@@ -31,7 +31,7 @@ namespace BrowseScripts
 			openFileDialog.RestoreDirectory = true;
 			openFileDialog.Title = "Please select a KnowBrainer XML commands file to browse.";
 		}
-		public static bool LoadXMLDocument(string filename, DataSet dataSet, BrowseCommands form)
+		public static bool LoadXMLDocument(string filename, DataSet dataSet, System.Windows.Forms.Form form)
 		{
 			XDocument document = XDocument.Load(filename);
 			var commands = document.Descendants("Command").Count();

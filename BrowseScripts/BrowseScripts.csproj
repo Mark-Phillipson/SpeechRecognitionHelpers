@@ -115,6 +115,12 @@
     </Compile>
     <Compile Include="FileManagement.cs" />
     <Compile Include="ListManagement.cs" />
+    <Compile Include="ManageLists.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageLists.Designer.cs">
+      <DependentUpon>ManageLists.cs</DependentUpon>
+    </Compile>
     <Compile Include="Mapping.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -124,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ExampleCallingScript.resx">
       <DependentUpon>ExampleCallingScript.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageLists.resx">
+      <DependentUpon>ManageLists.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
