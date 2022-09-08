@@ -90,7 +90,7 @@ namespace DictationBoxMSP
             this.buttonOpenFile.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOpenFile.Name = "buttonOpenFile";
             this.buttonOpenFile.Size = new System.Drawing.Size(94, 38);
-            this.buttonOpenFile.TabIndex = 32;
+            this.buttonOpenFile.TabIndex = 14;
             this.buttonOpenFile.Text = "Open File";
             this.buttonOpenFile.UseVisualStyleBackColor = false;
             this.buttonOpenFile.Click += new System.EventHandler(this.buttonOpenFile_Click);
@@ -105,7 +105,7 @@ namespace DictationBoxMSP
             this.buttonBrowse.Margin = new System.Windows.Forms.Padding(4);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(94, 38);
-            this.buttonBrowse.TabIndex = 31;
+            this.buttonBrowse.TabIndex = 10;
             this.buttonBrowse.Text = "Browse";
             this.buttonBrowse.UseVisualStyleBackColor = false;
             this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
@@ -120,7 +120,7 @@ namespace DictationBoxMSP
             this.buttonScreenCapture.Margin = new System.Windows.Forms.Padding(4);
             this.buttonScreenCapture.Name = "buttonScreenCapture";
             this.buttonScreenCapture.Size = new System.Drawing.Size(94, 38);
-            this.buttonScreenCapture.TabIndex = 30;
+            this.buttonScreenCapture.TabIndex = 12;
             this.buttonScreenCapture.Text = "Capture";
             this.buttonScreenCapture.UseVisualStyleBackColor = false;
             this.buttonScreenCapture.Click += new System.EventHandler(this.buttonScreenCapture_Click);
@@ -135,7 +135,7 @@ namespace DictationBoxMSP
             this.buttonSaveToFile.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSaveToFile.Name = "buttonSaveToFile";
             this.buttonSaveToFile.Size = new System.Drawing.Size(94, 38);
-            this.buttonSaveToFile.TabIndex = 29;
+            this.buttonSaveToFile.TabIndex = 13;
             this.buttonSaveToFile.Text = "Save to File";
             this.buttonSaveToFile.UseVisualStyleBackColor = false;
             this.buttonSaveToFile.Click += new System.EventHandler(this.buttonSaveToFile_Click);
@@ -150,7 +150,7 @@ namespace DictationBoxMSP
             this.buttonPasteText.Margin = new System.Windows.Forms.Padding(4);
             this.buttonPasteText.Name = "buttonPasteText";
             this.buttonPasteText.Size = new System.Drawing.Size(189, 38);
-            this.buttonPasteText.TabIndex = 28;
+            this.buttonPasteText.TabIndex = 7;
             this.buttonPasteText.Text = "Paste Text";
             this.buttonPasteText.UseVisualStyleBackColor = false;
             this.buttonPasteText.Click += new System.EventHandler(this.buttonPasteText_Click);
@@ -165,7 +165,7 @@ namespace DictationBoxMSP
             this.buttonFrontSize.Margin = new System.Windows.Forms.Padding(4);
             this.buttonFrontSize.Name = "buttonFrontSize";
             this.buttonFrontSize.Size = new System.Drawing.Size(189, 38);
-            this.buttonFrontSize.TabIndex = 27;
+            this.buttonFrontSize.TabIndex = 6;
             this.buttonFrontSize.Text = "Font Size";
             this.buttonFrontSize.UseVisualStyleBackColor = false;
             this.buttonFrontSize.Click += new System.EventHandler(this.ButtonFrontSize_Click);
@@ -180,7 +180,7 @@ namespace DictationBoxMSP
             this.CopyOnlyButton.Margin = new System.Windows.Forms.Padding(4);
             this.CopyOnlyButton.Name = "CopyOnlyButton";
             this.CopyOnlyButton.Size = new System.Drawing.Size(189, 38);
-            this.CopyOnlyButton.TabIndex = 26;
+            this.CopyOnlyButton.TabIndex = 8;
             this.CopyOnlyButton.Text = "Copy Only";
             this.CopyOnlyButton.UseVisualStyleBackColor = false;
             this.CopyOnlyButton.Click += new System.EventHandler(this.CopyOnlyButton_Click);
@@ -194,7 +194,7 @@ namespace DictationBoxMSP
             this.label2.Location = new System.Drawing.Point(6, 128);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(86, 18);
-            this.label2.TabIndex = 23;
+            this.label2.TabIndex = 3;
             this.label2.Text = "&Replace Text";
             // 
             // ReplaceTextBox
@@ -207,7 +207,7 @@ namespace DictationBoxMSP
             this.ReplaceTextBox.Multiline = true;
             this.ReplaceTextBox.Name = "ReplaceTextBox";
             this.ReplaceTextBox.Size = new System.Drawing.Size(189, 48);
-            this.ReplaceTextBox.TabIndex = 24;
+            this.ReplaceTextBox.TabIndex = 4;
             // 
             // ReplaceButton
             // 
@@ -219,7 +219,7 @@ namespace DictationBoxMSP
             this.ReplaceButton.Margin = new System.Windows.Forms.Padding(4);
             this.ReplaceButton.Name = "ReplaceButton";
             this.ReplaceButton.Size = new System.Drawing.Size(189, 38);
-            this.ReplaceButton.TabIndex = 25;
+            this.ReplaceButton.TabIndex = 5;
             this.ReplaceButton.Text = "Replace";
             this.ReplaceButton.UseVisualStyleBackColor = false;
             this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButton_Click);
@@ -234,7 +234,7 @@ namespace DictationBoxMSP
             this.label1.Location = new System.Drawing.Point(5, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 18);
-            this.label1.TabIndex = 15;
+            this.label1.TabIndex = 0;
             this.label1.Text = "&Find Text";
             // 
             // FindtextBox
@@ -247,7 +247,7 @@ namespace DictationBoxMSP
             this.FindtextBox.Multiline = true;
             this.FindtextBox.Name = "FindtextBox";
             this.FindtextBox.Size = new System.Drawing.Size(189, 48);
-            this.FindtextBox.TabIndex = 16;
+            this.FindtextBox.TabIndex = 1;
             this.FindtextBox.TextChanged += new System.EventHandler(this.FindtextBox_TextChanged);
             // 
             // FindButton
@@ -260,7 +260,7 @@ namespace DictationBoxMSP
             this.FindButton.Margin = new System.Windows.Forms.Padding(4);
             this.FindButton.Name = "FindButton";
             this.FindButton.Size = new System.Drawing.Size(189, 38);
-            this.FindButton.TabIndex = 17;
+            this.FindButton.TabIndex = 2;
             this.FindButton.Text = "Find";
             this.FindButton.UseVisualStyleBackColor = false;
             this.FindButton.Click += new System.EventHandler(this.FindButton_Click);
@@ -275,7 +275,7 @@ namespace DictationBoxMSP
             this.SearchButton.Margin = new System.Windows.Forms.Padding(4);
             this.SearchButton.Name = "SearchButton";
             this.SearchButton.Size = new System.Drawing.Size(94, 38);
-            this.SearchButton.TabIndex = 18;
+            this.SearchButton.TabIndex = 9;
             this.SearchButton.Text = "Search";
             this.SearchButton.UseVisualStyleBackColor = false;
             this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
@@ -290,7 +290,7 @@ namespace DictationBoxMSP
             this.WindowButton.Margin = new System.Windows.Forms.Padding(4);
             this.WindowButton.Name = "WindowButton";
             this.WindowButton.Size = new System.Drawing.Size(94, 38);
-            this.WindowButton.TabIndex = 19;
+            this.WindowButton.TabIndex = 11;
             this.WindowButton.Text = "Window";
             this.WindowButton.UseVisualStyleBackColor = false;
             this.WindowButton.Click += new System.EventHandler(this.WindowButton_Click);
@@ -305,7 +305,7 @@ namespace DictationBoxMSP
             this.VariableButton.Margin = new System.Windows.Forms.Padding(4);
             this.VariableButton.Name = "VariableButton";
             this.VariableButton.Size = new System.Drawing.Size(94, 38);
-            this.VariableButton.TabIndex = 20;
+            this.VariableButton.TabIndex = 16;
             this.VariableButton.Text = "Variable";
             this.VariableButton.UseVisualStyleBackColor = false;
             this.VariableButton.Click += new System.EventHandler(this.VariableButton_Click);
@@ -320,7 +320,7 @@ namespace DictationBoxMSP
             this.CamelButton.Margin = new System.Windows.Forms.Padding(4);
             this.CamelButton.Name = "CamelButton";
             this.CamelButton.Size = new System.Drawing.Size(94, 38);
-            this.CamelButton.TabIndex = 21;
+            this.CamelButton.TabIndex = 15;
             this.CamelButton.Text = "Camel";
             this.CamelButton.UseVisualStyleBackColor = false;
             this.CamelButton.Click += new System.EventHandler(this.CamelButton_Click);
@@ -335,7 +335,7 @@ namespace DictationBoxMSP
             this.TransferButton.Margin = new System.Windows.Forms.Padding(4);
             this.TransferButton.Name = "TransferButton";
             this.TransferButton.Size = new System.Drawing.Size(189, 38);
-            this.TransferButton.TabIndex = 22;
+            this.TransferButton.TabIndex = 17;
             this.TransferButton.Text = "Transfer";
             this.TransferButton.UseVisualStyleBackColor = false;
             this.TransferButton.Click += new System.EventHandler(this.TransferButton_Click);

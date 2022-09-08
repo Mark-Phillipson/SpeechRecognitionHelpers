@@ -221,7 +221,14 @@ namespace DictationBoxMSP
         {
             if (Clipboard.ContainsText())
             {
-                this.richTextBox1.Text = Clipboard.GetText();
+                try
+                {
+                    this.richTextBox1.Text = Clipboard.GetText();
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception.Message);
+                }
                 this.richTextBox1.SelectionStart = 0;
                 this.richTextBox1.SelectionLength = this.richTextBox1.TextLength;
             }
