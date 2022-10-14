@@ -2,6 +2,8 @@ using DictationBoxMSP;
 using System.Linq;
 using System.Windows.Forms;
 using WindowsInput;
+using WindowsInput.Native;
+
 namespace ExecuteCommands
 {
 	public class Commands
@@ -15,14 +17,15 @@ namespace ExecuteCommands
 		public string PerformCommand(string[] args)
 		{
 			string[] arguments;
-
-			if (args.Count() < 2)
+            //MessageBox.Show("line 20");
+            if (args.Count() < 2)
 			{
 				//arguments = new string[] { args[0], "Error Message: There is an error in the program!" };
 				//arguments = new string[] { args[0], "explorer" };
 				//arguments = new string[] { args[0], "show cursor" };
 				//arguments = new string[] { args[0], "sapisvr" };
-				arguments = new string[] { args[0], "click" };
+				//arguments = new string[] { args[0], "click" };
+				arguments = new string[] { args[0], "/startstoplistening" };
 			}
 			else
 			{
@@ -30,7 +33,8 @@ namespace ExecuteCommands
 				arguments[1] = arguments[1].Replace("/", "");
 				arguments[1] = arguments[1].Trim();
 			}
-			//MessageBox.Show("Got here With argument " + arguments[1]);
+			//MessageBox.Show("Got here With 36 argument1 " + arguments[1]);
+
 			if (arguments[1] == "explorer" || arguments[1] == "excel" || arguments[1] == "winword" || arguments[1] == "msaccess" || arguments[1] == "sapisvr")
 			{
 				_handleProcesses.CloseAllProcesses(arguments[1]);
@@ -51,6 +55,14 @@ namespace ExecuteCommands
 				WinCursors.ShowCursor();
 				return "The cursor should now be Visible";
 			}
+			else if (arguments[1].ToLower().Contains("startstoplistening"))
+			{
+                inputSimulator.Keyboard.KeyDown(VirtualKeyCode.CONTROL);
+                inputSimulator.Keyboard.KeyPress(VirtualKeyCode.LWIN);
+                inputSimulator.Keyboard.KeyUp(VirtualKeyCode.CONTROL);
+				////MessageBox.Show("Start / stop listening has fired");
+				return "Windows speech recognition listening state has now been toggled";
+            }
 			else if (arguments[1].StartsWith("Error Message:"))
 			{
 				DisplayMessage displayMessage = new DisplayMessage(arguments[1]);

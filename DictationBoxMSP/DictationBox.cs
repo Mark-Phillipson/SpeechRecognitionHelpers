@@ -1,4 +1,5 @@
 using SpeechRecognitionHelpersLibrary;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -219,147 +220,148 @@ namespace DictationBoxMSP
 
         private void GetClipboardIntoTextbox()
         {
-            if (Clipboard.ContainsText())
+            try
             {
-                try
+                if (Clipboard.ContainsText())
                 {
                     this.richTextBox1.Text = Clipboard.GetText();
                 }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception.Message);
-                }
-                this.richTextBox1.SelectionStart = 0;
-                this.richTextBox1.SelectionLength = this.richTextBox1.TextLength;
             }
-        }
-
-        private void buttonPasteText_Click(object sender, EventArgs e)
-        {
-            GetClipboardIntoTextbox();
-        }
-
-        private void FindtextBox_TextChanged(object sender, EventArgs e)
-        {
-            SearchAndIdentifyText();
-        }
-
-        private void buttonSaveToFile_Click(object sender, EventArgs e)
-        {
-            if (richTextBox1.Text != null && richTextBox1.Text.Length > 0)
+            catch (Exception exception)
             {
-                int characters = 30;
-                if (richTextBox1.Text.Length < 30)
-                {
-                    characters = richTextBox1.Text.Length;
-                }
-                string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)).FullName;
-                var filename = FileUtilities.RemoveIllegalCharacters(richTextBox1.Text.Trim().Substring(0, characters));
-                filename = $@"{path}\Documents\{filename}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.txt";
-                File.WriteAllText(filename, richTextBox1.Text);
-                this.Text = $"Dictation Box Saved to: {filename}";
-                Process.Start(filename);
+                Console.WriteLine(exception.Message);
             }
+            this.richTextBox1.SelectionStart = 0;
+            this.richTextBox1.SelectionLength = this.richTextBox1.TextLength;
         }
+    
 
-        private void buttonScreenCapture_Click(object sender, EventArgs e)
+    private void buttonPasteText_Click(object sender, EventArgs e)
+    {
+        GetClipboardIntoTextbox();
+    }
+
+    private void FindtextBox_TextChanged(object sender, EventArgs e)
+    {
+        SearchAndIdentifyText();
+    }
+
+    private void buttonSaveToFile_Click(object sender, EventArgs e)
+    {
+        if (richTextBox1.Text != null && richTextBox1.Text.Length > 0)
         {
-            this.Opacity = 0;
-            string picturesFolder = CaptureImages();
-            this.Text = $"Dictation Box - Screen saved to {picturesFolder}";
-            this.Opacity = 1;
-        }
-
-        private static string CaptureImages()
-        {
-            //Create a new bitmap.
-            var bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
-                                           Screen.PrimaryScreen.Bounds.Height,
-                                           PixelFormat.Format32bppRgb
-                                           );
-
-            // Create a graphics object from the bitmap.
-            var gfxScreenshot = Graphics.FromImage(bmpScreenshot);
-
-            // Take the screenshot from the upper left corner to the right bottom corner.
-            gfxScreenshot.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
-                                        Screen.PrimaryScreen.Bounds.Y,
-                                        0,
-                                        0,
-                                        Screen.PrimaryScreen.Bounds.Size,
-                                        CopyPixelOperation.SourceCopy);
-
-            // Save the screenshot to the specified path that the user has chosen.
-            var picturesFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            var filename = $@"{picturesFolder}\ScreenshotPrimary.jpg";
-            bmpScreenshot.Save(filename, ImageFormat.Jpeg);
-            Clipboard.SetText(filename);
-            //Create a new bitmap.
-            bmpScreenshot = new Bitmap(Screen.AllScreens[1].Bounds.Width,
-                                           Screen.AllScreens[1].Bounds.Height,
-                                           PixelFormat.Format32bppRgb
-                                           );
-
-            // Create a graphics object from the bitmap.
-            gfxScreenshot = Graphics.FromImage(bmpScreenshot);
-
-            // Take the screenshot from the upper left corner to the right bottom corner.
-            gfxScreenshot.CopyFromScreen(Screen.AllScreens[1].Bounds.X,
-                                        Screen.AllScreens[1].Bounds.Y,
-                                        0,
-                                        0,
-                                        Screen.AllScreens[1].Bounds.Size,
-                                        CopyPixelOperation.SourceCopy);
-
-            // Save the screenshot to the specified path that the user has chosen.
-            filename = $@"{picturesFolder}\ScreenshotSecondary.jpg";
-            bmpScreenshot.Save(filename, ImageFormat.Jpeg);
-            return picturesFolder;
-        }
-
-        private void buttonBrowse_Click(object sender, EventArgs e)
-        {
-            OpenFile();
-        }
-
-        private void OpenFile()
-        {
-            string webAddress;
-            if (richTextBox1.SelectedText != null && richTextBox1.SelectedText.Length > 0)
+            int characters = 30;
+            if (richTextBox1.Text.Length < 30)
             {
-                webAddress = richTextBox1.SelectedText;
+                characters = richTextBox1.Text.Length;
             }
-            else
-            {
-                webAddress = richTextBox1.Text;
-            }
+            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)).FullName;
+            var filename = FileUtilities.RemoveIllegalCharacters(richTextBox1.Text.Trim().Substring(0, characters));
+            filename = $@"{path}\Documents\{filename}_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}.txt";
+            File.WriteAllText(filename, richTextBox1.Text);
+            this.Text = $"Dictation Box Saved to: {filename}";
+            Process.Start(filename);
+        }
+    }
 
-            if (!string.IsNullOrEmpty(webAddress))
-            {
-                try
-                {
-                    Process.Start(webAddress);
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.Message, "Filename or Web Address Required!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
+    private void buttonScreenCapture_Click(object sender, EventArgs e)
+    {
+        this.Opacity = 0;
+        string picturesFolder = CaptureImages();
+        this.Text = $"Dictation Box - Screen saved to {picturesFolder}";
+        this.Opacity = 1;
+    }
+
+    private static string CaptureImages()
+    {
+        //Create a new bitmap.
+        var bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
+                                       Screen.PrimaryScreen.Bounds.Height,
+                                       PixelFormat.Format32bppRgb
+                                       );
+
+        // Create a graphics object from the bitmap.
+        var gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+
+        // Take the screenshot from the upper left corner to the right bottom corner.
+        gfxScreenshot.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
+                                    Screen.PrimaryScreen.Bounds.Y,
+                                    0,
+                                    0,
+                                    Screen.PrimaryScreen.Bounds.Size,
+                                    CopyPixelOperation.SourceCopy);
+
+        // Save the screenshot to the specified path that the user has chosen.
+        var picturesFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+        var filename = $@"{picturesFolder}\ScreenshotPrimary.jpg";
+        bmpScreenshot.Save(filename, ImageFormat.Jpeg);
+        Clipboard.SetText(filename);
+        //Create a new bitmap.
+        bmpScreenshot = new Bitmap(Screen.AllScreens[1].Bounds.Width,
+                                       Screen.AllScreens[1].Bounds.Height,
+                                       PixelFormat.Format32bppRgb
+                                       );
+
+        // Create a graphics object from the bitmap.
+        gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+
+        // Take the screenshot from the upper left corner to the right bottom corner.
+        gfxScreenshot.CopyFromScreen(Screen.AllScreens[1].Bounds.X,
+                                    Screen.AllScreens[1].Bounds.Y,
+                                    0,
+                                    0,
+                                    Screen.AllScreens[1].Bounds.Size,
+                                    CopyPixelOperation.SourceCopy);
+
+        // Save the screenshot to the specified path that the user has chosen.
+        filename = $@"{picturesFolder}\ScreenshotSecondary.jpg";
+        bmpScreenshot.Save(filename, ImageFormat.Jpeg);
+        return picturesFolder;
+    }
+
+    private void buttonBrowse_Click(object sender, EventArgs e)
+    {
+        OpenFile();
+    }
+
+    private void OpenFile()
+    {
+        string webAddress;
+        if (richTextBox1.SelectedText != null && richTextBox1.SelectedText.Length > 0)
+        {
+            webAddress = richTextBox1.SelectedText;
+        }
+        else
+        {
+            webAddress = richTextBox1.Text;
         }
 
-        private void buttonOpenFile_Click(object sender, EventArgs e)
+        if (!string.IsNullOrEmpty(webAddress))
         {
-            OpenFile();
-        }
-
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(richTextBox1.Text))
+            try
             {
-                var filename = $@"{path}\Documents\CustomDictationBox\{DateTime.Now.ToString("yyyy-MM-dd-HH-mm")}.txt";
-                File.WriteAllText(filename, richTextBox1.Text);
-                this.Text = $"Dictation Box Saved to: {filename} at {DateTime.Now.ToString("HH:mm:ss")}";
+                Process.Start(webAddress);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Filename or Web Address Required!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
+
+    private void buttonOpenFile_Click(object sender, EventArgs e)
+    {
+        OpenFile();
+    }
+
+    private void richTextBox1_TextChanged(object sender, EventArgs e)
+    {
+        if (!string.IsNullOrWhiteSpace(richTextBox1.Text))
+        {
+            var filename = $@"{path}\Documents\CustomDictationBox\{DateTime.Now.ToString("yyyy-MM-dd-HH-mm")}.txt";
+            File.WriteAllText(filename, richTextBox1.Text);
+            this.Text = $"Dictation Box Saved to: {filename} at {DateTime.Now.ToString("HH:mm:ss")}";
+        }
+    }
+}
 }

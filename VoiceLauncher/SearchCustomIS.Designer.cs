@@ -38,6 +38,7 @@
             this.textBoxSearch = new System.Windows.Forms.TextBox();
             this.customIntelliSenseBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.textBoxResult = new System.Windows.Forms.TextBox();
+            this.buttonInsert = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.voiceLauncherDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.customIntelliSenseBindingSource)).BeginInit();
@@ -75,9 +76,9 @@
             this.customIntelliSenseListBox.ForeColor = System.Drawing.SystemColors.Window;
             this.customIntelliSenseListBox.FormattingEnabled = true;
             this.customIntelliSenseListBox.ItemHeight = 27;
-            this.customIntelliSenseListBox.Location = new System.Drawing.Point(0, 30);
+            this.customIntelliSenseListBox.Location = new System.Drawing.Point(0, 33);
             this.customIntelliSenseListBox.Name = "customIntelliSenseListBox";
-            this.customIntelliSenseListBox.Size = new System.Drawing.Size(535, 382);
+            this.customIntelliSenseListBox.Size = new System.Drawing.Size(535, 490);
             this.customIntelliSenseListBox.TabIndex = 1;
             this.customIntelliSenseListBox.ValueMember = "ID";
             this.customIntelliSenseListBox.SelectedIndexChanged += new System.EventHandler(this.customIntelliSenseListBox_SelectedIndexChanged);
@@ -104,18 +105,30 @@
             this.textBoxResult.BackColor = System.Drawing.SystemColors.WindowText;
             this.textBoxResult.Font = new System.Drawing.Font("Cascadia Code", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxResult.ForeColor = System.Drawing.SystemColors.Window;
-            this.textBoxResult.Location = new System.Drawing.Point(0, 418);
+            this.textBoxResult.Location = new System.Drawing.Point(0, 558);
             this.textBoxResult.Multiline = true;
             this.textBoxResult.Name = "textBoxResult";
-            this.textBoxResult.Size = new System.Drawing.Size(535, 147);
+            this.textBoxResult.Size = new System.Drawing.Size(535, 117);
             this.textBoxResult.TabIndex = 3;
+            // 
+            // buttonInsert
+            // 
+            this.buttonInsert.Font = new System.Drawing.Font("Comic Sans MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonInsert.Location = new System.Drawing.Point(13, 524);
+            this.buttonInsert.Name = "buttonInsert";
+            this.buttonInsert.Size = new System.Drawing.Size(75, 32);
+            this.buttonInsert.TabIndex = 4;
+            this.buttonInsert.Text = "Insert";
+            this.buttonInsert.UseVisualStyleBackColor = true;
+            this.buttonInsert.Click += new System.EventHandler(this.buttonInsert_Click);
             // 
             // SearchCustomIS
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(535, 566);
+            this.ClientSize = new System.Drawing.Size(535, 676);
+            this.Controls.Add(this.buttonInsert);
             this.Controls.Add(this.textBoxResult);
             this.Controls.Add(this.textBoxSearch);
             this.Controls.Add(this.customIntelliSenseListBox);
@@ -141,5 +154,6 @@
         private System.Windows.Forms.TextBox textBoxSearch;
         private System.Windows.Forms.BindingSource customIntelliSenseBindingSource;
         private System.Windows.Forms.TextBox textBoxResult;
+        private System.Windows.Forms.Button buttonInsert;
     }
 }

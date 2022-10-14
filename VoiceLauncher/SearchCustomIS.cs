@@ -72,70 +72,7 @@ namespace VoiceLauncher
 
         private void customIntelliSenseListBox_KeyDown(object sender, KeyEventArgs e)
         {
-            string value = "";
-            if (e.KeyCode == Keys.Enter)
-            {
-                var currentItem = (DataRowView)customIntelliSenseListBox.SelectedItem;
-                string delivery = currentItem.Row["DeliveryType"].ToString();
-                value = currentItem.Row["SendKeys_Value"].ToString();
-                var id = Int32.Parse(currentItem.Row["ID"].ToString());
-                try
-                    {
-                    SendKeys.SendWait("%{Tab}");
-                    if (delivery == "Copy and Paste")
-                    {
-                        Clipboard.SetText(value);
-                        SendKeys.SendWait("^v");
-                        Text = $"{value} has been pasted";
-                    }
-                    else
-                    {
-                        int msec = (int)(1000);
-                        Thread.Sleep(msec);
-                        SendKeys.SendWait(value.Replace("{Space}"," "));
-                    }
-
-                    var additionalCommands = db.AdditionalCommands.Where(w => w.CustomIntelliSenseId == id).ToList();
-                    foreach (AdditionalCommand item in additionalCommands)
-                    {
-                        if (item.WaitBefore > 0)
-                        {
-                            int msec = (int)(item.WaitBefore * 100);
-                            Thread.Sleep(msec);
-                        }
-                        if (item.DeliveryType == "Copy and Paste")
-                        {
-                            Clipboard.SetText(item.SendKeysValue);
-                            SendKeys.Send("^V");
-                        }
-                        else
-                        {
-                            SendKeys.SendWait(item.SendKeysValue.Replace("{Space}"," "));
-                        }
-                    }
-                }
-                catch (Exception exception)
-                {
-                    Clipboard.SetText(value);
-                    var message = exception.Message;
-                    if (exception.InnerException != null)
-                    {
-                        message = $"{message} Inner Exception {exception.InnerException.Message}";
-                    }
-                    DisplayMessage displayMessage = new DisplayMessage($"Error occurred with: {value}\r\r{message}");
-                    Application.Run(displayMessage);
-                }
-                Application.Exit();
-                
-            }
-            else if (e.KeyCode == Keys.Delete)
-            {
-                CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord= new CustomIntelliSenseSingleRecord();
-                var currentItem = (DataRowView)customIntelliSenseListBox.SelectedItem;
-                var id = Int32.Parse(currentItem.Row["ID"].ToString());
-                customIntelliSenseSingleRecord.CurrentId = id;
-                customIntelliSenseSingleRecord.ShowDialog();
-            }
+            PerformAction(e.KeyCode);
         }
 
         private void customIntelliSenseListBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -166,12 +103,86 @@ namespace VoiceLauncher
         {
             if (e.KeyCode == Keys.Enter)
             {
-                customIntelliSenseListBox_KeyDown(sender, e);
+                PerformAction(Keys.Enter);
             }
             else if (e.KeyCode == Keys.Down)
             {
                 customIntelliSenseListBox.Focus();
             }
+        }
+
+        private void buttonInsert_Click(object sender, EventArgs e)
+        {
+            PerformAction(Keys.Enter);
+        }
+        private void PerformAction(Keys keyCode)
+        {
+            string value = "";
+            if (keyCode == Keys.Enter)
+            {
+                var currentItem = (DataRowView)customIntelliSenseListBox.SelectedItem;
+                string delivery = currentItem.Row["DeliveryType"].ToString();
+                value = currentItem.Row["SendKeys_Value"].ToString();
+                var id = Int32.Parse(currentItem.Row["ID"].ToString());
+                try
+                {
+                    SendKeys.SendWait("%{Tab}");
+                    if (delivery == "Copy and Paste")
+                    {
+                        Clipboard.SetText(value);
+                        Thread.Sleep(100);
+                        SendKeys.SendWait("^v");
+                        Text = $"{value} has been pasted";
+                    }
+                    else
+                    {
+                        int msec = (int)(400);
+                        Thread.Sleep(msec);
+                        SendKeys.SendWait(value.Replace("{Space}", " "));
+                    }
+
+                    var additionalCommands = db.AdditionalCommands.Where(w => w.CustomIntelliSenseId == id).ToList();
+                    foreach (AdditionalCommand item in additionalCommands)
+                    {
+                        if (item.WaitBefore > 0)
+                        {
+                            int msec = (int)(item.WaitBefore * 100);
+                            Thread.Sleep(msec);
+                        }
+                        if (item.DeliveryType == "Copy and Paste")
+                        {
+                            Clipboard.SetText(item.SendKeysValue);
+                            SendKeys.Send("^V");
+                        }
+                        else
+                        {
+                            SendKeys.SendWait(item.SendKeysValue.Replace("{Space}", " "));
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Clipboard.SetText(value);
+                    var message = exception.Message;
+                    if (exception.InnerException != null)
+                    {
+                        message = $"{message} Inner Exception {exception.InnerException.Message}";
+                    }
+                    DisplayMessage displayMessage = new DisplayMessage($"Error occurred with: {value}\r\r{message}");
+                    Application.Run(displayMessage);
+                }
+                Application.Exit();
+
+            }
+            else if (keyCode == Keys.Delete)
+            {
+                CustomIntelliSenseSingleRecord customIntelliSenseSingleRecord = new CustomIntelliSenseSingleRecord();
+                var currentItem = (DataRowView)customIntelliSenseListBox.SelectedItem;
+                var id = Int32.Parse(currentItem.Row["ID"].ToString());
+                customIntelliSenseSingleRecord.CurrentId = id;
+                customIntelliSenseSingleRecord.ShowDialog();
+            }
+
         }
     }
 }
