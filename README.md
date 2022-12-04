@@ -64,8 +64,8 @@ The idea of Voice Launcher is to provide the following functionality:
 
 * Provide away by voice to open a predefined application or file on your computer.
 * When the voice command Launcher (Category) is issued show a list of the launcher items matching the category. Then by issuing a command from the list the item will be launched.
-* When the voice command Show Launcher (SearchTerm)is issued show a list of launch items regardless of the category that contain the search term in the name.
-* When the voice command Edit List is issued, provide the ability to edit the launcher commands on the fly as it were.
+* When the voice command Show Launcher (SearchTerm) is issued show a list of launch items regardless of the category that contain the search term in the name.
+* When the voice command Edit List is issued, provides the ability to edit the launcher commands on the fly as it were.
 
 In addition to the above there is also the Multiple Launcher command, that can be preset to launch a subset of applications/files/folders that may be required at certain times.
 
