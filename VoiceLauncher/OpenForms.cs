@@ -29,14 +29,17 @@ namespace VoiceLauncher
                 // Show all IntelliSense with the word class in the display name or SendKeys value
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Class" };
                 //arguments = new string[] { args[0], "Unknown", "Unknown", "Bootstrap" };
-                // Create Custom IntelliSense
                 //arguments = new string[] { args[0], "Add New", "Some new value" };
                 // Edit Custom IntelliSense with Razor as the language and Snippet as the category
+                // Create Custom IntelliSense
                 // arguments = new string[] { args[0], "Razor", "Snippet" };
+                //arguments = new string[] { args[0], "Todos", "All" };
                 //arguments = new string[] { args[0], "Not Applicable", "Blocks" };
                 // Edit all un-archived Todos
-                //arguments = new string[] { args[0], "Todos", "All" };
-                arguments = new string[] { args[0], "SearchIntelliSense", "using" };
+                //arguments = new string[] { args[0], "SearchIntelliSense", "using" };
+                //arguments = new string[] { args[0], "StartContinuousDictation", "Continuous" };
+                arguments = new string[] { args[0], "SearchIntelliSenseLanguageCategory", "C sharp", "Snippet" };
+
                 //arguments = new string[] { args[0], "Todos", "Blazor" };
                 // Search both custom IntelliSense and Launchers with Blazor in the name or in the SendKeys value or command line
                 //arguments = new string[] { args[0], "Union", "Blazor" };
@@ -94,13 +97,32 @@ namespace VoiceLauncher
             else if (arguments[1].Contains("SearchIntelliSense"))
             {
                 VoiceLauncher.SearchCustomIS customIntelliSense = new VoiceLauncher.SearchCustomIS();
-                customIntelliSense.SearchTerm = arguments[2].Replace("/", "").Trim();
-                //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} SearchTerm:{customIntelliSense.SearchTerm}");
-                customIntelliSense.Text = $"Custom IntelliSense Search Term: {searchTerm}";
-                Application.Run(customIntelliSense);
+                if (arguments[1].Contains("LanguageCategory"))
+                {
+                    customIntelliSense.LanguageName = arguments[2].Replace("/", "").Trim();
+                    customIntelliSense.CategoryName = arguments[3].Replace("/", "").Trim();
+                    //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} SearchTerm:{customIntelliSense.SearchTerm}");
+                    customIntelliSense.Text = $"Custom IntelliSense Language: {customIntelliSense.LanguageName} Category {customIntelliSense.CategoryName}";
+                    Application.Run(customIntelliSense);
+                    
+                }
+                else
+                {
+
+
+                    customIntelliSense.SearchTerm = arguments[2].Replace("/", "").Trim();
+                    //MessageBox.Show($"1:{arguments[1]} 2:{arguments[2]} SearchTerm:{customIntelliSense.SearchTerm}");
+                    customIntelliSense.Text = $"Custom IntelliSense Search Term: {searchTerm}";
+                    Application.Run(customIntelliSense);
+                }
                 return;
             }
-            if (arguments[1].ToLower().Contains("unknown") && arguments[2].ToLower().Contains("unknown"))
+            else if (arguments[1].Contains("SearchIntelliSense"))
+            {
+                
+            }
+
+                if (arguments[1].ToLower().Contains("unknown") && arguments[2].ToLower().Contains("unknown"))
             {
                 VoiceLauncher.CustomIntelliSenseForm customIntelliSense = new VoiceLauncher.CustomIntelliSenseForm();
                 customIntelliSense.SearchTerm = arguments[3].Replace("/", "").Trim();

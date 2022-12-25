@@ -19,6 +19,8 @@ namespace VoiceLauncher
     {
         VoiceLauncherContext db = new VoiceLauncherContext();
         public string SearchTerm { get; set; }
+        public string LanguageName { get; set; }
+        public string CategoryName { get; set; }
         public SearchCustomIS()
         {
             InitializeComponent();
@@ -34,13 +36,21 @@ namespace VoiceLauncher
 
         private void SearchCustomIS_Load(object sender, EventArgs e)
         {
-
-
             textBoxSearch.Text = SearchTerm;
             if (!string.IsNullOrEmpty(SearchTerm))
             {
                 customIntelliSenseBindingSource1.Filter = $"[Display_Value] like '%{SearchTerm}%'";
                 customIntelliSenseBindingSource1.Sort = "[Display_Value]";
+            }
+            else if (!string.IsNullOrWhiteSpace(LanguageName)  && !string.IsNullOrWhiteSpace(CategoryName))
+            {
+                var language=db.Languages.FirstOrDefault(l => l.LanguageName.ToLower()==LanguageName);
+                var category = db.Categories.FirstOrDefault(c => c.CategoryName.ToLower()==CategoryName);
+                if (language!= null  && category!= null )
+                {
+                    customIntelliSenseBindingSource1.Filter = $"[LanguageID] = {language.ID} And [CategoryID] = {category.ID}";
+                    customIntelliSenseBindingSource1.Sort = "[Display_Value]";
+                }
             }
             this.customIntelliSenseTableAdapter.Fill(this.voiceLauncherDataSet.CustomIntelliSense);
             //// TODO: This line of code loads data into the 'voiceLauncherDataSet.CustomIntelliSense' table. You can move, or remove it, as needed.
@@ -88,6 +98,7 @@ namespace VoiceLauncher
             {
                 value = currentItem.Row["SendKeys_Value"].ToString();
                 textBoxResult.Text = value;
+                textBoxRemarks.Text = currentItem.Row["Remarks"].ToString();
                 var  languageId = Int32.Parse(currentItem.Row["LanguageID"].ToString());
                 var  categoryId = Int32.Parse(currentItem.Row["CategoryID"].ToString());
                 var language = db.Languages.Where(c => c.ID == languageId).FirstOrDefault();
@@ -183,6 +194,27 @@ namespace VoiceLauncher
                 customIntelliSenseSingleRecord.ShowDialog();
             }
 
+        }
+
+        //private void buttonCopyText_Click(object sender, EventArgs e)
+        //{
+
+        //}
+
+        private void groupBoxResults_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonCopyText_Click_1(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBoxResult.Text);
+            buttonCopyText.Text = "Copied!";
+        }
+
+        private void buttonInsert_Click_1(object sender, EventArgs e)
+        {
+            PerformAction(Keys.Enter);
         }
     }
 }

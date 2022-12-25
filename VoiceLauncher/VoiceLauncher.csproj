@@ -156,6 +156,9 @@
     <Compile Include="TodosForm.Designer.cs">
       <DependentUpon>TodosForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="VoiceLauncherDataSet.cs">
+      <DependentUpon>VoiceLauncherDataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Include="VoiceLauncherDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
