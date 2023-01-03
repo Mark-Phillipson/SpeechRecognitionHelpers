@@ -29,7 +29,9 @@ namespace ExecuteCommands
                 //arguments = new string[] { args[0], "sapisvr" };
                 //arguments = new string[] { args[0], "click" };
                 //arguments = new string[] { args[0], "/startstoplistening" };
-                arguments = new string[] { args[0], "StartContinuousDictation" };
+                arguments = new string[] { args[0], "ScrollRight" };
+                //arguments = new string[] { args[0], "StartContinuousDictation" };
+
             }
             else
             {
@@ -37,7 +39,7 @@ namespace ExecuteCommands
                 arguments[1] = arguments[1].Replace("/", "");
                 arguments[1] = arguments[1].Trim();
             }
-            //MessageBox.Show("Got here With 36 argument1 " + arguments[1]);
+            //MessageBox.Show("Got here With argument1 " + arguments[1]);
 
             if (arguments[1] == "explorer" || arguments[1] == "excel" || arguments[1] == "winword" || arguments[1] == "msaccess" || arguments[1] == "sapisvr")
             {
@@ -73,6 +75,16 @@ namespace ExecuteCommands
                     Process.Start("C:\\Users\\MPhil\\source\\repos\\ControlWSR\\SpeechContinuousRecognition\\bin\\Release\\net7.0-windows\\SpeechContinuousRecognition.exe");
                 }
                 return " Moved over to continuous dictation ";
+            }
+            else if (arguments[1].ToLower() == "scrollright")
+            {
+                inputSimulator.Mouse.HorizontalScroll(10);
+                return " Scrolled right ";
+            }
+            else if (arguments[1].ToLower() == "scrollleft")
+            {
+                inputSimulator.Mouse.HorizontalScroll(-10);
+                return " Scrolled left ";
             }
             else if (arguments[1].ToLower().Contains("startstoplistening"))
             {

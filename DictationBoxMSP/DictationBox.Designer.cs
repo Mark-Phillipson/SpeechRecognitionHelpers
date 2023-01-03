@@ -50,12 +50,14 @@ namespace DictationBoxMSP
             this.TransferButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.buttonClear = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.buttonClear);
             this.panel1.Controls.Add(this.buttonOpenFile);
             this.panel1.Controls.Add(this.buttonBrowse);
             this.panel1.Controls.Add(this.buttonScreenCapture);
@@ -149,7 +151,7 @@ namespace DictationBoxMSP
             this.buttonPasteText.Location = new System.Drawing.Point(7, 302);
             this.buttonPasteText.Margin = new System.Windows.Forms.Padding(4);
             this.buttonPasteText.Name = "buttonPasteText";
-            this.buttonPasteText.Size = new System.Drawing.Size(189, 38);
+            this.buttonPasteText.Size = new System.Drawing.Size(94, 38);
             this.buttonPasteText.TabIndex = 7;
             this.buttonPasteText.Text = "Paste Text";
             this.buttonPasteText.UseVisualStyleBackColor = false;
@@ -366,6 +368,21 @@ namespace DictationBoxMSP
             this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
+            // buttonClear
+            // 
+            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(38)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.buttonClear.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonClear.ForeColor = System.Drawing.Color.White;
+            this.buttonClear.Location = new System.Drawing.Point(101, 302);
+            this.buttonClear.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonClear.Name = "buttonClear";
+            this.buttonClear.Size = new System.Drawing.Size(94, 38);
+            this.buttonClear.TabIndex = 18;
+            this.buttonClear.Text = "Clear";
+            this.buttonClear.UseVisualStyleBackColor = false;
+            this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            // 
             // DictationBoxForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
@@ -410,6 +427,7 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Button buttonScreenCapture;
         private System.Windows.Forms.Button buttonBrowse;
         private System.Windows.Forms.Button buttonOpenFile;
+        private System.Windows.Forms.Button buttonClear;
     }
 }
 

@@ -222,7 +222,7 @@ namespace DictationBoxMSP
         {
             try
             {
-                if (Clipboard.ContainsText())
+                if (Clipboard.ContainsText()||Clipboard.ContainsData("Rich Text Format"))
                 {
                     this.richTextBox1.Text = Clipboard.GetText();
                 }
@@ -239,6 +239,7 @@ namespace DictationBoxMSP
     private void buttonPasteText_Click(object sender, EventArgs e)
     {
         GetClipboardIntoTextbox();
+            richTextBox1.Focus();
     }
 
     private void FindtextBox_TextChanged(object sender, EventArgs e)
@@ -268,8 +269,9 @@ namespace DictationBoxMSP
     {
         this.Opacity = 0;
         string picturesFolder = CaptureImages();
-        this.Text = $"Dictation Box - Screen saved to {picturesFolder}";
-        this.Opacity = 1;
+        this.Text = $"Dictation Box - Screen saved to {picturesFolder} File name in the clipboard.";
+            Process.Start("explorer.exe", picturesFolder);
+            this.Opacity = 1;
     }
 
     private static string CaptureImages()
@@ -363,5 +365,11 @@ namespace DictationBoxMSP
             this.Text = $"Dictation Box Saved to: {filename} at {DateTime.Now.ToString("HH:mm:ss")}";
         }
     }
-}
+
+        private void buttonClear_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "";
+            richTextBox1.Focus();
+        }
+    }
 }
