@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
+
 using System.Text;
 
 namespace SpeechRecognitionHelpersLibrary
@@ -18,24 +18,24 @@ namespace SpeechRecognitionHelpersLibrary
             {
                 message = exception.Message;
             }
-            message = $"{message}{GetEntityValidationErrors((DbEntityValidationException)exception)}";
+            message = $"{message}{GetEntityValidationErrors((Exception)exception)}";
             return message;
         }
-        public static string GetEntityValidationErrors(DbEntityValidationException e)
+        public static string GetEntityValidationErrors(Exception e)
         {
             var message = "";
-            foreach (var eve in e.EntityValidationErrors)
-            {
-                string name = eve.Entry.Entity.GetType().Name;
-                string state = eve.Entry.State.ToString();
-                message = $"Entity of type \"{name}\" in state \"{state}\" has the following validation errors:";
-                foreach (var ve in eve.ValidationErrors)
-                {
-                    string propertyName = ve.PropertyName;
-                    string errorMessage = ve.ErrorMessage;
-                    message = message + $"- Property: \"{propertyName}\", Error: \"{errorMessage}\"";
-                }
-            }
+            //foreach (var eve in e.EntityValidationErrors)
+            //{
+            //    string name = eve.Entry.Entity.GetType().Name;
+            //    string state = eve.Entry.State.ToString();
+            //    message = $"Entity of type \"{name}\" in state \"{state}\" has the following validation errors:";
+            //    foreach (var ve in eve.ValidationErrors)
+            //    {
+            //        string propertyName = ve.PropertyName;
+            //        string errorMessage = ve.ErrorMessage;
+            //        message = message + $"- Property: \"{propertyName}\", Error: \"{errorMessage}\"";
+            //    }
+            //}
             return message;
         }
     }

@@ -112,6 +112,10 @@
       <Project>{b8ec6e9c-11e5-420d-93b0-57302c39a907}</Project>
       <Name>BrowseScripts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DictationBoxMSP\DictationBoxMSP.csproj">
+      <Project>{037835a1-6de0-4a46-ba83-66b7db440de6}</Project>
+      <Name>DictationBoxMSP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExecuteCommands\ExecuteCommands.csproj">
       <Project>{85975b05-aeb0-4e87-b4df-9e41422d325a}</Project>
       <Name>ExecuteCommands</Name>
