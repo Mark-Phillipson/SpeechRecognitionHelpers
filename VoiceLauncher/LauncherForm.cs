@@ -225,7 +225,15 @@ namespace VoiceLauncher
                     }
                     else
                     {
-                        Process.Start(commandline);
+                        var psi = new System.Diagnostics.ProcessStartInfo();
+                        psi.UseShellExecute = true;
+                        psi.FileName = commandline;
+                       // psi.Arguments = "--startstreaming";
+                        string path = commandline.Substring(0, commandline.LastIndexOf("\\"));
+                        psi.WorkingDirectory = path;
+                        psi.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+
+                        Process.Start(psi);
                     }
                     Application.Exit();
                 }
@@ -240,6 +248,11 @@ namespace VoiceLauncher
                     MessageBox.Show($"Selected Command Line: {commandline}\r\r{exception.Message}", $"Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
+        }
+
+        private void launcherDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
