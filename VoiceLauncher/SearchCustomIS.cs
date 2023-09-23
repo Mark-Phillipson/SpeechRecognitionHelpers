@@ -230,12 +230,6 @@ namespace VoiceLauncher
       }
 
     }
-
-    //private void buttonCopyText_Click(object sender, EventArgs e)
-    //{
-
-    //}
-
     private void groupBoxResults_Enter(object sender, EventArgs e)
     {
 
@@ -252,9 +246,19 @@ namespace VoiceLauncher
       PerformAction(Keys.Enter);
     }
 
-    private void checkBoxUseInputSimulator_CheckedChanged(object sender, EventArgs e)
-    {
-      _useInputSimulator = checkBoxUseInputSimulator.Checked;
-    }
-  }
+
+		private void checkBoxUseInputSimulator_CheckedChanged_1(object sender, EventArgs e)
+		{
+			_useInputSimulator = checkBoxUseInputSimulator.Checked;
+
+		}
+
+		private void buttonOpenWebsite_Click_1(object sender, EventArgs e)
+		{
+			var currentItem = (DataRowView)customIntelliSenseListBox.SelectedItem;
+			var id = Int32.Parse(currentItem.Row["ID"].ToString());
+			System.Diagnostics.Process.Start($"http://localhost:5000/customintellisense/{id}");
+
+		}
+	}
 }
