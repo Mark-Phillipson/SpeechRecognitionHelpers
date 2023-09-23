@@ -35,8 +35,15 @@ namespace VoiceLauncher.Models
         [Required]
         [StringLength(30)]
         public string DeliveryType { get; set; }
+		[StringLength(60)]
+		public string Variable1 { get; set; }
+		[StringLength(60)]
+		public string Variable2 { get; set; }
+		[StringLength(60)]
+		public string Variable3 { get; set; }
 
-        public virtual Computer Computer { get; set; }
+
+		public virtual Computer Computer { get; set; }
 
         public virtual Category Category { get; set; }
 

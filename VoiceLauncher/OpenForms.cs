@@ -23,7 +23,7 @@ namespace VoiceLauncher
             if (args.Count() < 2)
             {
                 // Edit launchers with the word download contained in the display name
-                arguments = new string[] { args[0], "Launcher", "Unknown", "Specific Apps" };
+                //arguments = new string[] { args[0], "Launcher", "Unknown", "Specific Apps" };
                 // Edit Launchers with Access Projects as the category
                 // arguments = new string[] { args[0], "Launcher", "Access Projects", "Unknown" };
                 // Show all IntelliSense with the word class in the display name or SendKeys value
@@ -38,7 +38,7 @@ namespace VoiceLauncher
                 // Edit all un-archived Todos
                 //arguments = new string[] { args[0], "SearchIntelliSense", "using" };
                 //arguments = new string[] { args[0], "StartContinuousDictation", "Continuous" };
-                //arguments = new string[] { args[0], "SearchIntelliSenseLanguageCategory", "C sharp", "Snippet" };
+                arguments = new string[] { args[0], "SearchIntelliSenseLanguageCategory", "C sharp", "Snippet" };
 
                 //arguments = new string[] { args[0], "Todos", "Blazor" };
                 // Search both custom IntelliSense and Launchers with Blazor in the name or in the SendKeys value or command line
