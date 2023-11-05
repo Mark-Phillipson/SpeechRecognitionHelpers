@@ -1,9 +1,8 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32519.111
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictationBoxMSP", "DictationBoxMSP\DictationBoxMSP.csproj", "{037835A1-6DE0-4A46-BA83-66B7DB440DE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictationBoxMSP", "DictationBoxMSP\DictationBoxMSP.csproj", "{037835A1-6DE0-4A46-BA83-66B7DB440DE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillApplications", "KillApplications\KillApplications.csproj", "{116AD54F-797E-49E6-A898-F6F1AEBC87EA}"
 EndProject
@@ -11,11 +10,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrowseScripts", "BrowseScri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceLauncher", "VoiceLauncher\VoiceLauncher.csproj", "{8B9E2891-69F0-4334-A9B2-D68E9CB3AFB7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExecuteCommands", "ExecuteCommands\ExecuteCommands.csproj", "{85975B05-AEB0-4E87-B4DF-9E41422D325A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExecuteCommands_framework", "ExecuteCommands\ExecuteCommands_framework.csproj", "{85975B05-AEB0-4E87-B4DF-9E41422D325A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestartDragon", "RestartDragon\RestartDragon\RestartDragon.csproj", "{01F85AA1-BC05-46CB-BF87-F261981F6602}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpeechRecognitionHelpersLibrary", "SpeechRecognitionHelpersLibrary\SpeechRecognitionHelpersLibrary.csproj", "{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExecuteCommands", "ExecuteCommands_NET\ExecuteCommands.csproj", "{90FE4008-2A83-407A-8427-578592B492E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +82,14 @@ Global
 		{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}.Release|x64.ActiveCfg = Release|x64
 		{FA141AAC-0AF2-4CB4-A9A8-FABE0BDDBC66}.Release|x64.Build.0 = Release|x64
+		{90FE4008-2A83-407A-8427-578592B492E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90FE4008-2A83-407A-8427-578592B492E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90FE4008-2A83-407A-8427-578592B492E0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{90FE4008-2A83-407A-8427-578592B492E0}.Debug|x64.Build.0 = Debug|Any CPU
+		{90FE4008-2A83-407A-8427-578592B492E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90FE4008-2A83-407A-8427-578592B492E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90FE4008-2A83-407A-8427-578592B492E0}.Release|x64.ActiveCfg = Release|Any CPU
+		{90FE4008-2A83-407A-8427-578592B492E0}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

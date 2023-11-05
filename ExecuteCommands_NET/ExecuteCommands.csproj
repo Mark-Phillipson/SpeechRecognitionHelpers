@@ -1,0 +1,84 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\AdditionalCommand.cs" Link="Models\AdditionalCommand.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ApplicationDbContext.cs" Link="Models\ApplicationDbContext.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ApplicationDetail.cs" Link="Models\ApplicationDetail.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Appointment.cs" Link="Models\Appointment.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Category.cs" Link="Models\Category.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Computer.cs" Link="Models\Computer.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\CssProperty.cs" Link="Models\CssProperty.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\CurrentWindow.cs" Link="Models\CurrentWindow.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\CustomIntelliSense.cs" Link="Models\CustomIntelliSense.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\CustomIntelliSenseViewModel.cs" Link="Models\CustomIntelliSenseViewModel.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\CustomWindowsSpeechCommands.cs" Link="Models\CustomWindowsSpeechCommands.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Example.cs" Link="Models\Example.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\GeneralLookups.cs" Link="Models\GeneralLookups.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\GrammarItem.cs" Link="Models\GrammarItem.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\GrammarName.cs" Link="Models\GrammarName.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\HtmlTag.cs" Link="Models\HtmlTag.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Idiosyncrasies.cs" Link="Models\Idiosyncrasies.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Language.cs" Link="Models\Language.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Launcher.cs" Link="Models\Launcher.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\LauncherMultipleLauncherBridge.cs" Link="Models\LauncherMultipleLauncherBridge.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Logins.cs" Link="Models\Logins.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Microphone.cs" Link="Models\Microphone.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\MigrationHistory.cs" Link="Models\MigrationHistory.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\MousePositions.cs" Link="Models\MousePositions.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\MultipleLauncher.cs" Link="Models\MultipleLauncher.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\PhraseListGrammar.cs" Link="Models\PhraseListGrammar.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Prompt.cs" Link="Models\Prompt.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\PropertyTabPositions.cs" Link="Models\PropertyTabPositions.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\SavedMousePosition.cs" Link="Models\SavedMousePosition.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\SpokenForm.cs" Link="Models\SpokenForm.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Todo.cs" Link="Models\Todo.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ValueToInsert.cs" Link="Models\ValueToInsert.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewCategories.cs" Link="Models\ViewCategories.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewComputers.cs" Link="Models\ViewComputers.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewCustomIntelliSense.cs" Link="Models\ViewCustomIntelliSense.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewHtmlTags.cs" Link="Models\ViewHtmlTags.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewLanguages.cs" Link="Models\ViewLanguages.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewLauncher.cs" Link="Models\ViewLauncher.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewLauncherMultipleLauncherBridge.cs" Link="Models\ViewLauncherMultipleLauncherBridge.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewMousePositions.cs" Link="Models\ViewMousePositions.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewMultipleLauncher.cs" Link="Models\ViewMultipleLauncher.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewPropertyTabPositions.cs" Link="Models\ViewPropertyTabPositions.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewSavedMousePosition.cs" Link="Models\ViewSavedMousePosition.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewValuesToInsert.cs" Link="Models\ViewValuesToInsert.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\VisualStudioCommand.cs" Link="Models\VisualStudioCommand.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\WindowsSpeechVoiceCommand.cs" Link="Models\WindowsSpeechVoiceCommand.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="InputSimulatorCore" Version="1.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DisplayMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="DisplayMessage.Designer.cs">
+      <DependentUpon>DisplayMessage.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="DisplayMessage.resx">
+      <DependentUpon>DisplayMessage.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+</Project>

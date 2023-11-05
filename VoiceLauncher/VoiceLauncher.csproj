@@ -278,9 +278,9 @@
       <Project>{b8ec6e9c-11e5-420d-93b0-57302c39a907}</Project>
       <Name>BrowseScripts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ExecuteCommands\ExecuteCommands.csproj">
+    <ProjectReference Include="..\ExecuteCommands\ExecuteCommands_framework.csproj">
       <Project>{85975b05-aeb0-4e87-b4df-9e41422d325a}</Project>
-      <Name>ExecuteCommands</Name>
+      <Name>ExecuteCommands_framework</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeechRecognitionHelpersLibrary\SpeechRecognitionHelpersLibrary.csproj">
       <Project>{fa141aac-0af2-4cb4-a9a8-fabe0bddbc66}</Project>
