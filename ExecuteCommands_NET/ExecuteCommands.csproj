@@ -39,6 +39,7 @@
     <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\PropertyTabPositions.cs" Link="Models\PropertyTabPositions.cs" />
     <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\SavedMousePosition.cs" Link="Models\SavedMousePosition.cs" />
     <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\SpokenForm.cs" Link="Models\SpokenForm.cs" />
+    <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\TalonAlphabet.cs" Link="Models\TalonAlphabet.cs" />
     <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\Todo.cs" Link="Models\Todo.cs" />
     <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ValueToInsert.cs" Link="Models\ValueToInsert.cs" />
     <Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ViewCategories.cs" Link="Models\ViewCategories.cs" />
@@ -75,10 +76,6 @@
     <EmbeddedResource Update="DisplayMessage.resx">
       <DependentUpon>DisplayMessage.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

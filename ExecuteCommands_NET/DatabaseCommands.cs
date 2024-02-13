@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using WindowsInput.Native;
-using WindowsInput;
-using DataAccessLibrary.Models;
+﻿using DataAccessLibrary.Models;
 using ExecuteCommands.Repositories;
 using SpeechContinuousRecognition;
+using System.Diagnostics;
+using System.Reflection;
+using WindowsInput;
+using WindowsInput.Native;
 
 namespace ExecuteCommands
 {
-	 public  class DatabaseCommands
+	public class DatabaseCommands
 	{
 		IInputSimulator inputSimulator = new InputSimulator();
 		WindowsVoiceCommand windowsVoiceCommand = new WindowsVoiceCommand();
@@ -85,9 +80,9 @@ namespace ExecuteCommands
 							string? methodResult = theMethod.Invoke(customMethods, objects) as string;
 						}
 					}
-					if (action.KeyDownValue != VirtualKeyCode.NONAME && action.KeyDownValue!= null )
+					if (action.KeyDownValue != VirtualKeyCode.NONAME && action.KeyDownValue != null)
 					{
-						inputSimulator.Keyboard.KeyDown((VirtualKeyCode)action.KeyDownValue );
+						inputSimulator.Keyboard.KeyDown((VirtualKeyCode)action.KeyDownValue);
 					}
 					if (!string.IsNullOrWhiteSpace(action.TextToEnter))
 					{
@@ -122,9 +117,9 @@ namespace ExecuteCommands
 						{
 							modifiers.Add(VirtualKeyCode.LWIN);
 						}
-						if (action.KeyPressValue != VirtualKeyCode.NONAME && action.KeyPressValue!=  null )
+						if (action.KeyPressValue != VirtualKeyCode.NONAME && action.KeyPressValue != null)
 						{
-							inputSimulator.Keyboard.ModifiedKeyStroke(modifiers,(VirtualKeyCode) action.KeyPressValue);
+							inputSimulator.Keyboard.ModifiedKeyStroke(modifiers, (VirtualKeyCode)action.KeyPressValue);
 						}
 					}
 					else if (action.KeyPressValue != VirtualKeyCode.NONAME && action.KeyPressValue != null)
@@ -247,7 +242,7 @@ namespace ExecuteCommands
 			}
 			string[] stringSeparators = new string[] { " " };
 			List<string> words = resultRaw.Split(stringSeparators, StringSplitOptions.None).ToList();
-			if (resultRaw.ToLower().StartsWith("add tag"))
+			if (resultRaw.ToLower().StartsWith("add tag")|| resultRaw.ToLower().StartsWith("ad tag"))
 			{
 				PerformHtmlTagsInsertion(inputSimulator, resultRaw);
 				commandRun = true;
@@ -415,7 +410,7 @@ namespace ExecuteCommands
 				inputSimulator.Keyboard.KeyUp(VirtualKeyCode.LWIN);
 			}
 		}
-		private void PerformHtmlTagsInsertion(  IInputSimulator inputSimulator, string resultRaw)
+		private void PerformHtmlTagsInsertion(IInputSimulator inputSimulator, string resultRaw)
 		{
 			string[] stringSeparators = new string[] { " " };
 			List<string> words = resultRaw.Split(stringSeparators, StringSplitOptions.None).ToList();

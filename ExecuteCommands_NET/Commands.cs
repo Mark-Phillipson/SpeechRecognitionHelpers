@@ -1,19 +1,20 @@
 using DataAccessLibrary.Models;
 using DictationBoxMSP;
 using ExecuteCommands.Repositories;
-using Microsoft.VisualBasic.ApplicationServices;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using WindowsInput;
 using WindowsInput.Native;
 
+
 namespace ExecuteCommands
 {
 	public class Commands
 	{
+		[DllImport("user32.dll")]
+		public static extern bool ShowCursor(bool bShow);
 		[DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
-		public static extern IntPtr FindWindow(string lpClassName,
-string lpWindowName);
+		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
 		// Activate an application window.
 		[DllImport("USER32.DLL")]
@@ -45,12 +46,12 @@ string lpWindowName);
 			{
 				//arguments = new string[] { args[0], "Error Message: There is an error in the program!" };
 				//arguments = new string[] { args[0], "explorer" };
-				//arguments = new string[] { args[0], "show cursor" };
+				arguments = new string[] { args[0], "show cursor" };
 				//arguments = new string[] { args[0], "sapisvr" };
 				//arguments = new string[] { args[0], "click" };
 				//arguments = new string[] { args[0], "/startstoplistening" };
 				//arguments = new string[] { args[0], "ScrollRight" };
-				arguments = new string[] { args[0], "sharp", "Jump to Symbol" };
+				//arguments = new string[] { args[0], "sharp", "Jump to Symbol" };
 				//arguments = new string[] { args[0], "StartContinuousDictation" };
 
 			}
@@ -80,7 +81,7 @@ string lpWindowName);
 			}
 			else if (arguments[1].ToLower() == "show cursor")
 			{
-				WinCursors.ShowCursor();
+				ShowMouse.MakeCursorVisible();
 				return "The cursor should now be Visible";
 			}
 			else if (arguments[1].ToLower() == "startcontinuousdictation")
@@ -147,14 +148,14 @@ string lpWindowName);
 				var result = databaseCommands.PerformDatabaseCommands(arguments[2], applicationName);
 				if (!result.commandRun)
 				{
-					DisplayMessage displayMessage = new DisplayMessage(	$"Did not match to a database command. Argument passed in: \n\n[{arguments[2]}]  \n\nResults from performed database .command: \n\n[" + result.commandName + "] \n\nError message: " + result.errorMessage,7000);
+					DisplayMessage displayMessage = new DisplayMessage($"Did not match to a database command. Argument passed in: \n\n[{arguments[2]}]  \n\nResults from performed database .command: \n\n[" + result.commandName + "] \n\nError message: " + result.errorMessage, 7000);
 					Application.Run(displayMessage);
 				}
 				return result.errorMessage ?? "";
 			}
 			else
 			{
-				MessageBox.Show("arguments did not match any commands! 1: "+ arguments[1] +" 2: " + arguments[2] );
+				DisplayMessage displayMessage = new DisplayMessage("Arguments did not match any commands! 1: " + arguments[1] + " 2: " + arguments[2], 2000);
 				return "The arguments supplied does not support any commands in the system";
 			}
 		}

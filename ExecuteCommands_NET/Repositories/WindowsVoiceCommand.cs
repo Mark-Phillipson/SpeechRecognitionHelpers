@@ -1,5 +1,5 @@
 ﻿using DataAccessLibrary.Models;
-
+using ExecuteCommands.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -8,16 +8,16 @@ namespace ExecuteCommands.Repositories
 {
     public class WindowsVoiceCommand
     {
-		ApplicationDbContext Model;
+		VoiceLauncherContext Model;
         public WindowsVoiceCommand()
         {
             if (System.Environment.MachineName == "J40L4V3")
             {
-                Model = new ApplicationDbContext("Data Source=J40L4V3;Initial Catalog=VoiceLauncher;Integrated Security=True;Connect Timeout=120;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                Model = new VoiceLauncherContext("Data Source=J40L4V3;Initial Catalog=VoiceLauncher;Integrated Security=True;Connect Timeout=120;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
             else
             {
-                Model = new ApplicationDbContext("Data Source=Localhost;Initial Catalog=VoiceLauncher;Integrated Security=True;Connect Timeout=120;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                Model = new VoiceLauncherContext("Data Source=Localhost;Initial Catalog=VoiceLauncher;Integrated Security=True;Connect Timeout=120;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
         public List<WindowsSpeechVoiceCommand> GetCommands()
