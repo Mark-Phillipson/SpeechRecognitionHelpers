@@ -8,7 +8,7 @@ namespace ExecuteCommands.Repositories
 {
     public class WindowsVoiceCommand
     {
-		VoiceLauncherContext Model;
+        VoiceLauncherContext Model;
         public WindowsVoiceCommand()
         {
             if (System.Environment.MachineName == "J40L4V3")
@@ -20,12 +20,29 @@ namespace ExecuteCommands.Repositories
                 Model = new VoiceLauncherContext("Data Source=Localhost;Initial Catalog=VoiceLauncher;Integrated Security=True;Connect Timeout=120;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             }
         }
-        public List<WindowsSpeechVoiceCommand> GetCommands()
+        public List<WindowsSpeechVoiceCommand> GetSpokenCommands(string? currentApplicationName = null)
         {
-            var result = Model?.WindowsSpeechVoiceCommands
-                    .AsNoTracking()
-                    .Where(v => v.ApplicationName == "Global")
-                    .ToList();
+            if (Model == null)
+            {
+                throw new Exception("Failed to get commands from database");
+            }
+            List<WindowsSpeechVoiceCommand>? result;
+            if (currentApplicationName != null)
+            {
+                result = Model.WindowsSpeechVoiceCommands
+                        .AsNoTracking()
+                        .Where(v => v.ApplicationName == currentApplicationName || v.ApplicationName == "Global")
+                        .Include(i => i.SpokenForms)
+                        .ToList();
+            }
+            else
+            {
+                result = Model?.WindowsSpeechVoiceCommands
+                        .AsNoTracking()
+                        .Where(v => v.ApplicationName == "Global")
+                        .Include(i => i.SpokenForms)
+                        .ToList();
+            }
             if (result == null)
             {
                 throw new Exception("Failed to get commands from database");
@@ -35,6 +52,10 @@ namespace ExecuteCommands.Repositories
         public string GetEnterCommand(string command)
         {
             if (Model == null)
+            {
+                return "";
+            }
+            if (!command.ToLower().StartsWith("enter"))
             {
                 return "";
             }
@@ -207,7 +228,7 @@ namespace ExecuteCommands.Repositories
             var microphone = Model.Microphones.FirstOrDefault(c => c.Default);
             return microphone;
         }
-        
+
     }
 }
 

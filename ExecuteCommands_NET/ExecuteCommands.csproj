@@ -61,6 +61,7 @@
   <ItemGroup>
     <PackageReference Include="InputSimulatorCore" Version="1.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+    <PackageReference Include="SmartComponents.LocalEmbeddings" Version="0.1.0-preview10148" />
   </ItemGroup>
 
   <ItemGroup>

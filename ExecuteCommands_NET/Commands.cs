@@ -1,11 +1,12 @@
 using DataAccessLibrary.Models;
 using DictationBoxMSP;
 using ExecuteCommands.Repositories;
+using SmartComponents.LocalEmbeddings;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using WindowsInput;
 using WindowsInput.Native;
-
+//dotnet build ExecuteCommands.csproj -c Release
 
 namespace ExecuteCommands
 {
@@ -46,13 +47,14 @@ namespace ExecuteCommands
 			{
 				//arguments = new string[] { args[0], "Error Message: There is an error in the program!" };
 				//arguments = new string[] { args[0], "explorer" };
-				arguments = new string[] { args[0], "show cursor" };
+				// arguments = new string[] { args[0], "show cursor" };
 				//arguments = new string[] { args[0], "sapisvr" };
 				//arguments = new string[] { args[0], "click" };
 				//arguments = new string[] { args[0], "/startstoplistening" };
 				//arguments = new string[] { args[0], "ScrollRight" };
 				//arguments = new string[] { args[0], "sharp", "Jump to Symbol" };
 				//arguments = new string[] { args[0], "StartContinuousDictation" };
+				arguments = new string[] { args[0], "sharp", "password" };
 
 			}
 			else
@@ -129,6 +131,11 @@ namespace ExecuteCommands
 				inputSimulator.Mouse.LeftButtonClick();
 				return "mouseclick performed";
 			}
+			else if (arguments[1].ToLower() == "sharp" && arguments[2].ToLower() == "hold keydown")
+			{
+				HoldDownKey.HoldDownSomeKey(System.Windows.Forms.Keys.C);
+				return "Key held down";
+			}
 			else if (arguments[1].ToLower() == "sharp")
 			{
 				//MessageBox.Show("got to line one three one "+arguments[2]);
@@ -148,8 +155,28 @@ namespace ExecuteCommands
 				var result = databaseCommands.PerformDatabaseCommands(arguments[2], applicationName);
 				if (!result.commandRun)
 				{
-					DisplayMessage displayMessage = new DisplayMessage($"Did not match to a database command. Argument passed in: \n\n[{arguments[2]}]  \n\nResults from performed database .command: \n\n[" + result.commandName + "] \n\nError message: " + result.errorMessage, 7000);
-					Application.Run(displayMessage);
+					List<WindowsSpeechVoiceCommand> voiceCommands = windowsVoiceCommand.GetSpokenCommands(applicationName);
+					using var localCommandEmbedder = new LocalEmbedder();
+					List<string?>? spokenForms;
+					if (voiceCommands.Count > 0)
+					{
+
+						spokenForms = voiceCommands.Select(v => v.SpokenForms?.First().SpokenFormText).ToList();
+
+						IList<(string Item, EmbeddingF32 Embedding)> possibleCommands;
+						possibleCommands = localCommandEmbedder.EmbedRange(
+							spokenForms.ToList());
+						string[] closestCommand = LocalEmbedder.FindClosest(localCommandEmbedder.Embed(arguments[2]), possibleCommands, maxResults: 1);
+						if (closestCommand.Length > 0)
+						{
+							result = databaseCommands.PerformDatabaseCommands(closestCommand[0], applicationName);
+						}
+						else
+						{
+							DisplayMessage displayMessage = new DisplayMessage($"Did not match to a database command. Argument passed in: \n\n[{arguments[2]}]  \n\nResults from performed database .command: \n\n[" + result.commandName + "] \n\nError message: " + result.errorMessage, 7000);
+							Application.Run(displayMessage);
+						}
+					}
 				}
 				return result.errorMessage ?? "";
 			}
