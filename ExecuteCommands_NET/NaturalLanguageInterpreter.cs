@@ -27,6 +27,13 @@ namespace ExecuteCommands
         public ActionBase? InterpretAsync(string text)
         {
             string t = text.ToLowerInvariant();
+            // Send keys
+            if (t.StartsWith("press "))
+            {
+                var keysText = t.Substring(6).Trim();
+                if (!string.IsNullOrWhiteSpace(keysText))
+                    return new SendKeysAction(keysText);
+            }
             // Help/introspection
             if (t.Contains("what can i say") || t.Contains("help") || t.Contains("commands") || t.Contains("what are the commands"))
                 return new ShowHelpAction();
@@ -52,6 +59,29 @@ namespace ExecuteCommands
             if ((t.Contains("move") || t.Contains("put") || t.Contains("send") || t.Contains("shift")) && t.Contains("window") && (t.Contains("other monitor") || t.Contains("next monitor") || t.Contains("second monitor") || t.Contains("another monitor") || t.Contains("other screen") || t.Contains("next screen") || t.Contains("second screen") || t.Contains("another screen") || t.Contains("my other monitor") || t.Contains("my other screen")))
                 return new MoveWindowAction("active", "next", null, null, null);
 
+                // App launch
+                if ((t.Contains("open") || t.Contains("launch") || t.Contains("start")))
+                {
+                    // Map common app names to executables
+                    if (t.Contains("edge") || t.Contains("microsoft edge"))
+                        return new LaunchAppAction("msedge.exe");
+                    if (t.Contains("chrome"))
+                        return new LaunchAppAction("chrome.exe");
+                    if (t.Contains("visual studio code") || t.Contains("code"))
+                        return new LaunchAppAction("code.exe");
+                    if (t.Contains("visual studio"))
+                        return new LaunchAppAction("devenv.exe");
+                    if (t.Contains("outlook"))
+                        return new LaunchAppAction("outlook.exe");
+                    // Fallback: try to extract app name after 'open'
+                    var openIdx = t.IndexOf("open ");
+                    if (openIdx >= 0)
+                    {
+                        var appName = t.Substring(openIdx + 5).Trim();
+                        if (!string.IsNullOrWhiteSpace(appName))
+                            return new LaunchAppAction(appName);
+                    }
+                }
             // Fallback: no match
             return null;
         }
@@ -162,6 +192,83 @@ namespace ExecuteCommands
                             TrayNotificationHelper.ShowNotification("ExecuteCommands.NET Help", helpText, 7000);
                             return helpText;
                         }
+                        case LaunchAppAction app:
+                            {
+                                try
+                                {
+                                    var psi = new System.Diagnostics.ProcessStartInfo(app.AppIdOrPath)
+                                    {
+                                        UseShellExecute = true
+                                    };
+                                    System.Diagnostics.Process.Start(psi);
+                                    return $"Launched app: {app.AppIdOrPath}";
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.IO.File.AppendAllText("app.log", $"Failed to launch app: {app.AppIdOrPath}. Error: {ex.Message}\n");
+                                    return $"Failed to launch app: {app.AppIdOrPath}. Error: {ex.Message}";
+                                }
+                            }
+                        case SendKeysAction keys:
+                            {
+                                try
+                                {
+                                    // Use InputSimulator to send keys
+                                    var sim = new WindowsInput.InputSimulator();
+                                    // Simple parser: split by space, handle modifiers
+                                    var keyParts = keys.KeysText.Split(' ');
+                                    var modifiers = new List<WindowsInput.Native.VirtualKeyCode>();
+                                    var mainKeys = new List<WindowsInput.Native.VirtualKeyCode>();
+                                    foreach (var part in keyParts)
+                                    {
+                                        switch (part)
+                                        {
+                                            case "control":
+                                            case "ctrl":
+                                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.CONTROL);
+                                                break;
+                                            case "shift":
+                                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.SHIFT);
+                                                break;
+                                            case "alt":
+                                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.MENU);
+                                                break;
+                                            case "windows":
+                                            case "win":
+                                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.LWIN);
+                                                break;
+                                            default:
+                                                // Try to parse as key
+                                                if (Enum.TryParse<WindowsInput.Native.VirtualKeyCode>("VK_" + part.ToUpper(), out var vk))
+                                                    mainKeys.Add(vk);
+                                                else if (part.Length == 1 && char.IsLetterOrDigit(part[0]))
+                                                    mainKeys.Add((WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "VK_" + part.ToUpper()));
+                                                else if (part.StartsWith("f") && int.TryParse(part.Substring(1), out int fnum) && fnum >= 1 && fnum <= 24)
+                                                    mainKeys.Add((WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "F" + fnum));
+                                                // else ignore
+                                                break;
+                                        }
+                                    }
+                                    // Send key combination
+                                    if (mainKeys.Count > 0)
+                                    {
+                                        sim.Keyboard.ModifiedKeyStroke(modifiers, mainKeys);
+                                        return $"Sent keys: {keys.KeysText}";
+                                    }
+                                    else if (modifiers.Count > 0)
+                                    {
+                                        sim.Keyboard.KeyDown(modifiers[0]);
+                                        sim.Keyboard.KeyUp(modifiers[0]);
+                                        return $"Sent modifier key: {modifiers[0]}";
+                                    }
+                                    return $"No valid keys found in: {keys.KeysText}";
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.IO.File.AppendAllText("app.log", $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}\n");
+                                    return $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}";
+                                }
+                            }
                     default:
                         return "Unknown action type.";
                 }
