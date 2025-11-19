@@ -9,11 +9,11 @@ namespace ExecuteCommands.Models
 	{
 		readonly string _connectionString;
 		[System.Diagnostics.CodeAnalysis.MaybeNull]
-		private Configuration? _configuration;
+		private Configuration? _configuration = null;
 		public VoiceLauncherContext(string connectionString)
 		{
 			_connectionString = connectionString;
-			// _configuration can be set via a method or property if needed
+			_configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 		}
 		 public virtual DbSet<WindowsSpeechVoiceCommand> WindowsSpeechVoiceCommands { get; set; } 
 		 public  virtual DbSet<SpokenForm> SpokenForms { get; set; }

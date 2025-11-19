@@ -72,6 +72,10 @@ namespace ExecuteCommands.Repositories
         }
         public List<WindowsSpeechVoiceCommand> GetSpecialCommands(string? applicationName, string endsWith)
         {
+            if (Model?.WindowsSpeechVoiceCommands == null)
+            {
+                return new List<WindowsSpeechVoiceCommand>();
+            }
             if (applicationName == null)
             {
                 var result = Model.WindowsSpeechVoiceCommands
@@ -150,6 +154,10 @@ namespace ExecuteCommands.Repositories
         }
         public List<CustomWindowsSpeechCommand>? GetChildActions(int windowsSpeechVoiceCommandId)
         {
+            if (Model?.CustomWindowsSpeechCommands == null)
+            {
+                return null;
+            }
             var results = Model.CustomWindowsSpeechCommands
                     .AsNoTracking()
                     .Where(v => v.WindowsSpeechVoiceCommandId == windowsSpeechVoiceCommandId);
@@ -162,6 +170,10 @@ namespace ExecuteCommands.Repositories
         }
         public List<PhraseListGrammar>? GetPhraseListGrammars()
         {
+            if (Model?.PhraseListGrammars == null)
+            {
+                return null;
+            }
             var results = Model.PhraseListGrammars.AsNoTracking();
             if (results != null)
             {
@@ -172,6 +184,10 @@ namespace ExecuteCommands.Repositories
         }
         public List<DataAccessLibrary.Models.ApplicationDetail>? GetApplicationDetails()
         {
+            if (Model?.ApplicationDetails == null)
+            {
+                return null;
+            }
             var results = Model.ApplicationDetails.AsNoTracking();
             if (results != null)
             {
@@ -182,6 +198,10 @@ namespace ExecuteCommands.Repositories
         }
         public List<Idiosyncrasy>? GetIdiosyncrasies()
         {
+            if (Model?.Idiosyncrasies == null)
+            {
+                return null;
+            }
             var results = Model.Idiosyncrasies.AsNoTracking();
             if (results != null)
             {
@@ -192,6 +212,10 @@ namespace ExecuteCommands.Repositories
         }
         public List<GrammarItem>? GetListItems(string grammarName)
         {
+            if (Model?.GrammarNames == null || Model?.GrammarItems == null)
+            {
+                return null;
+            }
             var result = Model.GrammarNames.Where(v => v.NameOfGrammar == grammarName).FirstOrDefault();
             if (result != null)
             {
@@ -202,18 +226,33 @@ namespace ExecuteCommands.Repositories
         }
         public HtmlTag? GetHtmlTag(string tag)
         {
+            if (Model?.HtmlTags == null)
+            {
+                return null;
+            }
             var result = Model.HtmlTags.Where(v => v.SpokenForm == tag).FirstOrDefault();
             return result;
         }
         public List<HtmlTag> GetHtmlTags()
         {
+            if (Model?.HtmlTags == null)
+            {
+                return new List<HtmlTag>();
+            }
             var result = Model.HtmlTags.Where(v => v.SpokenForm != null).OrderBy(v => v.SpokenForm).ToList();
             return result;
         }
 
         public CustomIntelliSense? GetWord(string searchTerm)
         {
-            var result = Model.CustomIntelliSenses.Where(i => i.LanguageId == 1 && i.CategoryId == 39 && i.DisplayValue.ToLower() == searchTerm.ToLower()).OrderBy(v => v.DisplayValue).FirstOrDefault();
+            if (Model?.CustomIntelliSenses == null)
+            {
+                return null;
+            }
+            var result = Model?.CustomIntelliSenses?
+                .Where(i => i.LanguageId == 1 && i.CategoryId == 39 && i.DisplayValue != null && i.DisplayValue.ToLower() == searchTerm.ToLower())
+                .OrderBy(v => v.DisplayValue)
+                .FirstOrDefault();
             if (result == null)
             {
                 return null;
@@ -223,7 +262,7 @@ namespace ExecuteCommands.Repositories
 
         public List<AdditionalCommand> GetAdditionalCommands(int id)
         {
-            if (Model == null)
+            if (Model?.AdditionalCommands == null)
             {
                 return new List<AdditionalCommand>();
             }
@@ -233,6 +272,10 @@ namespace ExecuteCommands.Repositories
 
         public Microphone? GetMicrophoneFromTable()
         {
+            if (Model?.Microphones == null)
+            {
+                return null;
+            }
             var microphone = Model.Microphones.FirstOrDefault(c => c.Default);
             return microphone;
         }
