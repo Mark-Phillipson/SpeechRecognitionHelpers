@@ -18,6 +18,12 @@ namespace ExecuteCommands
                 }
                 return text.Trim();
             }
+
+            private static string GetLogPath()
+            {
+                string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "app.log");
+                return System.IO.Path.GetFullPath(logPath);
+            }
         // Central list of available commands/actions for AI matching
         public static readonly List<(string Command, string Description)> AvailableCommands = new()
         {
@@ -78,18 +84,62 @@ namespace ExecuteCommands
             public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text)
             {
                 text = (text ?? string.Empty).ToLowerInvariant().Trim();
-                // Remove polite modifiers
+                // Remove polite modifiers and extra punctuation
                 text = RemovePoliteModifiers(text);
-                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
-                // Set window always on top (robust matching)
-                // Accept variants like "float this window above", "make this window float above", "float above other windows", etc.
-                if ((text.Contains("always on top") || text.Contains("on top") ||
-                    text.Contains("float above") || text.Contains("float this window") ||
-                    text.Contains("float above other windows") || text.Contains("make this window float above") ||
-                    text.Contains("make this window float above of this") ||
-                    text.Contains("float this window above") ||
-                    text.Contains("float window above") ||
-                    text.Contains("float above")) && text.Contains("window"))
+                text = text.Replace("  ", " ").Replace(".", "").Replace(",", "").Trim();
+                // Remove extra words that often appear in these commands
+                var extraWords = new[] { "of this", "of others", "of other windows", "on top of others", "on top of this" };
+                foreach (var ew in extraWords) text = text.Replace(ew, "");
+                text = text.Trim();
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+
+                // More robust matching for 'always on top'/'float above' commands
+                var alwaysOnTopPatterns = new[] {
+                    "always on top", "on top", "float above", "float this window", "float above other windows",
+                    "make this window float above", "make this window float", "float this window above",
+                    "float window above", "make window float", "make window always on top",
+                    "put this window on top", "put window on top", "make window float above", "put window above",
+                    "float this window above other windows", "float window above other windows", "float window above others",
+                    "float this window above others", "float window above"
+                };
+                bool matchedAlwaysOnTop = false;
+                foreach (var pattern in alwaysOnTopPatterns)
+                {
+                    if (text.Contains(pattern))
+                    {
+                        matchedAlwaysOnTop = true;
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched pattern: {pattern}\n");
+                        break;
+                    }
+                }
+                // Also match regex variants like 'float.*window.*top' or 'make.*window.*top'
+                if (!matchedAlwaysOnTop)
+                {
+                    var regexPatterns = new[] {
+                        "float.*window.*top", "make.*window.*top", "float.*window.*above", "make.*window.*float", "put.*window.*top", "put.*window.*above"
+                    };
+                    foreach (var rx in regexPatterns)
+                    {
+                        if (System.Text.RegularExpressions.Regex.IsMatch(text, rx))
+                        {
+                            matchedAlwaysOnTop = true;
+                            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched regex: {rx}\n");
+                            break;
+                        }
+                    }
+                    // Catch-all: match any phrase containing 'float', 'window', and 'above' in any order
+                    if (!matchedAlwaysOnTop)
+                    {
+                        var words = new[] { "float", "window", "above" };
+                        bool allPresent = words.All(w => text.Contains(w));
+                        if (allPresent)
+                        {
+                            matchedAlwaysOnTop = true;
+                            System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] InterpretAsync matched catch-all: float/window/above\n");
+                        }
+                    }
+                }
+                if (matchedAlwaysOnTop)
                 {
                     string? app = null;
                     var knownApps = new[] { "code", "msedge", "chrome", "firefox", "devenv", "opera", "brave" };
@@ -102,7 +152,7 @@ namespace ExecuteCommands
                         }
                     }
                     var action = new SetWindowAlwaysOnTopAction(app);
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (always on top)\n");
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (always on top)\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
                 // Send key sequences
@@ -147,7 +197,7 @@ namespace ExecuteCommands
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
                 // Fallback for unhandled commands
-                System.IO.File.AppendAllText("app.log", "[DEBUG] InterpretAsync: No match, returning null\n");
+                System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] InterpretAsync: No match, returning null\n");
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
             // End of InterpretAsync
             }
@@ -156,7 +206,7 @@ namespace ExecuteCommands
 
         public string ExecuteActionAsync(ActionBase action)
         {
-            System.IO.File.AppendAllText("app.log", $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
             if (action is MoveWindowAction move)
         {
                 // Get active window handle
@@ -444,7 +494,7 @@ namespace ExecuteCommands
             var actionTask = InterpretAsync(text);
             actionTask.Wait();
             var action = actionTask.Result;
-            System.IO.File.AppendAllText("app.log", $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
             if (action == null)
             {
                 return $"[Natural mode] No matching action for: {text}";
@@ -458,7 +508,7 @@ namespace ExecuteCommands
             var actionTask = InterpretAsync(text, availableCommands);
             actionTask.Wait();
             var action = actionTask.Result;
-            System.IO.File.AppendAllText("app.log", $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
             if (action == null)
             {
                 // Suggest available commands if no match

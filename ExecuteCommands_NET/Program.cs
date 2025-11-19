@@ -42,11 +42,13 @@ namespace ExecuteCommands_NET
 			Commands commands = new Commands(handleProcesses);
 			string result = "";
 			// Log helper
+			string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "app.log");
+			logPath = System.IO.Path.GetFullPath(logPath);
 			void Log(string message)
 			{
 				try
 				{
-					System.IO.File.AppendAllText("app.log", $"{DateTime.Now}: {message}\n");
+					System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: {message}\n");
 				}
 				catch(Exception exception) {System.Console.WriteLine(exception.Message); }
 			}
