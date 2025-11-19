@@ -11,6 +11,10 @@ namespace ExecuteCommands
     /// </summary>
     public class NaturalLanguageInterpreter
     {
+        // Supported apps for close tab
+        private static readonly string[] SupportedCloseTabApps = new[] { "chrome", "msedge", "firefox", "brave", "opera", "code", "devenv" };
+        public record CloseTabAction : ActionBase { }
+        public record FocusAppAction(string AppName) : ActionBase { }
         // P/Invoke for window management
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -27,6 +31,21 @@ namespace ExecuteCommands
         public ActionBase? InterpretAsync(string text)
         {
             string t = text.ToLowerInvariant();
+            // Mitigate speech misrecognition: 'clothes', 'clothed', etc. as 'close tab'
+            if (t.Contains("close tab") || t.Contains("clothes") || t.Contains("clothed") || t.Contains("close the tab"))
+                return new CloseTabAction();
+
+            // Focus/switch/activate app intent
+            var focusWords = new[] { "switch to ", "focus ", "activate " };
+            foreach (var word in focusWords)
+            {
+                if (t.StartsWith(word))
+                {
+                    var app = t.Substring(word.Length).Trim();
+                    if (!string.IsNullOrWhiteSpace(app))
+                        return new FocusAppAction(app);
+                }
+            }
             // Send keys
             if (t.StartsWith("press "))
             {
@@ -91,6 +110,30 @@ namespace ExecuteCommands
         /// </summary>
         public string ExecuteActionAsync(ActionBase action)
         {
+            if (action is CloseTabAction)
+            {
+                string procName = CurrentApplicationHelper.GetCurrentProcessName();
+                if (string.IsNullOrEmpty(procName))
+                    return "Could not detect current application.";
+                if (SupportedCloseTabApps.Contains(procName))
+                {
+                    try
+                    {
+                        var sim = new WindowsInput.InputSimulator();
+                        sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_W);
+                        return $"Sent Ctrl+W to {procName} (close tab).";
+                    }
+                    catch (Exception ex)
+                    {
+                        System.IO.File.AppendAllText("app.log", $"Failed to send Ctrl+W to {procName}: {ex.Message}\n");
+                        return $"Failed to send Ctrl+W to {procName}: {ex.Message}";
+                    }
+                }
+                else
+                {
+                    return $"Current app '{procName}' is not supported for 'close tab'.";
+                }
+            }
             try
             {
                 switch (action)
