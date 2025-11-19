@@ -8,6 +8,34 @@ namespace ExecuteCommands
 {
     public class NaturalLanguageInterpreter
     {
+        // P/Invoke for MonitorFromWindow
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
+
+        // P/Invoke for GetMonitorInfo
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX lpmi);
+
+        // MONITORINFOEX struct
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public struct MONITORINFOEX
+        {
+            public int cbSize;
+            public RECT rcMonitor;
+            public RECT rcWork;
+            public uint dwFlags;
+            [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValTStr, SizeConst = 32)]
+            public string szDevice;
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        public struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
             // Missing action types
             public record CloseTabAction : ActionBase { }
             public record SetWindowAlwaysOnTopAction(string? Application) : ActionBase;
@@ -20,12 +48,37 @@ namespace ExecuteCommands
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
             private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-            // Stub for InterpretAsync
+            // InterpretAsync implementation
             public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text)
             {
                 text = (text ?? string.Empty).ToLowerInvariant().Trim();
                 System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
-                // Maximize/full screen window (robust match for any phrase)
+                // Set window always on top
+                if ((text.Contains("always on top") || text.Contains("float above") || text.Contains("on top")) && text.Contains("window"))
+                {
+                    string? app = null;
+                    var knownApps = new[] { "code", "msedge", "chrome", "firefox", "devenv", "opera", "brave" };
+                    foreach (var candidate in knownApps)
+                    {
+                        if (text.Contains(candidate))
+                        {
+                            app = candidate;
+                            break;
+                        }
+                    }
+                    var action = new SetWindowAlwaysOnTopAction(app);
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (always on top)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Send key sequences
+                if (text.StartsWith("press "))
+                {
+                    var keysText = text.Substring(6).Trim();
+                    var action = new SendKeysAction(keysText);
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (send keys)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Maximize/full screen window
                 if ((text.Contains("maximize") || text.Contains("full screen")) && text.Contains("window"))
                 {
                     var action = new MoveWindowAction(
@@ -38,11 +91,31 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name}\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
-                // ...existing code...
-                // TODO: Add more rules for other actions
+                // Move window to left half
+                if ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("left"))
+                {
+                    var action = new MoveWindowAction(
+                        Target: "active",
+                        Monitor: "current",
+                        Position: "left",
+                        WidthPercent: 50,
+                        HeightPercent: 100
+                    );
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (left half)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Open documents folder
+                if (text.Contains("open documents"))
+                {
+                    var action = new OpenFolderAction("Documents");
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (documents)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Fallback for unhandled commands
                 System.IO.File.AppendAllText("app.log", "[DEBUG] InterpretAsync: No match, returning null\n");
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
-                }
+            // End of InterpretAsync
+            }
         // Supported apps for close tab
         private static readonly string[] SupportedCloseTabApps = new[] { "chrome", "msedge", "firefox", "brave", "opera", "code", "devenv" };
 
@@ -50,7 +123,7 @@ namespace ExecuteCommands
         {
             System.IO.File.AppendAllText("app.log", $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
             if (action is MoveWindowAction move)
-            {
+        {
                 // Get active window handle
                 IntPtr hWnd = Commands.GetForegroundWindow();
                 if (hWnd == IntPtr.Zero)
@@ -69,7 +142,31 @@ namespace ExecuteCommands
                     }
                     return "Window maximized.";
                 }
-                // TODO: Implement other window move actions (left/right/next monitor)
+                // Move window to left half
+                if (move.Position == "left" && move.WidthPercent == 50 && move.HeightPercent == 100)
+                {
+                    // Get monitor info
+                        IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
+                        MONITORINFOEX info = new MONITORINFOEX();
+                        info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                        bool gotInfo = GetMonitorInfo(monitor, ref info);
+                    if (!gotInfo)
+                        return "Failed to get monitor info.";
+                    var rect = info.rcWork;
+                    int width = (rect.Right - rect.Left) / 2;
+                    int height = rect.Bottom - rect.Top;
+                    int x = rect.Left;
+                    int y = rect.Top;
+                    bool success = SetWindowPos(hWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
+                    if (!success)
+                    {
+                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                        System.IO.File.AppendAllText("app.log", $"Failed to move window left. Win32 error: {error}\n");
+                        return $"Failed to move window left. Win32 error: {error}";
+                    }
+                    return "Window moved to left half.";
+                }
+                // ...existing code...
                 return "[Stub] Window move not implemented for: " + move.ToString();
             }
             else if (action is CloseTabAction)
