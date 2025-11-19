@@ -16,10 +16,31 @@ namespace ExecuteCommands
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
             private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+            // P/Invoke for ShowWindow
+            [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+            private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
             // Stub for InterpretAsync
             public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text)
             {
-                // TODO: Implement actual interpretation logic
+                text = (text ?? string.Empty).ToLowerInvariant().Trim();
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
+                // Maximize/full screen window (robust match for any phrase)
+                if ((text.Contains("maximize") || text.Contains("full screen")) && text.Contains("window"))
+                {
+                    var action = new MoveWindowAction(
+                        Target: "active",
+                        Monitor: "current",
+                        Position: "center",
+                        WidthPercent: 100,
+                        HeightPercent: 100
+                    );
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name}\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // ...existing code...
+                // TODO: Add more rules for other actions
+                System.IO.File.AppendAllText("app.log", "[DEBUG] InterpretAsync: No match, returning null\n");
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
                 }
         // Supported apps for close tab
@@ -27,7 +48,31 @@ namespace ExecuteCommands
 
         public string ExecuteActionAsync(ActionBase action)
         {
-            if (action is CloseTabAction)
+            System.IO.File.AppendAllText("app.log", $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            if (action is MoveWindowAction move)
+            {
+                // Get active window handle
+                IntPtr hWnd = Commands.GetForegroundWindow();
+                if (hWnd == IntPtr.Zero)
+                    return "No active window found.";
+                // Maximize logic
+                if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100)
+                {
+                    // Maximize window
+                    const int SW_MAXIMIZE = 3;
+                    bool success = ShowWindow(hWnd, SW_MAXIMIZE);
+                    if (!success)
+                    {
+                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                        System.IO.File.AppendAllText("app.log", $"Failed to maximize window. Win32 error: {error}\n");
+                        return $"Failed to maximize window. Win32 error: {error}";
+                    }
+                    return "Window maximized.";
+                }
+                // TODO: Implement other window move actions (left/right/next monitor)
+                return "[Stub] Window move not implemented for: " + move.ToString();
+            }
+            else if (action is CloseTabAction)
             {
                 string procName = CurrentApplicationHelper.GetCurrentProcessName();
                 if (string.IsNullOrEmpty(procName))
@@ -196,6 +241,7 @@ namespace ExecuteCommands
             var actionTask = InterpretAsync(text);
             actionTask.Wait();
             var action = actionTask.Result;
+            System.IO.File.AppendAllText("app.log", $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
             if (action == null)
             {
                 return $"[Natural mode] No matching action for: {text}";
