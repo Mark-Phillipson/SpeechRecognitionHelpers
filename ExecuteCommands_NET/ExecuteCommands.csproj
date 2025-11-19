@@ -10,6 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+    <Compile Remove="Tests\IntegrationTests.cs" />
 		<Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\AdditionalCommand.cs" Link="Models\AdditionalCommand.cs" />
 		<Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ApplicationDbContext.cs" Link="Models\ApplicationDbContext.cs" />
 		<Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ApplicationDetail.cs" Link="Models\ApplicationDetail.cs" />
