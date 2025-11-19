@@ -6,8 +6,18 @@ using WindowsInput.Native;
 
 namespace ExecuteCommands
 {
-    public class NaturalLanguageInterpreter
-    {
+        public class NaturalLanguageInterpreter
+        {
+            // Helper to remove polite modifiers from input
+            private static string RemovePoliteModifiers(string text)
+            {
+                var politeWords = new[] { "please", "could you", "would you", "can you", "may you", "kindly", "will you", "would you kindly" };
+                foreach (var word in politeWords)
+                {
+                    text = text.Replace(word, "", StringComparison.InvariantCultureIgnoreCase);
+                }
+                return text.Trim();
+            }
         // Central list of available commands/actions for AI matching
         public static readonly List<(string Command, string Description)> AvailableCommands = new()
         {
@@ -68,6 +78,8 @@ namespace ExecuteCommands
             public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text)
             {
                 text = (text ?? string.Empty).ToLowerInvariant().Trim();
+                // Remove polite modifiers
+                text = RemovePoliteModifiers(text);
                 System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
                 // Set window always on top
                 if ((text.Contains("always on top") || text.Contains("float above") || text.Contains("on top")) && text.Contains("window"))
@@ -453,6 +465,8 @@ namespace ExecuteCommands
         public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text, List<(string Command, string Description)> availableCommands)
         {
             text = (text ?? string.Empty).ToLowerInvariant().Trim();
+            // Remove polite modifiers
+            text = RemovePoliteModifiers(text);
             System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
 
             // Fuzzy match against available commands
