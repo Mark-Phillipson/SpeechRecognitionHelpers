@@ -53,7 +53,6 @@ namespace ExecuteCommands_NET
 
 			Log($"Args: {string.Join(", ", args)}");
 			Log($"Mode: {mode}, Text: {text}");
-			Log($"Current Directory: {Environment.CurrentDirectory}");
 			switch (mode)
 			{
 				case "natural":

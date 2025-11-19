@@ -18,6 +18,9 @@ namespace ExecuteCommands
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         /// <summary>
         /// Interprets the input text and returns an ActionBase (or null if no match)
         /// </summary>
@@ -34,6 +37,7 @@ namespace ExecuteCommands
             if ((t.Contains("open") || t.Contains("show")) && (t.Contains("documents") || t.Contains("document folder")))
                 return new OpenFolderAction("Documents");
 
+
             // Window management - flexible matching
             if ((t.Contains("move") || t.Contains("put") || t.Contains("snap")) && t.Contains("window") && (t.Contains("right") || t.Contains("to the right") || t.Contains("on the right")))
                 return new MoveWindowAction("active", "current", "right", 50, 100);
@@ -44,7 +48,8 @@ namespace ExecuteCommands
             if (t.Contains("window") && (t.Contains("full screen") || t.Contains("maximize") || t.Contains("center")))
                 return new MoveWindowAction("active", "current", "center", 100, 100);
 
-            if (t.Contains("move") && t.Contains("window") && t.Contains("other screen"))
+            // More flexible matching for moving window to another monitor
+            if ((t.Contains("move") || t.Contains("put") || t.Contains("send") || t.Contains("shift")) && t.Contains("window") && (t.Contains("other monitor") || t.Contains("next monitor") || t.Contains("second monitor") || t.Contains("another monitor") || t.Contains("other screen") || t.Contains("next screen") || t.Contains("second screen") || t.Contains("another screen") || t.Contains("my other monitor") || t.Contains("my other screen")))
                 return new MoveWindowAction("active", "next", null, null, null);
 
             // Fallback: no match
@@ -91,6 +96,35 @@ namespace ExecuteCommands
                                     return $"Failed to move window. Win32 error: {error}";
                                 }
                                 return $"Window moved to {move.Position} half.";
+                            }
+
+                            // Implement moving window to next monitor (handle nulls)
+                            if ((move.Monitor == "next") || (move.Position == null && move.WidthPercent == null && move.HeightPercent == null && (move.Target == "active")))
+                            {
+                                var screens = System.Windows.Forms.Screen.AllScreens;
+                                if (screens.Length < 2)
+                                    return "Only one monitor detected.";
+
+                                // Restore window if minimized
+                                const int SW_RESTORE = 9;
+                                ShowWindow(hWnd, SW_RESTORE);
+
+                                // Get current window position
+                                var currentScreen = System.Windows.Forms.Screen.FromHandle(hWnd);
+                                int currentIndex = Array.IndexOf(screens, currentScreen);
+                                int nextIndex = (currentIndex + 1) % screens.Length;
+                                var nextScreen = screens[nextIndex].WorkingArea;
+
+                                // Move window to next screen, maximize
+                                bool success = SetWindowPos(hWnd, IntPtr.Zero, nextScreen.Left, nextScreen.Top, nextScreen.Width, nextScreen.Height, 0x0040);
+                                if (!success)
+                                {
+                                    int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                                    System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
+                                    return $"Failed to move window to next monitor. Win32 error: {error}";
+                                }
+                                SetForegroundWindow(hWnd);
+                                return "Window moved to next monitor.";
                             }
 
                             return $"[Stub] Window move not implemented for: {move}";
