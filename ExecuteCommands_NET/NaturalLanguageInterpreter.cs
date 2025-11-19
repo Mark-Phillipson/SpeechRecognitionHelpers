@@ -2,6 +2,9 @@
     /// Action for showing help/command list.
     /// </summary>
 using System;
+using OpenAI;
+using OpenAI.Chat;
+using OpenAI.Models;
 using ExecuteCommands;
 
 namespace ExecuteCommands
@@ -25,17 +28,98 @@ namespace ExecuteCommands
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
+            /// <summary>
+            /// Uses OpenAI API to interpret text and return an ActionBase (AI fallback).
+            /// </summary>
+            public async Task<ActionBase?> InterpretWithAIAsync(string text)
+            {
+                // Read API key from environment variable
+                string? apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+                if (string.IsNullOrWhiteSpace(apiKey))
+                {
+                    System.IO.File.AppendAllText("app.log", "OPENAI_API_KEY environment variable not set.\n");
+                    return null;
+                }
+                // Set default model name
+                string modelName = "gpt-4.1";
+
+                // Read prompt from markdown file
+                string promptPath = "openai_prompt.md";
+                string prompt;
+                try
+                {
+                    prompt = System.IO.File.ReadAllText(promptPath);
+                }
+                catch (Exception ex)
+                {
+                    System.IO.File.AppendAllText("app.log", $"Failed to read {promptPath}: {ex.Message}\nUsing default prompt.\n");
+                    prompt = "You are an assistant that interprets natural language commands for Windows automation. Output a JSON object for the closest matching action.";
+                }
+
+                System.IO.File.AppendAllText("app.log", $"[AI] Fallback triggered for: {text}\n");
+                try
+                {
+                    var chatClient = new ChatClient("gpt-4o", apiKey);
+                    var messages = new List<ChatMessage>
+                    {
+                        new SystemChatMessage(prompt),
+                        new UserChatMessage(text)
+                    };
+                    var completionResult = await chatClient.CompleteChatAsync(messages);
+                    var completion = completionResult.Value;
+                    var message = completion.Content[0].Text;
+                    System.IO.File.AppendAllText("app.log", $"[AI] Raw response: {message}\n");
+                    if (!string.IsNullOrWhiteSpace(message))
+                    {
+                        try
+                        {
+                            var json = System.Text.Json.JsonDocument.Parse(message);
+                            var root = json.RootElement;
+                            if (root.TryGetProperty("type", out var typeProp))
+                            {
+                                string type = typeProp.GetString() ?? "";
+                                switch (type)
+                                {
+                                    case "MoveWindowAction":
+                                        return new MoveWindowAction(
+                                            root.GetProperty("Target").GetString() ?? "active",
+                                            root.GetProperty("Monitor").GetString() ?? "current",
+                                            root.GetProperty("Position").GetString(),
+                                            root.TryGetProperty("WidthPercent", out var wp) ? wp.GetInt32() : (int?)null,
+                                            root.TryGetProperty("HeightPercent", out var hp) ? hp.GetInt32() : (int?)null
+                                        );
+                                    case "LaunchAppAction":
+                                        return new LaunchAppAction(root.GetProperty("AppIdOrPath").GetString() ?? "");
+                                    case "SendKeysAction":
+                                        return new SendKeysAction(root.GetProperty("KeysText").GetString() ?? "");
+                                    case "OpenFolderAction":
+                                        return new OpenFolderAction(root.GetProperty("KnownFolder").GetString() ?? "");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.IO.File.AppendAllText("app.log", $"Failed to parse OpenAI response: {ex.Message}\nResponse: {message}\n");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.IO.File.AppendAllText("app.log", $"[AI] OpenAI API call failed: {ex.Message}\n");
+                }
+                return null;
+            }
+
         /// <summary>
-        /// Interprets the input text and returns an ActionBase (or null if no match)
+        /// Interprets the input text and returns an ActionBase (rule-based, then AI fallback)
         /// </summary>
-        public ActionBase? InterpretAsync(string text)
+        public async Task<ActionBase?> InterpretAsync(string text)
         {
             string t = text.ToLowerInvariant();
-            // Mitigate speech misrecognition: 'clothes', 'clothed', etc. as 'close tab'
+            // Rule-based matching
             if (t.Contains("close tab") || t.Contains("clothes") || t.Contains("clothed") || t.Contains("close the tab"))
                 return new CloseTabAction();
 
-            // Focus/switch/activate app intent
             var focusWords = new[] { "switch to ", "focus ", "activate " };
             foreach (var word in focusWords)
             {
@@ -46,25 +130,20 @@ namespace ExecuteCommands
                         return new FocusAppAction(app);
                 }
             }
-            // Send keys
             if (t.StartsWith("press "))
             {
                 var keysText = t.Substring(6).Trim();
                 if (!string.IsNullOrWhiteSpace(keysText))
                     return new SendKeysAction(keysText);
             }
-            // Help/introspection
             if (t.Contains("what can i say") || t.Contains("help") || t.Contains("commands") || t.Contains("what are the commands"))
                 return new ShowHelpAction();
 
-            // Folder opening
             if ((t.Contains("open") || t.Contains("show")) && (t.Contains("downloads") || t.Contains("download folder")))
                 return new OpenFolderAction("Downloads");
             if ((t.Contains("open") || t.Contains("show")) && (t.Contains("documents") || t.Contains("document folder")))
                 return new OpenFolderAction("Documents");
 
-
-            // Window management - flexible matching
             if ((t.Contains("move") || t.Contains("put") || t.Contains("snap")) && t.Contains("window") && (t.Contains("right") || t.Contains("to the right") || t.Contains("on the right")))
                 return new MoveWindowAction("active", "current", "right", 50, 100);
 
@@ -74,35 +153,38 @@ namespace ExecuteCommands
             if (t.Contains("window") && (t.Contains("full screen") || t.Contains("maximize") || t.Contains("center")))
                 return new MoveWindowAction("active", "current", "center", 100, 100);
 
-            // More flexible matching for moving window to another monitor
             if ((t.Contains("move") || t.Contains("put") || t.Contains("send") || t.Contains("shift")) && t.Contains("window") && (t.Contains("other monitor") || t.Contains("next monitor") || t.Contains("second monitor") || t.Contains("another monitor") || t.Contains("other screen") || t.Contains("next screen") || t.Contains("second screen") || t.Contains("another screen") || t.Contains("my other monitor") || t.Contains("my other screen")))
                 return new MoveWindowAction("active", "next", null, null, null);
 
-                // App launch
-                if ((t.Contains("open") || t.Contains("launch") || t.Contains("start")))
+            if ((t.Contains("open") || t.Contains("launch") || t.Contains("start")))
+            {
+                if (t.Contains("edge") || t.Contains("microsoft edge"))
+                    return new LaunchAppAction("msedge.exe");
+                if (t.Contains("chrome"))
+                    return new LaunchAppAction("chrome.exe");
+                if (t.Contains("visual studio code") || t.Contains("code"))
+                    return new LaunchAppAction("code.exe");
+                if (t.Contains("visual studio"))
+                    return new LaunchAppAction("devenv.exe");
+                if (t.Contains("outlook"))
+                    return new LaunchAppAction("outlook.exe");
+                var openIdx = t.IndexOf("open ");
+                if (openIdx >= 0)
                 {
-                    // Map common app names to executables
-                    if (t.Contains("edge") || t.Contains("microsoft edge"))
-                        return new LaunchAppAction("msedge.exe");
-                    if (t.Contains("chrome"))
-                        return new LaunchAppAction("chrome.exe");
-                    if (t.Contains("visual studio code") || t.Contains("code"))
-                        return new LaunchAppAction("code.exe");
-                    if (t.Contains("visual studio"))
-                        return new LaunchAppAction("devenv.exe");
-                    if (t.Contains("outlook"))
-                        return new LaunchAppAction("outlook.exe");
-                    // Fallback: try to extract app name after 'open'
-                    var openIdx = t.IndexOf("open ");
-                    if (openIdx >= 0)
-                    {
-                        var appName = t.Substring(openIdx + 5).Trim();
-                        if (!string.IsNullOrWhiteSpace(appName))
-                            return new LaunchAppAction(appName);
-                    }
+                    var appName = t.Substring(openIdx + 5).Trim();
+                    if (!string.IsNullOrWhiteSpace(appName))
+                        return new LaunchAppAction(appName);
                 }
-            // Fallback: no match
-            return null;
+            }
+
+            // Fallback: call AI if no match
+            string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+            string aiInput = text;
+            if (!string.IsNullOrWhiteSpace(currentApp))
+            {
+                aiInput += $"\nCurrentApplication: {currentApp}";
+            }
+            return await InterpretWithAIAsync(aiInput);
         }
 
         /// <summary>
@@ -374,7 +456,9 @@ namespace ExecuteCommands
 
         public string HandleNaturalAsync(string text)
         {
-            var action = InterpretAsync(text);
+            var actionTask = InterpretAsync(text);
+            actionTask.Wait();
+            var action = actionTask.Result;
             if (action == null)
             {
                 return $"[Natural mode] No matching action for: {text}";
