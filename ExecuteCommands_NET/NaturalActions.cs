@@ -1,5 +1,6 @@
 namespace ExecuteCommands
 {
+    public record ShowHelpAction() : ActionBase;
     // Base type for all actions
     public abstract record ActionBase;
 

@@ -13,10 +13,11 @@ namespace DictationBoxMSP
     public partial class DisplayMessage : Form
     {
       [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-      public string Message { get; set; }
+    public string Message { get; set; } = string.Empty;
         public DisplayMessage(string message,int interval=3000)
         {
             InitializeComponent();
+            this.Message = message;
             this.richTextBoxMessage.Text = message;
             Text = "Error Message (Will hide in three seconds)";
             timer1.Interval = interval;

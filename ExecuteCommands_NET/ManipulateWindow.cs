@@ -30,7 +30,7 @@ namespace ExecuteCommands
         public void BringMainWindowToFront(string processName)
         {
             // get the process
-            Process bProcess = Process.GetProcessesByName(processName).FirstOrDefault();
+            Process? bProcess = Process.GetProcessesByName(processName).FirstOrDefault();
             InputSimulator inputSimulator = new InputSimulator();
             inputSimulator.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.APPS);
             // check if the process is running
@@ -40,7 +40,7 @@ namespace ExecuteCommands
                 if (bProcess.MainWindowHandle == IntPtr.Zero)
                 {
                     // the window is hidden so try to restore it before setting focus.
-                    ShowWindow(bProcess.Handle, ShowWindowEnum.Restore);
+                    ShowWindow(bProcess.MainWindowHandle, ShowWindowEnum.Restore);
                 }
 
                 // set user the focus to the window

@@ -1,6 +1,8 @@
+    /// <summary>
+    /// Action for showing help/command list.
+    /// </summary>
 using System;
 using ExecuteCommands;
-
 
 namespace ExecuteCommands
 {
@@ -9,89 +11,35 @@ namespace ExecuteCommands
     /// </summary>
     public class NaturalLanguageInterpreter
     {
+        // P/Invoke for window management
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
         /// <summary>
         /// Interprets the input text and returns an ActionBase (or null if no match)
         /// </summary>
         public ActionBase? InterpretAsync(string text)
         {
-            text = text.ToLowerInvariant();
+            string t = text.ToLowerInvariant();
+            // Help/introspection
+            if (t.Contains("what can i say") || t.Contains("help") || t.Contains("commands") || t.Contains("what are the commands"))
+                return new ShowHelpAction();
 
-            // Window management
-            if (text.Contains("move") && text.Contains("window") && text.Contains("other screen"))
-            {
-                return new MoveWindowAction(
-                    "active", // Target
-                    "next",   // Monitor
-                    null,      // Position
-                    null,      // WidthPercent
-                    null       // HeightPercent
-                );
-            }
-            if (text.Contains("window") && (text.Contains("full screen") || text.Contains("maximize")))
-            {
-                return new MoveWindowAction(
-                    "active",
-                    "current",
-                    "center",
-                    100,
-                    100
-                );
-            }
-            if (text.Contains("window") && text.Contains("left") && text.Contains("half"))
-            {
-                return new MoveWindowAction(
-                    "active",
-                    "current",
-                    "left",
-                    50,
-                    100
-                );
-            }
-            if (text.Contains("window") && text.Contains("right") && text.Contains("half"))
-            {
-                return new MoveWindowAction(
-                    "active",
-                    "current",
-                    "right",
-                    50,
-                    100
-                );
-            }
+            // Window management - flexible matching
+            if ((t.Contains("move") || t.Contains("put") || t.Contains("snap")) && t.Contains("window") && (t.Contains("right") || t.Contains("to the right") || t.Contains("on the right")))
+                return new MoveWindowAction("active", "current", "right", 50, 100);
 
-            // App launch
-            if (text.StartsWith("open "))
-            {
-                var app = text.Substring(5).Trim();
-                string exe = app switch
-                {
-                    "edge" => "msedge.exe",
-                    "microsoft edge" => "msedge.exe",
-                    "chrome" => "chrome.exe",
-                    "visual studio" => "devenv.exe",
-                    "visual studio code" => "code.exe",
-                    "code" => "code.exe",
-                    "outlook" => "outlook.exe",
-                    _ => app
-                };
-                return new LaunchAppAction(exe);
-            }
+            if ((t.Contains("move") || t.Contains("put") || t.Contains("snap")) && t.Contains("window") && (t.Contains("left") || t.Contains("to the left") || t.Contains("on the left")))
+                return new MoveWindowAction("active", "current", "left", 50, 100);
 
-            // Send keys
-            if (text.StartsWith("press "))
-            {
-                var keys = text.Substring(6).Trim();
-                return new SendKeysAction(keys);
-            }
+            if (t.Contains("window") && (t.Contains("full screen") || t.Contains("maximize") || t.Contains("center")))
+                return new MoveWindowAction("active", "current", "center", 100, 100);
 
-            // Open folder
-            if (text == "open downloads")
-            {
-                return new OpenFolderAction("Downloads");
-            }
-            if (text == "open documents")
-            {
-                return new OpenFolderAction("Documents");
-            }
+            if (t.Contains("move") && t.Contains("window") && t.Contains("other screen"))
+                return new MoveWindowAction("active", "next", null, null, null);
 
             // Fallback: no match
             return null;
@@ -107,37 +55,55 @@ namespace ExecuteCommands
                 switch (action)
                 {
                     case MoveWindowAction move:
-                        // TODO: Implement window management using Win32 APIs
-                        return $"[Stub] Would move window: Target={move.Target}, Monitor={move.Monitor}, Position={move.Position}, Width={move.WidthPercent}, Height={move.HeightPercent}";
-
-                    case LaunchAppAction launch:
-                        try
                         {
-                            var psi = new System.Diagnostics.ProcessStartInfo(launch.AppIdOrPath)
+                            var hWnd = Commands.GetForegroundWindow();
+                            if (hWnd == IntPtr.Zero)
+                                return "No active window found.";
+
+                            if (move.Position == "center" && move.WidthPercent == 100 && move.HeightPercent == 100)
                             {
-                                UseShellExecute = true
-                            };
-                            System.Diagnostics.Process.Start(psi);
-                            return $"Launched app: {launch.AppIdOrPath}";
-                        }
-                        catch (Exception ex)
-                        {
-                            return $"Failed to launch app: {launch.AppIdOrPath}. Error: {ex.Message}";
-                        }
+                                Commands.ShowCursor(true);
+                                ShowWindow(hWnd, 3);
+                                return "Window maximized.";
+                            }
 
-                    case SendKeysAction keys:
-                        // TODO: Implement key simulation using InputSimulator
-                        return $"[Stub] Would send keys: {keys.KeysText}";
+                            if ((move.Position == "left" || move.Position == "right") && move.WidthPercent == 50 && move.HeightPercent == 100)
+                            {
+                                var primaryScreen = System.Windows.Forms.Screen.PrimaryScreen;
+                                if (primaryScreen == null)
+                                    return "No primary screen detected.";
+                                var screen = primaryScreen.WorkingArea;
+                                int width = screen.Width / 2;
+                                int height = screen.Height;
+                                int x = move.Position == "left" ? screen.Left : screen.Left + width;
+                                int y = screen.Top;
+                                bool success = SetWindowPos(hWnd, IntPtr.Zero, x, y, width, height, 0x0040);
+                                if (!success)
+                                {
+                                    int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                                    System.IO.File.AppendAllText("app.log", $"Failed to move window. Win32 error: {error}\n");
+                                    return $"Failed to move window. Win32 error: {error}";
+                                }
+                                return $"Window moved to {move.Position} half.";
+                            }
 
+                            return $"[Stub] Window move not implemented for: {move}";
+                        }
                     case OpenFolderAction folder:
-                        try
                         {
-                            string path = folder.KnownFolder.ToLower() switch
+                            string path;
+                            switch (folder.KnownFolder.ToLower())
                             {
-                                "downloads" => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads"),
-                                "documents" => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                                _ => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                            };
+                                case "downloads":
+                                    path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                                    break;
+                                case "documents":
+                                    path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                    break;
+                                default:
+                                    path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                                    break;
+                            }
                             var psi = new System.Diagnostics.ProcessStartInfo("explorer.exe", path)
                             {
                                 UseShellExecute = true
@@ -145,17 +111,22 @@ namespace ExecuteCommands
                             System.Diagnostics.Process.Start(psi);
                             return $"Opened folder: {folder.KnownFolder} ({path})";
                         }
-                        catch (Exception ex)
+                    case ShowHelpAction:
                         {
-                            return $"Failed to open folder: {folder.KnownFolder}. Error: {ex.Message}";
+                            return "You may solemnly say:\n" +
+                                "- Move this window to the left/right\n" +
+                                "- Maximize this window\n" +
+                                "- Open downloads/documents\n" +
+                                "- Move window to other screen\n" +
+                                "- (More natural commands can be added)";
                         }
-
                     default:
                         return "Unknown action type.";
                 }
             }
             catch (Exception ex)
             {
+                System.IO.File.AppendAllText("app.log", $"Error executing action: {ex.Message}\n");
                 return $"Error executing action: {ex.Message}";
             }
         }

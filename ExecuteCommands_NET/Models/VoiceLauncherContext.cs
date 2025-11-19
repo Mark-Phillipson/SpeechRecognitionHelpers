@@ -8,10 +8,12 @@ namespace ExecuteCommands.Models
 	public partial class VoiceLauncherContext : DbContext
 	{
 		readonly string _connectionString;
-		private Configuration _configuration;
+		[System.Diagnostics.CodeAnalysis.MaybeNull]
+		private Configuration? _configuration;
 		public VoiceLauncherContext(string connectionString)
 		{
 			_connectionString = connectionString;
+			// _configuration can be set via a method or property if needed
 		}
 		 public virtual DbSet<WindowsSpeechVoiceCommand> WindowsSpeechVoiceCommands { get; set; } 
 		 public  virtual DbSet<SpokenForm> SpokenForms { get; set; }

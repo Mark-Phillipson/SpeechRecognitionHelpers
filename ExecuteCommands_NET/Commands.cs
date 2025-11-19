@@ -26,7 +26,6 @@ namespace ExecuteCommands
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetForegroundWindow();
 
-		static uint MOUSEEVENTF_WHEEL = 0x800;
 
 
 		[DllImport("user32.dll")]

@@ -62,7 +62,8 @@ namespace ExecuteCommands
 				{
 					if (dictation != null)
 					{
-						dictation = FormatDictation(dictation, action.HowToFormatDictation);
+						var format = action.HowToFormatDictation ?? "Do Nothing";
+						dictation = FormatDictation(dictation, format);
 					}
 					if (action.WaitTime > 0)
 					{

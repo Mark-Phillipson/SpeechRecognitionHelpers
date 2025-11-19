@@ -124,12 +124,16 @@ namespace ExecuteCommands.Repositories
                     return applicationCommand;
                 }
             }
-            WindowsSpeechVoiceCommand? command = Model?.WindowsSpeechVoiceCommands
+                if (Model == null)
+                {
+                return null;
+                }
+                WindowsSpeechVoiceCommand? command = Model.WindowsSpeechVoiceCommands
                     .AsNoTracking()
                     .Include(i => i.SpokenForms)
                     .Where(v => v.SpokenForms != null && v.SpokenForms.Any(i => i.SpokenFormText.ToLower() == spokenCommand.ToLower()) && v.ApplicationName == "Global")
                     .FirstOrDefault();
-            return command;
+                return command;
         }
         public WindowsSpeechVoiceCommand? GetCommandById(int id)
         {
@@ -219,6 +223,10 @@ namespace ExecuteCommands.Repositories
 
         public List<AdditionalCommand> GetAdditionalCommands(int id)
         {
+            if (Model == null)
+            {
+                return new List<AdditionalCommand>();
+            }
             var result = Model.AdditionalCommands.Where(v => v.CustomIntelliSenseId == id).ToList();
             return result;
         }

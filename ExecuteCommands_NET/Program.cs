@@ -25,12 +25,12 @@ namespace ExecuteCommands_NET
 			// DEBUG: If no arguments, default to natural mode and sample dictation
 			if (args.Length < 2)
 			{
-				args = new string[] { "ExecuteCommands.exe", "natural", "move this window to the other screen" };
-				Console.WriteLine("[DEBUG] No arguments detected. Defaulting to: natural 'move this window to the other screen'");
+				args = new string[] { "ExecuteCommands.exe", "natural", "open downloads" };
+				Console.WriteLine("[DEBUG] No arguments detected. Defaulting to: natural 'open downloads'");
 			}
 
-			string mode = args[1].ToLower();
-			string text = args.Length > 2 ? string.Join(" ", args.Skip(2)) : "";
+			string mode = args[1].TrimStart('/').Trim().ToLower();
+			string text = args.Length > 2 ? string.Join(" ", args.Skip(2)).TrimStart('/').Trim() : "";
 
 			if (string.IsNullOrWhiteSpace(mode))
 			{
@@ -41,6 +41,19 @@ namespace ExecuteCommands_NET
 			IHandleProcesses handleProcesses = new HandleProcesses();
 			Commands commands = new Commands(handleProcesses);
 			string result = "";
+			// Log helper
+			void Log(string message)
+			{
+				try
+				{
+					System.IO.File.AppendAllText("app.log", $"{DateTime.Now}: {message}\n");
+				}
+				catch(Exception exception) {System.Console.WriteLine(exception.Message); }
+			}
+
+			Log($"Args: {string.Join(", ", args)}");
+			Log($"Mode: {mode}, Text: {text}");
+			Log($"Current Directory: {Environment.CurrentDirectory}");
 			switch (mode)
 			{
 				case "natural":
@@ -55,6 +68,7 @@ namespace ExecuteCommands_NET
 					break;
 			}
 
+			Log($"Result: {result}");
 			Console.WriteLine(result);
 
 		}
