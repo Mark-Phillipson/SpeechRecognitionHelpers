@@ -8,6 +8,22 @@ namespace ExecuteCommands
 {
     public class NaturalLanguageInterpreter
     {
+        // Central list of available commands/actions for AI matching
+        public static readonly List<(string Command, string Description)> AvailableCommands = new()
+        {
+            ("maximize window", "Maximize the active window"),
+            ("move window to left half", "Move the active window to the left half of the screen"),
+            ("move window to right half", "Move the active window to the right half of the screen"),
+            ("move window to other monitor", "Move the active window to the next monitor"),
+            ("set window always on top", "Set the active window to always be on top"),
+            ("open downloads", "Open the Downloads folder"),
+            ("open documents", "Open the Documents folder"),
+            ("close tab", "Close the current tab in supported applications"),
+            ("send keys", "Send a key sequence to the active window"),
+            ("launch app", "Launch a specified application"),
+            ("focus app", "Focus a specified application window"),
+            ("show help", "Show help and available commands"),
+        };
         // P/Invoke for MonitorFromWindow
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
@@ -166,7 +182,78 @@ namespace ExecuteCommands
                     }
                     return "Window moved to left half.";
                 }
-                // ...existing code...
+                // Move window to right half
+                if (move.Position == "right" && move.WidthPercent == 50 && move.HeightPercent == 100)
+                {
+                    // Get monitor info
+                        IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
+                        MONITORINFOEX info = new MONITORINFOEX();
+                        info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                        bool gotInfo = GetMonitorInfo(monitor, ref info);
+                    if (!gotInfo)
+                        return "Failed to get monitor info.";
+                    var rect = info.rcWork;
+                    int width = (rect.Right - rect.Left) / 2;
+                    int height = rect.Bottom - rect.Top;
+                    int x = rect.Left + width;
+                    int y = rect.Top;
+                    bool success = SetWindowPos(hWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
+                    if (!success)
+                    {
+                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                        System.IO.File.AppendAllText("app.log", $"Failed to move window right. Win32 error: {error}\n");
+                        return $"Failed to move window right. Win32 error: {error}";
+                    }
+                    return "Window moved to right half.";
+                }
+                // Move window to other monitor
+                if (move.Position == "next" && move.WidthPercent == 0 && move.HeightPercent == 0)
+                {
+                    // Get active window handle
+                    IntPtr activeHWnd = Commands.GetForegroundWindow();
+                    if (activeHWnd == IntPtr.Zero)
+                        return "No active window found.";
+                    // Get current monitor
+                    IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
+                    MONITORINFOEX currentInfo = new MONITORINFOEX();
+                    currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                    bool gotCurrentInfo = GetMonitorInfo(currentMonitor, ref currentInfo);
+                    if (!gotCurrentInfo)
+                        return "Failed to get current monitor info.";
+                    // Find next monitor (circular)
+                    IntPtr nextMonitor = IntPtr.Zero;
+                    foreach (var monitor in GetAllMonitors())
+                    {
+                        if (monitor != currentMonitor)
+                        {
+                            nextMonitor = monitor;
+                            break;
+                        }
+                    }
+                    if (nextMonitor == IntPtr.Zero)
+                        return "No other monitor found.";
+                    // Get next monitor's working area
+                    MONITORINFOEX nextInfo = new MONITORINFOEX();
+                    nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                    bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
+                    if (!gotNextInfo)
+                        return "Failed to get next monitor info.";
+                    // Move window to the center of the next monitor
+                    int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
+                    int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
+                    int widthPercent = (move.WidthPercent ?? 100);
+                    int heightPercent = (move.HeightPercent ?? 100);
+                    int x = nextInfo.rcWork.Left + (width - (width * widthPercent / 100)) / 2;
+                    int y = nextInfo.rcWork.Top + (height - (height * heightPercent / 100)) / 2;
+                    bool success = SetWindowPos(activeHWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
+                    if (!success)
+                    {
+                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                        System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
+                        return $"Failed to move window to next monitor. Win32 error: {error}";
+                    }
+                    return "Window moved to other monitor.";
+                }
                 return "[Stub] Window move not implemented for: " + move.ToString();
             }
             else if (action is CloseTabAction)
@@ -346,5 +433,134 @@ namespace ExecuteCommands
             var result = ExecuteActionAsync(action);
             return $"[Natural mode] {result}";
         }
+
+        public string HandleNaturalAsync(string text, List<(string Command, string Description)> availableCommands)
+        {
+            var actionTask = InterpretAsync(text, availableCommands);
+            actionTask.Wait();
+            var action = actionTask.Result;
+            System.IO.File.AppendAllText("app.log", $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            if (action == null)
+            {
+                // Suggest available commands if no match
+                var suggestions = string.Join(", ", availableCommands.Select(c => c.Command));
+                return $"[Natural mode] No matching action for: {text}. Available commands: {suggestions}";
+            }
+            var result = ExecuteActionAsync(action);
+            return $"[Natural mode] {result}";
+        }
+
+        public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text, List<(string Command, string Description)> availableCommands)
+        {
+            text = (text ?? string.Empty).ToLowerInvariant().Trim();
+            System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
+
+            // Fuzzy match against available commands
+            var bestMatch = availableCommands
+                .Select(cmd => (cmd.Command, Score: GetSimilarityScore(text, cmd.Command)))
+                .OrderByDescending(x => x.Score)
+                .FirstOrDefault();
+
+            // Threshold for fuzzy match (can be tuned)
+            if (bestMatch.Score > 0.6)
+            {
+                // Map best match to action
+                switch (bestMatch.Command)
+                {
+                    case "maximize window":
+                        var action = new MoveWindowAction(Target: "active", Monitor: "current", Position: "center", WidthPercent: 100, HeightPercent: 100);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name}\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                    case "move window to left half":
+                        var leftAction = new MoveWindowAction(Target: "active", Monitor: "current", Position: "left", WidthPercent: 50, HeightPercent: 100);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {leftAction.GetType().Name} (left half)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(leftAction);
+                    case "move window to right half":
+                        var rightAction = new MoveWindowAction(Target: "active", Monitor: "current", Position: "right", WidthPercent: 50, HeightPercent: 100);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {rightAction.GetType().Name} (right half)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(rightAction);
+                    case "move window to other monitor":
+                        var nextAction = new MoveWindowAction(Target: "active", Monitor: "next", Position: "", WidthPercent: 0, HeightPercent: 0);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {nextAction.GetType().Name} (next monitor)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(nextAction);
+                    case "set window always on top":
+                        var topAction = new SetWindowAlwaysOnTopAction(null);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {topAction.GetType().Name} (always on top)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(topAction);
+                    case "open downloads":
+                        var downloadsAction = new OpenFolderAction("Downloads");
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {downloadsAction.GetType().Name} (downloads)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(downloadsAction);
+                    case "open documents":
+                        var documentsAction = new OpenFolderAction("Documents");
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {documentsAction.GetType().Name} (documents)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(documentsAction);
+                    case "close tab":
+                        var closeTabAction = new CloseTabAction();
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {closeTabAction.GetType().Name} (close tab)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(closeTabAction);
+                    case "send keys":
+                        var sendKeysAction = new SendKeysAction(text.Replace("press ", ""));
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {sendKeysAction.GetType().Name} (send keys)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(sendKeysAction);
+                    case "launch app":
+                        var launchAppAction = new LaunchAppAction(text.Replace("open ", ""));
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {launchAppAction.GetType().Name} (launch app)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(launchAppAction);
+                    case "focus app":
+                        // Not implemented, stub
+                        break;
+                    case "show help":
+                        var helpAction = new ShowHelpAction();
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {helpAction.GetType().Name} (help)\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(helpAction);
+                }
+            }
+            System.IO.File.AppendAllText("app.log", "[DEBUG] InterpretAsync: No match, returning null\n");
+            return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+        }
+
+        // Simple similarity score (normalized longest common subsequence)
+        private static double GetSimilarityScore(string input, string command)
+        {
+            input = input.ToLowerInvariant();
+            command = command.ToLowerInvariant();
+            int lcs = LongestCommonSubsequence(input, command);
+            return (double)lcs / Math.Max(input.Length, command.Length);
+        }
+
+        // Longest common subsequence algorithm
+        private static int LongestCommonSubsequence(string a, string b)
+        {
+            int[,] dp = new int[a.Length + 1, b.Length + 1];
+            for (int i = 1; i <= a.Length; i++)
+            {
+                for (int j = 1; j <= b.Length; j++)
+                {
+                    if (a[i - 1] == b[j - 1])
+                        dp[i, j] = dp[i - 1, j - 1] + 1;
+                    else
+                        dp[i, j] = Math.Max(dp[i - 1, j], dp[i, j - 1]);
+                }
+            }
+            return dp[a.Length, b.Length];
+        }
+
+        // Helper to enumerate all monitor handles
+        private static IEnumerable<IntPtr> GetAllMonitors()
+        {
+            var monitors = new List<IntPtr>();
+            bool MonitorEnum(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData)
+            {
+                monitors.Add(hMonitor);
+                return true;
+            }
+            EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, MonitorEnum, IntPtr.Zero);
+            return monitors;
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
+        private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
     }
 }
