@@ -138,6 +138,55 @@ namespace ExecuteCommands
             {
                 switch (action)
                 {
+                        case FocusAppAction focus:
+                            {
+                                // Try to find running process
+                                string appName = focus.AppName.ToLowerInvariant();
+                                string[] knownApps = new[] { "msedge", "chrome", "firefox", "brave", "opera", "code", "devenv", "outlook" };
+                                string exeName = appName;
+                                if (appName == "edge" || appName == "microsoft edge") exeName = "msedge";
+                                if (appName == "chrome") exeName = "chrome";
+                                if (appName == "firefox") exeName = "firefox";
+                                if (appName == "brave") exeName = "brave";
+                                if (appName == "opera") exeName = "opera";
+                                if (appName == "code" || appName == "visual studio code") exeName = "code";
+                                if (appName == "visual studio") exeName = "devenv";
+                                if (appName == "outlook") exeName = "outlook";
+                                var procs = System.Diagnostics.Process.GetProcessesByName(exeName);
+                                if (procs.Length > 0)
+                                {
+                                    // Bring first process window to foreground
+                                    var proc = procs[0];
+                                    IntPtr hWnd = proc.MainWindowHandle;
+                                    if (hWnd != IntPtr.Zero)
+                                    {
+                                        SetForegroundWindow(hWnd);
+                                        return $"Focused app: {exeName}";
+                                    }
+                                    else
+                                    {
+                                        return $"App '{exeName}' is running but has no main window.";
+                                    }
+                                }
+                                else
+                                {
+                                    // Not running, launch
+                                    try
+                                    {
+                                        var psi = new System.Diagnostics.ProcessStartInfo(exeName + ".exe")
+                                        {
+                                            UseShellExecute = true
+                                        };
+                                        System.Diagnostics.Process.Start(psi);
+                                        return $"Launched app: {exeName}.exe";
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        System.IO.File.AppendAllText("app.log", $"Failed to launch app: {exeName}.exe. Error: {ex.Message}\n");
+                                        return $"Failed to launch app: {exeName}.exe. Error: {ex.Message}";
+                                    }
+                                }
+                            }
                     case MoveWindowAction move:
                         {
                             var hWnd = Commands.GetForegroundWindow();
