@@ -12,7 +12,7 @@ namespace ExecuteCommands
         [DllImport("user32.dll")]
         private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-        public static string GetCurrentProcessName()
+        public static string? GetCurrentProcessName()
         {
             IntPtr hwnd = GetForegroundWindow();
             if (hwnd == IntPtr.Zero)
