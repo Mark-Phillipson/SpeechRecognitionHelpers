@@ -36,18 +36,18 @@ namespace ExecuteCommands
 		readonly IHandleProcesses _handleProcesses;
 		readonly InputSimulator inputSimulator = new InputSimulator();
 		string[] arguments= Array.Empty<string>();
+		readonly NaturalLanguageInterpreter _naturalInterpreter = new NaturalLanguageInterpreter();
 		public Commands(IHandleProcesses handleProcesses)
 		{
 			_handleProcesses = handleProcesses;
 		}
 
 		/// <summary>
-		/// Handles natural language commands (stub for now)
+		/// Handles natural language commands by delegating to NaturalLanguageInterpreter
 		/// </summary>
 		public string HandleNaturalAsync(string text)
 		{
-			// TODO: Implement rule-based interpreter and execution
-			return $"[Natural mode stub] Received: {text}";
+			return _naturalInterpreter.HandleNaturalAsync(text);
 		}
 		public string PerformCommand(string[] args)
 		{
