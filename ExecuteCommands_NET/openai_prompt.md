@@ -11,7 +11,7 @@ You are an assistant that interprets natural language commands for Windows autom
 - SendKeysAction
 - OpenFolderAction
 
-Each action type has specific fields. Only output the JSON object, no extra text. Use the schema below:
+Each action type has specific fields. Only output the JSON object, no extra text. **Do not use markdown formatting, triple backticks, or any code block syntax. Only output raw JSON.** Use the schema below:
 
 ## MoveWindowAction
 ```

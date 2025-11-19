@@ -71,5 +71,29 @@ namespace ExecuteCommands_NET.Tests
             string log = GetLastLogLine();
             Assert.Contains("No matching action", log);
         }
+
+        [Fact]
+        public void Test_PutWindowOnTop()
+        {
+            RunApp("natural \"put this window on top\"");
+            string log = GetLastLogLine();
+            Assert.Contains("Window set to always on top", log);
+        }
+
+        [Fact]
+        public void Test_FloatWindowAboveOthers()
+        {
+            RunApp("natural \"float this window above other windows\"");
+            string log = GetLastLogLine();
+            Assert.Contains("Window set to always on top", log);
+        }
+
+        [Fact]
+        public void Test_RestoreWindow()
+        {
+            RunApp("natural \"restore this window\"");
+            string log = GetLastLogLine();
+            Assert.Contains("Window maximized", log);
+        }
     }
 }

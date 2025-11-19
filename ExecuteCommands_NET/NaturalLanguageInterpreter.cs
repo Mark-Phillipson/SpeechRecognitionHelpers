@@ -6,8 +6,93 @@ using WindowsInput.Native;
 
 namespace ExecuteCommands
 {
-        public class NaturalLanguageInterpreter
+    using OpenAI;
+    using OpenAI.Chat;
+    using OpenAI.Models;
+    public class NaturalLanguageInterpreter
+    {
+        /// <summary>
+        /// Uses OpenAI API to interpret text and return an ActionBase (AI fallback).
+        /// </summary>
+        public async System.Threading.Tasks.Task<ActionBase?> InterpretWithAIAsync(string text)
         {
+            // Read API key from environment variable
+            string? apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                System.IO.File.AppendAllText("app.log", "OPENAI_API_KEY environment variable not set.\n");
+                return null;
+            }
+            // Set default model name
+            string modelName = "gpt-4.1";
+
+            // Read prompt from markdown file
+            string promptPath = "openai_prompt.md";
+            string prompt;
+            try
+            {
+                prompt = System.IO.File.ReadAllText(promptPath);
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.AppendAllText("app.log", $"Failed to read {promptPath}: {ex.Message}\nUsing default prompt.\n");
+                prompt = "You are an assistant that interprets natural language commands for Windows automation. Output a JSON object for the closest matching action.";
+            }
+
+            System.IO.File.AppendAllText("app.log", $"[AI] Fallback triggered for: {text}\n");
+            try
+            {
+                var chatClient = new ChatClient(modelName, apiKey);
+                var messages = new List<ChatMessage>
+                {
+                    new SystemChatMessage(prompt),
+                    new UserChatMessage(text)
+                };
+                var completionResult = await chatClient.CompleteChatAsync(messages);
+                var completion = completionResult.Value;
+                var message = completion.Content[0].Text;
+                System.IO.File.AppendAllText("app.log", $"[AI] Raw response: {message}\n");
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    try
+                    {
+                        var json = System.Text.Json.JsonDocument.Parse(message);
+                        var root = json.RootElement;
+                        if (root.TryGetProperty("type", out var typeProp))
+                        {
+                            string type = typeProp.GetString() ?? "";
+                            switch (type)
+                            {
+                                case "MoveWindowAction":
+                                    return new MoveWindowAction(
+                                        root.GetProperty("Target").GetString() ?? "active",
+                                        root.GetProperty("Monitor").GetString() ?? "current",
+                                        root.GetProperty("Position").GetString(),
+                                        root.TryGetProperty("WidthPercent", out var wp) ? wp.GetInt32() : (int?)null,
+                                        root.TryGetProperty("HeightPercent", out var hp) ? hp.GetInt32() : (int?)null
+                                    );
+                                case "LaunchAppAction":
+                                    return new LaunchAppAction(root.GetProperty("AppIdOrPath").GetString() ?? "");
+                                case "SendKeysAction":
+                                    return new SendKeysAction(root.GetProperty("KeysText").GetString() ?? "");
+                                case "OpenFolderAction":
+                                    return new OpenFolderAction(root.GetProperty("KnownFolder").GetString() ?? "");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.IO.File.AppendAllText("app.log", $"Failed to parse OpenAI response: {ex.Message}\nResponse: {message}\n");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.IO.File.AppendAllText("app.log", $"[AI] OpenAI API call failed: {ex.Message}\n");
+            }
+            return null;
+        }
+        // ...existing code...
             // Helper to remove polite modifiers from input
             private static string RemovePoliteModifiers(string text)
             {
@@ -93,15 +178,30 @@ namespace ExecuteCommands
                 text = text.Trim();
                 System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
 
-                // More robust matching for 'always on top'/'float above' commands
+                // More robust matching for 'always on top'/'float above'/'restore' commands
                 var alwaysOnTopPatterns = new[] {
                     "always on top", "on top", "float above", "float this window", "float above other windows",
                     "make this window float above", "make this window float", "float this window above",
                     "float window above", "make window float", "make window always on top",
                     "put this window on top", "put window on top", "make window float above", "put window above",
                     "float this window above other windows", "float window above other windows", "float window above others",
-                    "float this window above others", "float window above"
+                    "float this window above others", "float window above",
+                    "put this window above other windows", "put this window above others", "put window above other windows",
+                    "put window above others", "make this window always on top", "make window always on top"
                 };
+                                // Restore window (un-maximize)
+                                if ((text.Contains("restore") || text.Contains("unmaximize")) && text.Contains("window"))
+                                {
+                                    var action = new MoveWindowAction(
+                                        Target: "active",
+                                        Monitor: "current",
+                                        Position: "center",
+                                        WidthPercent: 80,
+                                        HeightPercent: 80
+                                    );
+                                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (restore window)\n");
+                                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                                }
                 bool matchedAlwaysOnTop = false;
                 foreach (var pattern in alwaysOnTopPatterns)
                 {
@@ -176,6 +276,19 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name}\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
+                // Move window to other monitor (next)
+                if ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && (text.Contains("other monitor") || text.Contains("next monitor") || text.Contains("other screen") || text.Contains("next screen") || text.Contains("my other monitor")))
+                {
+                    var action = new MoveWindowAction(
+                        Target: "active",
+                        Monitor: "next",
+                        Position: "",
+                        WidthPercent: 0,
+                        HeightPercent: 0
+                    );
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (next monitor)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
                 // Move window to left half
                 if ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("left"))
                 {
@@ -196,9 +309,14 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (documents)\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
-                // Fallback for unhandled commands
-                System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] InterpretAsync: No match, returning null\n");
-                return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+                // Fallback for unhandled commands: call AI
+                string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+                string aiInput = text;
+                if (!string.IsNullOrWhiteSpace(currentApp))
+                {
+                    aiInput += $"\nCurrentApplication: {currentApp}";
+                }
+                return InterpretWithAIAsync(aiInput);
             // End of InterpretAsync
             }
         // Supported apps for close tab
