@@ -28,6 +28,12 @@ namespace ExecuteCommands
             if (t.Contains("what can i say") || t.Contains("help") || t.Contains("commands") || t.Contains("what are the commands"))
                 return new ShowHelpAction();
 
+            // Folder opening
+            if ((t.Contains("open") || t.Contains("show")) && (t.Contains("downloads") || t.Contains("download folder")))
+                return new OpenFolderAction("Downloads");
+            if ((t.Contains("open") || t.Contains("show")) && (t.Contains("documents") || t.Contains("document folder")))
+                return new OpenFolderAction("Documents");
+
             // Window management - flexible matching
             if ((t.Contains("move") || t.Contains("put") || t.Contains("snap")) && t.Contains("window") && (t.Contains("right") || t.Contains("to the right") || t.Contains("on the right")))
                 return new MoveWindowAction("active", "current", "right", 50, 100);
