@@ -119,12 +119,14 @@ namespace ExecuteCommands
                         }
                     case ShowHelpAction:
                         {
-                            return "You may solemnly say:\n" +
+                            string helpText = "You may solemnly say:\n" +
                                 "- Move this window to the left/right\n" +
                                 "- Maximize this window\n" +
                                 "- Open downloads/documents\n" +
                                 "- Move window to other screen\n" +
                                 "- (More natural commands can be added)";
+                            TrayNotificationHelper.ShowNotification("ExecuteCommands.NET Help", helpText, 7000);
+                            return helpText;
                         }
                     default:
                         return "Unknown action type.";
