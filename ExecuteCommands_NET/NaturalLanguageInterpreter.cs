@@ -81,8 +81,15 @@ namespace ExecuteCommands
                 // Remove polite modifiers
                 text = RemovePoliteModifiers(text);
                 System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
-                // Set window always on top
-                if ((text.Contains("always on top") || text.Contains("float above") || text.Contains("on top")) && text.Contains("window"))
+                // Set window always on top (robust matching)
+                // Accept variants like "float this window above", "make this window float above", "float above other windows", etc.
+                if ((text.Contains("always on top") || text.Contains("on top") ||
+                    text.Contains("float above") || text.Contains("float this window") ||
+                    text.Contains("float above other windows") || text.Contains("make this window float above") ||
+                    text.Contains("make this window float above of this") ||
+                    text.Contains("float this window above") ||
+                    text.Contains("float window above") ||
+                    text.Contains("float above")) && text.Contains("window"))
                 {
                     string? app = null;
                     var knownApps = new[] { "code", "msedge", "chrome", "firefox", "devenv", "opera", "brave" };
