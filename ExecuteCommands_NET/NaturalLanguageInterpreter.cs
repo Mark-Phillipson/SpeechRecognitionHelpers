@@ -282,7 +282,7 @@ namespace ExecuteCommands
                     var action = new MoveWindowAction(
                         Target: "active",
                         Monitor: "next",
-                        Position: "",
+                        Position: null,
                         WidthPercent: 0,
                         HeightPercent: 0
                     );
@@ -331,8 +331,56 @@ namespace ExecuteCommands
                 IntPtr hWnd = Commands.GetForegroundWindow();
                 if (hWnd == IntPtr.Zero)
                     return "No active window found.";
-                // Maximize logic
-                if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100)
+                // Move window to other monitor
+                if (move.Monitor == "next" && ((move.WidthPercent == 0 || move.WidthPercent == null || move.WidthPercent == 100) && (move.HeightPercent == 0 || move.HeightPercent == null || move.HeightPercent == 100)))
+                {
+                    // Get active window handle
+                    IntPtr activeHWnd = Commands.GetForegroundWindow();
+                    if (activeHWnd == IntPtr.Zero)
+                        return "No active window found.";
+                    // Get current monitor
+                    IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
+                    MONITORINFOEX currentInfo = new MONITORINFOEX();
+                    currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                    bool gotCurrentInfo = GetMonitorInfo(currentMonitor, ref currentInfo);
+                    if (!gotCurrentInfo)
+                        return "Failed to get current monitor info.";
+                    // Find next monitor (circular)
+                    IntPtr nextMonitor = IntPtr.Zero;
+                    foreach (var monitor in GetAllMonitors())
+                    {
+                        if (monitor != currentMonitor)
+                        {
+                            nextMonitor = monitor;
+                            break;
+                        }
+                    }
+                    if (nextMonitor == IntPtr.Zero)
+                        return "No other monitor found.";
+                    // Get next monitor's working area
+                    MONITORINFOEX nextInfo = new MONITORINFOEX();
+                    nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                    bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
+                    if (!gotNextInfo)
+                        return "Failed to get next monitor info.";
+                    // Move window to the center of the next monitor
+                    int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
+                    int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
+                    int widthPercent = (move.WidthPercent ?? 100);
+                    int heightPercent = (move.HeightPercent ?? 100);
+                    int x = nextInfo.rcWork.Left + (width - (width * widthPercent / 100)) / 2;
+                    int y = nextInfo.rcWork.Top + (height - (height * heightPercent / 100)) / 2;
+                    bool success = SetWindowPos(activeHWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
+                    if (!success)
+                    {
+                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                        System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
+                        return $"Failed to move window to next monitor. Win32 error: {error}";
+                    }
+                    return "Window moved to next monitor.";
+                }
+                // Maximize logic (only if not moving to next monitor)
+                if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100 && move.Monitor != "next")
                 {
                     // Maximize window
                     const int SW_MAXIMIZE = 3;
@@ -394,7 +442,7 @@ namespace ExecuteCommands
                     return "Window moved to right half.";
                 }
                 // Move window to other monitor
-                if (move.Position == "next" && move.WidthPercent == 0 && move.HeightPercent == 0)
+                if (move.Monitor == "next" && (move.WidthPercent == 0 || move.WidthPercent == null) && (move.HeightPercent == 0 || move.HeightPercent == null))
                 {
                     // Get active window handle
                     IntPtr activeHWnd = Commands.GetForegroundWindow();
@@ -615,6 +663,17 @@ namespace ExecuteCommands
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
             if (action == null)
             {
+                // Fallback to OpenAI if rule-based match fails
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Fallback to OpenAI for: {text}\n");
+                var aiActionTask = InterpretWithAIAsync(text);
+                aiActionTask.Wait();
+                var aiAction = aiActionTask.Result;
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: OpenAI Action type: {(aiAction == null ? "null" : aiAction.GetType().Name)}\n");
+                if (aiAction != null)
+                {
+                    var aiResult = ExecuteActionAsync(aiAction);
+                    return $"[Natural mode] {aiResult}";
+                }
                 return $"[Natural mode] No matching action for: {text}";
             }
             var result = ExecuteActionAsync(action);
