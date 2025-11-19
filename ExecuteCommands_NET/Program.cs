@@ -10,15 +10,50 @@ namespace ExecuteCommands_NET
 		[STAThread]
 		static void Main()
 		{
-			// To customize application configuration such as set high DPI settings or default font,
-			// see https://aka.ms/applicationconfiguration.
-			//ApplicationConfiguration.Initialize();
-			//Application.Run(new Form1());
+			// -------------------------------------------------------------
+			// CLI contract:
+			//   ExecuteCommands.exe <mode> <dictation>
+			//     <mode>: 'natural', 'sharp', or other string
+			//     <dictation>: free-form text to interpret or execute
+			//
+			// Examples:
+			//   ExecuteCommands.exe natural "move this window to the other screen"
+			//   ExecuteCommands.exe sharp "Jump to Symbol"
+			// -------------------------------------------------------------
 			string[] args = Environment.GetCommandLineArgs();
-			//MessageBox.Show("got to line eighteen of the program");
+
+			// DEBUG: If no arguments, default to natural mode and sample dictation
+			if (args.Length < 2)
+			{
+				args = new string[] { "ExecuteCommands.exe", "natural", "move this window to the other screen" };
+				Console.WriteLine("[DEBUG] No arguments detected. Defaulting to: natural 'move this window to the other screen'");
+			}
+
+			string mode = args[1].ToLower();
+			string text = args.Length > 2 ? string.Join(" ", args.Skip(2)) : "";
+
+			if (string.IsNullOrWhiteSpace(mode))
+			{
+				Console.WriteLine("Error: Mode argument is empty. Usage: ExecuteCommands.exe <mode> <dictation>");
+				return;
+			}
+
 			IHandleProcesses handleProcesses = new HandleProcesses();
 			Commands commands = new Commands(handleProcesses);
-			var result = commands.PerformCommand(args);
+			string result = "";
+			switch (mode)
+			{
+				case "natural":
+					result = commands.HandleNaturalAsync(text);
+					break;
+				case "sharp":
+					result = commands.PerformCommand(new string[] { mode, text });
+					break;
+				default:
+					// For now, treat unknown modes as natural
+					result = commands.HandleNaturalAsync(text);
+					break;
+			}
 
 			Console.WriteLine(result);
 

@@ -12,7 +12,8 @@ namespace DictationBoxMSP
 {
     public partial class DisplayMessage : Form
     {
-        public string Message { get; set; }
+      [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+      public string Message { get; set; }
         public DisplayMessage(string message,int interval=3000)
         {
             InitializeComponent();

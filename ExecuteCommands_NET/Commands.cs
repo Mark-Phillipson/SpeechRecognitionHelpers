@@ -35,14 +35,24 @@ namespace ExecuteCommands
 		public Process? currentProcess { get; set; }
 		readonly IHandleProcesses _handleProcesses;
 		readonly InputSimulator inputSimulator = new InputSimulator();
+		string[] arguments= Array.Empty<string>();
 		public Commands(IHandleProcesses handleProcesses)
 		{
 			_handleProcesses = handleProcesses;
 		}
+
+		/// <summary>
+		/// Handles natural language commands (stub for now)
+		/// </summary>
+		public string HandleNaturalAsync(string text)
+		{
+			// TODO: Implement rule-based interpreter and execution
+			return $"[Natural mode stub] Received: {text}";
+		}
 		public string PerformCommand(string[] args)
 		{
-			string[] arguments;
 			//MessageBox.Show("line 20");
+			arguments = args;
 			if (args.Count() < 2)
 			{
 				//arguments = new string[] { args[0], "Error Message: There is an error in the program!" };
@@ -51,10 +61,9 @@ namespace ExecuteCommands
 				//arguments = new string[] { args[0], "sapisvr" };
 				//arguments = new string[] { args[0], "click" };
 				//arguments = new string[] { args[0], "/startstoplistening" };
-				//arguments = new string[] { args[0], "ScrollRight" };
+				arguments = new string[] { args[0], "ScrollRight" };
 				//arguments = new string[] { args[0], "sharp", "Jump to Symbol" };
 				//arguments = new string[] { args[0], "StartContinuousDictation" };
-				arguments = new string[] { args[0], "sharp", "password" };
 
 			}
 			else
@@ -157,15 +166,20 @@ namespace ExecuteCommands
 				{
 					List<WindowsSpeechVoiceCommand> voiceCommands = windowsVoiceCommand.GetSpokenCommands(applicationName);
 					using var localCommandEmbedder = new LocalEmbedder();
-					List<string?>? spokenForms;
+					List<string> spokenForms;
 					if (voiceCommands.Count > 0)
 					{
 
-						spokenForms = voiceCommands.Select(v => v.SpokenForms?.First().SpokenFormText).ToList();
-
+						spokenForms = voiceCommands.Select(v => v.SpokenForms?.First().SpokenFormText).Cast<string>().ToList();
+					    if (spokenForms.Count == 0)
+						{
+							result.errorMessage = "No spoken forms found";
+							return result.errorMessage ?? "";
+						}
 						IList<(string Item, EmbeddingF32 Embedding)> possibleCommands;
+
 						possibleCommands = localCommandEmbedder.EmbedRange(
-							spokenForms.ToList());
+                            spokenForms.ToList() );
 						string[] closestCommand = LocalEmbedder.FindClosest(localCommandEmbedder.Embed(arguments[2]), possibleCommands, maxResults: 1);
 						if (closestCommand.Length > 0)
 						{

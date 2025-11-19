@@ -2,6 +2,11 @@
 using ExecuteCommands.Repositories;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using System.Windows.Automation;
+
+
 
 using WindowsInput;
 
@@ -56,8 +61,8 @@ namespace SpeechContinuousRecognition
             }
             catch (Exception exception)
             {
-				// 	System.Windows.Forms.MessageBox.Show(exception.Message);
-				AutoClosingMessageBox.Show(exception.Message, "Error trying to start a process", 3000);
+                // 	System.Windows.Forms.MessageBox.Show(exception.Message);
+                AutoClosingMessageBox.Show(exception.Message, "Error trying to start a process", 3000);
             }
             return $"{{Dragon Restarted}}";
         }

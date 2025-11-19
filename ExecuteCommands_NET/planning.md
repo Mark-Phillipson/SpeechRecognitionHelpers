@@ -1,0 +1,228 @@
+# Natural Language Windows Control – Phase 1 Plan
+
+## Goal
+
+Add a **"natural" mode** to the existing .NET assistant so that:
+
+- Talon calls the app like:  
+  `ExecuteCommands.exe natural <dictation>`
+- The app interprets the text and directly performs:
+  - Window management
+  - App launch / switch
+  - Basic key sequences
+  - Opening common folders
+
+No callback into Talon for this phase.
+
+---
+
+## High-Level Flow
+
+1. **Talon**  
+   - Command: `natural <dictation>`  
+   - Runs: `ExecuteCommands.exe natural "<dictation>"`
+
+2. **.NET app (Program.Main)**  
+   - Parses `args[0]` as the *mode* (`natural`, `sharp`, etc.).
+   - Joins the remaining args into a single text string.
+   - If mode is `natural`, calls `HandleNaturalAsync(text)`.
+
+3. **HandleNaturalAsync(text)**  
+   - Calls `InterpretAsync(text)` → returns an `ActionBase` (one of several action types).
+   - Calls `ExecuteActionAsync(action)` to actually perform the automation.
+
+4. **Automation layer**  
+   - Handles actions such as:
+     - Move active window (via Win32)
+     - Launch app (via `Process.Start`)
+     - Send key sequences (via existing input simulator)
+     - Open known folders (via `Environment.GetFolderPath`)
+
+---
+
+## CLI Contract
+
+- Existing:  
+  `ExecuteCommands.exe sharp <dictation>` → existing “sharp” behaviour.
+
+- New:  
+  `ExecuteCommands.exe natural <dictation>` → natural language mode.
+
+### Program.Main outline
+
+- Read `args[0]` as `mode`.
+- `text = string.Join(" ", args.Skip(1))`.
+- `switch(mode)`:
+  - `"natural"` → `HandleNaturalAsync(text)`
+  - `"sharp"` → existing handler
+  - default → treat as natural for now.
+
+---
+
+## Action Model
+
+Create a small set of action types (records) to represent what the interpreter can do:
+
+- `MoveWindowAction`
+  - `Target` (`"active"`)
+  - `Monitor` (`"current" | "next" | "previous"`)
+  - `Position` (`"left" | "right" | "top" | "bottom" | "center" | null`)
+  - `WidthPercent` (1–100, nullable)
+  - `HeightPercent` (1–100, nullable)
+
+- `LaunchAppAction`
+  - `AppIdOrPath` (e.g. `"msedge.exe"`, `"code.exe"`, or full path)
+
+- `SendKeysAction`
+  - `KeysText` – raw text like `"control shift b"` to be parsed by the input simulator layer.
+
+- `OpenFolderAction`
+  - `KnownFolder` – e.g. `"Downloads"`, `"Documents"`.
+
+These are used as the “internal API” between the interpreter and executor.
+
+---
+
+## Natural Language Interpreter (Phase 1 – Rule-based)
+
+Implement `InterpretAsync(string text)` as a simple, deterministic rules engine first.
+
+### Window Management Examples
+
+- `"move this window to the other screen"`
+  - Detect: `text` contains `move`, `window`, `other screen`.
+  - Return `MoveWindowAction(Target: "active", Monitor: "next", Position: null, WidthPercent: null, HeightPercent: null)`.
+
+- `"make this window full screen"` / `"maximize this window"`
+  - Detect: `text` contains `window` and either `full screen` or `maximize`.
+  - Return `MoveWindowAction(Target: "active", Monitor: "current", Position: "center", WidthPercent: 100, HeightPercent: 100)`.
+
+- `"put this window on the left half"`  
+  - Detect: `text` contains `window`, `left`, `half`.
+  - Return `MoveWindowAction(Target: "active", Monitor: "current", Position: "left", WidthPercent: 50, HeightPercent: 100)`.
+
+- `"put this window on the right half"`  
+  - Similar to above but `Position: "right"`.
+
+### App Launch Examples
+
+- Pattern: `"open <something>"`.
+- Extract `<something>` and map to known EXEs:
+
+  - `"edge"` / `"microsoft edge"` → `"msedge.exe"`
+  - `"chrome"` → `"chrome.exe"`
+  - `"visual studio"` → `"devenv.exe"` (or full path)
+  - `"visual studio code"` / `"code"` → `"code.exe"`
+  - `"outlook"` → `"outlook.exe"`
+  - default: use the raw string as `AppIdOrPath`.
+
+Return `LaunchAppAction(AppIdOrPath)`.
+
+### Send Keys Examples
+
+- Pattern: `"press <keys>"`.
+- Strip `"press "` and keep the rest as `KeysText`:
+
+  - `"press control shift b"` → `SendKeysAction("control shift b")`.
+  - `"press alt f4"` → `SendKeysAction("alt f4")`.
+
+The `KeySimulator` will parse and execute these.
+
+### Open Folder Examples
+
+- `"open downloads"` → `OpenFolderAction("Downloads")`.
+- `"open documents"` → `OpenFolderAction("Documents")`.
+
+### Fallback
+
+If nothing matches:
+
+- For now, either:
+  - Return `SendKeysAction("")` (no-op).
+  - Or log “unhandled command”.
+
+Later this can be swapped for an LLM-based interpreter.
+
+---
+
+## Execution Layer
+
+Implement `ExecuteActionAsync(ActionBase action)` to dispatch to helper classes.
+
+### MoveWindowAction → WindowAutomation.MoveActiveWindow
+
+Responsibilities:
+
+- Get active window handle (`GetForegroundWindow`).
+- For full screen:
+  - Call `ShowWindow(hWnd, SW_MAXIMIZE)`.
+
+- For left/right half on current monitor:
+  - Use `MonitorFromWindow` + `GetMonitorInfo` to get working area.
+  - Compute new rectangle (half width, full height).
+  - Use `SetWindowPos` to resize/move the window.
+
+- (Future) For `Monitor == "next"`:
+  - Enumerate monitors and move the window rect to the “next” one.
+
+### LaunchAppAction → AppLauncher.Launch
+
+- Use `ProcessStartInfo` + `Process.Start`.
+- `UseShellExecute = true` so Windows can resolve paths/short names.
+
+### SendKeysAction → KeySimulator.Send
+
+- Parse `KeysText` like `"control shift b"`:
+  - Map to the key codes you already use (e.g. InputSimulator).
+  - Support modifiers: `control`, `shift`, `alt`, `windows`.
+  - Support letters / function keys: `b`, `f4`, etc.
+
+### OpenFolderAction → FolderOpener.OpenKnownFolder
+
+- Map `KnownFolder` to paths:
+  - `"Downloads"` → `<UserProfile>\Downloads`
+  - `"Documents"` → `Environment.GetFolderPath(MyDocuments)`
+- `Process.Start("explorer.exe", path)`.
+
+---
+
+## Talon Wiring (Phase 1)
+
+In Talon:
+
+- Define a command:
+
+  - `natural <dictation>`  
+  - Action: run your .NET app with mode + dictation:
+
+    - Example pseudo-action:  
+      `run("C:\\path\\to\\myassistant.exe", "natural", "{dictation}")`
+
+- Keep the existing `sharp <dictation>` wiring unchanged.
+
+Result:
+
+- You say:  
+  `"natural move this window to the other screen"`  
+- Talon runs:  
+  `myassistant.exe natural move this window to the other screen`
+- Program:
+  - `mode = "natural"`, `text = "move this window to the other screen"`.
+  - `InterpretAsync` → `MoveWindowAction(...)`.
+  - `ExecuteActionAsync` → `WindowAutomation.MoveActiveWindow(...)`.
+
+---
+
+## Future Phases (Notes)
+
+- **Phase 2 – Better interpretation**
+  - Replace / augment `InterpretAsync` with an LLM (Azure OpenAI) using tool/function calling.
+  - Keep the same `ActionBase` types as the target schema.
+  - Add safety rules (no destructive actions without explicit confirmation).
+
+- **Phase 3 – Talon callback (if needed)**
+  - For code editing / Cursorless-type actions, add a `RunTalonVoiceCommandAction`:
+    - Contains a phrase like `"sharp select camel foo"`.
+    - Sent to Talon via a small IPC bridge that calls `simulate()` with that phrase.
+
+For now, the focus is on making **direct .NET automation** for windows/apps/keys/folders feel smooth and reliable.
