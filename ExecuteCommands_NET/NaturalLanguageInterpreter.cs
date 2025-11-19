@@ -20,7 +20,7 @@ namespace ExecuteCommands
             string? apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
             if (string.IsNullOrWhiteSpace(apiKey))
             {
-                System.IO.File.AppendAllText("app.log", "OPENAI_API_KEY environment variable not set.\n");
+                System.IO.File.AppendAllText(GetLogPath(), "OPENAI_API_KEY environment variable not set.\n");
                 return null;
             }
             // Set default model name
@@ -35,11 +35,11 @@ namespace ExecuteCommands
             }
             catch (Exception ex)
             {
-                System.IO.File.AppendAllText("app.log", $"Failed to read {promptPath}: {ex.Message}\nUsing default prompt.\n");
+                System.IO.File.AppendAllText(GetLogPath(), $"Failed to read {promptPath}: {ex.Message}\nUsing default prompt.\n");
                 prompt = "You are an assistant that interprets natural language commands for Windows automation. Output a JSON object for the closest matching action.";
             }
 
-            System.IO.File.AppendAllText("app.log", $"[AI] Fallback triggered for: {text}\n");
+            System.IO.File.AppendAllText(GetLogPath(), $"[AI] Fallback triggered for: {text}\n");
             try
             {
                 var chatClient = new ChatClient(modelName, apiKey);
@@ -51,7 +51,7 @@ namespace ExecuteCommands
                 var completionResult = await chatClient.CompleteChatAsync(messages);
                 var completion = completionResult.Value;
                 var message = completion.Content[0].Text;
-                System.IO.File.AppendAllText("app.log", $"[AI] Raw response: {message}\n");
+                System.IO.File.AppendAllText(GetLogPath(), $"[AI] Raw response: {message}\n");
                 if (!string.IsNullOrWhiteSpace(message))
                 {
                     try
@@ -82,13 +82,13 @@ namespace ExecuteCommands
                     }
                     catch (Exception ex)
                     {
-                        System.IO.File.AppendAllText("app.log", $"Failed to parse OpenAI response: {ex.Message}\nResponse: {message}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), $"Failed to parse OpenAI response: {ex.Message}\nResponse: {message}\n");
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.IO.File.AppendAllText("app.log", $"[AI] OpenAI API call failed: {ex.Message}\n");
+                System.IO.File.AppendAllText(GetLogPath(), $"[AI] OpenAI API call failed: {ex.Message}\n");
             }
             return null;
         }
@@ -669,8 +669,13 @@ namespace ExecuteCommands
                 aiActionTask.Wait();
                 var aiAction = aiActionTask.Result;
                 System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: OpenAI Action type: {(aiAction == null ? "null" : aiAction.GetType().Name)}\n");
-                if (aiAction != null)
+                // Log the raw AI response if available
+                if (aiActionTask.IsCompletedSuccessfully && aiAction != null)
                 {
+                    // Try to get the raw response from the previous AI log
+                    // (The raw response is logged in InterpretWithAIAsync as [AI] Raw response)
+                    // For clarity, add a marker here
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: See '[AI] Raw response' above for actual AI output.\n");
                     var aiResult = ExecuteActionAsync(aiAction);
                     return $"[Natural mode] {aiResult}";
                 }
