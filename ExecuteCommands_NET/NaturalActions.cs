@@ -23,4 +23,8 @@ namespace ExecuteCommands
     public record OpenFolderAction(
         string KnownFolder // e.g. "Downloads", "Documents"
     ) : ActionBase;
+
+    public record SetWindowAlwaysOnTopAction(
+        string? Application // e.g. "code", "msedge", or null for current
+    ) : ActionBase;
 }
