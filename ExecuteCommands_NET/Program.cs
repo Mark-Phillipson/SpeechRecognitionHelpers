@@ -29,8 +29,16 @@ namespace ExecuteCommands_NET
 				Console.WriteLine("[DEBUG] No arguments detected. Defaulting to: natural 'open downloads'");
 			}
 
-			string mode = args[1].TrimStart('/').Trim().ToLower();
-			string text = args.Length > 2 ? string.Join(" ", args.Skip(2)).TrimStart('/').Trim() : "";
+			// Diagnostic: log raw args
+			Console.WriteLine($"[DIAG] Raw args: [{string.Join(", ", args)}]");
+
+			string modeRaw = args[1];
+			string textRaw = args.Length > 2 ? string.Join(" ", args.Skip(2)) : "";
+			string mode = modeRaw.TrimStart('/').Trim().ToLower();
+			string text = textRaw.TrimStart('/').Trim();
+
+			// Diagnostic: log normalized mode/text
+			Console.WriteLine($"[DIAG] Normalized mode: '{mode}', text: '{text}'");
 
 			if (string.IsNullOrWhiteSpace(mode))
 			{
@@ -55,7 +63,8 @@ namespace ExecuteCommands_NET
 			}
 
 			Log($"Args: {string.Join(", ", args)}");
-			Log($"Mode: {mode}, Text: {text}");
+			Log($"ModeRaw: {modeRaw}, TextRaw: {textRaw}");
+			Log($"Normalized Mode: {mode}, Text: {text}");
 			switch (mode)
 			{
 				case "natural":
