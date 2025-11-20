@@ -235,6 +235,7 @@ namespace ExecuteCommands
 
                 // Format command list for display
                 var lines = commands.Select(c => $"- {c.Command}: {c.Description}").ToList();
+                lines.Add("- refresh Visual Studio shortcuts: Reload the latest keyboard shortcuts from Visual Studio settings");
                 string message = $"Available commands:\n\n" + string.Join("\n", lines);
 
                 // If command list is long, show in dialog and use notification as pointer
@@ -305,6 +306,15 @@ namespace ExecuteCommands
                 foreach (var ew in extraWords) text = text.Replace(ew, "");
                 text = text.Trim();
                 System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+
+                // Handle refresh Visual Studio shortcuts command
+                if (text.Contains("refresh visual studio shortcuts") || text.Contains("reload visual studio shortcuts") || text.Contains("update visual studio shortcuts"))
+                {
+                    ExecuteCommands.Helpers.VisualStudioShortcutHelper.RefreshShortcuts();
+                    System.IO.File.AppendAllText(GetLogPath(), "[INFO] Refreshed Visual Studio shortcuts from .vssettings file\n");
+                    ExecuteCommands.TrayNotificationHelper.ShowNotification("Shortcuts Refreshed", "Visual Studio keyboard shortcuts have been reloaded.", 5000);
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+                }
 
                 // Explicit help/command list queries
                 var helpQueries = new[] {
