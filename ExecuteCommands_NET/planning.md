@@ -219,6 +219,24 @@ Result:
 
 ---
 
+
+## Visual Studio MVP Integration – Status & Next Steps
+
+### Current Status
+
+- [x] VisualStudioHelper for COM/EnvDTE command execution is implemented.
+- [x] Interpreter can detect if Visual Studio is the active window.
+- [x] New action type ExecuteVSCommandAction is defined.
+
+### Next Steps
+
+- [ ] Map natural language like "build solution" to ExecuteVSCommandAction when VS is active.
+- [ ] Update executor to call VisualStudioHelper.ExecuteCommand for ExecuteVSCommandAction.
+- [ ] Add logging and error handling for VS command execution.
+- [ ] Test with "build solution" and other canonical VS commands.
+
+---
+
 ## Future Phases (Notes)
 
 - **Phase 2 – Improved AI interpretation**
