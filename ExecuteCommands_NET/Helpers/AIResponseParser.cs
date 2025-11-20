@@ -7,7 +7,7 @@ namespace ExecuteCommands.Helpers
         /// <summary>
         /// Parses an AI response, stripping markdown formatting and deserializing JSON.
         /// </summary>
-        public static T ParseAIResponse<T>(string response)
+        public static T? ParseAIResponse<T>(string response)
         {
             response = response.Trim();
             if (response.StartsWith("```"))

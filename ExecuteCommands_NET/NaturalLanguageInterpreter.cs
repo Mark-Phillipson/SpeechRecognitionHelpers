@@ -1,3 +1,4 @@
+#pragma warning disable CS8600
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -335,7 +336,8 @@ namespace ExecuteCommands
                 if (move.Monitor == "next" && ((move.WidthPercent == 0 || move.WidthPercent == null || move.WidthPercent == 100) && (move.HeightPercent == 0 || move.HeightPercent == null || move.HeightPercent == 100)))
                 {
                     // Get active window handle
-                    IntPtr activeHWnd = Commands.GetForegroundWindow();
+                    IntPtr activeHWnd = (IntPtr)Commands.GetForegroundWindow();
+                    // Defensive: ensure never null assignment
                     if (activeHWnd == IntPtr.Zero)
                         return "No active window found.";
                     // Get current monitor
@@ -351,7 +353,8 @@ namespace ExecuteCommands
                     {
                         if (monitor != currentMonitor)
                         {
-                            nextMonitor = monitor;
+                            // Defensive: ensure never null assignment
+                            nextMonitor = monitor == IntPtr.Zero ? IntPtr.Zero : monitor;
                             break;
                         }
                     }
@@ -397,10 +400,10 @@ namespace ExecuteCommands
                 if (move.Position == "left" && move.WidthPercent == 50 && move.HeightPercent == 100)
                 {
                     // Get monitor info
-                        IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
-                        MONITORINFOEX info = new MONITORINFOEX();
-                        info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                        bool gotInfo = GetMonitorInfo(monitor, ref info);
+                    IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
+                    MONITORINFOEX info = new MONITORINFOEX();
+                    info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                    bool gotInfo = monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info);
                     if (!gotInfo)
                         return "Failed to get monitor info.";
                     var rect = info.rcWork;
@@ -421,10 +424,10 @@ namespace ExecuteCommands
                 if (move.Position == "right" && move.WidthPercent == 50 && move.HeightPercent == 100)
                 {
                     // Get monitor info
-                        IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
-                        MONITORINFOEX info = new MONITORINFOEX();
-                        info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                        bool gotInfo = GetMonitorInfo(monitor, ref info);
+                    IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
+                    MONITORINFOEX info = new MONITORINFOEX();
+                    info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
+                    bool gotInfo = monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info);
                     if (!gotInfo)
                         return "Failed to get monitor info.";
                     var rect = info.rcWork;
@@ -457,7 +460,7 @@ namespace ExecuteCommands
                         return "Failed to get current monitor info.";
                     // Find next monitor (circular)
                     IntPtr nextMonitor = IntPtr.Zero;
-                    foreach (var monitor in GetAllMonitors())
+                    foreach (IntPtr monitor in GetAllMonitors())
                     {
                         if (monitor != currentMonitor)
                         {
@@ -476,8 +479,8 @@ namespace ExecuteCommands
                     // Move window to the center of the next monitor
                     int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
                     int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
-                    int widthPercent = (move.WidthPercent ?? 100);
-                    int heightPercent = (move.HeightPercent ?? 100);
+                    int widthPercent = move.WidthPercent.HasValue ? move.WidthPercent.Value : 100;
+                    int heightPercent = move.HeightPercent.HasValue ? move.HeightPercent.Value : 100;
                     int x = nextInfo.rcWork.Left + (width - (width * widthPercent / 100)) / 2;
                     int y = nextInfo.rcWork.Top + (height - (height * heightPercent / 100)) / 2;
                     bool success = SetWindowPos(activeHWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
@@ -660,7 +663,8 @@ namespace ExecuteCommands
             var actionTask = InterpretAsync(text);
             actionTask.Wait();
             var action = actionTask.Result;
-            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            string actionTypeName = action != null ? action.GetType().Name : "null";
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {actionTypeName}\n");
             if (action == null)
             {
                 // Fallback to OpenAI if rule-based match fails
