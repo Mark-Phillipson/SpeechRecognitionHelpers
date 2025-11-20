@@ -894,12 +894,18 @@ namespace ExecuteCommands
                 // Log the raw AI response if available
                 if (aiActionTask.IsCompletedSuccessfully && aiAction != null)
                 {
-                    // Try to get the raw response from the previous AI log
-                    // (The raw response is logged in InterpretWithAIAsync as [AI] Raw response)
-                    // For clarity, add a marker here
-                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: See '[AI] Raw response' above for actual AI output.\n");
-                    var aiResult = ExecuteActionAsync(aiAction);
-                    return $"[Natural mode] {aiResult}";
+                        // If the original text was 'close tab', override AI fallback to always send Ctrl+W
+                        if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            var closeTabAction = new CloseTabAction();
+                            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Overriding AI fallback for 'close tab' to always send Ctrl+W.\n");
+                            var resultOverride = ExecuteActionAsync(closeTabAction);
+                            return $"[Natural mode] {resultOverride}";
+                        }
+                        // Otherwise, use AI result as normal
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: See '[AI] Raw response' above for actual AI output.\n");
+                        var aiResult = ExecuteActionAsync(aiAction);
+                        return $"[Natural mode] {aiResult}";
                 }
                 System.IO.File.AppendAllText(GetLogPath(), "No matching action\n");
                 // Show auto-closing message box for unmatched command
