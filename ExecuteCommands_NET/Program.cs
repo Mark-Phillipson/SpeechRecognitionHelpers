@@ -44,6 +44,7 @@ namespace ExecuteCommands_NET
 			// Log helper
 			string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "app.log");
 			logPath = System.IO.Path.GetFullPath(logPath);
+			Console.WriteLine($"[DEBUG] Log file path: {logPath}"); // Diagnostic: print log path
 			void Log(string message)
 			{
 				try

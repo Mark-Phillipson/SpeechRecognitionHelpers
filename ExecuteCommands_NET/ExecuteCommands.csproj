@@ -98,4 +98,9 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Include="openai_prompt.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>
