@@ -1,10 +1,10 @@
 ## Build the Application
 ```pwsh
 # Build the main project (requires .NET 10)
-dotnet build --framework net10.0-windows
-dotnet clean --framework net10.0-windows
+dotnet build ExecuteCommands.csproj --framework net10.0-windows 
+dotnet clean ExecuteCommands.csproj --framework net10.0-windows
 
-dotnet build --framework net10.0-windows --configuration Release
+dotnet build ExecuteCommands.csproj --framework net10.0-windows --configuration Release
 
 ## Example Natural Language Actions
 ```pwsh

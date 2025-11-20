@@ -58,7 +58,7 @@ namespace ExecuteCommands_NET
 				try
 				{
 					var logDir = System.IO.Path.GetDirectoryName(logPath);
-					if (!System.IO.Directory.Exists(logDir))
+					if (!string.IsNullOrEmpty(logDir) && !System.IO.Directory.Exists(logDir))
 						System.IO.Directory.CreateDirectory(logDir);
 					System.IO.File.AppendAllText(logPath, $"{DateTime.Now}: {message}\n");
 				}

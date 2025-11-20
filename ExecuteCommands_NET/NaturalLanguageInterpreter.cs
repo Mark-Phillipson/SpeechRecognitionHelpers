@@ -151,7 +151,7 @@ namespace ExecuteCommands
         private static void EnsureLogDirExists(string logPath)
         {
             var logDir = Path.GetDirectoryName(logPath);
-            if (!Directory.Exists(logDir))
+            if (!string.IsNullOrEmpty(logDir) && !Directory.Exists(logDir))
                 Directory.CreateDirectory(logDir);
         }
 
