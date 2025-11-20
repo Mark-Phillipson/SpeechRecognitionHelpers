@@ -12,6 +12,32 @@ namespace ExecuteCommands
     using OpenAI.Models;
     public class NaturalLanguageInterpreter
     {
+        // Expanded app mapping for natural language launching
+        private static readonly Dictionary<string, string> AppMappings = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "calculator", "calc.exe" },
+            { "calc", "calc.exe" },
+            { "notepad", "notepad.exe" },
+            { "edge", "msedge.exe" },
+            { "chrome", "chrome.exe" },
+            { "code", "code.exe" },
+            { "visual studio", "devenv.exe" },
+            { "outlook", "outlook.exe" },
+            { "explorer", "explorer.exe" },
+            { "word", "winword.exe" },
+            { "excel", "excel.exe" },
+            { "powerpoint", "powerpnt.exe" },
+            { "teams", "Teams.exe" },
+            { "onenote", "onenote.exe" },
+            { "paint", "mspaint.exe" },
+            { "terminal", "wt.exe" },
+            { "windows terminal", "wt.exe" },
+            { "cmd", "wt.exe" }, // Always prefer Windows Terminal
+            { "command prompt", "wt.exe" },
+            { "skype", "skype.exe" },
+            { "zoom", "zoom.exe" },
+            { "slack", "slack.exe" }
+        };
         /// <summary>
         /// Uses OpenAI API to interpret text and return an ActionBase (AI fallback).
         /// </summary>
@@ -309,6 +335,33 @@ namespace ExecuteCommands
                     var action = new OpenFolderAction("Documents");
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (documents)\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Open downloads folder
+                if (text.Contains("open downloads"))
+                {
+                    var action = new OpenFolderAction("Downloads");
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (downloads)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Open mapped applications (expanded)
+                if (text.StartsWith("open "))
+                {
+                    var appName = text.Substring(5).Trim();
+                    // Normalize app name (remove 'the', 'app', etc.)
+                    appName = appName.Replace("the ", "").Replace("app", "").Trim();
+                    // Special case: "terminal" or "windows terminal" or "cmd" or "command prompt"
+                    if (appName == "terminal" || appName == "windows terminal" || appName == "cmd" || appName == "command prompt")
+                        appName = "terminal";
+                    if (AppMappings.TryGetValue(appName, out var exe))
+                    {
+                        var action = new LaunchAppAction(exe);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (mapped app: {appName} -> {exe})\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                    }
+                    // Fallback: try raw app name as exe
+                    var fallbackAction = new LaunchAppAction(appName);
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync fallback: {fallbackAction.GetType().Name} (raw app: {appName})\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(fallbackAction);
                 }
                 // Fallback for unhandled commands: call AI
                 string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
