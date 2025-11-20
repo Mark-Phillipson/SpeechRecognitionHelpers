@@ -176,6 +176,81 @@ namespace ExecuteCommands
             ("focus app", "Focus a specified application window"),
             ("show help", "Show help and available commands"),
         };
+
+            // Visual Studio specific commands
+            public static readonly List<(string Command, string Description)> VisualStudioCommands = new()
+            {
+                ("build the solution", "Build the entire solution"),
+                ("build the project", "Build the current project"),
+                ("start debugging", "Start debugging the startup project"),
+                ("start application", "Start without debugging"),
+                ("stop debugging", "Stop debugging"),
+                ("close tab", "Close the current document tab"),
+                ("format document", "Format the current document"),
+                ("find in files", "Open the Find in Files dialog"),
+                ("go to definition", "Go to definition of symbol"),
+                ("rename symbol", "Rename the selected symbol"),
+                ("show solution explorer", "Focus Solution Explorer"),
+                ("open recent files", "Show recent files"),
+            };
+
+            // VS Code specific commands
+            public static readonly List<(string Command, string Description)> VSCodeCommands = new()
+            {
+                ("open file", "Open a file"),
+                ("open folder", "Open a folder"),
+                ("close tab", "Close the current tab"),
+                ("format document", "Format the current document"),
+                ("find in files", "Find in files"),
+                ("go to definition", "Go to definition of symbol"),
+                ("rename symbol", "Rename the selected symbol"),
+                ("show explorer", "Show Explorer"),
+                ("show source control", "Show Source Control"),
+                ("show extensions", "Show Extensions"),
+                ("start debugging", "Start debugging"),
+                ("stop debugging", "Stop debugging"),
+            };
+
+            // Enhanced 'what can I say' logic
+            public static void ShowAvailableCommands()
+            {
+                string? procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+                List<(string Command, string Description)> commands;
+                string appLabel;
+                if (procName == "devenv")
+                {
+                    commands = VisualStudioCommands;
+                    appLabel = "Visual Studio";
+                }
+                else if (procName == "code")
+                {
+                    commands = VSCodeCommands;
+                    appLabel = "VS Code";
+                }
+                else
+                {
+                    commands = AvailableCommands;
+                    appLabel = "General";
+                }
+
+                // Format command list for display
+                var lines = commands.Select(c => $"- {c.Command}: {c.Description}").ToList();
+                string message = $"{appLabel} Supported Commands:\n\n" + string.Join("\n", lines);
+
+                // If short, show in tray notification; if long, show in DisplayMessage dialog
+                if (lines.Count <= 8)
+                {
+                    ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", string.Join("\n", lines), 7000);
+                }
+                else
+                {
+                    // Use DisplayMessage dialog for longer lists
+                    var dlg = new DictationBoxMSP.DisplayMessage(message, 7000);
+                    dlg.Show();
+                }
+                // Also log to app.log for reference
+                System.IO.File.AppendAllText(GetLogPath(), $"[INFO] {appLabel} Supported Commands:\n{message}\n");
+            }
         // P/Invoke for MonitorFromWindow
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);

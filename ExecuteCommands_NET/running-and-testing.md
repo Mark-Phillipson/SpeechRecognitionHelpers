@@ -16,6 +16,7 @@ dotnet run --framework net10.0-windows -- natural "move this window to the other
 dotnet run --framework net10.0-windows -- natural "maximize this window"
 dotnet run --framework net10.0-windows -- natural "put this window on the left half"
 dotnet run --framework net10.0-windows -- natural "put this window on the right half"
+dotnet run --framework net10.0-windows -- natural "Why don't you just eat some cake?"
 ```
 
 ## Window Management Actions
@@ -26,7 +27,7 @@ You can use natural language to control window position and size:
 - Left half: `dotnet run --framework net10.0-windows -- natural "put this window on the left half"`
 - Right half: `dotnet run --framework net10.0-windows -- natural "put this window on the right half"`
 
-## Running Integration Tests
+## Running Integration Tests (Not viable do not use)
 To run all integration tests (including window management):
 
 ```pwsh
