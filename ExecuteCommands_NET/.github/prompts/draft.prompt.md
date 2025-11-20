@@ -1,2 +1,3 @@
+Could we and a new feature into the plan and then start working on it.
 
- can we add a new feature when we get a command that does not match to anything can we use the show message box with a timer function that is already in the project to notify the user
+ I would like to take the current application feature a step further is that if we are for example in Visual Studio and the command is something like build the solution we should be able to map it to a Visual Studio command and run that command appropriately also if we are in Visual Studio code we should be able to do likewise can we research this and see how feasible it is to implement this feature and if it is feasible can we add it to the plan and start working on it as soon as possible.

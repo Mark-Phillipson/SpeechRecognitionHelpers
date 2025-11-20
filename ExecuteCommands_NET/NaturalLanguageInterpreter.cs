@@ -12,7 +12,16 @@ namespace ExecuteCommands
     using OpenAI.Chat;
     using OpenAI.Models;
     public class NaturalLanguageInterpreter
+        // Action type for Visual Studio command execution
     {
+        /// <summary>
+        /// Checks if Visual Studio is the active window.
+        /// </summary>
+        public static bool IsVisualStudioActive()
+        {
+            var procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+            return procName == "devenv";
+        }
         /// <summary>
         /// Ensures the directory for the log file exists.
         /// </summary>
@@ -198,6 +207,8 @@ namespace ExecuteCommands
         // Missing action types
         public record CloseTabAction : ActionBase { }
         public record SetWindowAlwaysOnTopAction(string? Application) : ActionBase;
+        // Action type for Visual Studio command execution
+        public record ExecuteVSCommandAction(string CommandName, string? Arguments = null) : ActionBase;
 
             // P/Invoke for SetWindowPos
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
