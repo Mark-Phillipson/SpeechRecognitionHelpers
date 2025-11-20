@@ -14,18 +14,28 @@ namespace DictationBoxMSP
     {
       [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string Message { get; set; } = string.Empty;
-        public DisplayMessage(string message,int interval=3000)
+        public DisplayMessage(string message, int interval = 3000)
         {
             InitializeComponent();
             this.Message = message;
             this.richTextBoxMessage.Text = message;
-            Text = "Error Message (Will hide in three seconds)";
+            this.Text = "Message";
             timer1.Interval = interval;
-            timer1.Enabled=true;
+            timer1.Enabled = true;
+        }
+
+        public DisplayMessage(string message, int interval, string title)
+        {
+            InitializeComponent();
+            this.Message = message;
+            this.richTextBoxMessage.Text = message;
+            this.Text = title;
+            timer1.Interval = interval;
+            timer1.Enabled = true;
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            Application.Exit();
+            this.Close();
         }
 
         private void DisplayMessage_Load(object sender, EventArgs e)

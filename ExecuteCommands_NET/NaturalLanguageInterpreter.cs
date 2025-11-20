@@ -235,18 +235,18 @@ namespace ExecuteCommands
 
                 // Format command list for display
                 var lines = commands.Select(c => $"- {c.Command}: {c.Description}").ToList();
-                string message = $"{appLabel} Supported Commands:\n\n" + string.Join("\n", lines);
+                string message = $"Available commands:\n\n" + string.Join("\n", lines);
 
-                // If short, show in tray notification; if long, show in DisplayMessage dialog
-                if (lines.Count <= 8)
+                // If command list is long, show in dialog and use notification as pointer
+                if (lines.Count > 8)
                 {
-                    ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", string.Join("\n", lines), 7000);
+                    var dlg = new DictationBoxMSP.DisplayMessage(message, 60000, "Available Commands"); // 60 seconds, custom title
+                    System.Windows.Forms.Application.Run(dlg); // Auto-close after timeout
+                    ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", "Full command list shown in dialog window.", 7000);
                 }
                 else
                 {
-                    // Use DisplayMessage dialog for longer lists
-                    var dlg = new DictationBoxMSP.DisplayMessage(message, 7000);
-                    dlg.Show();
+                    ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", string.Join("\n", lines), 7000);
                 }
                 // Also log to app.log for reference
                 System.IO.File.AppendAllText(GetLogPath(), $"[INFO] {appLabel} Supported Commands:\n{message}\n");
@@ -305,6 +305,18 @@ namespace ExecuteCommands
                 foreach (var ew in extraWords) text = text.Replace(ew, "");
                 text = text.Trim();
                 System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+
+                // Explicit help/command list queries
+                var helpQueries = new[] {
+                    "what can i say", "help", "show commands", "show available commands", "list commands", "show help", "commands list", "available commands"
+                };
+                if (helpQueries.Any(q => text.Contains(q)))
+                {
+                    ShowAvailableCommands();
+                    var helpAction = new ShowHelpAction();
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: ShowHelpAction (help query)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(helpAction);
+                }
 
                 // More robust matching for 'always on top'/'float above'/'restore' commands
                 var alwaysOnTopPatterns = new[] {
@@ -761,7 +773,7 @@ namespace ExecuteCommands
             }
             else if (action is ShowHelpAction)
             {
-                string helpText = "You may solemnly say:\n" +
+                string helpText = "Available commands:\n" +
                     "- Move this window to the left/right\n" +
                     "- Maximize this window\n" +
                     "- Open downloads/documents\n" +
