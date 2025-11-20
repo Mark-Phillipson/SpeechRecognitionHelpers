@@ -85,7 +85,7 @@ These are used as the “internal API” between the interpreter and executor.
 
 ## Natural Language Interpreter (Phase 1 – Rule-based)
 
-Implement `InterpretAsync(string text)` as a simple, deterministic rules engine first.
+Implement `InterpretAsync(string text)` as a simple, deterministic rules engine first, with fallback to an AI-based interpreter (OpenAI) for unhandled commands.
 
 ### Window Management Examples
 
@@ -137,11 +137,8 @@ The `KeySimulator` will parse and execute these.
 
 If nothing matches:
 
-- For now, either:
-  - Return `SendKeysAction("")` (no-op).
-  - Or log “unhandled command”.
-
-Later this can be swapped for an LLM-based interpreter.
+- The system now falls back to an AI-based interpreter (OpenAI) that attempts to parse the command and return the closest matching action type.
+- Logging for unhandled commands is still performed.
 
 ---
 
@@ -215,14 +212,13 @@ Result:
 
 ## Future Phases (Notes)
 
-- **Phase 2 – Better interpretation**
-  - Replace / augment `InterpretAsync` with an LLM (Azure OpenAI) using tool/function calling.
-  - Keep the same `ActionBase` types as the target schema.
-  - Add safety rules (no destructive actions without explicit confirmation).
+- **Phase 2 – Improved AI interpretation**
+  - The fallback LLM (OpenAI) interpreter is already implemented and active.
+  - Future improvements may focus on prompt/tool calling, more robust schema validation, and safety rules (e.g., no destructive actions without explicit confirmation).
 
 - **Phase 3 – Talon callback (if needed)**
   - For code editing / Cursorless-type actions, add a `RunTalonVoiceCommandAction`:
     - Contains a phrase like `"sharp select camel foo"`.
     - Sent to Talon via a small IPC bridge that calls `simulate()` with that phrase.
 
-For now, the focus is on making **direct .NET automation** for windows/apps/keys/folders feel smooth and reliable.
+For now, the focus is on making **direct .NET automation** for windows/apps/keys/folders feel smooth and reliable, with both rule-based and AI-based interpretation available.

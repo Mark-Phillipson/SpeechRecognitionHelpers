@@ -316,8 +316,8 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (next monitor)\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
-                // Move window to left half
-                if ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("left"))
+                // Move window to left half (robust)
+                if ((text.Contains("left half") || (text.Contains("left") && text.Contains("half"))) || ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("left")))
                 {
                     var action = new MoveWindowAction(
                         Target: "active",
@@ -329,15 +329,28 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (left half)\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
-                // Open documents folder
-                if (text.Contains("open documents"))
+                // Move window to right half (robust)
+                if ((text.Contains("right half") || (text.Contains("right") && text.Contains("half"))) || ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("right")))
+                {
+                    var action = new MoveWindowAction(
+                        Target: "active",
+                        Monitor: "current",
+                        Position: "right",
+                        WidthPercent: 50,
+                        HeightPercent: 100
+                    );
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (right half)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Open documents folder (robust)
+                if (text.Contains("open documents") || (text.Contains("open") && text.Contains("document")))
                 {
                     var action = new OpenFolderAction("Documents");
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (documents)\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
-                // Open downloads folder
-                if (text.Contains("open downloads"))
+                // Open downloads folder (robust)
+                if (text.Contains("open downloads") || (text.Contains("open") && text.Contains("download")))
                 {
                     var action = new OpenFolderAction("Downloads");
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (downloads)\n");
@@ -363,7 +376,16 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync fallback: {fallbackAction.GetType().Name} (raw app: {appName})\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(fallbackAction);
                 }
-                // Fallback for unhandled commands: call AI
+                // "type ..." maps to SendKeysAction
+                if (text.StartsWith("type "))
+                {
+                    var keysText = text.Substring(5).Trim();
+                    var action = new SendKeysAction(keysText);
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (type keys)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Fallback for unhandled commands: log and call AI
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync: No rule-based match for: {text}\n");
                 string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
                 string aiInput = text;
                 if (!string.IsNullOrWhiteSpace(currentApp))
