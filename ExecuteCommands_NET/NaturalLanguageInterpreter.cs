@@ -794,9 +794,34 @@ namespace ExecuteCommands
                     return $"[Natural mode] {aiResult}";
                 }
                 System.IO.File.AppendAllText(GetLogPath(), "No matching action\n");
+                // Show auto-closing message box for unmatched command
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] About to show AutoClosingMessageBox for: {text}\n");
+                int timeoutMs = 5000;
+                int timeoutSec = timeoutMs / 1000;
+                string msg = $"No matching action for: {text}\n(This will close in {timeoutSec} seconds)";
+                ExecuteCommands.AutoClosingMessageBox.Show(msg, "Command Not Recognized", timeoutMs);
                 return $"[Natural mode] No matching action for: {text}"; 
             }
             var result = ExecuteActionAsync(action);
+            // Detect non-actionable AI fallback results
+            bool showUnmatched = false;
+            if (action is SendKeysAction keys)
+            {
+                // If no valid keys found, treat as unmatched
+                if (result.Contains("No valid keys found") || result.Contains("Failed to send keys"))
+                    showUnmatched = true;
+            }
+            else if (action is LaunchAppAction app)
+            {
+                // If failed to launch app, treat as unmatched
+                if (result.Contains("Failed to launch app"))
+                    showUnmatched = true;
+            }
+            if (showUnmatched)
+            {
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Showing AutoClosingMessageBox for non-actionable AI fallback: {text}\n");
+                ExecuteCommands.AutoClosingMessageBox.Show($"No matching action for: {text}", "Command Not Recognized", 5000);
+            }
             return $"[Natural mode] {result}";
         }
 
