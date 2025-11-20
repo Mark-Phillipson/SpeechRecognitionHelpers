@@ -36,4 +36,33 @@ dotnet test Tests/IntegrationTests.csproj
 Tests will verify that window management, app launching, folder opening, and other actions work as expected.
 
 ## Notes
+
+## Visual Studio Natural Language Command Tests
+
+You can run these commands from the integrated terminal inside Visual Studio:
+
+| Natural Language Command         | Expected Visual Studio Action         | Canonical Command Name      |
+|----------------------------------|--------------------------------------|----------------------------|
+| build the solution               | Build the entire solution            | Build.BuildSolution        |
+| build the project                | Build the current project            | Build.BuildProject         |
+| start debugging                  | Start debugging the startup project  | Debug.Start                |
+| start application                | Start without debugging              | Debug.StartWithoutDebugging|
+| stop debugging                   | Stop debugging                       | Debug.StopDebugging        |
+| close tab                        | Close the current document tab       | Window.CloseDocumentWindow |
+| format document                  | Format the current document          | Edit.FormatDocument        |
+| find in files                    | Open the Find in Files dialog        | Edit.FindinFiles           |
+| go to definition                 | Go to definition of symbol           | Edit.GoToDefinition        |
+| rename symbol                    | Rename the selected symbol           | Refactor.Rename            |
+| show solution explorer           | Focus Solution Explorer              | View.SolutionExplorer      |
+| open recent files                | Show recent files                    | File.RecentFiles           |
+
+Example usage:
+```pwsh
+dotnet run --framework net10.0-windows -- natural "build the solution"
+dotnet run --framework net10.0-windows -- natural "start debugging"
+dotnet run --framework net10.0-windows -- natural "close tab"
+dotnet run --framework net10.0-windows -- natural "format document"
+```
+
+Check your application log (`app.log`) for debug output and confirmation of command execution.
  
