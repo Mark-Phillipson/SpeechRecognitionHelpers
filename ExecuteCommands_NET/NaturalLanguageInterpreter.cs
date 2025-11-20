@@ -385,47 +385,38 @@ namespace ExecuteCommands
                 IntPtr hWnd = Commands.GetForegroundWindow();
                 if (hWnd == IntPtr.Zero)
                     return "No active window found.";
-                // Move window to other monitor
+                // Move window to other monitor and maximize
                 if (move.Monitor == "next" && ((move.WidthPercent == 0 || move.WidthPercent == null || move.WidthPercent == 100) && (move.HeightPercent == 0 || move.HeightPercent == null || move.HeightPercent == 100)))
                 {
-                    // Get active window handle
                     IntPtr activeHWnd = (IntPtr)Commands.GetForegroundWindow();
-                    // Defensive: ensure never null assignment
                     if (activeHWnd == IntPtr.Zero)
                         return "No active window found.";
-                    // Get current monitor
                     IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
                     MONITORINFOEX currentInfo = new MONITORINFOEX();
                     currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotCurrentInfo = GetMonitorInfo(currentMonitor, ref currentInfo);
                     if (!gotCurrentInfo)
                         return "Failed to get current monitor info.";
-                    // Find next monitor (circular)
                     IntPtr nextMonitor = IntPtr.Zero;
                     foreach (var monitor in GetAllMonitors())
                     {
                         if (monitor != currentMonitor)
                         {
-                            // Defensive: ensure never null assignment
                             nextMonitor = monitor == IntPtr.Zero ? IntPtr.Zero : monitor;
                             break;
                         }
                     }
                     if (nextMonitor == IntPtr.Zero)
                         return "No other monitor found.";
-                    // Get next monitor's working area
                     MONITORINFOEX nextInfo = new MONITORINFOEX();
                     nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
                     if (!gotNextInfo)
                         return "Failed to get next monitor info.";
-                    // Move window to the center of the next monitor
                     int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
                     int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
-                    int widthPercent = (move.WidthPercent ?? 100);
-                    int heightPercent = (move.HeightPercent ?? 100);
-                    int x = nextInfo.rcWork.Left + (width - (width * widthPercent / 100)) / 2;
-                    int y = nextInfo.rcWork.Top + (height - (height * heightPercent / 100)) / 2;
+                    int x = nextInfo.rcWork.Left;
+                    int y = nextInfo.rcWork.Top;
                     bool success = SetWindowPos(activeHWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
                     if (!success)
                     {
@@ -433,7 +424,10 @@ namespace ExecuteCommands
                         System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
                         return $"Failed to move window to next monitor. Win32 error: {error}";
                     }
-                    return "Window moved to next monitor.";
+                    // Maximize window after moving
+                    const int SW_MAXIMIZE = 3;
+                    ShowWindow(activeHWnd, SW_MAXIMIZE);
+                    return "Window moved and maximized on next monitor.";
                 }
                 // Maximize logic (only if not moving to next monitor)
                 if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100 && move.Monitor != "next")
