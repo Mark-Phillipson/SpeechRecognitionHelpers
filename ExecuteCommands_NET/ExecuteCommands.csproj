@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFrameworks>net10.0-windows;net9.0-windows</TargetFrameworks>
+		<TargetFramework>net10.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
@@ -10,7 +10,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-    <Compile Remove="Tests\IntegrationTests.cs" />
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <None Remove="Tests\**" />
 		<Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\AdditionalCommand.cs" Link="Models\AdditionalCommand.cs" />
 		<Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ApplicationDbContext.cs" Link="Models\ApplicationDbContext.cs" />
 		<Compile Include="..\..\VoiceLauncherBlazor\DataAccessLibrary\Models\ApplicationDetail.cs" Link="Models\ApplicationDetail.cs" />
