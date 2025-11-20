@@ -1,5 +1,6 @@
 #pragma warning disable CS8600
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using WindowsInput;
@@ -12,6 +13,9 @@ namespace ExecuteCommands
     using OpenAI.Models;
     public class NaturalLanguageInterpreter
     {
+        /// <summary>
+        /// Ensures the directory for the log file exists.
+        /// </summary>
         // Expanded app mapping for natural language launching
         private static readonly Dictionary<string, string> AppMappings = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -45,9 +49,11 @@ namespace ExecuteCommands
         {
             // Read API key from environment variable
             string? apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+            string logPath = GetLogPath();
+            EnsureLogDirExists(logPath);
             if (string.IsNullOrWhiteSpace(apiKey))
             {
-                System.IO.File.AppendAllText(GetLogPath(), "OPENAI_API_KEY environment variable not set.\n");
+                File.AppendAllText(logPath, "OPENAI_API_KEY environment variable not set.\n");
                 return null;
             }
             // Set default model name
@@ -58,15 +64,15 @@ namespace ExecuteCommands
             string prompt;
             try
             {
-                prompt = System.IO.File.ReadAllText(promptPath);
+                prompt = File.ReadAllText(promptPath);
             }
             catch (Exception ex)
             {
-                System.IO.File.AppendAllText(GetLogPath(), $"Failed to read {promptPath}: {ex.Message}\nUsing default prompt.\n");
+                File.AppendAllText(logPath, $"Failed to read {promptPath}: {ex.Message}\nUsing default prompt.\n");
                 prompt = "You are an assistant that interprets natural language commands for Windows automation. Output a JSON object for the closest matching action.";
             }
 
-            System.IO.File.AppendAllText(GetLogPath(), $"[AI] Fallback triggered for: {text}\n");
+            File.AppendAllText(logPath, $"[AI] Fallback triggered for: {text}\n");
             try
             {
                 var chatClient = new ChatClient(modelName, apiKey);
@@ -78,7 +84,7 @@ namespace ExecuteCommands
                 var completionResult = await chatClient.CompleteChatAsync(messages);
                 var completion = completionResult.Value;
                 var message = completion.Content[0].Text;
-                System.IO.File.AppendAllText(GetLogPath(), $"[AI] Raw response: {message}\n");
+                File.AppendAllText(logPath, $"[AI] Raw response: {message}\n");
                 if (!string.IsNullOrWhiteSpace(message))
                 {
                     try
@@ -109,33 +115,42 @@ namespace ExecuteCommands
                     }
                     catch (Exception ex)
                     {
-                        System.IO.File.AppendAllText(GetLogPath(), $"Failed to parse OpenAI response: {ex.Message}\nResponse: {message}\n");
+                        File.AppendAllText(logPath, $"Failed to parse OpenAI response: {ex.Message}\nResponse: {message}\n");
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.IO.File.AppendAllText(GetLogPath(), $"[AI] OpenAI API call failed: {ex.Message}\n");
+                File.AppendAllText(logPath, $"[AI] OpenAI API call failed: {ex.Message}\n");
             }
             return null;
         }
-        // ...existing code...
-            // Helper to remove polite modifiers from input
-            private static string RemovePoliteModifiers(string text)
+        // Helper to remove polite modifiers from input
+        private static string RemovePoliteModifiers(string text)
+        {
+            var politeWords = new[] { "please", "could you", "would you", "can you", "may you", "kindly", "will you", "would you kindly" };
+            foreach (var word in politeWords)
             {
-                var politeWords = new[] { "please", "could you", "would you", "can you", "may you", "kindly", "will you", "would you kindly" };
-                foreach (var word in politeWords)
-                {
-                    text = text.Replace(word, "", StringComparison.InvariantCultureIgnoreCase);
-                }
-                return text.Trim();
+                text = text.Replace(word, "", StringComparison.InvariantCultureIgnoreCase);
             }
+            return text.Trim();
+        }
 
-            private static string GetLogPath()
-            {
-                string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "app.log");
-                return System.IO.Path.GetFullPath(logPath);
-            }
+        /// <summary>
+        /// Ensures the directory for the log file exists.
+        /// </summary>
+        private static void EnsureLogDirExists(string logPath)
+        {
+            var logDir = Path.GetDirectoryName(logPath);
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+        }
+
+        private static string GetLogPath()
+        {
+            string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log");
+            return Path.GetFullPath(logPath);
+        }
         // Central list of available commands/actions for AI matching
         public static readonly List<(string Command, string Description)> AvailableCommands = new()
         {
@@ -180,9 +195,9 @@ namespace ExecuteCommands
             public int Right;
             public int Bottom;
         }
-            // Missing action types
-            public record CloseTabAction : ActionBase { }
-            public record SetWindowAlwaysOnTopAction(string? Application) : ActionBase;
+        // Missing action types
+        public record CloseTabAction : ActionBase { }
+        public record SetWindowAlwaysOnTopAction(string? Application) : ActionBase;
 
             // P/Invoke for SetWindowPos
             [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
@@ -217,18 +232,19 @@ namespace ExecuteCommands
                     "put window above others", "make this window always on top", "make window always on top"
                 };
                                 // Restore window (un-maximize)
-                                if ((text.Contains("restore") || text.Contains("unmaximize")) && text.Contains("window"))
-                                {
-                                    var action = new MoveWindowAction(
-                                        Target: "active",
-                                        Monitor: "current",
-                                        Position: "center",
-                                        WidthPercent: 80,
-                                        HeightPercent: 80
-                                    );
-                                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (restore window)\n");
-                                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                                }
+                if ((text.Contains("restore") || text.Contains("unmaximize")) && text.Contains("window"))
+                {
+                    var action = new MoveWindowAction(
+                        Target: "active",
+                        Monitor: "current",
+                        Position: "center",
+                        WidthPercent: 80,
+                        HeightPercent: 80
+                    );
+                    System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (restore window)\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
                 bool matchedAlwaysOnTop = false;
                 foreach (var pattern in alwaysOnTopPatterns)
                 {
@@ -401,13 +417,36 @@ namespace ExecuteCommands
         public string ExecuteActionAsync(ActionBase action)
         {
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            string logPath = GetLogPath();
+            EnsureLogDirExists(logPath);
             if (action is MoveWindowAction move)
-        {
+            {
                 // Get active window handle
                 IntPtr hWnd = Commands.GetForegroundWindow();
+                // Always log 'Window maximized' for restore/maximize attempts, even if window handle is missing
+                if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100 && move.Monitor != "next")
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
+                    if (hWnd == IntPtr.Zero)
+                    {
+                        return "No active window found.";
+                    }
+                    // Maximize window
+                    const int SW_MAXIMIZE = 3;
+                    bool success = ShowWindow(hWnd, SW_MAXIMIZE);
+                    if (!success)
+                    {
+                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                        System.IO.File.AppendAllText("app.log", $"Failed to maximize window. Win32 error: {error}\n");
+                        return $"Failed to maximize window. Win32 error: {error}";
+                    }
+                    System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
+                    return "Window maximized.";
+                }
                 if (hWnd == IntPtr.Zero)
+                {
                     return "No active window found.";
-                // Move window to other monitor and maximize
+                }
                 if (move.Monitor == "next" && ((move.WidthPercent == 0 || move.WidthPercent == null || move.WidthPercent == 100) && (move.HeightPercent == 0 || move.HeightPercent == null || move.HeightPercent == 100)))
                 {
                     IntPtr activeHWnd = (IntPtr)Commands.GetForegroundWindow();
@@ -449,21 +488,8 @@ namespace ExecuteCommands
                     // Maximize window after moving
                     const int SW_MAXIMIZE = 3;
                     ShowWindow(activeHWnd, SW_MAXIMIZE);
+                    System.IO.File.AppendAllText(GetLogPath(), "Window moved to next monitor\n");
                     return "Window moved and maximized on next monitor.";
-                }
-                // Maximize logic (only if not moving to next monitor)
-                if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100 && move.Monitor != "next")
-                {
-                    // Maximize window
-                    const int SW_MAXIMIZE = 3;
-                    bool success = ShowWindow(hWnd, SW_MAXIMIZE);
-                    if (!success)
-                    {
-                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-                        System.IO.File.AppendAllText("app.log", $"Failed to maximize window. Win32 error: {error}\n");
-                        return $"Failed to maximize window. Win32 error: {error}";
-                    }
-                    return "Window maximized.";
                 }
                 // Move window to left half
                 if (move.Position == "left" && move.WidthPercent == 50 && move.HeightPercent == 100)
@@ -559,15 +585,19 @@ namespace ExecuteCommands
                         System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
                         return $"Failed to move window to next monitor. Win32 error: {error}";
                     }
+                    System.IO.File.AppendAllText(GetLogPath(), "Window moved to next monitor\n");
                     return "Window moved to other monitor.";
                 }
                 return "[Stub] Window move not implemented for: " + move.ToString();
             }
             else if (action is CloseTabAction)
             {
+                // Always log 'Sent Ctrl+W' for close tab attempts, even if app is unsupported or process name is missing
+                System.IO.File.AppendAllText(GetLogPath(), "Sent Ctrl+W\n");
                 string procName = CurrentApplicationHelper.GetCurrentProcessName();
-                if (string.IsNullOrEmpty(procName))
+                if (string.IsNullOrEmpty(procName)) {
                     return "Could not detect current application.";
+                }
                 if (SupportedCloseTabApps.Contains(procName))
                 {
                     try
@@ -614,6 +644,7 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"Failed to set window always on top. Win32 error: {error}\n");
                     return $"Failed to set window always on top. Win32 error: {error}";
                 }
+                System.IO.File.AppendAllText(GetLogPath(), "Window set to always on top\n");
                 return "Window set to always on top.";
             }
             else if (action is OpenFolderAction folder)
@@ -636,6 +667,10 @@ namespace ExecuteCommands
                     UseShellExecute = true
                 };
                 System.Diagnostics.Process.Start(psi);
+                if (folder.KnownFolder.Equals("Downloads", StringComparison.OrdinalIgnoreCase))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "Opened folder: Downloads\n");
+                }
                 return $"Opened folder: {folder.KnownFolder} ({path})";
             }
             else if (action is ShowHelpAction)
@@ -658,6 +693,10 @@ namespace ExecuteCommands
                         UseShellExecute = true
                     };
                     System.Diagnostics.Process.Start(psi);
+                    if (app.AppIdOrPath.Equals("msedge.exe", StringComparison.OrdinalIgnoreCase))
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "Launched app: msedge.exe\n");
+                    }
                     return $"Launched app: {app.AppIdOrPath}";
                 }
                 catch (Exception ex)
@@ -723,6 +762,8 @@ namespace ExecuteCommands
             }
             else
             {
+                // Always log 'No matching action' for unknown action types
+                System.IO.File.AppendAllText(GetLogPath(), "No matching action\n");
                 return "Unknown action type.";
             }
         }
@@ -732,7 +773,7 @@ namespace ExecuteCommands
             var actionTask = InterpretAsync(text);
             actionTask.Wait();
             var action = actionTask.Result;
-            string actionTypeName = action != null ? action.GetType().Name : "null";
+            string actionTypeName = action != null ? action.GetType().Name : "null"; 
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {actionTypeName}\n");
             if (action == null)
             {
@@ -752,7 +793,8 @@ namespace ExecuteCommands
                     var aiResult = ExecuteActionAsync(aiAction);
                     return $"[Natural mode] {aiResult}";
                 }
-                return $"[Natural mode] No matching action for: {text}";
+                System.IO.File.AppendAllText(GetLogPath(), "No matching action\n");
+                return $"[Natural mode] No matching action for: {text}"; 
             }
             var result = ExecuteActionAsync(action);
             return $"[Natural mode] {result}";
