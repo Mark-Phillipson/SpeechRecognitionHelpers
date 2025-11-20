@@ -518,6 +518,16 @@ namespace ExecuteCommands
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(closeTabAction);
                 }
             }
+            // Visual Studio code search (Go to All) shortcut
+            var codeSearchPatterns = new[] {
+                "search code", "code search", "find code", "open code search", "search for code"
+            };
+            if (codeSearchPatterns.Any(p => text.Contains(p)))
+            {
+                var action = new SendKeysAction("control ,");
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (code search)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
             // Fallback for unhandled commands: log and call AI
             System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync: No rule-based match for: {text}\n");
             string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
@@ -859,7 +869,7 @@ namespace ExecuteCommands
                     var mainKeys = new List<WindowsInput.Native.VirtualKeyCode>();
                     foreach (var part in keyParts)
                     {
-                        switch (part)
+                        switch (part.ToLower())
                         {
                             case "control":
                             case "ctrl":
@@ -874,6 +884,10 @@ namespace ExecuteCommands
                             case "windows":
                             case "win":
                                 modifiers.Add(WindowsInput.Native.VirtualKeyCode.LWIN);
+                                break;
+                            case ",":
+                            case "comma":
+                                mainKeys.Add(WindowsInput.Native.VirtualKeyCode.OEM_COMMA);
                                 break;
                             default:
                                 if (Enum.TryParse<WindowsInput.Native.VirtualKeyCode>("VK_" + part.ToUpper(), out var vk))
