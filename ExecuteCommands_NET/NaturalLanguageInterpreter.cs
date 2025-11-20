@@ -508,7 +508,7 @@ namespace ExecuteCommands
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
             }
             // Supported apps for close tab
-            if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase))
+            if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase) || text.Trim().Equals("closed tab", StringComparison.InvariantCultureIgnoreCase))
             {
                 string? procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
                 if (!string.IsNullOrEmpty(procName) && SupportedCloseTabApps.Contains(procName))
@@ -724,19 +724,27 @@ namespace ExecuteCommands
                         var sim = new WindowsInput.InputSimulator();
                         if (procName == "devenv")
                         {
-                            // In Visual Studio, send Alt+F, wait, then send C to close tab
+                            // In Visual Studio, use DTE to close the document window
                             try
                             {
-                                sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.MENU, WindowsInput.Native.VirtualKeyCode.VK_F); // Alt+F
-                                System.Threading.Thread.Sleep(250); // Wait for menu to open
-                                sim.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.VK_C); // Press C
-                                System.IO.File.AppendAllText("app.log", "Sent Alt+F, pause, then C in Visual Studio (devenv) for close tab.\n");
-                                return "Sent Alt+F, pause, then C to Visual Studio (close tab).";
+                                bool success = ExecuteCommands.Helpers.VisualStudioHelper.ExecuteCommand("Window.CloseDocumentWindow");
+                                if (success)
+                                {
+                                    System.IO.File.AppendAllText("app.log", "Executed Window.CloseDocumentWindow via DTE in Visual Studio.\n");
+                                    return "Executed Window.CloseDocumentWindow via DTE.";
+                                }
+                                else
+                                {
+                                    // Fallback to Ctrl+F4 if DTE fails
+                                    sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.F4);
+                                    System.IO.File.AppendAllText("app.log", "DTE failed, sent Ctrl+F4 to Visual Studio.\n");
+                                    return "DTE failed, sent Ctrl+F4.";
+                                }
                             }
                             catch (Exception ex)
                             {
-                                System.IO.File.AppendAllText("app.log", $"Failed to send Alt+F, C to Visual Studio: {ex.Message}\n");
-                                return $"Failed to send Alt+F, C to Visual Studio: {ex.Message}";
+                                System.IO.File.AppendAllText("app.log", $"Failed to execute VS command: {ex.Message}\n");
+                                return $"Failed to execute VS command: {ex.Message}";
                             }
                         }
                         sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_W);
@@ -923,7 +931,7 @@ namespace ExecuteCommands
                 if (aiActionTask.IsCompletedSuccessfully && aiAction != null)
                 {
                     // If the original text was 'close tab', override AI fallback to always send Ctrl+W
-                    if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase))
+                    if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase) || text.Trim().Equals("closed tab", StringComparison.InvariantCultureIgnoreCase))
                     {
                         var closeTabAction = new CloseTabAction();
                         System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Overriding AI fallback for 'close tab' to always send Ctrl+W.\n");
