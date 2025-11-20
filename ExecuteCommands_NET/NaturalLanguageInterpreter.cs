@@ -1,4 +1,3 @@
-#pragma warning disable CS8600
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ namespace ExecuteCommands
     using OpenAI.Chat;
     using OpenAI.Models;
     public class NaturalLanguageInterpreter
-        // Action type for Visual Studio command execution
+    // Action type for Visual Studio command execution
     {
         /// <summary>
         /// Checks if Visual Studio is the active window.
@@ -177,8 +176,8 @@ namespace ExecuteCommands
             ("show help", "Show help and available commands"),
         };
 
-            // Visual Studio specific commands
-            public static readonly List<(string Command, string Description)> VisualStudioCommands = new()
+        // Visual Studio specific commands
+        public static readonly List<(string Command, string Description)> VisualStudioCommands = new()
             {
                 ("build the solution", "Build the entire solution"),
                 ("build the project", "Build the current project"),
@@ -194,8 +193,8 @@ namespace ExecuteCommands
                 ("open recent files", "Show recent files"),
             };
 
-            // VS Code specific commands
-            public static readonly List<(string Command, string Description)> VSCodeCommands = new()
+        // VS Code specific commands
+        public static readonly List<(string Command, string Description)> VSCodeCommands = new()
             {
                 ("open file", "Open a file"),
                 ("open folder", "Open a folder"),
@@ -211,47 +210,47 @@ namespace ExecuteCommands
                 ("stop debugging", "Stop debugging"),
             };
 
-            // Enhanced 'what can I say' logic
-            public static void ShowAvailableCommands()
+        // Enhanced 'what can I say' logic
+        public static void ShowAvailableCommands()
+        {
+            string? procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+            List<(string Command, string Description)> commands;
+            string appLabel;
+            if (procName == "devenv")
             {
-                string? procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
-                List<(string Command, string Description)> commands;
-                string appLabel;
-                if (procName == "devenv")
-                {
-                    commands = VisualStudioCommands;
-                    appLabel = "Visual Studio";
-                }
-                else if (procName == "code")
-                {
-                    commands = VSCodeCommands;
-                    appLabel = "VS Code";
-                }
-                else
-                {
-                    commands = AvailableCommands;
-                    appLabel = "General";
-                }
-
-                // Format command list for display
-                var lines = commands.Select(c => $"- {c.Command}: {c.Description}").ToList();
-                lines.Add("- refresh Visual Studio shortcuts: Reload the latest keyboard shortcuts from Visual Studio settings");
-                string message = $"Available commands:\n\n" + string.Join("\n", lines);
-
-                // If command list is long, show in dialog and use notification as pointer
-                if (lines.Count > 8)
-                {
-                    var dlg = new DictationBoxMSP.DisplayMessage(message, 60000, "Available Commands"); // 60 seconds, custom title
-                    System.Windows.Forms.Application.Run(dlg); // Auto-close after timeout
-                    ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", "Full command list shown in dialog window.", 7000);
-                }
-                else
-                {
-                    ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", string.Join("\n", lines), 7000);
-                }
-                // Also log to app.log for reference
-                System.IO.File.AppendAllText(GetLogPath(), $"[INFO] {appLabel} Supported Commands:\n{message}\n");
+                commands = VisualStudioCommands;
+                appLabel = "Visual Studio";
             }
+            else if (procName == "code")
+            {
+                commands = VSCodeCommands;
+                appLabel = "VS Code";
+            }
+            else
+            {
+                commands = AvailableCommands;
+                appLabel = "General";
+            }
+
+            // Format command list for display
+            var lines = commands.Select(c => $"- {c.Command}: {c.Description}").ToList();
+            lines.Add("- refresh Visual Studio shortcuts: Reload the latest keyboard shortcuts from Visual Studio settings");
+            string message = $"Available commands:\n\n" + string.Join("\n", lines);
+
+            // If command list is long, show in dialog and use notification as pointer
+            if (lines.Count > 8)
+            {
+                var dlg = new DictationBoxMSP.DisplayMessage(message, 60000, "Available Commands"); // 60 seconds, custom title
+                System.Windows.Forms.Application.Run(dlg); // Auto-close after timeout
+                ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", "Full command list shown in dialog window.", 7000);
+            }
+            else
+            {
+                ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", string.Join("\n", lines), 7000);
+            }
+            // Also log to app.log for reference
+            System.IO.File.AppendAllText(GetLogPath(), $"[INFO] {appLabel} Supported Commands:\n{message}\n");
+        }
         // P/Invoke for MonitorFromWindow
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
@@ -286,50 +285,50 @@ namespace ExecuteCommands
         // Action type for Visual Studio command execution
         public record ExecuteVSCommandAction(string CommandName, string? Arguments = null) : ActionBase;
 
-            // P/Invoke for SetWindowPos
-            [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
-            private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        // P/Invoke for SetWindowPos
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-            // P/Invoke for ShowWindow
-            [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
-            private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        // P/Invoke for ShowWindow
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-            // InterpretAsync implementation
-            public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text)
+        // InterpretAsync implementation
+        public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text)
+        {
+            text = (text ?? string.Empty).ToLowerInvariant().Trim();
+            // Remove polite modifiers and extra punctuation
+            text = RemovePoliteModifiers(text);
+            text = text.Replace("  ", " ").Replace(".", "").Replace(",", "").Trim();
+            // Remove extra words that often appear in these commands
+            var extraWords = new[] { "of this", "of others", "of other windows", "on top of others", "on top of this" };
+            foreach (var ew in extraWords) text = text.Replace(ew, "");
+            text = text.Trim();
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+
+            // Handle refresh Visual Studio shortcuts command
+            if (text.Contains("refresh visual studio shortcuts") || text.Contains("reload visual studio shortcuts") || text.Contains("update visual studio shortcuts"))
             {
-                text = (text ?? string.Empty).ToLowerInvariant().Trim();
-                // Remove polite modifiers and extra punctuation
-                text = RemovePoliteModifiers(text);
-                text = text.Replace("  ", " ").Replace(".", "").Replace(",", "").Trim();
-                // Remove extra words that often appear in these commands
-                var extraWords = new[] { "of this", "of others", "of other windows", "on top of others", "on top of this" };
-                foreach (var ew in extraWords) text = text.Replace(ew, "");
-                text = text.Trim();
-                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+                ExecuteCommands.Helpers.VisualStudioShortcutHelper.RefreshShortcuts();
+                System.IO.File.AppendAllText(GetLogPath(), "[INFO] Refreshed Visual Studio shortcuts from .vssettings file\n");
+                ExecuteCommands.TrayNotificationHelper.ShowNotification("Shortcuts Refreshed", "Visual Studio keyboard shortcuts have been reloaded.", 5000);
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+            }
 
-                // Handle refresh Visual Studio shortcuts command
-                if (text.Contains("refresh visual studio shortcuts") || text.Contains("reload visual studio shortcuts") || text.Contains("update visual studio shortcuts"))
-                {
-                    ExecuteCommands.Helpers.VisualStudioShortcutHelper.RefreshShortcuts();
-                    System.IO.File.AppendAllText(GetLogPath(), "[INFO] Refreshed Visual Studio shortcuts from .vssettings file\n");
-                    ExecuteCommands.TrayNotificationHelper.ShowNotification("Shortcuts Refreshed", "Visual Studio keyboard shortcuts have been reloaded.", 5000);
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
-                }
-
-                // Explicit help/command list queries
-                var helpQueries = new[] {
+            // Explicit help/command list queries
+            var helpQueries = new[] {
                     "what can i say", "help", "show commands", "show available commands", "list commands", "show help", "commands list", "available commands"
                 };
-                if (helpQueries.Any(q => text.Contains(q)))
-                {
-                    ShowAvailableCommands();
-                    var helpAction = new ShowHelpAction();
-                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: ShowHelpAction (help query)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(helpAction);
-                }
+            if (helpQueries.Any(q => text.Contains(q)))
+            {
+                ShowAvailableCommands();
+                var helpAction = new ShowHelpAction();
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: ShowHelpAction (help query)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(helpAction);
+            }
 
-                // More robust matching for 'always on top'/'float above'/'restore' commands
-                var alwaysOnTopPatterns = new[] {
+            // More robust matching for 'always on top'/'float above'/'restore' commands
+            var alwaysOnTopPatterns = new[] {
                     "always on top", "on top", "float above", "float this window", "float above other windows",
                     "make this window float above", "make this window float", "float this window above",
                     "float window above", "make window float", "make window always on top",
@@ -339,187 +338,197 @@ namespace ExecuteCommands
                     "put this window above other windows", "put this window above others", "put window above other windows",
                     "put window above others", "make this window always on top", "make window always on top"
                 };
-                                // Restore window (un-maximize)
-                if ((text.Contains("restore") || text.Contains("unmaximize")) && text.Contains("window"))
+            // Restore window (un-maximize)
+            if ((text.Contains("restore") || text.Contains("unmaximize")) && text.Contains("window"))
+            {
+                var action = new MoveWindowAction(
+                    Target: "active",
+                    Monitor: "current",
+                    Position: "center",
+                    WidthPercent: 80,
+                    HeightPercent: 80
+                );
+                System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (restore window)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            bool matchedAlwaysOnTop = false;
+            foreach (var pattern in alwaysOnTopPatterns)
+            {
+                if (text.Contains(pattern))
                 {
-                    var action = new MoveWindowAction(
-                        Target: "active",
-                        Monitor: "current",
-                        Position: "center",
-                        WidthPercent: 80,
-                        HeightPercent: 80
-                    );
-                    System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (restore window)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                    matchedAlwaysOnTop = true;
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched pattern: {pattern}\n");
+                    break;
                 }
-                bool matchedAlwaysOnTop = false;
-                foreach (var pattern in alwaysOnTopPatterns)
+            }
+            // Also match regex variants like 'float.*window.*top' or 'make.*window.*top'
+            if (!matchedAlwaysOnTop)
+            {
+                var regexPatterns = new[] {
+                        "float.*window.*top", "make.*window.*top", "float.*window.*above", "make.*window.*float", "put.*window.*top", "put.*window.*above"
+                    };
+                foreach (var rx in regexPatterns)
                 {
-                    if (text.Contains(pattern))
+                    if (System.Text.RegularExpressions.Regex.IsMatch(text, rx))
                     {
                         matchedAlwaysOnTop = true;
-                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched pattern: {pattern}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched regex: {rx}\n");
                         break;
                     }
                 }
-                // Also match regex variants like 'float.*window.*top' or 'make.*window.*top'
+                // Catch-all: match any phrase containing 'float', 'window', and 'above' in any order
                 if (!matchedAlwaysOnTop)
                 {
-                    var regexPatterns = new[] {
-                        "float.*window.*top", "make.*window.*top", "float.*window.*above", "make.*window.*float", "put.*window.*top", "put.*window.*above"
-                    };
-                    foreach (var rx in regexPatterns)
+                    var words = new[] { "float", "window", "above" };
+                    bool allPresent = words.All(w => text.Contains(w));
+                    if (allPresent)
                     {
-                        if (System.Text.RegularExpressions.Regex.IsMatch(text, rx))
-                        {
-                            matchedAlwaysOnTop = true;
-                            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched regex: {rx}\n");
-                            break;
-                        }
-                    }
-                    // Catch-all: match any phrase containing 'float', 'window', and 'above' in any order
-                    if (!matchedAlwaysOnTop)
-                    {
-                        var words = new[] { "float", "window", "above" };
-                        bool allPresent = words.All(w => text.Contains(w));
-                        if (allPresent)
-                        {
-                            matchedAlwaysOnTop = true;
-                            System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] InterpretAsync matched catch-all: float/window/above\n");
-                        }
+                        matchedAlwaysOnTop = true;
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] InterpretAsync matched catch-all: float/window/above\n");
                     }
                 }
-                if (matchedAlwaysOnTop)
-                {
-                    string? app = null;
-                    var knownApps = new[] { "code", "msedge", "chrome", "firefox", "devenv", "opera", "brave" };
-                    foreach (var candidate in knownApps)
-                    {
-                        if (text.Contains(candidate))
-                        {
-                            app = candidate;
-                            break;
-                        }
-                    }
-                    var action = new SetWindowAlwaysOnTopAction(app);
-                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (always on top)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Send key sequences
-                if (text.StartsWith("press "))
-                {
-                    var keysText = text.Substring(6).Trim();
-                    var action = new SendKeysAction(keysText);
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (send keys)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Maximize/full screen window
-                if ((text.Contains("maximize") || text.Contains("full screen")) && text.Contains("window"))
-                {
-                    var action = new MoveWindowAction(
-                        Target: "active",
-                        Monitor: "current",
-                        Position: "center",
-                        WidthPercent: 100,
-                        HeightPercent: 100
-                    );
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name}\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Move window to other monitor (next)
-                if ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && (text.Contains("other monitor") || text.Contains("next monitor") || text.Contains("other screen") || text.Contains("next screen") || text.Contains("my other monitor")))
-                {
-                    var action = new MoveWindowAction(
-                        Target: "active",
-                        Monitor: "next",
-                        Position: null,
-                        WidthPercent: 0,
-                        HeightPercent: 0
-                    );
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (next monitor)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Move window to left half (robust)
-                if ((text.Contains("left half") || (text.Contains("left") && text.Contains("half"))) || ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("left")))
-                {
-                    var action = new MoveWindowAction(
-                        Target: "active",
-                        Monitor: "current",
-                        Position: "left",
-                        WidthPercent: 50,
-                        HeightPercent: 100
-                    );
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (left half)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Move window to right half (robust)
-                if ((text.Contains("right half") || (text.Contains("right") && text.Contains("half"))) || ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("right")))
-                {
-                    var action = new MoveWindowAction(
-                        Target: "active",
-                        Monitor: "current",
-                        Position: "right",
-                        WidthPercent: 50,
-                        HeightPercent: 100
-                    );
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (right half)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Open documents folder (robust)
-                if (text.Contains("open documents") || (text.Contains("open") && text.Contains("document")))
-                {
-                    var action = new OpenFolderAction("Documents");
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (documents)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Open downloads folder (robust)
-                if (text.Contains("open downloads") || (text.Contains("open") && text.Contains("download")))
-                {
-                    var action = new OpenFolderAction("Downloads");
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (downloads)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Open mapped applications (expanded)
-                if (text.StartsWith("open "))
-                {
-                    var appName = text.Substring(5).Trim();
-                    // Normalize app name (remove 'the', 'app', etc.)
-                    appName = appName.Replace("the ", "").Replace("app", "").Trim();
-                    // Special case: "terminal" or "windows terminal" or "cmd" or "command prompt"
-                    if (appName == "terminal" || appName == "windows terminal" || appName == "cmd" || appName == "command prompt")
-                        appName = "terminal";
-                    if (AppMappings.TryGetValue(appName, out var exe))
-                    {
-                        var action = new LaunchAppAction(exe);
-                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (mapped app: {appName} -> {exe})\n");
-                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                    }
-                    // Fallback: try raw app name as exe
-                    var fallbackAction = new LaunchAppAction(appName);
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync fallback: {fallbackAction.GetType().Name} (raw app: {appName})\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(fallbackAction);
-                }
-                // "type ..." maps to SendKeysAction
-                if (text.StartsWith("type "))
-                {
-                    var keysText = text.Substring(5).Trim();
-                    var action = new SendKeysAction(keysText);
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (type keys)\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
-                }
-                // Fallback for unhandled commands: log and call AI
-                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync: No rule-based match for: {text}\n");
-                string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
-                string aiInput = text;
-                if (!string.IsNullOrWhiteSpace(currentApp))
-                {
-                    aiInput += $"\nCurrentApplication: {currentApp}";
-                }
-                return InterpretWithAIAsync(aiInput);
-            // End of InterpretAsync
             }
-        // Supported apps for close tab
+            if (matchedAlwaysOnTop)
+            {
+                string? app = null;
+                var knownApps = new[] { "code", "msedge", "chrome", "firefox", "devenv", "opera", "brave" };
+                foreach (var candidate in knownApps)
+                {
+                    if (text.Contains(candidate))
+                    {
+                        app = candidate;
+                        break;
+                    }
+                }
+                var action = new SetWindowAlwaysOnTopAction(app);
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (always on top)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Send key sequences
+            if (text.StartsWith("press "))
+            {
+                var keysText = text.Substring(6).Trim();
+                var action = new SendKeysAction(keysText);
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (send keys)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Maximize/full screen window
+            if ((text.Contains("maximize") || text.Contains("full screen")) && text.Contains("window"))
+            {
+                var action = new MoveWindowAction(
+                    Target: "active",
+                    Monitor: "current",
+                    Position: "center",
+                    WidthPercent: 100,
+                    HeightPercent: 100
+                );
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name}\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Move window to other monitor (next)
+            if ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && (text.Contains("other monitor") || text.Contains("next monitor") || text.Contains("other screen") || text.Contains("next screen") || text.Contains("my other monitor")))
+            {
+                var action = new MoveWindowAction(
+                    Target: "active",
+                    Monitor: "next",
+                    Position: null,
+                    WidthPercent: 0,
+                    HeightPercent: 0
+                );
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (next monitor)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Move window to left half (robust)
+            if ((text.Contains("left half") || (text.Contains("left") && text.Contains("half"))) || ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("left")))
+            {
+                var action = new MoveWindowAction(
+                    Target: "active",
+                    Monitor: "current",
+                    Position: "left",
+                    WidthPercent: 50,
+                    HeightPercent: 100
+                );
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (left half)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Move window to right half (robust)
+            if ((text.Contains("right half") || (text.Contains("right") && text.Contains("half"))) || ((text.Contains("move") || text.Contains("snap")) && text.Contains("window") && text.Contains("right")))
+            {
+                var action = new MoveWindowAction(
+                    Target: "active",
+                    Monitor: "current",
+                    Position: "right",
+                    WidthPercent: 50,
+                    HeightPercent: 100
+                );
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (right half)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Open documents folder (robust)
+            if (text.Contains("open documents") || (text.Contains("open") && text.Contains("document")))
+            {
+                var action = new OpenFolderAction("Documents");
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (documents)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Open downloads folder (robust)
+            if (text.Contains("open downloads") || (text.Contains("open") && text.Contains("download")))
+            {
+                var action = new OpenFolderAction("Downloads");
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (downloads)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Open mapped applications (expanded)
+            if (text.StartsWith("open "))
+            {
+                var appName = text.Substring(5).Trim();
+                // Normalize app name (remove 'the', 'app', etc.)
+                appName = appName.Replace("the ", "").Replace("app", "").Trim();
+                // Special case: "terminal" or "windows terminal" or "cmd" or "command prompt"
+                if (appName == "terminal" || appName == "windows terminal" || appName == "cmd" || appName == "command prompt")
+                    appName = "terminal";
+                if (AppMappings.TryGetValue(appName, out var exe))
+                {
+                    var action = new LaunchAppAction(exe);
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (mapped app: {appName} -> {exe})\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+                // Fallback: try raw app name as exe
+                var fallbackAction = new LaunchAppAction(appName);
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync fallback: {fallbackAction.GetType().Name} (raw app: {appName})\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(fallbackAction);
+            }
+            // "type ..." maps to SendKeysAction
+            if (text.StartsWith("type "))
+            {
+                var keysText = text.Substring(5).Trim();
+                var action = new SendKeysAction(keysText);
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (type keys)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Supported apps for close tab
+            if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase))
+            {
+                string? procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+                if (!string.IsNullOrEmpty(procName) && SupportedCloseTabApps.Contains(procName))
+                {
+                    var closeTabAction = new CloseTabAction();
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync: Rule-based match for 'close tab' in supported app: {procName}\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(closeTabAction);
+                }
+            }
+            // Fallback for unhandled commands: log and call AI
+            System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync: No rule-based match for: {text}\n");
+            string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+            string aiInput = text;
+            if (!string.IsNullOrWhiteSpace(currentApp))
+            {
+                aiInput += $"\nCurrentApplication: {currentApp}";
+            }
+            return InterpretWithAIAsync(aiInput);
+            // End of InterpretAsync
+        }
         private static readonly string[] SupportedCloseTabApps = new[] { "chrome", "msedge", "firefox", "brave", "opera", "code", "devenv" };
 
         public string ExecuteActionAsync(ActionBase action)
@@ -702,15 +711,34 @@ namespace ExecuteCommands
             {
                 // Always log 'Sent Ctrl+W' for close tab attempts, even if app is unsupported or process name is missing
                 System.IO.File.AppendAllText(GetLogPath(), "Sent Ctrl+W\n");
-                string procName = CurrentApplicationHelper.GetCurrentProcessName();
-                if (string.IsNullOrEmpty(procName)) {
+                string? procName = CurrentApplicationHelper.GetCurrentProcessName();
+                if (string.IsNullOrEmpty(procName))
+                {
                     return "Could not detect current application.";
                 }
+
                 if (SupportedCloseTabApps.Contains(procName))
                 {
                     try
                     {
                         var sim = new WindowsInput.InputSimulator();
+                        if (procName == "devenv")
+                        {
+                            // In Visual Studio, send Alt+F, wait, then send C to close tab
+                            try
+                            {
+                                sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.MENU, WindowsInput.Native.VirtualKeyCode.VK_F); // Alt+F
+                                System.Threading.Thread.Sleep(250); // Wait for menu to open
+                                sim.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.VK_C); // Press C
+                                System.IO.File.AppendAllText("app.log", "Sent Alt+F, pause, then C in Visual Studio (devenv) for close tab.\n");
+                                return "Sent Alt+F, pause, then C to Visual Studio (close tab).";
+                            }
+                            catch (Exception ex)
+                            {
+                                System.IO.File.AppendAllText("app.log", $"Failed to send Alt+F, C to Visual Studio: {ex.Message}\n");
+                                return $"Failed to send Alt+F, C to Visual Studio: {ex.Message}";
+                            }
+                        }
                         sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_W);
                         return $"Sent Ctrl+W to {procName} (close tab).";
                     }
@@ -728,7 +756,7 @@ namespace ExecuteCommands
             else if (action is SetWindowAlwaysOnTopAction setTop)
             {
                 IntPtr hWnd = IntPtr.Zero;
-                string appName = setTop.Application?.ToLowerInvariant();
+                string? appName = setTop.Application?.ToLowerInvariant();
                 if (!string.IsNullOrWhiteSpace(appName))
                 {
                     var procs = System.Diagnostics.Process.GetProcessesByName(appName);
@@ -881,7 +909,7 @@ namespace ExecuteCommands
             var actionTask = InterpretAsync(text);
             actionTask.Wait();
             var action = actionTask.Result;
-            string actionTypeName = action != null ? action.GetType().Name : "null"; 
+            string actionTypeName = action != null ? action.GetType().Name : "null";
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {actionTypeName}\n");
             if (action == null)
             {
@@ -894,18 +922,18 @@ namespace ExecuteCommands
                 // Log the raw AI response if available
                 if (aiActionTask.IsCompletedSuccessfully && aiAction != null)
                 {
-                        // If the original text was 'close tab', override AI fallback to always send Ctrl+W
-                        if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            var closeTabAction = new CloseTabAction();
-                            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Overriding AI fallback for 'close tab' to always send Ctrl+W.\n");
-                            var resultOverride = ExecuteActionAsync(closeTabAction);
-                            return $"[Natural mode] {resultOverride}";
-                        }
-                        // Otherwise, use AI result as normal
-                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: See '[AI] Raw response' above for actual AI output.\n");
-                        var aiResult = ExecuteActionAsync(aiAction);
-                        return $"[Natural mode] {aiResult}";
+                    // If the original text was 'close tab', override AI fallback to always send Ctrl+W
+                    if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var closeTabAction = new CloseTabAction();
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Overriding AI fallback for 'close tab' to always send Ctrl+W.\n");
+                        var resultOverride = ExecuteActionAsync(closeTabAction);
+                        return $"[Natural mode] {resultOverride}";
+                    }
+                    // Otherwise, use AI result as normal
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: See '[AI] Raw response' above for actual AI output.\n");
+                    var aiResult = ExecuteActionAsync(aiAction);
+                    return $"[Natural mode] {aiResult}";
                 }
                 System.IO.File.AppendAllText(GetLogPath(), "No matching action\n");
                 // Show auto-closing message box for unmatched command
@@ -914,7 +942,7 @@ namespace ExecuteCommands
                 int timeoutSec = timeoutMs / 1000;
                 string msg = $"No matching action for: {text}\n(This will close in {timeoutSec} seconds)";
                 ExecuteCommands.AutoClosingMessageBox.Show(msg, "Command Not Recognized", timeoutMs);
-                return $"[Natural mode] No matching action for: {text}"; 
+                return $"[Natural mode] No matching action for: {text}";
             }
             var result = ExecuteActionAsync(action);
             // Detect non-actionable AI fallback results

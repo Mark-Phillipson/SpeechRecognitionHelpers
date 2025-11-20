@@ -25,8 +25,8 @@ namespace ExecuteCommands_NET
 			// DEBUG: If no arguments, default to natural mode and sample dictation
 			if (args.Length < 2)
 			{
-				args = new string[] { "ExecuteCommands.exe", "natural", "open downloads" };
-				Console.WriteLine("[DEBUG] No arguments detected. Defaulting to: natural 'open downloads'");
+				args = new string[] { "ExecuteCommands.exe", "natural", "close tab" };
+				Console.WriteLine("[DEBUG] No arguments detected. Defaulting to: natural 'close tab'");
 			}
 
 			// Diagnostic: log raw args
