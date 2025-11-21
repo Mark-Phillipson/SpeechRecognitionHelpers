@@ -213,6 +213,12 @@ namespace ExecuteCommands
         // Enhanced 'what can I say' logic
         public static void ShowAvailableCommands()
         {
+            // If this method shows a dialog for long lists, we set this flag so
+            // the subsequent ShowHelpAction execution can skip the redundant tray notification.
+            // This avoids showing the same information twice (dialog + balloon).
+            // It is reset after the ShowHelpAction is processed.
+            // Note: internal flag; not exposed publicly.
+            _suppressNextHelpNotification = false;
             string? procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
 
             if (procName == "devenv")
@@ -257,7 +263,8 @@ namespace ExecuteCommands
             {
                 var dlg = new DictationBoxMSP.DisplayMessage(message, 60000, "Available Commands"); // 60 seconds, custom title
                 System.Windows.Forms.Application.Run(dlg); // Auto-close after timeout
-                ExecuteCommands.TrayNotificationHelper.ShowNotification($"{appLabel} Commands", "Full command list shown in dialog window.", 7000);
+                // Dialog already shows the full command list; avoid redundant tray notification.
+                _suppressNextHelpNotification = true;
             }
             else
             {
@@ -266,6 +273,10 @@ namespace ExecuteCommands
             // Also log to app.log for reference
             System.IO.File.AppendAllText(GetLogPath(), $"[INFO] {appLabel} Supported Commands:\n{message}\n");
         }
+
+        // Internal flag used to avoid showing a tray notification when the dialog
+        // has already presented the available commands to the user.
+        private static bool _suppressNextHelpNotification = false;
         // P/Invoke for MonitorFromWindow
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
@@ -336,10 +347,11 @@ namespace ExecuteCommands
                 };
             if (helpQueries.Any(q => text.Contains(q)))
             {
+                // ShowAvailableCommands performs the appropriate UI (dialog or notification).
+                // We return null here so no further ShowHelpAction is executed (avoids duplicate notifications).
                 ShowAvailableCommands();
-                var helpAction = new ShowHelpAction();
-                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: ShowHelpAction (help query)\n");
-                return System.Threading.Tasks.Task.FromResult<ActionBase?>(helpAction);
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: ShowAvailableCommands displayed (help query)\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
             }
 
             // More robust matching for 'always on top'/'float above'/'restore' commands
@@ -875,6 +887,12 @@ namespace ExecuteCommands
                     "- Open downloads/documents\n" +
                     "- Move window to other screen\n" +
                     "- (More natural commands can be added)";
+                // If the command list was already shown in a dialog, skip the tray notification
+                if (_suppressNextHelpNotification)
+                {
+                    _suppressNextHelpNotification = false;
+                    return helpText;
+                }
                 TrayNotificationHelper.ShowNotification("ExecuteCommands.NET Help", helpText, 7000);
                 return helpText;
             }
