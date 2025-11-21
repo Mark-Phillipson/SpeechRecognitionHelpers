@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 using ExecuteCommands.Helpers;
 
 namespace ExecuteCommands
@@ -15,10 +16,18 @@ namespace ExecuteCommands
     {
         private List<CommandViewModel> _allCommands = new List<CommandViewModel>();
         private ICollectionView? _view;
+        private DispatcherTimer? _searchDebounceTimer;
+        private string _pendingFilterText = string.Empty;
 
         public SearchVisualStudioCommandsWPF()
         {
             InitializeComponent();
+            // Setup debounce timer so search doesn't run on every keystroke/dictation update
+            _searchDebounceTimer = new DispatcherTimer {
+                Interval = TimeSpan.FromMilliseconds(300)
+            };
+            _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
+
             LoadCommands();
         }
 
@@ -53,8 +62,30 @@ namespace ExecuteCommands
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            string filterText = SearchBox.Text.Trim();
+            // Use debounce: store latest text and restart timer
             if (_view == null) return;
+
+            _pendingFilterText = SearchBox.Text.Trim();
+
+            if (_searchDebounceTimer != null)
+            {
+                // restart timer on every input so the actual filtering only occurs
+                // after the user pauses typing/dictation for the interval
+                _searchDebounceTimer.Stop();
+                _searchDebounceTimer.Start();
+            }
+        }
+
+        private void SearchDebounceTimer_Tick(object? sender, EventArgs e)
+        {
+            if (_searchDebounceTimer != null)
+            {
+                _searchDebounceTimer.Stop();
+            }
+
+            if (_view == null) return;
+
+            string filterText = _pendingFilterText;
 
             if (string.IsNullOrWhiteSpace(filterText))
             {
@@ -74,7 +105,7 @@ namespace ExecuteCommands
                 };
             }
 
-            // Refresh view so changes take effect immediately
+            // Refresh view so changes take effect
             _view.Refresh();
         }
 
