@@ -1,0 +1,71 @@
+<Window x:Class="ExecuteCommands.SearchVisualStudioCommandsWPF"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ExecuteCommands"
+        mc:Ignorable="d"
+        Title="Search Visual Studio Commands" Height="600" Width="800"
+        FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Search Box -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <Label Content="_Search:" Target="{Binding ElementName=SearchBox}" VerticalAlignment="Center"/>
+            <TextBox x:Name="SearchBox" Width="400" Margin="5,0,0,0" VerticalAlignment="Center" TextChanged="SearchBox_TextChanged"/>
+        </StackPanel>
+
+        <!-- Results List -->
+        <ListView x:Name="ResultsList" Grid.Row="1" SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="5">
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="14"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock Text="Say: " Foreground="Gray"/>
+                            <TextBlock Text="{Binding NaturalLanguageExample}" FontStyle="Italic"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0" Visibility="{Binding HasBindings, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="Shortcuts: " Foreground="Gray"/>
+                            <TextBlock Text="{Binding BindingsDisplay}" Foreground="DarkBlue"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Background="LightGray" Padding="5"/>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="_Copy Command" Click="CopyCommand_Click"/>
+            <Button Content="_Open File Location" Click="OpenFileLocation_Click"/>
+        </StackPanel>
+
+        <!-- Instructions -->
+        <TextBlock Grid.Row="3" Margin="0,10,0,0" TextWrapping="Wrap" Foreground="Gray" FontSize="11">
+            To refresh the commands file, run the following command in the terminal:<LineBreak/>
+            ExecuteCommands.exe export-vs-commands
+        </TextBlock>
+    </Grid>
+</Window>

@@ -214,6 +214,21 @@ namespace ExecuteCommands
         public static void ShowAvailableCommands()
         {
             string? procName = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
+
+            if (procName == "devenv")
+            {
+                try
+                {
+                    var window = new ExecuteCommands.SearchVisualStudioCommandsWPF();
+                    window.ShowDialog();
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show($"Error opening search window: {ex.Message}");
+                }
+            }
+
             List<(string Command, string Description)> commands;
             string appLabel;
             if (procName == "devenv")
