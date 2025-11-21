@@ -47,8 +47,8 @@ namespace ExecuteCommands
             _view.SortDescriptions.Add(new System.ComponentModel.SortDescription("Category", System.ComponentModel.ListSortDirection.Ascending));
             _view.SortDescriptions.Add(new System.ComponentModel.SortDescription("Name", System.ComponentModel.ListSortDirection.Ascending));
             
-            // Initial filter (empty)
-            _view.Filter = null;
+            // Initial filter: show nothing by default until the user types a search
+            _view.Filter = item => false;
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -58,7 +58,8 @@ namespace ExecuteCommands
 
             if (string.IsNullOrWhiteSpace(filterText))
             {
-                _view.Filter = null;
+                // No search text => show nothing
+                _view.Filter = item => false;
             }
             else
             {
@@ -72,6 +73,9 @@ namespace ExecuteCommands
                     return false;
                 };
             }
+
+            // Refresh view so changes take effect immediately
+            _view.Refresh();
         }
 
         private void CopyCommand_Click(object sender, RoutedEventArgs e)
