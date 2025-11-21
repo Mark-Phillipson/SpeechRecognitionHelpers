@@ -118,6 +118,8 @@ namespace ExecuteCommands
                                     return new SendKeysAction(root.GetProperty("KeysText").GetString() ?? "");
                                 case "OpenFolderAction":
                                     return new OpenFolderAction(root.GetProperty("KnownFolder").GetString() ?? "");
+                                case "SetWindowAlwaysOnTopAction":
+                                    return new SetWindowAlwaysOnTopAction(root.TryGetProperty("Application", out var appProp) ? appProp.GetString() : null);
                             }
                         }
                     }
@@ -214,6 +216,14 @@ namespace ExecuteCommands
             { "rename symbol", "Refactor.Rename" },
             { "show solution explorer", "View.SolutionExplorer" },
             { "open recent files", "File.RecentFiles" }
+        };
+
+        // Popular commands that override any matches
+        private static readonly Dictionary<string, ActionBase> PopularCommands = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "debug application", new ExecuteVSCommandAction("Debug.Start") },
+            { "run application", new ExecuteVSCommandAction("Debug.StartWithoutDebugging") },
+            { "stop application", new ExecuteVSCommandAction("Debug.StopDebugging") }
         };
 
         // VS Code specific commands
@@ -354,6 +364,13 @@ namespace ExecuteCommands
             foreach (var ew in extraWords) text = text.Replace(ew, "");
             text = text.Trim();
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+
+            // Check popular commands override
+            if (PopularCommands.TryGetValue(text, out var popularAction))
+            {
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched PopularCommand: {text} -> {popularAction.GetType().Name}\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(popularAction);
+            }
 
             // Handle refresh Visual Studio shortcuts command
             if (text.Contains("refresh visual studio shortcuts") || text.Contains("reload visual studio shortcuts") || text.Contains("update visual studio shortcuts"))
@@ -988,7 +1005,7 @@ namespace ExecuteCommands
                                     mainKeys.Add(vk);
                                 else if (part.Length == 1 && char.IsLetterOrDigit(part[0]))
                                     mainKeys.Add((WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "VK_" + part.ToUpper()));
-                                else if (part.StartsWith("f") && int.TryParse(part.Substring(1), out int fnum) && fnum >= 1 && fnum <= 24)
+                                else if (part.StartsWith("f", StringComparison.OrdinalIgnoreCase) && int.TryParse(part.Substring(1), out int fnum) && fnum >= 1 && fnum <= 24)
                                     mainKeys.Add((WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "F" + fnum));
                                 break;
                         }
