@@ -5,9 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ExecuteCommands"
         mc:Ignorable="d"
-        Title="Search Visual Studio Commands" Height="600" Width="800"
+        Title="Search Visual Studio Commands" Height="600" Width="800" Icon="{DynamicResource SearchIcon}"
         FocusManager.FocusedElement="{Binding ElementName=SearchBox}">
     <Window.Resources>
+        <!-- Search icon (vector) used as window icon. Keeps the project free of binary .ico files. -->
+        <Pen x:Key="SearchIconPen" Brush="Black" Thickness="1.6"/>
+        <DrawingImage x:Key="SearchIcon" >
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <!-- Circle -->
+                    <GeometryDrawing Brush="Transparent" Pen="{StaticResource SearchIconPen}">
+                        <GeometryDrawing.Geometry>
+                            <EllipseGeometry Center="8,8" RadiusX="6" RadiusY="6" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <!-- Handle -->
+                    <GeometryDrawing Brush="Transparent" Pen="{StaticResource SearchIconPen}">
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry Figures="M12,12 L18,18" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style TargetType="Button">
             <Setter Property="Padding" Value="10,5"/>
