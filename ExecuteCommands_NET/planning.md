@@ -230,10 +230,47 @@ Result:
 
 ### Next Steps
 
-- [ ] Map natural language like "build solution" to ExecuteVSCommandAction when VS is active.
-- [ ] Update executor to call VisualStudioHelper.ExecuteCommand for ExecuteVSCommandAction.
-- [ ] Add logging and error handling for VS command execution.
-- [ ] Test with "build solution" and other canonical VS commands.
+- [x] Map natural language like "build solution" to ExecuteVSCommandAction when VS is active.
+- [x] Update executor to call VisualStudioHelper.ExecuteCommand for ExecuteVSCommandAction.
+- [x] Add logging and error handling for VS command execution.
+- [x] Test with "build solution" and other canonical VS commands.
+
+## Visual Studio Command Export & Dynamic Lookup (Nov 2025)
+
+To support the vast number of Visual Studio commands without hardcoding them, we implemented a dynamic lookup system.
+
+### 1. Export Command
+A new CLI command was added to export all available Visual Studio commands and their keyboard shortcuts to a JSON file.
+
+**Command:**
+```powershell
+dotnet run --project ExecuteCommands.csproj -- export-vs-commands
+```
+
+**Output:**
+Generates `vs_commands.json` in the current directory. This file contains an array of command objects:
+```json
+[
+  {
+    "Name": "File.NewProject",
+    "Bindings": ["Global::Ctrl+Shift+N"]
+  },
+  ...
+]
+```
+
+### 2. Dynamic Command Loader
+- Created `Helpers/VisualStudioCommandLoader.cs` to load `vs_commands.json`.
+- Implemented a fuzzy matching algorithm (`FindCommand`) to map natural language input (e.g., "build solution") to canonical command names (e.g., "Build.BuildSolution").
+
+### 3. Interpreter Integration
+- `NaturalLanguageInterpreter.cs` was updated to use the command loader when Visual Studio is the active window.
+- It looks for `vs_commands.json` in the execution directory or project root.
+- If a match is found, it returns an `ExecuteVSCommandAction`, which is then executed via DTE.
+
+### 4. Fixes
+- **SendKeysAction**: Fixed parsing to support `+` as a separator (e.g., "control+d").
+- **Path Resolution**: Updated the loader to search for `vs_commands.json` in parent directories during development.
 
 ---
 
