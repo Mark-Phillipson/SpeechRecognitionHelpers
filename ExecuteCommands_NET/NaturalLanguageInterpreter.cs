@@ -193,6 +193,29 @@ namespace ExecuteCommands
                 ("open recent files", "Show recent files"),
             };
 
+        // Explicit canonical mappings from natural phrases to Visual Studio command canonical names.
+        // These are preferred over fuzzy-matching exported commands because exported lists may contain
+        // context-menu entries that are not the canonical top-level commands (which caused failures).
+        private static readonly Dictionary<string, string> VisualStudioCanonicalMappings = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "build the solution", "Build.BuildSolution" },
+            { "build solution", "Build.BuildSolution" },
+            { "build the project", "Build.BuildProject" },
+            { "build project", "Build.BuildProject" },
+            { "clean solution", "Build.CleanSolution" },
+            { "clean the solution", "Build.CleanSolution" },
+            { "start debugging", "Debug.Start" },
+            { "start application", "Debug.StartWithoutDebugging" },
+            { "stop debugging", "Debug.StopDebugging" },
+            { "close tab", "Window.CloseDocumentWindow" },
+            { "format document", "Edit.FormatDocument" },
+            { "find in files", "Edit.FindinFiles" },
+            { "go to definition", "Edit.GoToDefinition" },
+            { "rename symbol", "Refactor.Rename" },
+            { "show solution explorer", "View.SolutionExplorer" },
+            { "open recent files", "File.RecentFiles" }
+        };
+
         // VS Code specific commands
         public static readonly List<(string Command, string Description)> VSCodeCommands = new()
             {
@@ -559,6 +582,18 @@ namespace ExecuteCommands
             // Visual Studio Command Lookup
             if (IsVisualStudioActive())
             {
+                // First, check explicit canonical mappings for common VS commands. This avoids
+                // choosing context-menu or other exported commands that are not the canonical ones.
+                foreach (var kvp in VisualStudioCanonicalMappings)
+                {
+                    if (text.Equals(kvp.Key, StringComparison.InvariantCultureIgnoreCase) || text.Contains(kvp.Key, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var mappedAction = new ExecuteVSCommandAction(kvp.Value);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched canonical VS mapping: {kvp.Key} -> {kvp.Value}\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(mappedAction);
+                    }
+                }
+
                 // Ensure commands are loaded
                 if (ExecuteCommands.Helpers.VisualStudioCommandLoader.GetCommands().Count == 0)
                 {

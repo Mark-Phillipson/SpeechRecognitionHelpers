@@ -1,5 +1,6 @@
 
-  when we are in Visual Studio and issue the command what can I say the form opens up and everything is fine, however once the form is closed the application then shows the information via the system tray notifications
+Can we look at the latest log entry I'm trying to  run the following command:
 
-   can we remove this behavior and just rely on the form?
-   
+natural build solution 
+
+  it's failing to run a similar command but we just need the normal command can we fix this?
