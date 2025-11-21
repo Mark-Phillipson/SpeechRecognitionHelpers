@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Text.Json;
 
 namespace ExecuteCommands.Helpers
 {
@@ -33,6 +36,48 @@ namespace ExecuteCommands.Helpers
             {
                 Console.WriteLine($"[VS] Error executing '{commandName}': {ex.Message}");
                 return false;
+            }
+        }
+
+        public static void ExportCommands(string outputPath)
+        {
+            try
+            {
+                object? dte = GetActiveObject(ProgId);
+                if (dte == null)
+                {
+                    Console.WriteLine($"[VS] Could not find running instance of {ProgId}.");
+                    return;
+                }
+
+                var commandList = new List<object>();
+                dynamic dteDynamic = dte;
+
+                Console.WriteLine("[VS] Enumerating commands...");
+                foreach (dynamic cmd in dteDynamic.Commands)
+                {
+                    try
+                    {
+                        string name = cmd.Name;
+                        if (string.IsNullOrEmpty(name)) continue;
+
+                        object[]? bindings = cmd.Bindings as object[];
+
+                        commandList.Add(new { Name = name, Bindings = bindings ?? Array.Empty<object>() });
+                    }
+                    catch
+                    {
+                        // Some commands might throw when accessed
+                    }
+                }
+
+                string json = JsonSerializer.Serialize(commandList, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(outputPath, json);
+                Console.WriteLine($"[VS] Exported {commandList.Count} commands to {outputPath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[VS] Error exporting commands: {ex.Message}");
             }
         }
 

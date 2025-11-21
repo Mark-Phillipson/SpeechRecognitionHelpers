@@ -76,6 +76,12 @@ namespace ExecuteCommands_NET
 				case "sharp":
 					result = commands.PerformCommand(new string[] { mode, text });
 					break;
+				case "export-vs-commands":
+					string outputPath = "vs_commands.json";
+					if (args.Length > 2) outputPath = args[2];
+					ExecuteCommands.Helpers.VisualStudioHelper.ExportCommands(outputPath);
+					result = $"Exported commands to {outputPath}";
+					break;
 				default:
 					// For now, treat unknown modes as natural
 					result = commands.HandleNaturalAsync(text);

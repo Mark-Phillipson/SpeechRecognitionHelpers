@@ -528,6 +528,31 @@ namespace ExecuteCommands
                 System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (code search)\n");
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
             }
+
+            // Visual Studio Command Lookup
+            if (IsVisualStudioActive())
+            {
+                // Ensure commands are loaded
+                if (ExecuteCommands.Helpers.VisualStudioCommandLoader.GetCommands().Count == 0)
+                {
+                    string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "vs_commands.json");
+                    if (!File.Exists(jsonPath))
+                    {
+                         // Try looking up three levels (project root during dev)
+                         jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "vs_commands.json");
+                    }
+                    ExecuteCommands.Helpers.VisualStudioCommandLoader.LoadCommands(jsonPath);
+                }
+
+                var vsCommand = ExecuteCommands.Helpers.VisualStudioCommandLoader.FindCommand(text);
+                if (vsCommand != null)
+                {
+                     var action = new ExecuteVSCommandAction(vsCommand.Name);
+                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched VS Command: {vsCommand.Name}\n");
+                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+            }
+
             // Fallback for unhandled commands: log and call AI
             System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync: No rule-based match for: {text}\n");
             string? currentApp = ExecuteCommands.CurrentApplicationHelper.GetCurrentProcessName();
@@ -864,7 +889,8 @@ namespace ExecuteCommands
                 try
                 {
                     var sim = new WindowsInput.InputSimulator();
-                    var keyParts = keys.KeysText.Split(' ');
+                    // Handle + separator (e.g. "control+d") and spaces
+                    var keyParts = keys.KeysText.Replace("+", " ").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     var modifiers = new List<WindowsInput.Native.VirtualKeyCode>();
                     var mainKeys = new List<WindowsInput.Native.VirtualKeyCode>();
                     foreach (var part in keyParts)
@@ -917,6 +943,12 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}\n");
                     return $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}";
                 }
+            }
+            else if (action is ExecuteVSCommandAction vsCmd)
+            {
+                bool success = ExecuteCommands.Helpers.VisualStudioHelper.ExecuteCommand(vsCmd.CommandName, vsCmd.Arguments ?? "");
+                if (success) return $"Executed VS Command: {vsCmd.CommandName}";
+                return $"Failed to execute VS Command: {vsCmd.CommandName}";
             }
             else
             {

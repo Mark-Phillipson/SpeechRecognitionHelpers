@@ -1,6 +1,2 @@
 
-When I issued the command from Visual Studio natural what can I say nothing appears in the log nothing happens apart from the i gets typed
-
- please can we try and fix this
-
-  according to the log it's sending it it's doing sand keys instead of displaying the commands available via the notification
+Can we download all of the Visual Studio commands into a local file so we can use it to build out commands and match it to the keyboard shortcuts we already have?
