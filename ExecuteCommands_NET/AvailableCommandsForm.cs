@@ -121,9 +121,38 @@ namespace DictationBoxMSP
 
             var filtered = items
                 .Where(i => i.Command.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 || (i.Description ?? string.Empty).IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
-                .Select(i => $"{i.Command} — {i.Description}")
+                .Select(i =>
+                {
+                    try
+                    {
+                        var emoji = ExecuteCommands.NaturalLanguageInterpreter.GetCommandEmoji(i.Command);
+                        if (!string.IsNullOrEmpty(emoji))
+                            return $"{emoji} {i.Command} — {i.Description}";
+                    }
+                    catch { }
+                    return $"{i.Command} — {i.Description}";
+                })
                 .Take(200)
                 .ToArray();
+
+            // Also include any configured emoji mappings that match the query (show name -> emoji)
+            try
+            {
+                var mappings = ExecuteCommands.NaturalLanguageInterpreter.GetAllEmojiMappings();
+                var mappingMatches = mappings
+                    .Where(m => (m.Name ?? string.Empty).IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 || (m.Emoji ?? string.Empty).IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Select(m => $"{m.Emoji} {m.Name} — Emoji mapping")
+                    .ToArray();
+                // Prepend mapping results so they are visible first
+                if (mappingMatches.Length > 0)
+                {
+                    var combined = new string[mappingMatches.Length + filtered.Length];
+                    mappingMatches.CopyTo(combined, 0);
+                    filtered.CopyTo(combined, mappingMatches.Length);
+                    filtered = combined;
+                }
+            }
+            catch { }
 
             lstResults.BeginUpdate();
             lstResults.Items.Clear();

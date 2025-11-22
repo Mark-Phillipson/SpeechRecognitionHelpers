@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.Json;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -176,7 +178,122 @@ namespace ExecuteCommands
             ("launch app", "Launch a specified application"),
             ("focus app", "Focus a specified application window"),
             ("show help", "Show help and available commands"),
+            ("emoji set <name> <emoji>", "Set an emoji for a named shortcut (e.g. emoji set happy 😀)"),
+            ("emoji <name>", "Insert the configured emoji for the given name"),
+            ("emoji <emoji>", "Insert the given emoji immediately")
         };
+
+        // Optional emoji mapping for commands. Map a command phrase to a small emoji
+        // string that will be displayed next to the command in the 'what can I say' UI.
+        private static readonly Dictionary<string, string> CommandEmojis = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "open downloads", "📥" },
+            { "open documents", "🗂️" },
+            { "maximize window", "🖥️" },
+            { "move window to left half", "⬅️" },
+            { "move window to right half", "➡️" },
+            { "move window to other monitor", "🔁" },
+            { "close tab", "❌" },
+            { "send keys", "⌨️" },
+            { "launch app", "🚀" },
+            { "focus app", "👀" },
+            { "show help", "❓" }
+            // Common emoji shortcuts
+            ,{ "happy", "😀" }
+            ,{ "sad", "😢" }
+            ,{ "thumbs up", "👍" }
+            ,{ "heart", "❤️" }
+        };
+
+        // File used to persist emoji mappings so they can be added over time.
+        // Will look for a file next to the executable (copied by the build as content).
+        private static readonly string EmojiMappingsPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "emoji_mappings.json"));
+
+        // Static ctor: load persisted mappings (if any) on first access
+        static NaturalLanguageInterpreter()
+        {
+            LoadEmojiMappings();
+        }
+
+        private static void LoadEmojiMappings()
+        {
+            try
+            {
+                if (File.Exists(EmojiMappingsPath))
+                {
+                    var json = File.ReadAllText(EmojiMappingsPath);
+                    var map = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+                    if (map != null)
+                    {
+                        foreach (var kv in map)
+                        {
+                            CommandEmojis[kv.Key] = kv.Value;
+                        }
+                        File.AppendAllText(GetLogPath(), $"[INFO] Loaded {map.Count} emoji mappings from {EmojiMappingsPath}\n");
+                    }
+                }
+                else
+                {
+                    // No persisted file yet
+                    File.AppendAllText(GetLogPath(), $"[INFO] No emoji mappings file found at {EmojiMappingsPath}\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                try { File.AppendAllText(GetLogPath(), $"[ERROR] Failed to load emoji mappings: {ex.Message}\n"); } catch { }
+            }
+        }
+
+        private static void SaveEmojiMappings()
+        {
+            try
+            {
+                EnsureLogDirExists(EmojiMappingsPath);
+                var opts = new JsonSerializerOptions { WriteIndented = true };
+                var json = JsonSerializer.Serialize(CommandEmojis, opts);
+                File.WriteAllText(EmojiMappingsPath, json);
+                File.AppendAllText(GetLogPath(), $"[INFO] Saved {CommandEmojis.Count} emoji mappings to {EmojiMappingsPath}\n");
+            }
+            catch (Exception ex)
+            {
+                try { File.AppendAllText(GetLogPath(), $"[ERROR] Failed to save emoji mappings: {ex.Message}\n"); } catch { }
+            }
+        }
+
+        // Public API to set or clear an emoji for a voice command at runtime.
+        public static void SetCommandEmoji(string command, string? emoji)
+        {
+            if (string.IsNullOrWhiteSpace(command)) return;
+            if (string.IsNullOrWhiteSpace(emoji))
+            {
+                if (CommandEmojis.ContainsKey(command))
+                    CommandEmojis.Remove(command);
+                // Persist removal
+                try { SaveEmojiMappings(); } catch { }
+            }
+            else
+            {
+                CommandEmojis[command.Trim()] = emoji.Trim();
+                // Persist change
+                try { SaveEmojiMappings(); } catch { }
+            }
+        }
+
+        // Public API to read an emoji for a command (returns null if none configured)
+        public static string? GetCommandEmoji(string command)
+        {
+            if (string.IsNullOrWhiteSpace(command)) return null;
+            if (CommandEmojis.TryGetValue(command.Trim(), out var emoji))
+                return emoji;
+            return null;
+        }
+
+        // Public API to enumerate all configured emoji mappings (name -> emoji)
+        public static IEnumerable<(string Name, string Emoji)> GetAllEmojiMappings()
+        {
+            // Return a snapshot so callers can't modify the internal dictionary
+            return CommandEmojis.Select(kv => (Name: kv.Key, Emoji: kv.Value)).ToArray();
+        }
 
         // Visual Studio specific commands
         public static readonly List<(string Command, string Description)> VisualStudioCommands = new()
@@ -286,8 +403,14 @@ namespace ExecuteCommands
                 appLabel = "General";
             }
 
-            // Format command list for display
-            var lines = commands.Select(c => $"- {c.Command}: {c.Description}").ToList();
+            // Format command list for display. If an emoji is configured for the command,
+            // show it before the command text (e.g. "📥 open downloads: Open the Downloads folder").
+            var lines = commands.Select(c =>
+            {
+                if (CommandEmojis.TryGetValue(c.Command, out var emoji) && !string.IsNullOrEmpty(emoji))
+                    return $"- {emoji} {c.Command}: {c.Description}";
+                return $"- {c.Command}: {c.Description}";
+            }).ToList();
             lines.Add("- refresh Visual Studio shortcuts: Reload the latest keyboard shortcuts from Visual Studio settings");
             string message = $"Available commands:\n\n" + string.Join("\n", lines);
 
@@ -354,6 +477,8 @@ namespace ExecuteCommands
         public record SetWindowAlwaysOnTopAction(string? Application) : ActionBase;
         // Action type for Visual Studio command execution
         public record ExecuteVSCommandAction(string CommandName, string? Arguments = null) : ActionBase;
+        // Action to insert/type an emoji (either by name or directly by emoji text)
+        public record EmojiAction(string? Name, string EmojiText) : ActionBase;
 
         // P/Invoke for SetWindowPos
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
@@ -584,6 +709,58 @@ namespace ExecuteCommands
                 var action = new SendKeysAction(keysText);
                 System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (type keys)\n");
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Emoji commands
+            // "emoji set <name> <emoji>" -> set mapping
+            if (text.StartsWith("emoji set "))
+            {
+                // Examples: "emoji set happy 😀" or "emoji set happy :D"
+                var rest = text.Substring("emoji set ".Length).Trim();
+                if (!string.IsNullOrEmpty(rest))
+                {
+                    var parts = rest.Split(new[] { ' ' }, 2, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length == 2)
+                    {
+                        var name = parts[0].Trim();
+                        var emoji = parts[1].Trim();
+                        SetCommandEmoji(name, emoji);
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync: Set emoji mapping: {name} -> {emoji}\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(new EmojiAction(name, emoji));
+                    }
+                }
+            }
+            // "emoji type <emoji>" -> type this emoji immediately
+            if (text.StartsWith("emoji type "))
+            {
+                var emojiText = text.Substring("emoji type ".Length).Trim();
+                if (!string.IsNullOrEmpty(emojiText))
+                {
+                    var action = new EmojiAction(null, emojiText);
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync: Emoji type action for: {emojiText}\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
+            }
+            // "emoji <name>" -> type configured emoji for name
+            if (text.StartsWith("emoji ") && !text.StartsWith("emoji set") && !text.StartsWith("emoji type"))
+            {
+                var name = text.Substring("emoji ".Length).Trim();
+                if (!string.IsNullOrEmpty(name))
+                {
+                    var emoji = GetCommandEmoji(name);
+                    if (!string.IsNullOrEmpty(emoji))
+                    {
+                        var action = new EmojiAction(name, emoji);
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync: Emoji name action for: {name} -> {emoji}\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                    }
+                    else
+                    {
+                        // No mapping found; respond with AI fallback or suggest how to set
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync: No emoji mapping for: {name}\n");
+                        // Suggest set command via ShowAvailableCommands or let AI handle
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+                    }
+                }
             }
             // Supported apps for close tab
             if (text.Trim().Equals("close tab", StringComparison.InvariantCultureIgnoreCase) || text.Trim().Equals("closed tab", StringComparison.InvariantCultureIgnoreCase))
@@ -1038,6 +1215,57 @@ namespace ExecuteCommands
                 {
                     System.IO.File.AppendAllText("app.log", $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}\n");
                     return $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}";
+                }
+            }
+            else if (action is EmojiAction emojiAction)
+            {
+                var toType = emojiAction.EmojiText ?? string.Empty;
+                if (string.IsNullOrEmpty(toType))
+                    return "No emoji to type.";
+
+                var localLogPath = GetLogPath();
+                try
+                {
+                    var inputSimulator = new WindowsInput.InputSimulator();
+                    // Try typing Unicode emoji directly
+                    inputSimulator.Keyboard.TextEntry(toType);
+                    System.IO.File.AppendAllText(localLogPath, $"Typed emoji via TextEntry: {toType}\n");
+                    return $"Typed emoji: {toType}";
+                }
+                catch (Exception ex1)
+                {
+                    // Primary method failed; fall back to clipboard + paste
+                    try
+                    {
+                        System.IO.File.AppendAllText(localLogPath, $"TextEntry failed for emoji '{toType}': {ex1.Message}. Falling back to clipboard paste.\n");
+                        var prev = System.Windows.Forms.Clipboard.GetDataObject();
+                        System.Windows.Forms.Clipboard.SetText(toType);
+                        var sim2 = new WindowsInput.InputSimulator();
+                        // Paste with Ctrl+V (use MENU+V would be alt, so use CONTROL)
+                        sim2.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_V);
+                        System.IO.File.AppendAllText(localLogPath, $"Typed emoji via clipboard paste: {toType}\n");
+                        // Restore clipboard if we saved a previous object (best-effort)
+                        try
+                        {
+                            if (prev != null)
+                            {
+                                // Attempt to restore original clipboard text only if it was text
+                                if (prev.GetDataPresent(System.Windows.Forms.DataFormats.Text))
+                                {
+                                    var text = prev.GetData(System.Windows.Forms.DataFormats.Text) as string;
+                                    if (text != null)
+                                        System.Windows.Forms.Clipboard.SetText(text);
+                                }
+                            }
+                        }
+                        catch { }
+                        return $"Typed emoji via paste: {toType}";
+                    }
+                    catch (Exception ex2)
+                    {
+                        System.IO.File.AppendAllText(localLogPath, $"Failed to type emoji '{toType}': TextEntry error: {ex1.Message}; Clipboard fallback error: {ex2.Message}\n");
+                        return $"Failed to type emoji: {toType}. Error: {ex2.Message}";
+                    }
                 }
             }
             else if (action is ExecuteVSCommandAction vsCmd)
