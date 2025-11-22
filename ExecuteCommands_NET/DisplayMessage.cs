@@ -12,11 +12,22 @@ namespace DictationBoxMSP
 {
     public partial class DisplayMessage : Form
     {
+            /// <summary>
+            /// Shared UI style used by other popup forms so they can match fonts and colors.
+            /// </summary>
+            public static Font SharedFont { get; private set; } = SystemFonts.MessageBoxFont!;
+            public static Color SharedBackColor { get; private set; } = Color.Black;
+            public static Color SharedForeColor { get; private set; } = Color.White;
+
       [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public string Message { get; set; } = string.Empty;
         public DisplayMessage(string message, int interval = 3000)
         {
             InitializeComponent();
+            // Initialize shared style from this instance's defaults so other forms can match it.
+            SharedFont = this.Font ?? SharedFont;
+            SharedBackColor = Color.Black;
+            SharedForeColor = Color.White;
             this.Message = message;
             this.richTextBoxMessage.Text = message;
             this.Text = "Message";
@@ -40,10 +51,12 @@ namespace DictationBoxMSP
 
         private void DisplayMessage_Load(object sender, EventArgs e)
         {
-            this.BackColor = Color.Black;
-            this.ForeColor = Color.White;
-            richTextBoxMessage.BackColor = Color.Black;
-            richTextBoxMessage.ForeColor = Color.White;
+            this.BackColor = SharedBackColor;
+            this.ForeColor = SharedForeColor;
+            this.Font = SharedFont;
+            richTextBoxMessage.BackColor = SharedBackColor;
+            richTextBoxMessage.ForeColor = SharedForeColor;
+            richTextBoxMessage.Font = SharedFont;
 
         }
     }

@@ -294,10 +294,21 @@ namespace ExecuteCommands
             // If command list is long, show in dialog and use notification as pointer
             if (lines.Count > 8)
             {
-                var dlg = new DictationBoxMSP.DisplayMessage(message, 60000, "Available Commands"); // 60 seconds, custom title
-                System.Windows.Forms.Application.Run(dlg); // Auto-close after timeout
-                // Dialog already shows the full command list; avoid redundant tray notification.
-                _suppressNextHelpNotification = true;
+                try
+                {
+                    var form = new DictationBoxMSP.AvailableCommandsForm();
+                    form.Text = "Available Commands";
+                    // Show modal so callers don't continue until user closes the list.
+                    form.ShowDialog();
+                    _suppressNextHelpNotification = true;
+                }
+                catch (Exception)
+                {
+                    // Fallback to the original DisplayMessage if the new form fails to open
+                    var dlg = new DictationBoxMSP.DisplayMessage(message, 60000, "Available Commands"); // 60 seconds, custom title
+                    System.Windows.Forms.Application.Run(dlg); // Auto-close after timeout
+                    _suppressNextHelpNotification = true;
+                }
             }
             else
             {

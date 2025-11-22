@@ -1,6 +1,10 @@
 
-Can we look at the latest log entry I'm trying to  run the following command:
+When we are not in Visual Studio and we issue the voice command natural what can I say can we have another form to popup with all the available global commands?
 
-natural build solution 
+Also can we have the ability to type in a TextBox and shows such results and by default have no results returned for performance reasons until the user starts typing?
 
-  it's failing to run a similar command but we just need the normal command can we fix this?
+ currently we are using the DisplayMessage  form but I think we need a new one.
+
+  can we make the fonts though the same and the front size as the current DisplayMessage form?
+
+  Also Dark Mode please.
