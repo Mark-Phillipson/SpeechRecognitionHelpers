@@ -7,11 +7,24 @@ using System.Text.Json;
 using WindowsInput;
 using WindowsInput.Native;
 
+using OpenAI;
+using OpenAI.Chat;
+using OpenAI.Models;
+
 namespace ExecuteCommands
 {
-    using OpenAI;
-    using OpenAI.Chat;
-    using OpenAI.Models;
+    // Win32 API imports and constants for window style and class name
+    internal static class Win32Api
+    {
+        public const int GWL_STYLE = -16;
+        public const int WS_MAXIMIZEBOX = 0x00010000;
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
+        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public static extern int GetClassName(IntPtr hWnd, System.Text.StringBuilder lpClassName, int nMaxCount);
+    }
     public class NaturalLanguageInterpreter
     // Action type for Visual Studio command execution
     {
@@ -750,7 +763,7 @@ namespace ExecuteCommands
             {
                 // Get active window handle
                 IntPtr hWnd = Commands.GetForegroundWindow();
-                // Always log 'Window maximized' for restore/maximize attempts, even if window handle is missing
+                // Maximize logic
                 if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100 && move.Monitor != "next")
                 {
                     System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
@@ -759,7 +772,17 @@ namespace ExecuteCommands
                         System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (center/maximize)\n");
                         return "No active window found.";
                     }
-                    // Maximize window
+                    SetForegroundWindow(hWnd);
+                    int style = Win32Api.GetWindowLong(hWnd, Win32Api.GWL_STYLE);
+                    bool canMaximize = (style & Win32Api.WS_MAXIMIZEBOX) != 0;
+                    var className = new System.Text.StringBuilder(256);
+                    Win32Api.GetClassName(hWnd, className, className.Capacity);
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Window class: {className}, style: 0x{style:X}\n");
+                    if (!canMaximize)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Window does not support maximizing (missing WS_MAXIMIZEBOX).\n");
+                        return "Window cannot be maximized (missing maximize button).";
+                    }
                     const int SW_MAXIMIZE = 3;
                     bool success = ShowWindow(hWnd, SW_MAXIMIZE);
                     if (!success)
@@ -773,73 +796,9 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window maximized.\n");
                     return "Window maximized.";
                 }
-                if (hWnd == IntPtr.Zero)
-                {
-                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (general)\n");
-                    return "No active window found.";
-                }
-                if (move.Monitor == "next" && ((move.WidthPercent == 0 || move.WidthPercent == null || move.WidthPercent == 100) && (move.HeightPercent == 0 || move.HeightPercent == null || move.HeightPercent == 100)))
-                {
-                    IntPtr activeHWnd = (IntPtr)Commands.GetForegroundWindow();
-                    if (activeHWnd == IntPtr.Zero)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (next monitor)\n");
-                        return "No active window found.";
-                    }
-                    IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
-                    MONITORINFOEX currentInfo = new MONITORINFOEX();
-                    currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                    bool gotCurrentInfo = GetMonitorInfo(currentMonitor, ref currentInfo);
-                    if (!gotCurrentInfo)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get current monitor info.\n");
-                        return "Failed to get current monitor info.";
-                    }
-                    IntPtr nextMonitor = IntPtr.Zero;
-                    foreach (var monitor in GetAllMonitors())
-                    {
-                        if (monitor != currentMonitor)
-                        {
-                            nextMonitor = monitor == IntPtr.Zero ? IntPtr.Zero : monitor;
-                            break;
-                        }
-                    }
-                    if (nextMonitor == IntPtr.Zero)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No other monitor found.\n");
-                        return "No other monitor found.";
-                    }
-                    MONITORINFOEX nextInfo = new MONITORINFOEX();
-                    nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                    bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
-                    if (!gotNextInfo)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get next monitor info.\n");
-                        return "Failed to get next monitor info.";
-                    }
-                    int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
-                    int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
-                    int x = nextInfo.rcWork.Left;
-                    int y = nextInfo.rcWork.Top;
-                    bool success = SetWindowPos(activeHWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
-                    if (!success)
-                    {
-                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-                        System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window to next monitor.\n");
-                        return $"Failed to move window to next monitor. Win32 error: {error}";
-                    }
-                    // Maximize window after moving
-                    const int SW_MAXIMIZE = 3;
-                    ShowWindow(activeHWnd, SW_MAXIMIZE);
-                    System.IO.File.AppendAllText(GetLogPath(), "Window moved to next monitor\n");
-                    return "Window moved and maximized on next monitor.";
-            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Checking if action is SendKeysAction\n");
-                }
                 // Move window to left half
                 if (move.Position == "left" && move.WidthPercent == 50 && move.HeightPercent == 100)
                 {
-                    // Get monitor info
                     IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
                     MONITORINFOEX info = new MONITORINFOEX();
                     info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
@@ -868,7 +827,6 @@ namespace ExecuteCommands
                 // Move window to right half
                 if (move.Position == "right" && move.WidthPercent == 50 && move.HeightPercent == 100)
                 {
-                    // Get monitor info
                     IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
                     MONITORINFOEX info = new MONITORINFOEX();
                     info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
@@ -897,14 +855,12 @@ namespace ExecuteCommands
                 // Move window to other monitor
                 if (move.Monitor == "next" && (move.WidthPercent == 0 || move.WidthPercent == null) && (move.HeightPercent == 0 || move.HeightPercent == null))
                 {
-                    // Get active window handle
                     IntPtr activeHWnd = Commands.GetForegroundWindow();
                     if (activeHWnd == IntPtr.Zero)
                     {
                         System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (other monitor)\n");
                         return "No active window found.";
                     }
-                    // Get current monitor
                     IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
                     MONITORINFOEX currentInfo = new MONITORINFOEX();
                     currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
@@ -914,7 +870,6 @@ namespace ExecuteCommands
                         System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get current monitor info. (other monitor)\n");
                         return "Failed to get current monitor info.";
                     }
-                    // Find next monitor (circular)
                     IntPtr nextMonitor = IntPtr.Zero;
                     foreach (IntPtr monitor in GetAllMonitors())
                     {
@@ -929,7 +884,6 @@ namespace ExecuteCommands
                         System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No other monitor found. (other monitor)\n");
                         return "No other monitor found.";
                     }
-                    // Get next monitor's working area
                     MONITORINFOEX nextInfo = new MONITORINFOEX();
                     nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
@@ -938,7 +892,6 @@ namespace ExecuteCommands
                         System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get next monitor info. (other monitor)\n");
                         return "Failed to get next monitor info.";
                     }
-                    // Move window to the center of the next monitor
                     int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
                     int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
                     int widthPercent = move.WidthPercent.HasValue ? move.WidthPercent.Value : 100;
@@ -960,6 +913,7 @@ namespace ExecuteCommands
                 System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Stub window move not implemented.\n");
                 return "[Stub] Window move not implemented for: " + move.ToString();
             }
+            // All window movement logic is now inside the MoveWindowAction block above
             else if (action is CloseTabAction)
             {
                 // Always log 'Sent Ctrl+W' for close tab attempts, even if app is unsupported or process name is missing
