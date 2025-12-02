@@ -96,6 +96,8 @@ namespace ExecuteCommands
             }
 
             File.AppendAllText(logPath, $"[AI] Fallback triggered for: {text}\n");
+            // Log the prompt being sent to the AI
+            File.AppendAllText(logPath, $"[AI] Prompt sent to OpenAI:\n{prompt}\n");
             try
             {
                 var chatClient = new ChatClient(modelName, apiKey);
