@@ -617,9 +617,9 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (mapped app: {appName} -> {exe})\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
                 }
-                // Fallback: try raw app name as exe
-                var fallbackAction = new LaunchAppAction(appName);
-                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync fallback: {fallbackAction.GetType().Name} (raw app: {appName})\n");
+                // Fallback: show Alt+Tab switcher and hold Alt
+                var fallbackAction = new LaunchAppAction("focus-fallback");
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync fallback: {fallbackAction.GetType().Name} (focus-fallback for: {appName})\n");
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(fallbackAction);
             }
             // "type ..." maps to SendKeysAction
@@ -1057,6 +1057,16 @@ namespace ExecuteCommands
             {
                 try
                 {
+                    // Fallback for focus commands: if appExe is null or not found, show Alt+Tab switcher and keep Alt held
+                    if (string.IsNullOrEmpty(app.AppExe) || app.AppExe.Equals("focus-fallback", StringComparison.OrdinalIgnoreCase))
+                    {
+                        System.IO.File.AppendAllText("app.log", "[DEBUG] Focus fallback: showing Alt+Tab and holding Alt\n");
+                        var sim = new WindowsInput.InputSimulator();
+                        sim.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.MENU); // Alt down
+                        sim.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.TAB); // Tab press
+                        // Alt is held down; user can select app
+                        return "Showed Alt+Tab and holding Alt for app switcher (focus fallback)";
+                    }
                     var psi = new System.Diagnostics.ProcessStartInfo(app.AppExe)
                     {
                         UseShellExecute = true
@@ -1276,6 +1286,42 @@ namespace ExecuteCommands
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {actionTypeName}\n");
             if (action == null)
             {
+                // Robust fallback for 'focus windows terminal' and 'focus' commands
+                string lowerText = text.ToLowerInvariant();
+                if (lowerText.Contains("focus") && lowerText.Contains("windows terminal"))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Attempting to focus Windows Terminal window (HandleNaturalAsync single-arg)\n");
+                    bool focused = ExecuteCommands.Helpers.WindowFocusHelper.FocusWindowsTerminal();
+                    if (focused)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Successfully focused Windows Terminal window.\n");
+                        return "[Natural mode] Focused Windows Terminal window.";
+                    }
+                    else
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Windows Terminal not found, showing Ctrl+Alt+Tab fallback.\n");
+                        var sim = new WindowsInput.InputSimulator();
+                        sim.Keyboard.ModifiedKeyStroke(
+                            new[] {
+                                WindowsInput.Native.VirtualKeyCode.CONTROL,
+                                WindowsInput.Native.VirtualKeyCode.MENU
+                            },
+                            WindowsInput.Native.VirtualKeyCode.TAB);
+                        return "[Natural mode] Sent Ctrl+Alt+Tab for app switcher (focus fallback)";
+                    }
+                }
+                if (lowerText.Contains("focus"))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Focus fallback: sending Ctrl+Alt+Tab (HandleNaturalAsync single-arg)\n");
+                    var sim = new WindowsInput.InputSimulator();
+                    sim.Keyboard.ModifiedKeyStroke(
+                        new[] {
+                            WindowsInput.Native.VirtualKeyCode.CONTROL,
+                            WindowsInput.Native.VirtualKeyCode.MENU
+                        },
+                        WindowsInput.Native.VirtualKeyCode.TAB);
+                    return "[Natural mode] Sent Ctrl+Alt+Tab for app switcher (focus fallback)";
+                }
                 // Fallback to OpenAI if rule-based match fails
                 System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Fallback to OpenAI for: {text}\n");
                 var aiActionTask = InterpretWithAIAsync(text);
@@ -1338,6 +1384,72 @@ namespace ExecuteCommands
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
             if (action == null)
             {
+                // If the command contains 'focus windows terminal', try direct focus
+                if (text.Contains("focus") && text.Contains("windows terminal"))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Attempting to focus Windows Terminal window (HandleNaturalAsync)\n");
+                    bool focused = ExecuteCommands.Helpers.WindowFocusHelper.FocusWindowsTerminal();
+                    if (focused)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Successfully focused Windows Terminal window.\n");
+                        return "[Natural mode] Focused Windows Terminal window.";
+                    }
+                    else
+                        if (action == null)
+                        {
+                            // Robust fallback for Windows Terminal focus
+                            string lowerText = text.ToLowerInvariant();
+                            if (lowerText.Contains("focus") && lowerText.Contains("windows terminal"))
+                            {
+                                System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Attempting to focus Windows Terminal window (HandleNaturalAsync overload)\n");
+                                bool focusedInner = ExecuteCommands.Helpers.WindowFocusHelper.FocusWindowsTerminal();
+                                if (focusedInner)
+                                {
+                                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Successfully focused Windows Terminal window.\n");
+                                    return "[Natural mode] Focused Windows Terminal window.";
+                                }
+                                else
+                                {
+                                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Windows Terminal not found, showing Ctrl+Alt+Tab fallback.\n");
+                                    var sim = new WindowsInput.InputSimulator();
+                                    sim.Keyboard.ModifiedKeyStroke(
+                                        new[] {
+                                            WindowsInput.Native.VirtualKeyCode.CONTROL,
+                                            WindowsInput.Native.VirtualKeyCode.MENU
+                                        },
+                                        WindowsInput.Native.VirtualKeyCode.TAB);
+                                    return "[Natural mode] Sent Ctrl+Alt+Tab for app switcher (focus fallback)";
+                                }
+                            }
+                            // Fallback for any 'focus' command
+                            if (lowerText.Contains("focus"))
+                            {
+                                System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Focus fallback: sending Ctrl+Alt+Tab (HandleNaturalAsync overload)\n");
+                                var sim = new WindowsInput.InputSimulator();
+                                sim.Keyboard.ModifiedKeyStroke(
+                                    new[] {
+                                        WindowsInput.Native.VirtualKeyCode.CONTROL,
+                                        WindowsInput.Native.VirtualKeyCode.MENU
+                                    },
+                                    WindowsInput.Native.VirtualKeyCode.TAB);
+                                return "[Natural mode] Sent Ctrl+Alt+Tab for app switcher (focus fallback)";
+                            }
+                            // ...existing code...
+                        }
+                }
+                // If the command contains 'focus', trigger Ctrl+Alt+Tab fallback
+                if (text.Contains("focus"))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Focus fallback: sending Ctrl+Alt+Tab (HandleNaturalAsync)\n");
+                    var sim = new WindowsInput.InputSimulator();
+                    sim.Keyboard.ModifiedKeyStroke(
+                        new[] {
+                            WindowsInput.Native.VirtualKeyCode.CONTROL,
+                            WindowsInput.Native.VirtualKeyCode.MENU
+                        },
+                        WindowsInput.Native.VirtualKeyCode.TAB);
+                    return "[Natural mode] Sent Ctrl+Alt+Tab for app switcher (focus fallback)";
+                }
                 // Suggest available commands if no match
                 var suggestions = string.Join(", ", availableCommands.Select(c => c.Command));
                 return $"[Natural mode] No matching action for: {text}. Available commands: {suggestions}";
