@@ -59,6 +59,11 @@ namespace ExecuteCommands_NET
 			string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log");
 			logPath = System.IO.Path.GetFullPath(logPath);
 			Console.WriteLine($"[DEBUG] Log file path: {logPath}"); // Diagnostic: print log path
+			// Clear log file on startup
+			try {
+				if (System.IO.File.Exists(logPath))
+					System.IO.File.WriteAllText(logPath, "");
+			} catch(Exception ex) { Console.WriteLine($"[ERROR] Could not clear log file: {ex.Message}"); }
 			void Log(string message)
 			{
 				try
@@ -77,6 +82,7 @@ namespace ExecuteCommands_NET
 			switch (mode)
 			{
 				case "natural":
+					Log($"[DEBUG] Program.cs: Passing to HandleNaturalAsync: '{text}'");
 					result = commands.HandleNaturalAsync(text);
 					break;
 				case "sharp":

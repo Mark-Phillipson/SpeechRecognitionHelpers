@@ -96,8 +96,7 @@ namespace ExecuteCommands
             }
 
             File.AppendAllText(logPath, $"[AI] Fallback triggered for: {text}\n");
-            // Log the prompt being sent to the AI
-            File.AppendAllText(logPath, $"[AI] Prompt sent to OpenAI:\n{prompt}\n");
+            // Do NOT log the prompt anymore
             try
             {
                 var chatClient = new ChatClient(modelName, apiKey);
@@ -399,6 +398,8 @@ namespace ExecuteCommands
         public record ExecuteVSCommandAction(string CommandName, string? Arguments = null) : ActionBase;
         // Action to insert/type an emoji (either by name or directly by emoji text)
         public record EmojiAction(string? Name, string EmojiText) : ActionBase;
+        // Action to focus a window by title substring
+        public record FocusWindowAction(string WindowTitleSubstring) : ActionBase;
 
         // P/Invoke for SetWindowPos
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
@@ -410,6 +411,7 @@ namespace ExecuteCommands
 
         // InterpretAsync implementation
         public System.Threading.Tasks.Task<ActionBase?> InterpretAsync(string text)
+
         {
             text = (text ?? string.Empty).ToLowerInvariant().Trim();
             // Remove polite modifiers and extra punctuation
@@ -420,6 +422,21 @@ namespace ExecuteCommands
             foreach (var ew in extraWords) text = text.Replace(ew, "");
             text = text.Trim();
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+
+            // Focus window by name: /focus [window name], focus [window name], focus window [name]
+            string focusPrefix = null;
+            if (text.StartsWith("/focus ")) focusPrefix = "/focus ";
+            else if (text.StartsWith("focus window ")) focusPrefix = "focus window ";
+            else if (text.StartsWith("focus ")) focusPrefix = "focus ";
+            if (focusPrefix != null)
+            {
+                var windowName = text.Substring(focusPrefix.Length).Trim();
+                if (!string.IsNullOrEmpty(windowName))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched FocusWindow command: {windowName}\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(new FocusWindowAction(windowName));
+                }
+            }
 
             // Check popular commands override
             if (PopularCommands.TryGetValue(text, out var popularAction))
@@ -1279,6 +1296,32 @@ namespace ExecuteCommands
 
         public string HandleNaturalAsync(string text)
         {
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Entered HandleNaturalAsync with text: '{text}'\n");
+            string lowerText = text.ToLowerInvariant();
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] lowerText: '{lowerText}', contains 'focus': {lowerText.Contains("focus")}, contains 'zoom': {lowerText.Contains("zoom")}\n");
+            // Intercept 'focus zoom' and similar before AI fallback
+            if (lowerText.Contains("focus") && lowerText.Contains("zoom"))
+            {
+                System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Intercepted 'focus zoom' before AI fallback.\n");
+                bool focused = ExecuteCommands.Helpers.WindowFocusHelper.FocusZoom();
+                if (focused)
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Successfully focused Zoom window.\n");
+                    return "[Natural mode] Focused Zoom window.";
+                }
+                else
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Zoom window not found, showing Ctrl+Alt+Tab fallback.\n");
+                    var sim = new WindowsInput.InputSimulator();
+                    sim.Keyboard.ModifiedKeyStroke(
+                        new[] {
+                            WindowsInput.Native.VirtualKeyCode.CONTROL,
+                            WindowsInput.Native.VirtualKeyCode.MENU
+                        },
+                        WindowsInput.Native.VirtualKeyCode.TAB);
+                    return "[Natural mode] Sent Ctrl+Alt+Tab for app switcher (focus fallback)";
+                }
+            }
             var actionTask = InterpretAsync(text);
             actionTask.Wait();
             var action = actionTask.Result;
@@ -1287,7 +1330,6 @@ namespace ExecuteCommands
             if (action == null)
             {
                 // Robust fallback for 'focus windows terminal' and 'focus' commands
-                string lowerText = text.ToLowerInvariant();
                 if (lowerText.Contains("focus") && lowerText.Contains("windows terminal"))
                 {
                     System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Attempting to focus Windows Terminal window (HandleNaturalAsync single-arg)\n");
@@ -1356,6 +1398,21 @@ namespace ExecuteCommands
             var result = ExecuteActionAsync(action);
             // Detect non-actionable AI fallback results
             bool showUnmatched = false;
+            if (action is FocusWindowAction focusAction)
+            {
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Executing FocusWindowAction for: {focusAction.WindowTitleSubstring}\n");
+                bool focused = ExecuteCommands.Helpers.WindowFocusHelper.FocusWindowByTitle(focusAction.WindowTitleSubstring);
+                if (focused)
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Successfully focused window: {focusAction.WindowTitleSubstring}\n");
+                    return $"[Natural mode] Focused window: {focusAction.WindowTitleSubstring}";
+                }
+                else
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Failed to focus window: {focusAction.WindowTitleSubstring}\n");
+                    return $"[Natural mode] Could not find or focus window: {focusAction.WindowTitleSubstring}";
+                }
+            }
             if (action is SendKeysAction keys)
             {
                 // If no valid keys found, treat as unmatched
