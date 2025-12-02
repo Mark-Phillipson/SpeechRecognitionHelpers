@@ -123,6 +123,19 @@ namespace ExecuteCommands.Helpers
                         System.IO.File.AppendAllText(logPath, $"[DEBUG] FocusWindowByTitle: SetForegroundWindow after mouse click: {focusResult}\n");
                     }
                 }
+                    // Final fallback: show three focus apps (Ctrl+Alt+Tab) if still not focused
+                    if (!focusResult)
+                    {
+                        System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: All focus attempts failed, sending Ctrl+Alt+Tab as last resort.\n");
+                        // Send Ctrl+Alt+Tab key sequence
+                        keybd_event(0x11, 0, 0, 0); // Ctrl down
+                        keybd_event(0x12, 0, 0, 0); // Alt down
+                        keybd_event(0x09, 0, 0, 0); // Tab down
+                        keybd_event(0x09, 0, 2, 0); // Tab up
+                        keybd_event(0x12, 0, 2, 0); // Alt up
+                        keybd_event(0x11, 0, 2, 0); // Ctrl up
+                        System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: Sent Ctrl+Alt+Tab.\n");
+                    }
                 return focusResult;
             }
             else
