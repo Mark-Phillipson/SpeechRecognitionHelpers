@@ -836,6 +836,9 @@ namespace ExecuteCommands
         public string ExecuteActionAsync(ActionBase action)
         {
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: action.GetType().FullName: {(action == null ? "null" : action.GetType().FullName)}\n");
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Checking if action is MoveWindowAction\n");
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: action.GetType().AssemblyQualifiedName: {(action == null ? "null" : action.GetType().AssemblyQualifiedName)}\n");
             string logPath = GetLogPath();
             EnsureLogDirExists(logPath);
             if (action is MoveWindowAction move)
@@ -848,6 +851,7 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
                     if (hWnd == IntPtr.Zero)
                     {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (center/maximize)\n");
                         return "No active window found.";
                     }
                     // Maximize window
@@ -857,26 +861,35 @@ namespace ExecuteCommands
                     {
                         int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
                         System.IO.File.AppendAllText("app.log", $"Failed to maximize window. Win32 error: {error}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to maximize window.\n");
                         return $"Failed to maximize window. Win32 error: {error}";
                     }
                     System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window maximized.\n");
                     return "Window maximized.";
                 }
                 if (hWnd == IntPtr.Zero)
                 {
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (general)\n");
                     return "No active window found.";
                 }
                 if (move.Monitor == "next" && ((move.WidthPercent == 0 || move.WidthPercent == null || move.WidthPercent == 100) && (move.HeightPercent == 0 || move.HeightPercent == null || move.HeightPercent == 100)))
                 {
                     IntPtr activeHWnd = (IntPtr)Commands.GetForegroundWindow();
                     if (activeHWnd == IntPtr.Zero)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (next monitor)\n");
                         return "No active window found.";
+                    }
                     IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
                     MONITORINFOEX currentInfo = new MONITORINFOEX();
                     currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotCurrentInfo = GetMonitorInfo(currentMonitor, ref currentInfo);
                     if (!gotCurrentInfo)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get current monitor info.\n");
                         return "Failed to get current monitor info.";
+                    }
                     IntPtr nextMonitor = IntPtr.Zero;
                     foreach (var monitor in GetAllMonitors())
                     {
@@ -887,12 +900,18 @@ namespace ExecuteCommands
                         }
                     }
                     if (nextMonitor == IntPtr.Zero)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No other monitor found.\n");
                         return "No other monitor found.";
+                    }
                     MONITORINFOEX nextInfo = new MONITORINFOEX();
                     nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
                     if (!gotNextInfo)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get next monitor info.\n");
                         return "Failed to get next monitor info.";
+                    }
                     int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
                     int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
                     int x = nextInfo.rcWork.Left;
@@ -902,6 +921,7 @@ namespace ExecuteCommands
                     {
                         int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
                         System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window to next monitor.\n");
                         return $"Failed to move window to next monitor. Win32 error: {error}";
                     }
                     // Maximize window after moving
@@ -909,6 +929,7 @@ namespace ExecuteCommands
                     ShowWindow(activeHWnd, SW_MAXIMIZE);
                     System.IO.File.AppendAllText(GetLogPath(), "Window moved to next monitor\n");
                     return "Window moved and maximized on next monitor.";
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Checking if action is SendKeysAction\n");
                 }
                 // Move window to left half
                 if (move.Position == "left" && move.WidthPercent == 50 && move.HeightPercent == 100)
@@ -919,7 +940,10 @@ namespace ExecuteCommands
                     info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotInfo = monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info);
                     if (!gotInfo)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get monitor info. (left)\n");
                         return "Failed to get monitor info.";
+                    }
                     var rect = info.rcWork;
                     int width = (rect.Right - rect.Left) / 2;
                     int height = rect.Bottom - rect.Top;
@@ -930,8 +954,10 @@ namespace ExecuteCommands
                     {
                         int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
                         System.IO.File.AppendAllText("app.log", $"Failed to move window left. Win32 error: {error}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window left.\n");
                         return $"Failed to move window left. Win32 error: {error}";
                     }
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window moved to left half.\n");
                     return "Window moved to left half.";
                 }
                 // Move window to right half
@@ -943,7 +969,10 @@ namespace ExecuteCommands
                     info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotInfo = monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info);
                     if (!gotInfo)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get monitor info. (right)\n");
                         return "Failed to get monitor info.";
+                    }
                     var rect = info.rcWork;
                     int width = (rect.Right - rect.Left) / 2;
                     int height = rect.Bottom - rect.Top;
@@ -954,8 +983,10 @@ namespace ExecuteCommands
                     {
                         int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
                         System.IO.File.AppendAllText("app.log", $"Failed to move window right. Win32 error: {error}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window right.\n");
                         return $"Failed to move window right. Win32 error: {error}";
                     }
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window moved to right half.\n");
                     return "Window moved to right half.";
                 }
                 // Move window to other monitor
@@ -964,14 +995,20 @@ namespace ExecuteCommands
                     // Get active window handle
                     IntPtr activeHWnd = Commands.GetForegroundWindow();
                     if (activeHWnd == IntPtr.Zero)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (other monitor)\n");
                         return "No active window found.";
+                    }
                     // Get current monitor
                     IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
                     MONITORINFOEX currentInfo = new MONITORINFOEX();
                     currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotCurrentInfo = GetMonitorInfo(currentMonitor, ref currentInfo);
                     if (!gotCurrentInfo)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get current monitor info. (other monitor)\n");
                         return "Failed to get current monitor info.";
+                    }
                     // Find next monitor (circular)
                     IntPtr nextMonitor = IntPtr.Zero;
                     foreach (IntPtr monitor in GetAllMonitors())
@@ -983,13 +1020,19 @@ namespace ExecuteCommands
                         }
                     }
                     if (nextMonitor == IntPtr.Zero)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No other monitor found. (other monitor)\n");
                         return "No other monitor found.";
+                    }
                     // Get next monitor's working area
                     MONITORINFOEX nextInfo = new MONITORINFOEX();
                     nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
                     bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
                     if (!gotNextInfo)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get next monitor info. (other monitor)\n");
                         return "Failed to get next monitor info.";
+                    }
                     // Move window to the center of the next monitor
                     int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
                     int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
@@ -1002,11 +1045,14 @@ namespace ExecuteCommands
                     {
                         int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
                         System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window to next monitor. (other monitor)\n");
                         return $"Failed to move window to next monitor. Win32 error: {error}";
                     }
                     System.IO.File.AppendAllText(GetLogPath(), "Window moved to next monitor\n");
+                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window moved to other monitor.\n");
                     return "Window moved to other monitor.";
                 }
+                System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Stub window move not implemented.\n");
                 return "[Stub] Window move not implemented for: " + move.ToString();
             }
             else if (action is CloseTabAction)
@@ -1159,61 +1205,129 @@ namespace ExecuteCommands
             }
             else if (action is SendKeysAction keys)
             {
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] Entered SendKeysAction block in ExecuteActionAsync\n");
                 try
                 {
-                    var sim = new WindowsInput.InputSimulator();
-                    // Handle + separator (e.g. "control+d") and spaces
+                    // Focus the target window before sending Alt+F4
+                    IntPtr hWnd = Commands.GetForegroundWindow();
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] Foreground window handle before Alt+F4: {hWnd}\n");
+                    if (keys.KeysText.ToLower().Replace(" ","") == "alt+f4" || keys.KeysText.ToLower().Replace(" ","") == "altf4")
+                    {
+                        // Try to focus the window
+                        bool focused = Commands.SetForegroundWindow(hWnd);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] SetForegroundWindow result: {focused}\n");
+                        var sim = new WindowsInput.InputSimulator();
+                        sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.MENU, WindowsInput.Native.VirtualKeyCode.F4);
+                        System.IO.File.AppendAllText("app.log", "[DEBUG] InputSimulator sent Alt+F4\n");
+                        System.Threading.Thread.Sleep(500); // Wait for window to close
+                        IntPtr hWndAfter = Commands.GetForegroundWindow();
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] Foreground window handle after Alt+F4: {hWndAfter}\n");
+                        if (hWnd == hWndAfter)
+                        {
+                            // Fallback to SendKeys.SendWait
+                            System.IO.File.AppendAllText("app.log", "[DEBUG] InputSimulator Alt+F4 did not close window, falling back to SendKeys.SendWait\n");
+                            try
+                            {
+                                System.Windows.Forms.SendKeys.SendWait("%{F4}");
+                                System.IO.File.AppendAllText("app.log", "[DEBUG] SendKeys.SendWait sent %{{F4}}\n");
+                                return "Sent Alt+F4 via SendKeys.SendWait (fallback)";
+                            }
+                            catch (Exception sendEx)
+                            {
+                                System.IO.File.AppendAllText("app.log", $"[ERROR] SendKeys.SendWait failed: {sendEx.Message}\n");
+                                return $"Failed to send Alt+F4 via SendKeys.SendWait: {sendEx.Message}";
+                            }
+                        }
+                        return "Sent Alt+F4 via InputSimulator";
+                    }
+                    // ...existing code for other key sequences...
+                    var simGeneral = new WindowsInput.InputSimulator();
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] Raw KeysText: {keys.KeysText}\n");
                     var keyParts = keys.KeysText.Replace("+", " ").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] Parsed keyParts: {string.Join(",", keyParts)}\n");
                     var modifiers = new List<WindowsInput.Native.VirtualKeyCode>();
                     var mainKeys = new List<WindowsInput.Native.VirtualKeyCode>();
                     foreach (var part in keyParts)
                     {
+                        string debugLine = $"[DEBUG] Parsing part: {part} -> ";
                         switch (part.ToLower())
                         {
                             case "control":
                             case "ctrl":
                                 modifiers.Add(WindowsInput.Native.VirtualKeyCode.CONTROL);
+                                debugLine += "CONTROL";
                                 break;
                             case "shift":
                                 modifiers.Add(WindowsInput.Native.VirtualKeyCode.SHIFT);
+                                debugLine += "SHIFT";
                                 break;
                             case "alt":
                                 modifiers.Add(WindowsInput.Native.VirtualKeyCode.MENU);
+                                debugLine += "MENU (ALT)";
                                 break;
                             case "windows":
                             case "win":
                                 modifiers.Add(WindowsInput.Native.VirtualKeyCode.LWIN);
+                                debugLine += "LWIN";
                                 break;
                             case ",":
                             case "comma":
                                 mainKeys.Add(WindowsInput.Native.VirtualKeyCode.OEM_COMMA);
+                                debugLine += "OEM_COMMA";
                                 break;
                             default:
                                 if (Enum.TryParse<WindowsInput.Native.VirtualKeyCode>("VK_" + part.ToUpper(), out var vk))
+                                {
                                     mainKeys.Add(vk);
+                                    debugLine += $"VK_{part.ToUpper()}";
+                                }
                                 else if (part.Length == 1 && char.IsLetterOrDigit(part[0]))
-                                    mainKeys.Add((WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "VK_" + part.ToUpper()));
+                                {
+                                    var parsed = (WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "VK_" + part.ToUpper());
+                                    mainKeys.Add(parsed);
+                                    debugLine += $"VK_{part.ToUpper()} (char)";
+                                }
                                 else if (part.StartsWith("f", StringComparison.OrdinalIgnoreCase) && int.TryParse(part.Substring(1), out int fnum) && fnum >= 1 && fnum <= 24)
-                                    mainKeys.Add((WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "F" + fnum));
+                                {
+                                    var parsed = (WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "F" + fnum);
+                                    mainKeys.Add(parsed);
+                                    debugLine += $"F{fnum}";
+                                }
+                                else
+                                {
+                                    debugLine += "(unrecognized)";
+                                }
                                 break;
                         }
+                        System.IO.File.AppendAllText("app.log", debugLine + "\n");
                     }
-                    if (mainKeys.Count > 0)
-                    {
-                        sim.Keyboard.ModifiedKeyStroke(modifiers, mainKeys);
-                        return $"Sent keys: {keys.KeysText}";
+                    // Log the actual key codes for debugging
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InputSimulator modifiers: {string.Join(",", modifiers.Select(m => m.ToString()))}, mainKeys: {string.Join(",", mainKeys.Select(k => k.ToString()))}\n");
+                    try {
+                        if (mainKeys.Count > 0)
+                        {
+                            simGeneral.Keyboard.ModifiedKeyStroke(modifiers, mainKeys);
+                            System.IO.File.AppendAllText("app.log", $"[DEBUG] InputSimulator sent ModifiedKeyStroke({string.Join(",", modifiers.Select(m => m.ToString()))}, {string.Join(",", mainKeys.Select(k => k.ToString()))})\n");
+                            return $"Sent keys: {keys.KeysText}";
+                        }
+                        else if (modifiers.Count > 0)
+                        {
+                            simGeneral.Keyboard.KeyDown(modifiers[0]);
+                            simGeneral.Keyboard.KeyUp(modifiers[0]);
+                            System.IO.File.AppendAllText("app.log", $"[DEBUG] InputSimulator sent KeyDown/KeyUp({modifiers[0]})\n");
+                            return $"Sent modifier key: {modifiers[0]}";
+                        }
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] No valid keys found in: {keys.KeysText}\n");
+                        return $"No valid keys found in: {keys.KeysText}";
+                    } catch (Exception innerEx) {
+                        System.IO.File.AppendAllText("app.log", $"[ERROR] Exception in InputSimulator send: {innerEx.Message}\n{innerEx.StackTrace}\n");
+                        return $"Failed to send keys: {keys.KeysText}. Error: {innerEx.Message}";
                     }
-                    else if (modifiers.Count > 0)
-                    {
-                        sim.Keyboard.KeyDown(modifiers[0]);
-                        sim.Keyboard.KeyUp(modifiers[0]);
-                        return $"Sent modifier key: {modifiers[0]}";
-                    }
-                    return $"No valid keys found in: {keys.KeysText}";
                 }
                 catch (Exception ex)
                 {
-                    System.IO.File.AppendAllText("app.log", $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}\n");
+                    System.IO.File.AppendAllText("app.log", $"[ERROR] Exception in SendKeysAction outer: {ex.Message}\n{ex.StackTrace}\n");
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] SendKeysAction block threw exception before key parsing.\n");
                     return $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}";
                 }
             }

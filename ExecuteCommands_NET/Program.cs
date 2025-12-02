@@ -22,8 +22,14 @@ namespace ExecuteCommands_NET
 			// -------------------------------------------------------------
 			string[] args = Environment.GetCommandLineArgs();
 
-			// DEBUG: If no arguments, default to natural mode and sample dictation
-			if (args.Length < 2)
+			// If running in debug mode and no args provided, use default test command
+			if (System.Diagnostics.Debugger.IsAttached && (args == null || args.Length < 2))
+			{
+				args = new string[] { "ExecuteCommands.exe", "natural", "close this window" };
+				Console.WriteLine("[DEBUG] Debugger attached and no arguments detected. Defaulting to: natural 'close this window'");
+			}
+			// Otherwise, if no arguments, default to natural mode and sample dictation
+			else if (args.Length < 2)
 			{
 				args = new string[] { "ExecuteCommands.exe", "natural", "close tab" };
 				Console.WriteLine("[DEBUG] No arguments detected. Defaulting to: natural 'close tab'");
