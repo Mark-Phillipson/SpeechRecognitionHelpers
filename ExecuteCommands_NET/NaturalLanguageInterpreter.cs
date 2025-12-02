@@ -115,7 +115,7 @@ namespace ExecuteCommands
                                         root.TryGetProperty("HeightPercent", out var hp) ? hp.GetInt32() : (int?)null
                                     );
                                 case "LaunchAppAction":
-                                    return new LaunchAppAction(root.GetProperty("AppIdOrPath").GetString() ?? "");
+                                    return new LaunchAppAction(root.GetProperty("AppExe").GetString() ?? "");
                                 case "SendKeysAction":
                                     return new SendKeysAction(root.GetProperty("KeysText").GetString() ?? "");
                                 case "OpenFolderAction":
@@ -185,25 +185,7 @@ namespace ExecuteCommands
 
         // Optional emoji mapping for commands. Map a command phrase to a small emoji
         // string that will be displayed next to the command in the 'what can I say' UI.
-        private static readonly Dictionary<string, string> CommandEmojis = new(StringComparer.OrdinalIgnoreCase)
-        {
-            { "open downloads", "📥" },
-            { "open documents", "🗂️" },
-            { "maximize window", "🖥️" },
-            { "move window to left half", "⬅️" },
-            { "move window to right half", "➡️" },
-            { "move window to other monitor", "🔁" },
-            { "close tab", "❌" },
-            { "send keys", "⌨️" },
-            { "launch app", "🚀" },
-            { "focus app", "👀" },
-            { "show help", "❓" }
-            // Common emoji shortcuts
-            ,{ "happy", "😀" }
-            ,{ "sad", "😢" }
-            ,{ "thumbs up", "👍" }
-            ,{ "heart", "❤️" }
-        };
+        // Emoji logic moved to EmojiManager.cs. Use EmojiManager.SetCommandEmoji, EmojiManager.GetCommandEmoji, EmojiManager.GetAllEmojiMappings instead.
 
         // File used to persist emoji mappings so they can be added over time.
         // Will look for a file next to the executable (copied by the build as content).
@@ -212,88 +194,10 @@ namespace ExecuteCommands
         // Static ctor: load persisted mappings (if any) on first access
         static NaturalLanguageInterpreter()
         {
-            LoadEmojiMappings();
+            // Emoji mappings now loaded by EmojiManager
         }
 
-        private static void LoadEmojiMappings()
-        {
-            try
-            {
-                if (File.Exists(EmojiMappingsPath))
-                {
-                    var json = File.ReadAllText(EmojiMappingsPath);
-                    var map = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-                    if (map != null)
-                    {
-                        foreach (var kv in map)
-                        {
-                            CommandEmojis[kv.Key] = kv.Value;
-                        }
-                        File.AppendAllText(GetLogPath(), $"[INFO] Loaded {map.Count} emoji mappings from {EmojiMappingsPath}\n");
-                    }
-                }
-                else
-                {
-                    // No persisted file yet
-                    File.AppendAllText(GetLogPath(), $"[INFO] No emoji mappings file found at {EmojiMappingsPath}\n");
-                }
-            }
-            catch (Exception ex)
-            {
-                try { File.AppendAllText(GetLogPath(), $"[ERROR] Failed to load emoji mappings: {ex.Message}\n"); } catch { }
-            }
-        }
-
-        private static void SaveEmojiMappings()
-        {
-            try
-            {
-                EnsureLogDirExists(EmojiMappingsPath);
-                var opts = new JsonSerializerOptions { WriteIndented = true };
-                var json = JsonSerializer.Serialize(CommandEmojis, opts);
-                File.WriteAllText(EmojiMappingsPath, json);
-                File.AppendAllText(GetLogPath(), $"[INFO] Saved {CommandEmojis.Count} emoji mappings to {EmojiMappingsPath}\n");
-            }
-            catch (Exception ex)
-            {
-                try { File.AppendAllText(GetLogPath(), $"[ERROR] Failed to save emoji mappings: {ex.Message}\n"); } catch { }
-            }
-        }
-
-        // Public API to set or clear an emoji for a voice command at runtime.
-        public static void SetCommandEmoji(string command, string? emoji)
-        {
-            if (string.IsNullOrWhiteSpace(command)) return;
-            if (string.IsNullOrWhiteSpace(emoji))
-            {
-                if (CommandEmojis.ContainsKey(command))
-                    CommandEmojis.Remove(command);
-                // Persist removal
-                try { SaveEmojiMappings(); } catch { }
-            }
-            else
-            {
-                CommandEmojis[command.Trim()] = emoji.Trim();
-                // Persist change
-                try { SaveEmojiMappings(); } catch { }
-            }
-        }
-
-        // Public API to read an emoji for a command (returns null if none configured)
-        public static string? GetCommandEmoji(string command)
-        {
-            if (string.IsNullOrWhiteSpace(command)) return null;
-            if (CommandEmojis.TryGetValue(command.Trim(), out var emoji))
-                return emoji;
-            return null;
-        }
-
-        // Public API to enumerate all configured emoji mappings (name -> emoji)
-        public static IEnumerable<(string Name, string Emoji)> GetAllEmojiMappings()
-        {
-            // Return a snapshot so callers can't modify the internal dictionary
-            return CommandEmojis.Select(kv => (Name: kv.Key, Emoji: kv.Value)).ToArray();
-        }
+        // Emoji mapping API now provided by EmojiManager.cs
 
         // Visual Studio specific commands
         public static readonly List<(string Command, string Description)> VisualStudioCommands = new()
@@ -407,7 +311,8 @@ namespace ExecuteCommands
             // show it before the command text (e.g. "📥 open downloads: Open the Downloads folder").
             var lines = commands.Select(c =>
             {
-                if (CommandEmojis.TryGetValue(c.Command, out var emoji) && !string.IsNullOrEmpty(emoji))
+                var emoji = EmojiManager.GetCommandEmoji(c.Command);
+                if (!string.IsNullOrEmpty(emoji))
                     return $"- {emoji} {c.Command}: {c.Description}";
                 return $"- {c.Command}: {c.Description}";
             }).ToList();
@@ -723,7 +628,7 @@ namespace ExecuteCommands
                     {
                         var name = parts[0].Trim();
                         var emoji = parts[1].Trim();
-                        SetCommandEmoji(name, emoji);
+                        EmojiManager.SetCommandEmoji(name, emoji);
                         System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync: Set emoji mapping: {name} -> {emoji}\n");
                         return System.Threading.Tasks.Task.FromResult<ActionBase?>(new EmojiAction(name, emoji));
                     }
@@ -746,7 +651,7 @@ namespace ExecuteCommands
                 var name = text.Substring("emoji ".Length).Trim();
                 if (!string.IsNullOrEmpty(name))
                 {
-                    var emoji = GetCommandEmoji(name);
+                    var emoji = EmojiManager.GetCommandEmoji(name);
                     if (!string.IsNullOrEmpty(emoji))
                     {
                         var action = new EmojiAction(name, emoji);
@@ -1196,21 +1101,21 @@ namespace ExecuteCommands
             {
                 try
                 {
-                    var psi = new System.Diagnostics.ProcessStartInfo(app.AppIdOrPath)
+                    var psi = new System.Diagnostics.ProcessStartInfo(app.AppExe)
                     {
                         UseShellExecute = true
                     };
                     System.Diagnostics.Process.Start(psi);
-                    if (app.AppIdOrPath.Equals("msedge.exe", StringComparison.OrdinalIgnoreCase))
+                    if (app.AppExe.Equals("msedge.exe", StringComparison.OrdinalIgnoreCase))
                     {
                         System.IO.File.AppendAllText(GetLogPath(), "Launched app: msedge.exe\n");
                     }
-                    return $"Launched app: {app.AppIdOrPath}";
+                    return $"Launched app: {app.AppExe}";
                 }
                 catch (Exception ex)
                 {
-                    System.IO.File.AppendAllText("app.log", $"Failed to launch app: {app.AppIdOrPath}. Error: {ex.Message}\n");
-                    return $"Failed to launch app: {app.AppIdOrPath}. Error: {ex.Message}";
+                    System.IO.File.AppendAllText("app.log", $"Failed to launch app: {app.AppExe}. Error: {ex.Message}\n");
+                    return $"Failed to launch app: {app.AppExe}. Error: {ex.Message}";
                 }
             }
             else if (action is SendKeysAction keys)

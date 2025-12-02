@@ -125,7 +125,7 @@ namespace DictationBoxMSP
                 {
                     try
                     {
-                        var emoji = ExecuteCommands.NaturalLanguageInterpreter.GetCommandEmoji(i.Command);
+                        var emoji = ExecuteCommands.EmojiManager.GetCommandEmoji(i.Command);
                         if (!string.IsNullOrEmpty(emoji))
                             return $"{emoji} {i.Command} — {i.Description}";
                     }
@@ -138,7 +138,7 @@ namespace DictationBoxMSP
             // Also include any configured emoji mappings that match the query (show name -> emoji)
             try
             {
-                var mappings = ExecuteCommands.NaturalLanguageInterpreter.GetAllEmojiMappings();
+                var mappings = ExecuteCommands.EmojiManager.GetAllEmojiMappings();
                 var mappingMatches = mappings
                     .Where(m => (m.Name ?? string.Empty).IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 || (m.Emoji ?? string.Empty).IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
                     .Select(m => $"{m.Emoji} {m.Name} — Emoji mapping")
