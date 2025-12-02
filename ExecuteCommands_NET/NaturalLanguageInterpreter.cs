@@ -1154,6 +1154,15 @@ namespace ExecuteCommands
                         path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                         break;
                 }
+
+                // Try to focus existing Explorer window for Downloads
+                bool focused = FocusExistingExplorerWindow(path);
+                if (focused)
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), "Focused existing Downloads window\n");
+                    return $"Focused existing window: {folder.KnownFolder} ({path})";
+                }
+                // Otherwise, open new window
                 var psi = new System.Diagnostics.ProcessStartInfo("explorer.exe", path)
                 {
                     UseShellExecute = true
@@ -1164,6 +1173,7 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText(GetLogPath(), "Opened folder: Downloads\n");
                 }
                 return $"Opened folder: {folder.KnownFolder} ({path})";
+            // No closing brace here; keep method open for further action handlers
             }
             else if (action is ShowHelpAction)
             {
@@ -1589,5 +1599,53 @@ namespace ExecuteCommands
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
         private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
+                [System.Runtime.InteropServices.DllImport("user32.dll")]
+                private static extern bool SetForegroundWindow(IntPtr hWnd);
+            // Helper: Focus existing Explorer window for a given path
+            private static bool FocusExistingExplorerWindow(string folderPath)
+            {
+                try
+                {
+                    // Use COM to enumerate Explorer windows
+                    Type shellWindowsType = Type.GetTypeFromProgID("Shell.Application");
+                    dynamic shellWindows = Activator.CreateInstance(shellWindowsType);
+                    foreach (var window in shellWindows.Windows())
+                    {
+                        string url = "";
+                        try { url = window.LocationURL as string ?? ""; } catch { }
+                        string hwndStr = "";
+                        try { hwndStr = window.HWND.ToString(); } catch { }
+                        // Convert file:///C:/Users/.../Downloads to local path
+                        if (url.StartsWith("file:///", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string winPath = Uri.UnescapeDataString(url.Substring(8).Replace('/', '\\'));
+                            // Compare normalized paths
+                            if (string.Equals(System.IO.Path.GetFullPath(winPath), System.IO.Path.GetFullPath(folderPath), StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Focus window
+                                IntPtr hWnd = IntPtr.Zero;
+                                if (IntPtr.TryParse(hwndStr, out hWnd) && hWnd != IntPtr.Zero)
+                                {
+                                    SetForegroundWindow(hWnd);
+                                    return true;
+                                }
+                                // Fallback: try window.HWND as int
+                                try
+                                {
+                                    hWnd = (IntPtr)window.HWND;
+                                    if (hWnd != IntPtr.Zero)
+                                    {
+                                        SetForegroundWindow(hWnd);
+                                        return true;
+                                    }
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+                }
+                catch { }
+                return false;
+            }
     }
 }
