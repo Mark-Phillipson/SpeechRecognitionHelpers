@@ -43,32 +43,92 @@ namespace ExecuteCommands.Helpers
             string foundProcName = "";
             string foundClassName = "";
             string foundWindowTitle = "";
+
+            // Helper to generate all singular/plural combinations for each word
+            static IEnumerable<string> GetTitleVariants(string input)
+            {
+                var words = input.Split(' ');
+                List<List<string>> wordVariants = new List<List<string>>();
+                foreach (var word in words)
+                {
+                    var variants = new List<string> { word };
+                    if (word.EndsWith("s") && word.Length > 1)
+                    {
+                        // Remove trailing 's' for singular
+                        variants.Add(word.Substring(0, word.Length - 1));
+                    }
+                    else if (word.Length > 1)
+                    {
+                        // Add plural form
+                        variants.Add(word + "s");
+                    }
+                    wordVariants.Add(variants);
+                }
+                // Generate all combinations
+                var results = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                void Combine(int idx, List<string> current)
+                {
+                    if (idx == wordVariants.Count)
+                    {
+                        results.Add(string.Join(" ", current));
+                        return;
+                    }
+                    foreach (var variant in wordVariants[idx])
+                    {
+                        current.Add(variant);
+                        Combine(idx + 1, current);
+                        current.RemoveAt(current.Count - 1);
+                    }
+                }
+                Combine(0, new List<string>());
+                return results;
+            }
+
+            var titleVariants = GetTitleVariants(titleSubstring);
+            string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log");
+            logPath = System.IO.Path.GetFullPath(logPath);
+            System.IO.File.AppendAllText(logPath, $"[DEBUG] FocusWindowByTitle: Checking variants: {string.Join(", ", titleVariants)}\n");
+
             EnumWindows((hWnd, lParam) =>
             {
                 if (!IsWindowVisible(hWnd)) return true;
                 var title = new System.Text.StringBuilder(256);
                 GetWindowText(hWnd, title, title.Capacity);
-                if (title.ToString().IndexOf(titleSubstring, StringComparison.OrdinalIgnoreCase) >= 0)
+                string windowTitle = title.ToString();
+                System.IO.File.AppendAllText(logPath, $"[DEBUG] FocusWindowByTitle: Window title found: '{windowTitle}'\n");
+                foreach (var variant in titleVariants)
                 {
-                    foundHwnd = hWnd;
-                    foundWindowTitle = title.ToString();
-                    uint pid;
-                    GetWindowThreadProcessId(hWnd, out pid);
-                    try
+                    var variantWords = variant.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    bool allWordsPresent = true;
+                    foreach (var word in variantWords)
                     {
-                        var proc = Process.GetProcessById((int)pid);
-                        foundProcName = proc.ProcessName;
-                        var className = new System.Text.StringBuilder(256);
-                        GetClassName(hWnd, className, className.Capacity);
-                        foundClassName = className.ToString();
+                        if (!windowTitle.Contains(word, StringComparison.OrdinalIgnoreCase))
+                        {
+                            allWordsPresent = false;
+                            break;
+                        }
                     }
-                    catch { }
-                    return false; // Stop enumeration
+                    if (allWordsPresent)
+                    {
+                        System.IO.File.AppendAllText(logPath, $"[DEBUG] FocusWindowByTitle: Fuzzy matched variant '{variant}' in window title '{windowTitle}'\n");
+                        foundHwnd = hWnd;
+                        foundWindowTitle = windowTitle;
+                        uint pid;
+                        GetWindowThreadProcessId(hWnd, out pid);
+                        try
+                        {
+                            var proc = Process.GetProcessById((int)pid);
+                            foundProcName = proc.ProcessName;
+                            var className = new System.Text.StringBuilder(256);
+                            GetClassName(hWnd, className, className.Capacity);
+                            foundClassName = className.ToString();
+                        }
+                        catch { }
+                        return false; // Stop enumeration
+                    }
                 }
                 return true;
             }, IntPtr.Zero);
-            string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log");
-            logPath = System.IO.Path.GetFullPath(logPath);
             if (foundHwnd != IntPtr.Zero)
             {
                 bool restoreResult = ShowWindow(foundHwnd, SW_RESTORE);
@@ -87,8 +147,8 @@ namespace ExecuteCommands.Helpers
                     System.IO.File.AppendAllText(logPath, $"[ERROR] AttachThreadInput failed. GetLastError={err}\n");
                 }
                 // Send dummy Alt key input to help bypass focus restrictions
-                keybd_event(0x12, 0, 0, 0); // Alt down
-                keybd_event(0x12, 0, 2, 0); // Alt up
+                //keybd_event(0x12, 0, 0, 0); // Alt down
+                //keybd_event(0x12, 0, 2, 0); // Alt up
                 bool focusResult = SetForegroundWindow(foundHwnd);
                 if (!focusResult)
                 {
@@ -102,10 +162,10 @@ namespace ExecuteCommands.Helpers
                 if (attachResult)
                     AttachThreadInput(foregroundThread, targetThread, false); // detach
                 System.IO.File.AppendAllText(logPath, $"[DEBUG] FocusWindowByTitle: hwnd={foundHwnd}, proc={foundProcName}, class={foundClassName}, title={foundWindowTitle}, ShowWindow(SW_RESTORE)={restoreResult}, AttachThreadInput={attachResult}, SetForegroundWindow={focusResult}\n");
-                // Fallback: simulate mouse click if not focused
-                if (!focusResult)
+                // Fallback: simulate mouse click if not focused (either SetForegroundWindow failed or window not actually foreground)
+                if (!focusResult || !actuallyFocused)
                 {
-                    System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: SetForegroundWindow failed, trying mouse click fallback.\n");
+                    System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: SetForegroundWindow failed or window not foreground, trying mouse click fallback.\n");
                     RECT rect;
                     if (GetWindowRect(foundHwnd, out rect))
                     {
@@ -120,23 +180,25 @@ namespace ExecuteCommands.Helpers
                             int err = Marshal.GetLastWin32Error();
                             System.IO.File.AppendAllText(logPath, $"[ERROR] SetForegroundWindow after mouse click failed. GetLastError={err}\n");
                         }
-                        System.IO.File.AppendAllText(logPath, $"[DEBUG] FocusWindowByTitle: SetForegroundWindow after mouse click: {focusResult}\n");
+                        afterFocusHwnd = GetForegroundWindow();
+                        actuallyFocused = (afterFocusHwnd == foundHwnd);
+                        System.IO.File.AppendAllText(logPath, $"[DEBUG] FocusWindowByTitle: SetForegroundWindow after mouse click: {focusResult}, actuallyFocused: {actuallyFocused}\n");
                     }
                 }
-                    // Final fallback: show three focus apps (Ctrl+Alt+Tab) if still not focused
-                    if (!focusResult)
-                    {
-                        System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: All focus attempts failed, sending Ctrl+Alt+Tab as last resort.\n");
-                        // Send Ctrl+Alt+Tab key sequence
-                        keybd_event(0x11, 0, 0, 0); // Ctrl down
-                        keybd_event(0x12, 0, 0, 0); // Alt down
-                        keybd_event(0x09, 0, 0, 0); // Tab down
-                        keybd_event(0x09, 0, 2, 0); // Tab up
-                        keybd_event(0x12, 0, 2, 0); // Alt up
-                        keybd_event(0x11, 0, 2, 0); // Ctrl up
-                        System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: Sent Ctrl+Alt+Tab.\n");
-                    }
-                return focusResult;
+                // Final fallback: show three focus apps (Ctrl+Alt+Tab) if still not focused
+                if (!focusResult || !actuallyFocused)
+                {
+                    System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: All focus attempts failed, sending Ctrl+Alt+Tab as last resort.\n");
+                    // Send Ctrl+Alt+Tab key sequence
+                    keybd_event(0x11, 0, 0, 0); // Ctrl down
+                    keybd_event(0x12, 0, 0, 0); // Alt down
+                    keybd_event(0x09, 0, 0, 0); // Tab down
+                    keybd_event(0x09, 0, 2, 0); // Tab up
+                    keybd_event(0x12, 0, 2, 0); // Alt up
+                    keybd_event(0x11, 0, 2, 0); // Ctrl up
+                    System.IO.File.AppendAllText(logPath, "[DEBUG] FocusWindowByTitle: Sent Ctrl+Alt+Tab.\n");
+                }
+                return actuallyFocused;
             }
             else
             {

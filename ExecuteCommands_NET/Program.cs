@@ -25,8 +25,8 @@ namespace ExecuteCommands_NET
 			// If running in debug mode and no args provided, use default test command
 			if (System.Diagnostics.Debugger.IsAttached && (args == null || args.Length < 2))
 			{
-				args = new string[] { "ExecuteCommands.exe", "natural", "close this window" };
-				Console.WriteLine("[DEBUG] Debugger attached and no arguments detected. Defaulting to: natural 'close this window'");
+				args = new string[] { "ExecuteCommands.exe", "natural", "focus fairies little helper" };
+				Console.WriteLine("[DEBUG] Debugger attached and no arguments detected. Defaulting to: natural 'focus fairies little helper'");
 			}
 			// Otherwise, if no arguments, default to natural mode and sample dictation
 			else if (args.Length < 2)
@@ -42,6 +42,8 @@ namespace ExecuteCommands_NET
 			string textRaw = args.Length > 2 ? string.Join(" ", args.Skip(2)) : "";
 			string mode = modeRaw.TrimStart('/').Trim().ToLower();
 			string text = textRaw.TrimStart('/').Trim();
+			// Apply word replacements before processing
+			text = ExecuteCommands.Helpers.WordReplacementHelper.ApplyWordReplacements(text);
 
 			// Diagnostic: log normalized mode/text
 			Console.WriteLine($"[DIAG] Normalized mode: '{mode}', text: '{text}'");
