@@ -46,7 +46,6 @@ namespace ExecuteCommands
             { "calc", "calc.exe" },
             { "notepad", "notepad.exe" },
             { "edge", "msedge.exe" },
-            { "microsoft edge", "msedge.exe" },
             { "chrome", "chrome.exe" },
             { "code", "code.exe" },
             { "visual studio", "devenv.exe" },
@@ -130,13 +129,7 @@ namespace ExecuteCommands
                                         root.TryGetProperty("HeightPercent", out var hp) ? hp.GetInt32() : (int?)null
                                     );
                                 case "LaunchAppAction":
-                                    // Support both "AppExe" and "AppIdOrPath" field names
-                                    string? appExe = null;
-                                    if (root.TryGetProperty("AppExe", out var appExeProp))
-                                        appExe = appExeProp.GetString();
-                                    else if (root.TryGetProperty("AppIdOrPath", out var appIdProp))
-                                        appExe = appIdProp.GetString();
-                                    return new LaunchAppAction(appExe ?? "");
+                                    return new LaunchAppAction(root.GetProperty("AppExe").GetString() ?? "");
                                 case "SendKeysAction":
                                     return new SendKeysAction(root.GetProperty("KeysText").GetString() ?? "");
                                 case "OpenFolderAction":
