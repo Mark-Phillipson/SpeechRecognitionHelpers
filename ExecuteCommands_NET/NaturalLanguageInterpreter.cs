@@ -431,7 +431,7 @@ namespace ExecuteCommands
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
 
             // Focus window by name: /focus [window name], focus [window name], focus window [name]
-            string focusPrefix = null;
+            string? focusPrefix = null;
             if (text.StartsWith("/focus ")) focusPrefix = "/focus ";
             else if (text.StartsWith("focus window ")) focusPrefix = "focus window ";
             else if (text.StartsWith("focus ")) focusPrefix = "focus ";
@@ -1644,8 +1644,12 @@ namespace ExecuteCommands
                 try
                 {
                     // Use COM to enumerate Explorer windows
-                    Type shellWindowsType = Type.GetTypeFromProgID("Shell.Application");
-                    dynamic shellWindows = Activator.CreateInstance(shellWindowsType);
+                    Type? shellWindowsType = Type.GetTypeFromProgID("Shell.Application");
+                    if (shellWindowsType == null)
+                        return false;
+                    dynamic? shellWindows = Activator.CreateInstance(shellWindowsType);
+                    if (shellWindows == null)
+                        return false;
                     foreach (var window in shellWindows.Windows())
                     {
                         string url = "";

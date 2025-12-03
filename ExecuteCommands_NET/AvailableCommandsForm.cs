@@ -50,22 +50,42 @@ namespace DictationBoxMSP
             this.ForeColor = DisplayMessage.SharedForeColor;
 
             // Increase font size for accessibility (40% larger than shared font)
-            float baseSize = DisplayMessage.SharedFont?.Size ?? SystemFonts.MessageBoxFont.Size;
+            var sharedFont = DisplayMessage.SharedFont;
+            float baseSize = SystemFonts.MessageBoxFont.Size;
+            FontFamily fontFamily = SystemFonts.MessageBoxFont.FontFamily;
+            FontStyle fontStyle = SystemFonts.MessageBoxFont.Style;
+            #pragma warning disable CS8602 // Dereference of a possibly null reference
+            if (sharedFont != null)
+            {
+                baseSize = sharedFont.Size;
+                fontFamily = sharedFont.FontFamily;
+                fontStyle = sharedFont.Style;
+            }
+            #pragma warning restore CS8602
             float largerSize = Math.Max(baseSize * 1.4f, baseSize + 4f);
-            var largerFont = new Font(DisplayMessage.SharedFont?.FontFamily ?? SystemFonts.MessageBoxFont.FontFamily, largerSize, DisplayMessage.SharedFont?.Style ?? SystemFonts.MessageBoxFont.Style);
+            var largerFont = new Font(fontFamily, largerSize, fontStyle);
             this.Font = largerFont;
 
-            txtSearch.BackColor = ControlPaint.Dark(DisplayMessage.SharedBackColor);
-            txtSearch.ForeColor = DisplayMessage.SharedForeColor;
-            txtSearch.Font = largerFont;
+            if (txtSearch != null)
+            {
+                txtSearch.BackColor = ControlPaint.Dark(DisplayMessage.SharedBackColor);
+                txtSearch.ForeColor = DisplayMessage.SharedForeColor;
+                txtSearch.Font = largerFont;
+            }
 
-            lstResults.BackColor = DisplayMessage.SharedBackColor;
-            lstResults.ForeColor = DisplayMessage.SharedForeColor;
-            lstResults.Font = largerFont;
+            if (lstResults != null)
+            {
+                lstResults.BackColor = DisplayMessage.SharedBackColor;
+                lstResults.ForeColor = DisplayMessage.SharedForeColor;
+                lstResults.Font = largerFont;
+            }
 
-            lblHint.BackColor = DisplayMessage.SharedBackColor;
-            lblHint.ForeColor = Color.LightGray;
-            lblHint.Font = largerFont;
+            if (lblHint != null)
+            {
+                lblHint.BackColor = DisplayMessage.SharedBackColor;
+                lblHint.ForeColor = Color.LightGray;
+                lblHint.Font = largerFont;
+            }
         }
 
         private void AvailableCommandsForm_Load(object? sender, EventArgs e)
