@@ -262,6 +262,65 @@ namespace ExecuteCommands
             { "open recent files", "File.RecentFiles" }
         };
 
+        // Mapping from common tool window captions (as spoken or seen in the UI) to their canonical Visual Studio command names.
+        // This ensures that natural language like "error list", "output window", etc. will always focus the correct tool window,
+        // and avoids accidental matches to context menu or non-window commands. This mapping is checked BEFORE any fuzzy or exported command matches.
+        // To add support for a new tool window, simply add its caption (as spoken or as it appears in Visual Studio) and the corresponding View.* command here.
+        private static readonly Dictionary<string, string> VisualStudioToolWindowMappings = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "error list", "View.ErrorList" },
+            { "output window", "View.Output" },
+            { "output", "View.Output" },
+            { "solution explorer", "View.SolutionExplorer" },
+            { "team explorer", "View.TeamExplorer" },
+            { "task list", "View.TaskList" },
+            { "properties window", "View.PropertiesWindow" },
+            { "properties", "View.PropertiesWindow" },
+            { "class view", "View.ClassView" },
+            { "object browser", "View.ObjectBrowser" },
+            { "call hierarchy", "View.CallHierarchy" },
+            { "bookmark window", "View.BookmarkWindow" },
+            { "bookmarks", "View.BookmarkWindow" },
+            { "find results", "View.FindResults1" },
+            { "find results 1", "View.FindResults1" },
+            { "find results 2", "View.FindResults2" },
+            { "pending changes", "View.PendingChanges" },
+            { "git changes", "View.GitChanges" },
+            { "git repository", "View.GitRepository" },
+            { "diagnostic tools", "Debug.ShowDiagnosticTools" },
+            { "immediate window", "Debug.Immediate" },
+            { "immediate", "Debug.Immediate" },
+            { "autos window", "Debug.Autos" },
+            { "autos", "Debug.Autos" },
+            { "locals window", "Debug.Locals" },
+            { "locals", "Debug.Locals" },
+            { "watch window", "Debug.Watch" },
+            { "watch", "Debug.Watch" },
+            { "call stack", "Debug.CallStack" },
+            { "breakpoints", "Debug.Breakpoints" },
+            { "exception settings", "Debug.ExceptionSettings" },
+            { "test explorer", "TestExplorer.ShowTestExplorer" },
+            { "test window", "TestExplorer.ShowTestExplorer" },
+            { "live unit testing window", "TestExplorer.ShowLiveUnitTestingWindow" },
+            { "live unit testing", "TestExplorer.ShowLiveUnitTestingWindow" },
+            { "solution explorer window", "View.SolutionExplorer" },
+            { "output pane", "View.Output" },
+            { "task pane", "View.TaskList" },
+            { "error pane", "View.ErrorList" },
+            { "explorer", "View.SolutionExplorer" },
+            { "search results", "View.FindResults1" },
+            { "search results 1", "View.FindResults1" },
+            { "search results 2", "View.FindResults2" },
+            { "pending changes window", "View.PendingChanges" },
+            { "git window", "View.GitChanges" },
+            { "repository window", "View.GitRepository" },
+            { "diagnostics", "Debug.ShowDiagnosticTools" },
+            { "breakpoint window", "Debug.Breakpoints" },
+            { "exception window", "Debug.ExceptionSettings" },
+            { "test", "TestExplorer.ShowTestExplorer" },
+            { "tests", "TestExplorer.ShowTestExplorer" }
+        };
+
         // Popular commands that override any matches
         private static readonly Dictionary<string, ActionBase> PopularCommands = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -731,9 +790,20 @@ namespace ExecuteCommands
             }
 
             // Visual Studio Command Lookup
+
             if (IsVisualStudioActive())
             {
-                // First, check explicit canonical mappings for common VS commands. This avoids
+                // First, check explicit tool window mappings
+                foreach (var kvp in VisualStudioToolWindowMappings)
+                {
+                    if (text.Equals(kvp.Key, StringComparison.InvariantCultureIgnoreCase) || text.Contains(kvp.Key, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var mappedAction = new ExecuteVSCommandAction(kvp.Value);
+                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched tool window mapping: {kvp.Key} -> {kvp.Value}\n");
+                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(mappedAction);
+                    }
+                }
+                // Then, check explicit canonical mappings for common VS commands. This avoids
                 // choosing context-menu or other exported commands that are not the canonical ones.
                 foreach (var kvp in VisualStudioCanonicalMappings)
                 {
