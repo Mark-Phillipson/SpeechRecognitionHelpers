@@ -9,6 +9,7 @@ using WindowsInput;
 using WindowsInput.Native;
 
 using OpenAI;
+using System.Windows.Automation;
 using OpenAI.Chat;
 using OpenAI.Models;
 
@@ -816,6 +817,57 @@ namespace ExecuteCommands
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
             }
             // Open mapped applications (expanded)
+            // Special-case: catch "open <menu> menu" (e.g. "open file menu") BEFORE
+            // the generic "open <app>" mapping. Previously "open file menu" matched
+            // the generic open-app rule and returned a LaunchAppAction. That caused
+            // commands like "open file menu" to trigger the app-switcher fallback.
+            // Handle menu phrases here and map to Alt+<letter> (or accessibility invoke)
+            // so top-level menus open as expected.
+            var menuMatch = System.Text.RegularExpressions.Regex.Match(text, "^(?:open\\s+)?(?<menu>\\w+)\\s+menu$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (menuMatch.Success)
+            {
+                var menuName = menuMatch.Groups["menu"].Value;
+                // If Visual Studio is active, prefer accessibility invoke where possible
+                if (IsVisualStudioActive())
+                {
+                    try
+                    {
+                        if (ExecuteCommands.Helpers.AccessibilityHelper.TryFindVisualStudioElement(menuName, out var elem) && elem != null)
+                        {
+                            try
+                            {
+                                if (elem.TryGetCurrentPattern(InvokePattern.Pattern, out object pat) && pat is InvokePattern ip)
+                                {
+                                    ip.Invoke();
+                                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync accessibility-invoked menu: {menuName}\n");
+                                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+                                }
+                                else
+                                {
+                                    elem.SetFocus();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Accessibility invoke failed for {menuName}: {ex.Message}\n");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Error trying accessibility lookup for menu {menuName}: {ex.Message}\n");
+                    }
+                }
+
+                // Fallback: send Alt+<first-letter>
+                var first = string.IsNullOrEmpty(menuName) ? "" : menuName[0].ToString().ToLowerInvariant();
+                if (!string.IsNullOrEmpty(first))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync mapped 'open {menuName} menu' -> SendKeysAction(alt+{first})\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(new SendKeysAction($"alt+{first}"));
+                }
+            }
+
             if (text.StartsWith("open "))
             {
                 var appName = text.Substring(5).Trim();
@@ -921,6 +973,75 @@ namespace ExecuteCommands
 
             if (IsVisualStudioActive())
             {
+                // Accessibility-first menu handling: try to locate and invoke the top-level
+                // Visual Studio menu item via UIAutomation. If that fails, fall back to
+                // sending Alt+<accelerator> keystroke (e.g. Alt+F for File).
+                var menuMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    { "file", "File" },
+                    { "open file menu", "File" },
+                    { "show file menu", "File" },
+                    { "edit", "Edit" },
+                    { "open edit menu", "Edit" },
+                    { "view", "View" },
+                    { "open view menu", "View" },
+                    { "project", "Project" },
+                    { "build", "Build" },
+                    { "debug", "Debug" },
+                    { "team", "Team" },
+                    { "tools", "Tools" },
+                    { "test", "Test" },
+                    { "analyze", "Analyze" },
+                    { "window", "Window" },
+                    { "help", "Help" }
+                };
+
+                foreach (var kv in menuMap)
+                {
+                    if (text.Equals(kv.Key, StringComparison.InvariantCultureIgnoreCase) || text.Contains(kv.Key, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        string menuName = kv.Value;
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync attempting accessibility invoke for menu: {menuName}\n");
+                        try
+                        {
+                            if (ExecuteCommands.Helpers.AccessibilityHelper.TryFindVisualStudioElement(menuName, out var elem) && elem != null)
+                            {
+                                try
+                                {
+                                    if (elem.TryGetCurrentPattern(InvokePattern.Pattern, out object patternObj) && patternObj is InvokePattern ip)
+                                    {
+                                        ip.Invoke();
+                                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Accessibility Invoke succeeded for menu: {menuName}\n");
+                                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+                                    }
+                                    else
+                                    {
+                                        // If InvokePattern not available, try SetFocus then send Alt+<first char>
+                                        elem.SetFocus();
+                                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InvokePattern not available for {menuName}; falling back to Alt+key\n");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Accessibility invoke failed for {menuName}: {ex.Message}\n");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Error while trying accessibility lookup for {menuName}: {ex.Message}\n");
+                        }
+
+                        // Fallback: send Alt+<first-letter> (e.g. Alt+F for File)
+                        var first = menuName.Length > 0 ? menuName[0].ToString().ToLowerInvariant() : "";
+                        if (!string.IsNullOrEmpty(first))
+                        {
+                            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync mapped '{text}' -> SendKeysAction(alt+{first})\n");
+                            return System.Threading.Tasks.Task.FromResult<ActionBase?>(new SendKeysAction($"alt+{first}"));
+                        }
+                        break;
+                    }
+                }
                 // First, check explicit tool window mappings
                 foreach (var kvp in VisualStudioToolWindowMappings)
                 {
