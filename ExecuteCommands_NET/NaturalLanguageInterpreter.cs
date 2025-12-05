@@ -198,6 +198,8 @@ namespace ExecuteCommands
             ("send keys", "Send a key sequence to the active window"),
             ("launch app", "Launch a specified application"),
             ("focus app", "Focus a specified application window"),
+            ("focus window <name>", "Focus a window by its name (e.g. focus window Zoom)"),
+            ("focus <window name>", "Focus a window by its name (e.g. focus Zoom)"),
             ("show help", "Show help and available commands"),
             ("emoji set <name> <emoji>", "Set an emoji for a named shortcut (e.g. emoji set happy 😀)"),
             ("emoji <name>", "Insert the configured emoji for the given name"),
