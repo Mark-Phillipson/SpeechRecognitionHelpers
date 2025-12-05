@@ -262,6 +262,11 @@ namespace ExecuteCommands
             { "open recent files", "File.RecentFiles" }
         };
 
+        private static readonly Dictionary<string, string> VisualStudioCommandDisplayNames = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Build.BuildSolution", "Build Solution" }
+        };
+
         // Mapping from common tool window captions (as spoken or seen in the UI) to their canonical Visual Studio command names.
         // This ensures that natural language like "error list", "output window", etc. will always focus the correct tool window,
         // and avoids accidental matches to context menu or non-window commands. This mapping is checked BEFORE any fuzzy or exported command matches.
@@ -1361,6 +1366,11 @@ namespace ExecuteCommands
             }
             else if (action is ExecuteVSCommandAction vsCmd)
             {
+                if (VisualStudioCommandDisplayNames.TryGetValue(vsCmd.CommandName, out var displayName))
+                {
+                    bool found = ExecuteCommands.Helpers.AccessibilityHelper.TryFindVisualStudioElement(displayName, out _);
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Accessibility lookup for '{displayName}': {(found ? "found" : "not found")}\n");
+                }
                 bool success = ExecuteCommands.Helpers.VisualStudioHelper.ExecuteCommand(vsCmd.CommandName, vsCmd.Arguments ?? "");
                 if (success) return $"Executed VS Command: {vsCmd.CommandName}";
                 return $"Failed to execute VS Command: {vsCmd.CommandName}";
