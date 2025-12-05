@@ -1591,6 +1591,35 @@ namespace ExecuteCommands
                     // Log the actual key codes for debugging
                     System.IO.File.AppendAllText("app.log", $"[DEBUG] InputSimulator modifiers: {string.Join(",", modifiers.Select(m => m.ToString()))}, mainKeys: {string.Join(",", mainKeys.Select(k => k.ToString()))}\n");
                     try {
+                        // Special-case: explicit Alt+<letter> handling to mimic a real user press.
+                        // This helps prevent menus opening then closing quickly or other global handlers
+                        // (e.g., CodeRush) receiving the wrong sequence.
+                        if (modifiers.Count == 1 && modifiers.Contains(WindowsInput.Native.VirtualKeyCode.MENU) && mainKeys.Count == 1)
+                        {
+                            var vk = mainKeys[0];
+                            // If the main key is a letter or digit, use explicit down/press/up with small delays
+                            bool isLetterOrDigit = false;
+                            string vkName = vk.ToString();
+                            if (vkName.Length == 2 && vkName[0] == 'V' && char.IsLetterOrDigit(vkName[1]))
+                                isLetterOrDigit = true;
+                            // Also accept single-letter names like 'A' through enum names like 'VK_A' parsed earlier
+                            // We'll fallback to the generic ModifiedKeyStroke otherwise.
+                            if (isLetterOrDigit)
+                            {
+                                // Ensure the target window is focused before sending
+                                IntPtr target = Commands.GetForegroundWindow();
+                                Commands.SetForegroundWindow(target);
+                                System.IO.File.AppendAllText("app.log", $"[DEBUG] Sending explicit Alt+letter: {vk}\n");
+                                simGeneral.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.MENU);
+                                System.Threading.Thread.Sleep(80);
+                                simGeneral.Keyboard.KeyPress(vk);
+                                System.Threading.Thread.Sleep(120);
+                                simGeneral.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.MENU);
+                                System.IO.File.AppendAllText("app.log", $"[DEBUG] Sent explicit Alt+letter sequence: Alt+{vk}\n");
+                                return $"Sent keys: {keys.KeysText}";
+                            }
+                        }
+
                         if (mainKeys.Count > 0)
                         {
                             simGeneral.Keyboard.ModifiedKeyStroke(modifiers, mainKeys);
