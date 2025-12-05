@@ -6383,6 +6383,20 @@
     "Bindings": []
   },
   {
+    "Name": "GitHub.Copilot.Chat.ZoomIn",
+    "Bindings": [
+      "GitHub Copilot Chat::Ctrl\u002BNum \u002B",
+      "GitHub Copilot Chat::Ctrl\u002B="
+    ]
+  },
+  {
+    "Name": "GitHub.Copilot.Chat.ZoomOut",
+    "Bindings": [
+      "GitHub Copilot Chat::Ctrl\u002BNum -",
+      "GitHub Copilot Chat::Ctrl\u002B-"
+    ]
+  },
+  {
     "Name": "Format.BringForward",
     "Bindings": []
   },
@@ -11362,7 +11376,7 @@
     "Bindings": []
   },
   {
-    "Name": "Ask.Copilot",
+    "Name": "Chat",
     "Bindings": [
       "Text Editor::Alt\u002B/"
     ]
@@ -11906,7 +11920,7 @@
     "Bindings": []
   },
   {
-    "Name": "OtherContextMenus.ErrorList.AskCopilot",
+    "Name": "OtherContextMenus.ErrorList.Fix",
     "Bindings": []
   },
   {

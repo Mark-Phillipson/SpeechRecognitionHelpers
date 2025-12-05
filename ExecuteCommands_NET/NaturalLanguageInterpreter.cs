@@ -315,8 +315,8 @@ namespace ExecuteCommands
             { "find results 1", "View.FindResults1" },
             { "find results 2", "View.FindResults2" },
             { "pending changes", "View.PendingChanges" },
-            { "git changes", "View.GitChanges" },
-            { "git repository", "View.GitRepository" },
+            { "git changes", "Team.Git.GoToGitChanges" },
+            { "git repository", "View.GitRepositoryWindow" },
             { "diagnostic tools", "Debug.ShowDiagnosticTools" },
             { "immediate window", "Debug.Immediate" },
             { "immediate", "Debug.Immediate" },
@@ -342,7 +342,7 @@ namespace ExecuteCommands
             { "search results 1", "View.FindResults1" },
             { "search results 2", "View.FindResults2" },
             { "pending changes window", "View.PendingChanges" },
-            { "git window", "View.GitChanges" },
+            { "git window", "Team.Git.GoToGitChanges" },
             { "repository window", "View.GitRepository" },
             { "diagnostics", "Debug.ShowDiagnosticTools" },
             { "breakpoint window", "Debug.Breakpoints" },
@@ -461,7 +461,50 @@ namespace ExecuteCommands
 
             // Format command list for display. If an emoji is configured for the command,
             // show it before the command text (e.g. "📥 open downloads: Open the Downloads folder").
-            var lines = commands.Select(c =>
+            List<(string Command, string Description)> filteredCommands = new();
+            if (procName == "devenv")
+            {
+                // For Visual Studio, only include commands that we can verify will work:
+                // either an accessibility target exists or the command is available in the running DTE.
+                foreach (var c in commands)
+                {
+                    try
+                    {
+                        if (VisualStudioCanonicalMappings.TryGetValue(c.Command, out var canonical))
+                        {
+                            bool include = false;
+                            if (accessibleMatches != null && accessibleMatches.TryGetValue(canonical, out var verified) && verified)
+                                include = true;
+                            else
+                            {
+                                try { include = ExecuteCommands.Helpers.VisualStudioHelper.IsCommandAvailable(canonical); } catch { include = false; }
+                            }
+                            if (include) filteredCommands.Add(c);
+                        }
+                        else
+                        {
+                            // No canonical mapping; try to resolve via the command loader
+                            try
+                            {
+                                var found = ExecuteCommands.Helpers.VisualStudioCommandLoader.FindCommand(c.Command);
+                                if (found != null)
+                                {
+                                    bool include = ExecuteCommands.Helpers.VisualStudioHelper.IsCommandAvailable(found.Name);
+                                    if (include) filteredCommands.Add(c);
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+                    catch { }
+                }
+            }
+            else
+            {
+                filteredCommands.AddRange(commands);
+            }
+
+            var lines = filteredCommands.Select(c =>
             {
                 var emoji = EmojiManager.GetCommandEmoji(c.Command);
                 var text = !string.IsNullOrEmpty(emoji)
@@ -1633,6 +1676,15 @@ namespace ExecuteCommands
                 ExecuteCommands.AutoClosingMessageBox.Show(msg, "Command Not Recognized", timeoutMs);
                 return $"[Natural mode] No matching action for: {text}";
             }
+            // If the AI returned a Visual Studio command but Visual Studio is not the active app,
+            // do not attempt to execute it (it won't work from VS Code). Inform user instead.
+            if (action is ExecuteVSCommandAction vsAction && !IsVisualStudioActive())
+            {
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Skipping ExecuteVSCommandAction because Visual Studio is not active: {vsAction.CommandName}\n");
+                ExecuteCommands.AutoClosingMessageBox.Show($"Command '{vsAction.CommandName}' requires Visual Studio. Please run this command from Visual Studio.", "Command Not Available", 5000);
+                return $"[Natural mode] Command '{vsAction.CommandName}' requires Visual Studio (not executed).";
+            }
+
             var result = ExecuteActionAsync(action);
             // Detect non-actionable AI fallback results
             bool showUnmatched = false;
