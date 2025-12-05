@@ -10,6 +10,9 @@ namespace ExecuteCommands.Helpers
     {
         public string Name { get; set; } = "";
         public List<string> Bindings { get; set; } = new();
+        // Hint used when constructing the search UI: suggestions coming from accessibility
+        // can set this to true so the UI shows them prominently.
+        public bool IsInitialSuggestion { get; set; } = false;
     }
 
     public static class VisualStudioCommandLoader

@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using WindowsInput;
 using WindowsInput.Native;
@@ -264,8 +265,32 @@ namespace ExecuteCommands
 
         private static readonly Dictionary<string, string> VisualStudioCommandDisplayNames = new(StringComparer.OrdinalIgnoreCase)
         {
-            { "Build.BuildSolution", "Build Solution" }
+            { "Build.BuildSolution", "Build Solution" },
+            { "Debug.Start", "Start Debugging" },
+            { "Debug.StartWithoutDebugging", "Start Without Debugging" },
+            { "Debug.StopDebugging", "Stop Debugging" },
+            { "Window.CloseDocumentWindow", "Close Document Tab" },
+            { "Edit.FormatDocument", "Format Document" }
         };
+
+        private record AccessibleCommandSuggestion(string DisplayName, string? CanonicalCommand, bool IsFavorite);
+
+        private static readonly Dictionary<string, string> AccessibilityDisplayNameToCanonicalCommand = VisualStudioCommandDisplayNames
+            .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value))
+            .ToDictionary(kvp => kvp.Value, kvp => kvp.Key, StringComparer.OrdinalIgnoreCase);
+
+        private static readonly HashSet<string> FavoriteCanonicalCommands = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Build.BuildSolution",
+            "Debug.Start",
+            "Debug.StartWithoutDebugging"
+        };
+
+        private const int MaxAccessibilitySuggestions = 6;
+        private static readonly TimeSpan AccessibilitySuggestionRetention = TimeSpan.FromMinutes(2);
+        private static readonly List<AccessibleCommandSuggestion> _latestAccessibilitySuggestions = new();
+        private static DateTime _latestAccessibilitySuggestionTime = DateTime.MinValue;
+        private static bool _skipNextFallbackMessage;
 
         // Mapping from common tool window captions (as spoken or seen in the UI) to their canonical Visual Studio command names.
         // This ensures that natural language like "error list", "output window", etc. will always focus the correct tool window,
@@ -364,24 +389,64 @@ namespace ExecuteCommands
 
             if (procName == "devenv")
             {
-                try
-                {
-                    var window = new ExecuteCommands.SearchVisualStudioCommandsWPF();
-                    window.ShowDialog();
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show($"Error opening search window: {ex.Message}");
-                }
+                    try
+                    {
+                        // If we have accessibility suggestions, build initial VisualStudioCommandInfo list
+                        List<ExecuteCommands.Helpers.VisualStudioCommandInfo>? initial = null;
+                        if (ExecuteCommands.Helpers.AccessibilityHelper.TryGetVisualStudioRoot(out var vsRoot) && vsRoot != null)
+                        {
+                            var elems = ExecuteCommands.Helpers.AccessibilityHelper.EnumerateActionableControls(vsRoot, MaxAccessibilitySuggestions);
+                            if (elems != null && elems.Count > 0)
+                            {
+                                initial = new List<ExecuteCommands.Helpers.VisualStudioCommandInfo>();
+                                foreach (var el in elems)
+                                {
+                                    try
+                                    {
+                                        var name = el.Current.Name ?? string.Empty;
+                                        if (string.IsNullOrWhiteSpace(name)) continue;
+                                        var info = new ExecuteCommands.Helpers.VisualStudioCommandInfo { Name = name, IsInitialSuggestion = true };
+                                        initial.Add(info);
+                                        // Also populate the in-memory suggestions for 'choose N' support
+                                        string? canonical = null;
+                                        if (AccessibilityDisplayNameToCanonicalCommand.TryGetValue(name, out var can))
+                                            canonical = can;
+                                        bool isFav = canonical != null && FavoriteCanonicalCommands.Contains(canonical);
+                                        _latestAccessibilitySuggestions.Add(new AccessibleCommandSuggestion(name, canonical, isFav));
+                                    }
+                                    catch { }
+                                }
+                                if (_latestAccessibilitySuggestions.Count > 0)
+                                    _latestAccessibilitySuggestionTime = DateTime.UtcNow;
+                            }
+                        }
+
+                        var window = new ExecuteCommands.SearchVisualStudioCommandsWPF(initial);
+                        window.ShowDialog();
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show($"Error opening search window: {ex.Message}");
+                    }
             }
 
             List<(string Command, string Description)> commands;
             string appLabel;
+            Dictionary<string, bool>? accessibleMatches = null;
             if (procName == "devenv")
             {
                 commands = VisualStudioCommands;
                 appLabel = "Visual Studio";
+                if (ExecuteCommands.Helpers.AccessibilityHelper.TryGetVisualStudioRoot(out var vsRoot) && vsRoot != null)
+                {
+                    accessibleMatches = new();
+                    foreach (var kvp in VisualStudioCommandDisplayNames)
+                    {
+                        bool found = ExecuteCommands.Helpers.AccessibilityHelper.TryFindVisualStudioElement(vsRoot, kvp.Value, out _);
+                        accessibleMatches[kvp.Key] = found;
+                    }
+                }
             }
             else if (procName == "code")
             {
@@ -399,9 +464,15 @@ namespace ExecuteCommands
             var lines = commands.Select(c =>
             {
                 var emoji = EmojiManager.GetCommandEmoji(c.Command);
-                if (!string.IsNullOrEmpty(emoji))
-                    return $"- {emoji} {c.Command}: {c.Description}";
-                return $"- {c.Command}: {c.Description}";
+                var text = !string.IsNullOrEmpty(emoji)
+                    ? $"- {emoji} {c.Command}: {c.Description}"
+                    : $"- {c.Command}: {c.Description}";
+                if (procName == "devenv" && accessibleMatches != null && VisualStudioCanonicalMappings.TryGetValue(c.Command, out var canonical) &&
+                    accessibleMatches.TryGetValue(canonical, out var verified) && verified)
+                {
+                    text += " (accessibility target verified)";
+                }
+                return text;
             }).ToList();
             lines.Add("- refresh Visual Studio shortcuts: Reload the latest keyboard shortcuts from Visual Studio settings");
             string message = $"Available commands:\n\n" + string.Join("\n", lines);
@@ -495,6 +566,15 @@ namespace ExecuteCommands
             foreach (var ew in extraWords) text = text.Replace(ew, "");
             text = text.Trim();
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync normalized input: {text}\n");
+
+            if (TryParseChooseCommand(text, out var chosenNumber))
+            {
+                var chooseAction = HandleChooseCommand(chosenNumber);
+                if (chooseAction != null)
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(chooseAction);
+
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
+            }
 
             // Focus window by name: /focus [window name], focus [window name], focus window [name]
             string? focusPrefix = null;
@@ -852,6 +932,67 @@ namespace ExecuteCommands
             return InterpretWithAIAsync(aiInput);
             // End of InterpretAsync
         }
+
+        private static bool TryParseChooseCommand(string text, out int selection)
+        {
+            selection = -1;
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+
+            var match = System.Text.RegularExpressions.Regex.Match(text, "^\\s*choose\\s+(?:number\\s+)?(\\d+)\\s*$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (!match.Success)
+                return false;
+
+            if (!int.TryParse(match.Groups[1].Value, out var parsed))
+                return false;
+
+            selection = parsed;
+            return true;
+        }
+
+        private static ActionBase? HandleChooseCommand(int oneBasedIndex)
+        {
+            if (!TryGetStoredSuggestion(oneBasedIndex, out var suggestion))
+            {
+                ExecuteCommands.AutoClosingMessageBox.Show("No matching suggestion for that number.", "Choose command", 4000);
+                _skipNextFallbackMessage = true;
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(suggestion.CanonicalCommand))
+            {
+                ExecuteCommands.AutoClosingMessageBox.Show($"'{suggestion.DisplayName}' cannot be executed automatically. Please try the action manually.", "Choose command", 5000);
+                _skipNextFallbackMessage = true;
+                return null;
+            }
+
+            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Choose command executing suggestion: {suggestion.DisplayName} -> {suggestion.CanonicalCommand}\n");
+            return new ExecuteVSCommandAction(suggestion.CanonicalCommand);
+        }
+
+        private static bool TryGetStoredSuggestion(int oneBasedIndex, out AccessibleCommandSuggestion suggestion)
+        {
+            suggestion = default!;
+            if (oneBasedIndex <= 0)
+                return false;
+
+            if (_latestAccessibilitySuggestions.Count == 0)
+                return false;
+
+            if ((DateTime.UtcNow - _latestAccessibilitySuggestionTime) > AccessibilitySuggestionRetention)
+            {
+                _latestAccessibilitySuggestions.Clear();
+                return false;
+            }
+
+            int zeroBased = oneBasedIndex - 1;
+            if (zeroBased < 0 || zeroBased >= _latestAccessibilitySuggestions.Count)
+                return false;
+
+            suggestion = _latestAccessibilitySuggestions[zeroBased];
+            return true;
+        }
+
         private static readonly string[] SupportedCloseTabApps = new[] { "chrome", "msedge", "firefox", "brave", "opera", "code", "devenv" };
 
         public string ExecuteActionAsync(ActionBase action)
@@ -1368,8 +1509,11 @@ namespace ExecuteCommands
             {
                 if (VisualStudioCommandDisplayNames.TryGetValue(vsCmd.CommandName, out var displayName))
                 {
-                    bool found = ExecuteCommands.Helpers.AccessibilityHelper.TryFindVisualStudioElement(displayName, out _);
-                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Accessibility lookup for '{displayName}': {(found ? "found" : "not found")}\n");
+                    if (ExecuteCommands.Helpers.AccessibilityHelper.TryGetVisualStudioRoot(out var root) && root != null)
+                    {
+                        bool found = ExecuteCommands.Helpers.AccessibilityHelper.TryFindVisualStudioElement(root, displayName, out _);
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Accessibility lookup for '{displayName}': {(found ? "found" : "not found")}\n");
+                    }
                 }
                 bool success = ExecuteCommands.Helpers.VisualStudioHelper.ExecuteCommand(vsCmd.CommandName, vsCmd.Arguments ?? "");
                 if (success) return $"Executed VS Command: {vsCmd.CommandName}";
@@ -1418,6 +1562,11 @@ namespace ExecuteCommands
             System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] HandleNaturalAsync: Action type: {actionTypeName}\n");
             if (action == null)
             {
+                if (_skipNextFallbackMessage)
+                {
+                    _skipNextFallbackMessage = false;
+                    return "[Natural mode] Choose command not executed.";
+                }
                 // Robust fallback for 'focus windows terminal' and 'focus' commands
                 if (lowerText.Contains("focus") && lowerText.Contains("windows terminal"))
                 {

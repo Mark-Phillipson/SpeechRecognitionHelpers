@@ -18,7 +18,8 @@ namespace ExecuteCommands
         private ICollectionView? _view;
         private DispatcherTimer? _searchDebounceTimer;
         private string _pendingFilterText = string.Empty;
-
+        private IEnumerable<ExecuteCommands.Helpers.VisualStudioCommandInfo>? _initialResults;
+        private bool _showInitialWhenEmpty = false;
         public SearchVisualStudioCommandsWPF()
         {
             InitializeComponent();
@@ -28,10 +29,24 @@ namespace ExecuteCommands
             };
             _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
 
-            LoadCommands();
+            LoadCommands(null);
         }
 
-        private void LoadCommands()
+        public SearchVisualStudioCommandsWPF(IEnumerable<ExecuteCommands.Helpers.VisualStudioCommandInfo>? initialResults)
+        {
+            InitializeComponent();
+            // Setup debounce timer so search doesn't run on every keystroke/dictation update
+            _searchDebounceTimer = new DispatcherTimer {
+                Interval = TimeSpan.FromMilliseconds(300)
+            };
+            _searchDebounceTimer.Tick += SearchDebounceTimer_Tick;
+
+            _initialResults = initialResults;
+            _showInitialWhenEmpty = initialResults != null && initialResults.Any();
+            LoadCommands(initialResults);
+        }
+
+        private void LoadCommands(IEnumerable<ExecuteCommands.Helpers.VisualStudioCommandInfo>? initialResults)
         {
             string commandsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "vs_commands.json");
             if (!File.Exists(commandsPath))
@@ -48,16 +63,37 @@ namespace ExecuteCommands
             var commands = VisualStudioCommandLoader.GetCommands();
 
             _allCommands = commands.Select(c => new CommandViewModel(c)).ToList();
-            
-            ResultsList.ItemsSource = _allCommands;
-            
+
+            // If there are initial results (accessibility suggestions), prepend them so they appear in the list.
+            if (initialResults != null)
+            {
+                var initialModels = initialResults.Select(i => new CommandViewModel(i)).ToList();
+                // Place initial suggestions at the start of the list
+                _allCommands = initialModels.Concat(_allCommands).ToList();
+                ResultsList.ItemsSource = _allCommands;
+            }
+            else
+            {
+                ResultsList.ItemsSource = _allCommands;
+            }
+
             _view = CollectionViewSource.GetDefaultView(ResultsList.ItemsSource);
             _view.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
+            // Ensure initial suggestions (if any) show before other commands
+            _view.SortDescriptions.Add(new System.ComponentModel.SortDescription("IsInitial", System.ComponentModel.ListSortDirection.Descending));
             _view.SortDescriptions.Add(new System.ComponentModel.SortDescription("Category", System.ComponentModel.ListSortDirection.Ascending));
             _view.SortDescriptions.Add(new System.ComponentModel.SortDescription("Name", System.ComponentModel.ListSortDirection.Ascending));
             
-            // Initial filter: show nothing by default until the user types a search
-            _view.Filter = item => false;
+            // Initial filter: if we have initial results, show them when search box empty
+            if (_showInitialWhenEmpty)
+            {
+                _view.Filter = item => true;
+            }
+            else
+            {
+                // show nothing by default until the user types a search
+                _view.Filter = item => false;
+            }
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -89,8 +125,15 @@ namespace ExecuteCommands
 
             if (string.IsNullOrWhiteSpace(filterText))
             {
-                // No search text => show nothing
-                _view.Filter = item => false;
+                // No search text => show initial suggestions (if provided) otherwise show nothing
+                if (_showInitialWhenEmpty)
+                {
+                    _view.Filter = item => true;
+                }
+                else
+                {
+                    _view.Filter = item => false;
+                }
             }
             else
             {
@@ -140,6 +183,7 @@ namespace ExecuteCommands
     {
         public VisualStudioCommandInfo OriginalCommand { get; }
         public string Name => OriginalCommand.Name;
+        public bool IsInitial => OriginalCommand.IsInitialSuggestion;
         public string Category { get; }
         public string NaturalLanguageExample { get; }
         public string BindingsDisplay { get; }
@@ -151,7 +195,14 @@ namespace ExecuteCommands
             
             // Extract Category (e.g., "Edit.Copy" -> "Edit")
             int dotIndex = command.Name.IndexOf('.');
-            Category = dotIndex > 0 ? command.Name.Substring(0, dotIndex) : "General";
+            if (command.IsInitialSuggestion)
+            {
+                Category = "Suggested";
+            }
+            else
+            {
+                Category = dotIndex > 0 ? command.Name.Substring(0, dotIndex) : "General";
+            }
 
             // Generate Natural Language Example
             // "Edit.Copy" -> "Edit Copy"
