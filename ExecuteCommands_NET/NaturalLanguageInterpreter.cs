@@ -97,6 +97,9 @@ namespace ExecuteCommands
             }
 
             File.AppendAllText(logPath, $"[AI] Fallback triggered for: {text}\n");
+            // Write the latest prompt to a separate file (overwrites previous file).
+            // This is intentionally NOT appended to the normal log file.
+            WriteLatestPromptFile(prompt, text);
             // Do NOT log the prompt anymore
             try
             {
@@ -183,6 +186,29 @@ namespace ExecuteCommands
         {
             string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log");
             return Path.GetFullPath(logPath);
+        }
+
+        /// <summary>
+        /// Writes the latest AI prompt (system prompt + user input) to a separate file.
+        /// Overwrites any previous content so only the latest prompt is kept.
+        /// The file is intentionally separate from the normal `app.log`.
+        /// </summary>
+        private static void WriteLatestPromptFile(string systemPrompt, string userText)
+        {
+            try
+            {
+                string latestPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "latest_ai_prompt.md"));
+                var dir = Path.GetDirectoryName(latestPath);
+                if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var content = $"# System Prompt\n\n{systemPrompt}\n\n# User Input\n\n{userText}\n";
+                File.WriteAllText(latestPath, content);
+            }
+            catch (Exception ex)
+            {
+                try { File.AppendAllText(GetLogPath(), $"Failed to write latest AI prompt file: {ex.Message}\n"); } catch { }
+            }
         }
         // Central list of available commands/actions for AI matching
         public static readonly List<(string Command, string Description)> AvailableCommands = new()
@@ -1475,40 +1501,6 @@ namespace ExecuteCommands
                 return $"[Natural mode] No matching action for: {text}";
             }
             var result = ExecuteActionAsync(action);
-            // Detect non-actionable AI fallback results
-            bool showUnmatched = false;
-            if (action is FocusWindowAction focusAction)
-            {
-                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Executing FocusWindowAction for: {focusAction.WindowTitleSubstring}\n");
-                bool focused = ExecuteCommands.Helpers.WindowFocusHelper.FocusWindowByTitle(focusAction.WindowTitleSubstring);
-                if (focused)
-                {
-                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Successfully focused window: {focusAction.WindowTitleSubstring}\n");
-                    return $"[Natural mode] Focused window: {focusAction.WindowTitleSubstring}";
-                }
-                else
-                {
-                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Failed to focus window: {focusAction.WindowTitleSubstring}\n");
-                    return $"[Natural mode] Could not find or focus window: {focusAction.WindowTitleSubstring}";
-                }
-            }
-            if (action is SendKeysAction keys)
-            {
-                // If no valid keys found, treat as unmatched
-                if (result.Contains("No valid keys found") || result.Contains("Failed to send keys"))
-                    showUnmatched = true;
-            }
-            else if (action is LaunchAppAction app)
-            {
-                // If failed to launch app, treat as unmatched
-                if (result.Contains("Failed to launch app"))
-                    showUnmatched = true;
-            }
-            if (showUnmatched)
-            {
-                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Showing AutoClosingMessageBox for non-actionable AI fallback: {text}\n");
-                ExecuteCommands.AutoClosingMessageBox.Show($"No matching action for: {text}", "Command Not Recognized", 5000);
-            }
             return $"[Natural mode] {result}";
         }
 
