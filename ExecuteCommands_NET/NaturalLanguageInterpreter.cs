@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -172,6 +173,8 @@ namespace ExecuteCommands
             return text.Trim();
         }
 
+        // Word replacement functionality moved to `WordReplacementLoader` helper class.
+
         /// <summary>
         /// Ensures the directory for the log file exists.
         /// </summary>
@@ -244,6 +247,8 @@ namespace ExecuteCommands
         static NaturalLanguageInterpreter()
         {
             // Emoji mappings now loaded by EmojiManager
+            // Load optional word replacements (e.g., 'closed' -> 'close') to make parsing deterministic
+            WordReplacementLoader.Load();
         }
 
         // Emoji mapping API now provided by EmojiManager.cs
@@ -510,6 +515,7 @@ namespace ExecuteCommands
             text = (text ?? string.Empty).ToLowerInvariant().Trim();
             // Remove polite modifiers and extra punctuation
             text = RemovePoliteModifiers(text);
+            text = WordReplacementLoader.Apply(text);
             text = text.Replace("  ", " ").Replace(".", "").Replace(",", "").Trim();
             // Remove extra words that often appear in these commands
             var extraWords = new[] { "of this", "of others", "of other windows", "on top of others", "on top of this" };
@@ -1591,6 +1597,7 @@ namespace ExecuteCommands
             text = (text ?? string.Empty).ToLowerInvariant().Trim();
             // Remove polite modifiers
             text = RemovePoliteModifiers(text);
+            text = WordReplacementLoader.Apply(text);
             System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync input: {text}\n");
 
             // Fuzzy match against available commands

@@ -1,4 +1,4 @@
 
- can we have a function that logs the prompt sent to the AI into a separate logfile but does not keep the old prompts just the latest one in this file. in case we need to check it. it should not be added to the normal log file but create a completely new file.
+ Looking at the prompt, there are some duplicate instructions. Can we consolidate them and clarify phrasing?
 
- Also can you put a link to this file inside the running and testing markdown file
+Example: the prompt repeats the instruction "open a folder" — please remove duplicates and make similar instructions consistent.

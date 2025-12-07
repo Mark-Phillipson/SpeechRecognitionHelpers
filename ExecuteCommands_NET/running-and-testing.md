@@ -1,9 +1,15 @@
 ## Build the Application
 ```pwsh
 # Build the main project (requires .NET 10)
-dotnet clean ExecuteCommands.csproj --framework net10.0-windows
+dotnet clean ExecuteCommands.csproj 
 
-dotnet build ExecuteCommands.csproj --framework net10.0-windows --configuration Release
+dotnet build ExecuteCommands.csproj  -c Release
+
+## Output Files
+
+- Application log: [app.log](bin/bin/app.log)
+- Latest AI prompt file: [latest_ai_prompt.md](bin/bin/latest_ai_prompt.md) (overwritten each run; contains the system prompt and the latest user input)
+ 
 
 ## Example Natural Language Actions
 ```pwsh
@@ -65,8 +71,3 @@ dotnet run --framework net10.0-windows -- natural "close tab"
 dotnet run --framework net10.0-windows -- natural "format document"
 ```
 
-Check your application log (`app.log`) for debug output and confirmation of command execution.
-
-- Application log: [app.log](bin/bin/app.log)
-- Latest AI prompt file: [latest_ai_prompt.md](bin/bin/latest_ai_prompt.md) (overwritten each run; contains the system prompt and the latest user input)
- 
