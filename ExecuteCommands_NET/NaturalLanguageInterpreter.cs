@@ -499,6 +499,8 @@ namespace ExecuteCommands
         public record EmojiAction(string? Name, string EmojiText) : ActionBase;
         // Action to focus a window by title substring
         public record FocusWindowAction(string WindowTitleSubstring) : ActionBase;
+        // Action to open a website in the browser
+        public record OpenWebsiteAction(string Url) : ActionBase;
 
         // P/Invoke for SetWindowPos
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
@@ -720,6 +722,14 @@ namespace ExecuteCommands
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
             }
             // Open mapped applications (expanded)
+            // Use WebsiteNavigator for website navigation commands
+            if (WebsiteNavigator.TryParseWebsiteCommand(text, out var url))
+            {
+                var action = new OpenWebsiteAction(url);
+                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (website: {url})\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+            }
+            // Open mapped applications (expanded)
             if (text.StartsWith("open "))
             {
                 var appName = text.Substring(5).Trim();
@@ -881,14 +891,14 @@ namespace ExecuteCommands
         }
         private static readonly string[] SupportedCloseTabApps = new[] { "chrome", "msedge", "firefox", "brave", "opera", "code", "devenv" };
 
-        public string ExecuteActionAsync(ActionBase action)
-        {
-            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
-            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: action.GetType().FullName: {(action == null ? "null" : action.GetType().FullName)}\n");
-            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Checking if action is MoveWindowAction\n");
-            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: action.GetType().AssemblyQualifiedName: {(action == null ? "null" : action.GetType().AssemblyQualifiedName)}\n");
-            string logPath = GetLogPath();
-            EnsureLogDirExists(logPath);
+                    public string ExecuteActionAsync(ActionBase action)
+                    {
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Action type: {(action == null ? "null" : action.GetType().Name)}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: action.GetType().FullName: {(action == null ? "null" : action.GetType().FullName)}\n");
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Checking if action is MoveWindowAction\n");
+                        System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: action.GetType().AssemblyQualifiedName: {(action == null ? "null" : action.GetType().AssemblyQualifiedName)}\n");
+                        string logPath = GetLogPath();
+                        EnsureLogDirExists(logPath);
             if (action is MoveWindowAction move)
             {
                 // Get active window handle
@@ -1211,6 +1221,12 @@ namespace ExecuteCommands
                     System.IO.File.AppendAllText("app.log", $"Failed to launch app: {app.AppExe}. Error: {ex.Message}\n");
                     return $"Failed to launch app: {app.AppExe}. Error: {ex.Message}";
                 }
+            }
+            else if (action is OpenWebsiteAction website)
+            {
+                var result = WebsiteNavigator.LaunchWebsite(website.Url);
+                System.IO.File.AppendAllText(GetLogPath(), result + "\n");
+                return result;
             }
             else if (action is SendKeysAction keys)
             {
