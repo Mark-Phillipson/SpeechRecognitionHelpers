@@ -10,6 +10,8 @@ namespace ExecuteCommands
     public record ExecuteVSCommandAction(string CommandName, string? Arguments = null) : ActionBase;
     public record EmojiAction(string? Name, string EmojiText) : ActionBase;
     public record OpenFolderAction(string KnownFolder) : ActionBase;
+    public record FocusWindowAction(string WindowTitleSubstring) : ActionBase;
+    public record OpenWebsiteAction(string Url) : ActionBase;
     public record ShowHelpAction : ActionBase;
     public record LaunchAppAction(string AppExe) : ActionBase;
     public record SendKeysAction(string KeysText) : ActionBase;

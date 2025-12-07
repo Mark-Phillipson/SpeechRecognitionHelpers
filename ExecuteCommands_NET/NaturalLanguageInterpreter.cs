@@ -8,9 +8,11 @@ using System.Text.RegularExpressions;
 using WindowsInput;
 using WindowsInput.Native;
 
+
 using OpenAI;
 using OpenAI.Chat;
 using OpenAI.Models;
+using ExecuteCommands;
 
 namespace ExecuteCommands
 {
@@ -26,6 +28,9 @@ namespace ExecuteCommands
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true, CharSet = System.Runtime.InteropServices.CharSet.Auto)]
         public static extern int GetClassName(IntPtr hWnd, System.Text.StringBuilder lpClassName, int nMaxCount);
     }
+    // IMPORTANT: This class is already too large. Do NOT add new methods here.
+    // Any new functionality should be implemented in a new class and referenced as needed.
+    // Please refactor existing logic into smaller, focused classes where possible.
     public class NaturalLanguageInterpreter
     // Action type for Visual Studio command execution
     {
@@ -490,17 +495,7 @@ namespace ExecuteCommands
             public int Right;
             public int Bottom;
         }
-        // Missing action types
-        public record CloseTabAction : ActionBase { }
-        public record SetWindowAlwaysOnTopAction(string? Application) : ActionBase;
-        // Action type for Visual Studio command execution
-        public record ExecuteVSCommandAction(string CommandName, string? Arguments = null) : ActionBase;
-        // Action to insert/type an emoji (either by name or directly by emoji text)
-        public record EmojiAction(string? Name, string EmojiText) : ActionBase;
-        // Action to focus a window by title substring
-        public record FocusWindowAction(string WindowTitleSubstring) : ActionBase;
-        // Action to open a website in the browser
-        public record OpenWebsiteAction(string Url) : ActionBase;
+        // Action types are now defined in ActionModels.cs
 
         // P/Invoke for SetWindowPos
         [System.Runtime.InteropServices.DllImport("user32.dll", SetLastError = true)]
@@ -536,7 +531,7 @@ namespace ExecuteCommands
                 if (!string.IsNullOrEmpty(windowName))
                 {
                     System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched FocusWindow command: {windowName}\n");
-                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(new FocusWindowAction(windowName));
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(new ExecuteCommands.FocusWindowAction(windowName));
                 }
             }
 
@@ -725,9 +720,12 @@ namespace ExecuteCommands
             // Use WebsiteNavigator for website navigation commands
             if (WebsiteNavigator.TryParseWebsiteCommand(text, out var url))
             {
-                var action = new OpenWebsiteAction(url);
-                System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (website: {url})\n");
-                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                if (!string.IsNullOrWhiteSpace(url))
+                {
+                    var action = new OpenWebsiteAction(url);
+                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (website: {url})\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                }
             }
             // Open mapped applications (expanded)
             if (text.StartsWith("open "))
@@ -901,157 +899,8 @@ namespace ExecuteCommands
                         EnsureLogDirExists(logPath);
             if (action is MoveWindowAction move)
             {
-                // Get active window handle
-                IntPtr hWnd = Commands.GetForegroundWindow();
-                // Maximize logic
-                if ((move.Position == "center" || move.Position == null) && move.WidthPercent == 100 && move.HeightPercent == 100 && move.Monitor != "next")
-                {
-                    System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
-                    if (hWnd == IntPtr.Zero)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (center/maximize)\n");
-                        return "No active window found.";
-                    }
-                    SetForegroundWindow(hWnd);
-                    int style = Win32Api.GetWindowLong(hWnd, Win32Api.GWL_STYLE);
-                    bool canMaximize = (style & Win32Api.WS_MAXIMIZEBOX) != 0;
-                    var className = new System.Text.StringBuilder(256);
-                    Win32Api.GetClassName(hWnd, className, className.Capacity);
-                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] Window class: {className}, style: 0x{style:X}\n");
-                    if (!canMaximize)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Window does not support maximizing (missing WS_MAXIMIZEBOX).\n");
-                        return "Window cannot be maximized (missing maximize button).";
-                    }
-                    const int SW_MAXIMIZE = 3;
-                    bool success = ShowWindow(hWnd, SW_MAXIMIZE);
-                    if (!success)
-                    {
-                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-                        System.IO.File.AppendAllText("app.log", $"Failed to maximize window. Win32 error: {error}\n");
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to maximize window.\n");
-                        return $"Failed to maximize window. Win32 error: {error}";
-                    }
-                    System.IO.File.AppendAllText(GetLogPath(), "Window maximized\n");
-                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window maximized.\n");
-                    return "Window maximized.";
-                }
-                // Move window to left half
-                if (move.Position == "left" && move.WidthPercent == 50 && move.HeightPercent == 100)
-                {
-                    IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
-                    MONITORINFOEX info = new MONITORINFOEX();
-                    info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                    bool gotInfo = monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info);
-                    if (!gotInfo)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get monitor info. (left)\n");
-                        return "Failed to get monitor info.";
-                    }
-                    var rect = info.rcWork;
-                    int width = (rect.Right - rect.Left) / 2;
-                    int height = rect.Bottom - rect.Top;
-                    int x = rect.Left;
-                    int y = rect.Top;
-                    bool success = SetWindowPos(hWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
-                    if (!success)
-                    {
-                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-                        System.IO.File.AppendAllText("app.log", $"Failed to move window left. Win32 error: {error}\n");
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window left.\n");
-                        return $"Failed to move window left. Win32 error: {error}";
-                    }
-                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window moved to left half.\n");
-                    return "Window moved to left half.";
-                }
-                // Move window to right half
-                if (move.Position == "right" && move.WidthPercent == 50 && move.HeightPercent == 100)
-                {
-                    IntPtr monitor = MonitorFromWindow(hWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
-                    MONITORINFOEX info = new MONITORINFOEX();
-                    info.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                    bool gotInfo = monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info);
-                    if (!gotInfo)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get monitor info. (right)\n");
-                        return "Failed to get monitor info.";
-                    }
-                    var rect = info.rcWork;
-                    int width = (rect.Right - rect.Left) / 2;
-                    int height = rect.Bottom - rect.Top;
-                    int x = rect.Left + width;
-                    int y = rect.Top;
-                    bool success = SetWindowPos(hWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
-                    if (!success)
-                    {
-                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-                        System.IO.File.AppendAllText("app.log", $"Failed to move window right. Win32 error: {error}\n");
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window right.\n");
-                        return $"Failed to move window right. Win32 error: {error}";
-                    }
-                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window moved to right half.\n");
-                    return "Window moved to right half.";
-                }
-                // Move window to other monitor
-                if (move.Monitor == "next" && (move.WidthPercent == 0 || move.WidthPercent == null) && (move.HeightPercent == 0 || move.HeightPercent == null))
-                {
-                    IntPtr activeHWnd = Commands.GetForegroundWindow();
-                    if (activeHWnd == IntPtr.Zero)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No active window found. (other monitor)\n");
-                        return "No active window found.";
-                    }
-                    IntPtr currentMonitor = MonitorFromWindow(activeHWnd, 2 /*MONITOR_DEFAULTTONEAREST*/);
-                    MONITORINFOEX currentInfo = new MONITORINFOEX();
-                    currentInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                    bool gotCurrentInfo = GetMonitorInfo(currentMonitor, ref currentInfo);
-                    if (!gotCurrentInfo)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get current monitor info. (other monitor)\n");
-                        return "Failed to get current monitor info.";
-                    }
-                    IntPtr nextMonitor = IntPtr.Zero;
-                    foreach (IntPtr monitor in GetAllMonitors())
-                    {
-                        if (monitor != currentMonitor)
-                        {
-                            nextMonitor = monitor;
-                            break;
-                        }
-                    }
-                    if (nextMonitor == IntPtr.Zero)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: No other monitor found. (other monitor)\n");
-                        return "No other monitor found.";
-                    }
-                    MONITORINFOEX nextInfo = new MONITORINFOEX();
-                    nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(MONITORINFOEX));
-                    bool gotNextInfo = GetMonitorInfo(nextMonitor, ref nextInfo);
-                    if (!gotNextInfo)
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to get next monitor info. (other monitor)\n");
-                        return "Failed to get next monitor info.";
-                    }
-                    int width = (nextInfo.rcWork.Right - nextInfo.rcWork.Left);
-                    int height = (nextInfo.rcWork.Bottom - nextInfo.rcWork.Top);
-                    int widthPercent = move.WidthPercent.HasValue ? move.WidthPercent.Value : 100;
-                    int heightPercent = move.HeightPercent.HasValue ? move.HeightPercent.Value : 100;
-                    int x = nextInfo.rcWork.Left + (width - (width * widthPercent / 100)) / 2;
-                    int y = nextInfo.rcWork.Top + (height - (height * heightPercent / 100)) / 2;
-                    bool success = SetWindowPos(activeHWnd, IntPtr.Zero, x, y, width, height, 0x0040 /*SWP_SHOWWINDOW*/);
-                    if (!success)
-                    {
-                        int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-                        System.IO.File.AppendAllText("app.log", $"Failed to move window to next monitor. Win32 error: {error}\n");
-                        System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Failed to move window to next monitor. (other monitor)\n");
-                        return $"Failed to move window to next monitor. Win32 error: {error}";
-                    }
-                    System.IO.File.AppendAllText(GetLogPath(), "Window moved to next monitor\n");
-                    System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Window moved to other monitor.\n");
-                    return "Window moved to other monitor.";
-                }
-                System.IO.File.AppendAllText(GetLogPath(), "[DEBUG] Returning: Stub window move not implemented.\n");
-                return "[Stub] Window move not implemented for: " + move.ToString();
+                // Delegate to WindowManager
+                return ExecuteCommands.Helpers.WindowManager.ExecuteMoveWindow(move);
             }
             // All window movement logic is now inside the MoveWindowAction block above
             else if (action is CloseTabAction)
@@ -1193,225 +1042,25 @@ namespace ExecuteCommands
             }
             else if (action is LaunchAppAction app)
             {
-                try
-                {
-                    // Fallback for focus commands: if appExe is null or not found, show Alt+Tab switcher and keep Alt held
-                    if (string.IsNullOrEmpty(app.AppExe) || app.AppExe.Equals("focus-fallback", StringComparison.OrdinalIgnoreCase))
-                    {
-                        System.IO.File.AppendAllText("app.log", "[DEBUG] Focus fallback: showing Alt+Tab and holding Alt\n");
-                        var sim = new WindowsInput.InputSimulator();
-                        sim.Keyboard.KeyDown(WindowsInput.Native.VirtualKeyCode.MENU); // Alt down
-                        sim.Keyboard.KeyPress(WindowsInput.Native.VirtualKeyCode.TAB); // Tab press
-                        // Alt is held down; user can select app
-                        return "Showed Alt+Tab and holding Alt for app switcher (focus fallback)";
-                    }
-                    var psi = new System.Diagnostics.ProcessStartInfo(app.AppExe)
-                    {
-                        UseShellExecute = true
-                    };
-                    System.Diagnostics.Process.Start(psi);
-                    if (app.AppExe.Equals("msedge.exe", StringComparison.OrdinalIgnoreCase))
-                    {
-                        System.IO.File.AppendAllText(GetLogPath(), "Launched app: msedge.exe\n");
-                    }
-                    return $"Launched app: {app.AppExe}";
-                }
-                catch (Exception ex)
-                {
-                    System.IO.File.AppendAllText("app.log", $"Failed to launch app: {app.AppExe}. Error: {ex.Message}\n");
-                    return $"Failed to launch app: {app.AppExe}. Error: {ex.Message}";
-                }
+                return ExecuteCommands.Helpers.AppLauncher.Launch(app);
             }
-            else if (action is OpenWebsiteAction website)
+            else if (action is ExecuteCommands.OpenWebsiteAction website)
             {
                 var result = WebsiteNavigator.LaunchWebsite(website.Url);
                 System.IO.File.AppendAllText(GetLogPath(), result + "\n");
                 return result;
             }
-            else if (action is SendKeysAction keys)
+            else if (action is ExecuteCommands.SendKeysAction keys)
             {
-                System.IO.File.AppendAllText("app.log", $"[DEBUG] Entered SendKeysAction block in ExecuteActionAsync\n");
-                try
-                {
-                    // Focus the target window before sending Alt+F4
-                    IntPtr hWnd = Commands.GetForegroundWindow();
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] Foreground window handle before Alt+F4: {hWnd}\n");
-                    if (keys.KeysText.ToLower().Replace(" ","") == "alt+f4" || keys.KeysText.ToLower().Replace(" ","") == "altf4")
-                    {
-                        // Try to focus the window
-                        bool focused = Commands.SetForegroundWindow(hWnd);
-                        System.IO.File.AppendAllText("app.log", $"[DEBUG] SetForegroundWindow result: {focused}\n");
-                        var sim = new WindowsInput.InputSimulator();
-                        sim.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.MENU, WindowsInput.Native.VirtualKeyCode.F4);
-                        System.IO.File.AppendAllText("app.log", "[DEBUG] InputSimulator sent Alt+F4\n");
-                        System.Threading.Thread.Sleep(500); // Wait for window to close
-                        IntPtr hWndAfter = Commands.GetForegroundWindow();
-                        System.IO.File.AppendAllText("app.log", $"[DEBUG] Foreground window handle after Alt+F4: {hWndAfter}\n");
-                        if (hWnd == hWndAfter)
-                        {
-                            // Fallback to SendKeys.SendWait
-                            System.IO.File.AppendAllText("app.log", "[DEBUG] InputSimulator Alt+F4 did not close window, falling back to SendKeys.SendWait\n");
-                            try
-                            {
-                                System.Windows.Forms.SendKeys.SendWait("%{F4}");
-                                System.IO.File.AppendAllText("app.log", "[DEBUG] SendKeys.SendWait sent %{{F4}}\n");
-                                return "Sent Alt+F4 via SendKeys.SendWait (fallback)";
-                            }
-                            catch (Exception sendEx)
-                            {
-                                System.IO.File.AppendAllText("app.log", $"[ERROR] SendKeys.SendWait failed: {sendEx.Message}\n");
-                                return $"Failed to send Alt+F4 via SendKeys.SendWait: {sendEx.Message}";
-                            }
-                        }
-                        return "Sent Alt+F4 via InputSimulator";
-                    }
-                    // ...existing code for other key sequences...
-                    var simGeneral = new WindowsInput.InputSimulator();
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] Raw KeysText: {keys.KeysText}\n");
-                    var keyParts = keys.KeysText.Replace("+", " ").Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] Parsed keyParts: {string.Join(",", keyParts)}\n");
-                    var modifiers = new List<WindowsInput.Native.VirtualKeyCode>();
-                    var mainKeys = new List<WindowsInput.Native.VirtualKeyCode>();
-                    foreach (var part in keyParts)
-                    {
-                        string debugLine = $"[DEBUG] Parsing part: {part} -> ";
-                        switch (part.ToLower())
-                        {
-                            case "control":
-                            case "ctrl":
-                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.CONTROL);
-                                debugLine += "CONTROL";
-                                break;
-                            case "shift":
-                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.SHIFT);
-                                debugLine += "SHIFT";
-                                break;
-                            case "alt":
-                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.MENU);
-                                debugLine += "MENU (ALT)";
-                                break;
-                            case "windows":
-                            case "win":
-                                modifiers.Add(WindowsInput.Native.VirtualKeyCode.LWIN);
-                                debugLine += "LWIN";
-                                break;
-                            case ",":
-                            case "comma":
-                                mainKeys.Add(WindowsInput.Native.VirtualKeyCode.OEM_COMMA);
-                                debugLine += "OEM_COMMA";
-                                break;
-                            default:
-                                if (Enum.TryParse<WindowsInput.Native.VirtualKeyCode>("VK_" + part.ToUpper(), out var vk))
-                                {
-                                    mainKeys.Add(vk);
-                                    debugLine += $"VK_{part.ToUpper()}";
-                                }
-                                else if (part.Length == 1 && char.IsLetterOrDigit(part[0]))
-                                {
-                                    var parsed = (WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "VK_" + part.ToUpper());
-                                    mainKeys.Add(parsed);
-                                    debugLine += $"VK_{part.ToUpper()} (char)";
-                                }
-                                else if (part.StartsWith("f", StringComparison.OrdinalIgnoreCase) && int.TryParse(part.Substring(1), out int fnum) && fnum >= 1 && fnum <= 24)
-                                {
-                                    var parsed = (WindowsInput.Native.VirtualKeyCode)Enum.Parse(typeof(WindowsInput.Native.VirtualKeyCode), "F" + fnum);
-                                    mainKeys.Add(parsed);
-                                    debugLine += $"F{fnum}";
-                                }
-                                else
-                                {
-                                    debugLine += "(unrecognized)";
-                                }
-                                break;
-                        }
-                        System.IO.File.AppendAllText("app.log", debugLine + "\n");
-                    }
-                    // Log the actual key codes for debugging
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] InputSimulator modifiers: {string.Join(",", modifiers.Select(m => m.ToString()))}, mainKeys: {string.Join(",", mainKeys.Select(k => k.ToString()))}\n");
-                    try {
-                        if (mainKeys.Count > 0)
-                        {
-                            simGeneral.Keyboard.ModifiedKeyStroke(modifiers, mainKeys);
-                            System.IO.File.AppendAllText("app.log", $"[DEBUG] InputSimulator sent ModifiedKeyStroke({string.Join(",", modifiers.Select(m => m.ToString()))}, {string.Join(",", mainKeys.Select(k => k.ToString()))})\n");
-                            return $"Sent keys: {keys.KeysText}";
-                        }
-                        else if (modifiers.Count > 0)
-                        {
-                            simGeneral.Keyboard.KeyDown(modifiers[0]);
-                            simGeneral.Keyboard.KeyUp(modifiers[0]);
-                            System.IO.File.AppendAllText("app.log", $"[DEBUG] InputSimulator sent KeyDown/KeyUp({modifiers[0]})\n");
-                            return $"Sent modifier key: {modifiers[0]}";
-                        }
-                        System.IO.File.AppendAllText("app.log", $"[DEBUG] No valid keys found in: {keys.KeysText}\n");
-                        return $"No valid keys found in: {keys.KeysText}";
-                    } catch (Exception innerEx) {
-                        System.IO.File.AppendAllText("app.log", $"[ERROR] Exception in InputSimulator send: {innerEx.Message}\n{innerEx.StackTrace}\n");
-                        return $"Failed to send keys: {keys.KeysText}. Error: {innerEx.Message}";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.IO.File.AppendAllText("app.log", $"[ERROR] Exception in SendKeysAction outer: {ex.Message}\n{ex.StackTrace}\n");
-                    System.IO.File.AppendAllText("app.log", $"[DEBUG] SendKeysAction block threw exception before key parsing.\n");
-                    return $"Failed to send keys: {keys.KeysText}. Error: {ex.Message}";
-                }
+                return ExecuteCommands.Helpers.KeySender.SendKeys(keys);
             }
-            else if (action is EmojiAction emojiAction)
+            else if (action is ExecuteCommands.EmojiAction emojiAction)
             {
-                var toType = emojiAction.EmojiText ?? string.Empty;
-                if (string.IsNullOrEmpty(toType))
-                    return "No emoji to type.";
-
-                var localLogPath = GetLogPath();
-                try
-                {
-                    var inputSimulator = new WindowsInput.InputSimulator();
-                    // Try typing Unicode emoji directly
-                    inputSimulator.Keyboard.TextEntry(toType);
-                    System.IO.File.AppendAllText(localLogPath, $"Typed emoji via TextEntry: {toType}\n");
-                    return $"Typed emoji: {toType}";
-                }
-                catch (Exception ex1)
-                {
-                    // Primary method failed; fall back to clipboard + paste
-                    try
-                    {
-                        System.IO.File.AppendAllText(localLogPath, $"TextEntry failed for emoji '{toType}': {ex1.Message}. Falling back to clipboard paste.\n");
-                        var prev = System.Windows.Forms.Clipboard.GetDataObject();
-                        System.Windows.Forms.Clipboard.SetText(toType);
-                        var sim2 = new WindowsInput.InputSimulator();
-                        // Paste with Ctrl+V (use MENU+V would be alt, so use CONTROL)
-                        sim2.Keyboard.ModifiedKeyStroke(WindowsInput.Native.VirtualKeyCode.CONTROL, WindowsInput.Native.VirtualKeyCode.VK_V);
-                        System.IO.File.AppendAllText(localLogPath, $"Typed emoji via clipboard paste: {toType}\n");
-                        // Restore clipboard if we saved a previous object (best-effort)
-                        try
-                        {
-                            if (prev != null)
-                            {
-                                // Attempt to restore original clipboard text only if it was text
-                                if (prev.GetDataPresent(System.Windows.Forms.DataFormats.Text))
-                                {
-                                    var text = prev.GetData(System.Windows.Forms.DataFormats.Text) as string;
-                                    if (text != null)
-                                        System.Windows.Forms.Clipboard.SetText(text);
-                                }
-                            }
-                        }
-                        catch { }
-                        return $"Typed emoji via paste: {toType}";
-                    }
-                    catch (Exception ex2)
-                    {
-                        System.IO.File.AppendAllText(localLogPath, $"Failed to type emoji '{toType}': TextEntry error: {ex1.Message}; Clipboard fallback error: {ex2.Message}\n");
-                        return $"Failed to type emoji: {toType}. Error: {ex2.Message}";
-                    }
-                }
+                return ExecuteCommands.Helpers.EmojiService.TypeEmoji(emojiAction);
             }
-            else if (action is ExecuteVSCommandAction vsCmd)
+            else if (action is ExecuteCommands.ExecuteVSCommandAction vsCmd)
             {
-                bool success = ExecuteCommands.Helpers.VisualStudioHelper.ExecuteCommand(vsCmd.CommandName, vsCmd.Arguments ?? "");
-                if (success) return $"Executed VS Command: {vsCmd.CommandName}";
-                return $"Failed to execute VS Command: {vsCmd.CommandName}";
+                return ExecuteCommands.Helpers.VSCommandHandler.ExecuteVSCommand(vsCmd);
             }
             else
             {
