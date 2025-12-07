@@ -1,0 +1,13 @@
+[
+  {
+    "Name": "setup my desktop for development",
+    "ContinueOnError": true,
+    "DelayMsBetween": 400,
+    "Actions": [
+      { "Type": "LaunchAppAction", "AppExe": "code.exe" },
+      { "Type": "LaunchAppAction", "AppExe": "wt.exe" },
+      { "Type": "LaunchAppAction", "AppExe": "chrome.exe" },
+      { "Type": "MoveWindowAction", "Target": "active", "Monitor": "current", "Position": "left", "WidthPercent": 50, "HeightPercent": 100 }
+    ]
+  }
+]

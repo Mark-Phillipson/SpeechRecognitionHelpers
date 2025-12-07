@@ -254,6 +254,8 @@ namespace ExecuteCommands
             // Emoji mappings now loaded by EmojiManager
             // Load optional word replacements (e.g., 'closed' -> 'close') to make parsing deterministic
             WordReplacementLoader.Load();
+            // Load user-defined multi-action commands (multi_actions.json)
+            try { ExecuteCommands.Helpers.MultiActionLoader.Load(); } catch { }
         }
 
         // Emoji mapping API now provided by EmojiManager.cs
@@ -364,7 +366,9 @@ namespace ExecuteCommands
             { "run application", new ExecuteVSCommandAction("Debug.StartWithoutDebugging") },
             { "stop application", new ExecuteVSCommandAction("Debug.StopDebugging") },
             // Ensure 'focus' always triggers Ctrl+Alt+Tab
-            { "focus", new SendKeysAction("ctrl alt tab") }
+            { "focus", new SendKeysAction("ctrl alt tab") },
+            // Voice dictation trigger: opens the voice dictation form (auto-submit 5s)
+            { "dictate", new OpenVoiceDictationFormAction(20000) }
         };
 
         // VS Code specific commands
@@ -565,6 +569,17 @@ namespace ExecuteCommands
                 System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: ShowAvailableCommands displayed (help query)\n");
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
             }
+
+            // Check for configured multi-action commands (exact match)
+            try
+            {
+                if (ExecuteCommands.Helpers.MultiActionLoader.Commands.TryGetValue(text, out var multi))
+                {
+                    System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched multi-action command: {multi.Name}\n");
+                    return System.Threading.Tasks.Task.FromResult<ActionBase?>(multi);
+                }
+            }
+            catch { }
 
             // More robust matching for 'always on top'/'float above'/'restore' commands
             var alwaysOnTopPatterns = new[] {
@@ -959,6 +974,26 @@ namespace ExecuteCommands
                     return $"Current app '{procName}' is not supported for 'close tab'.";
                 }
             }
+            // Open voice dictation form action: show form, then interpret & execute returned text
+            else if (action is OpenVoiceDictationFormAction dictAction)
+            {
+                try
+                {
+                    var text = ExecuteCommands.Helpers.VoiceDictationHelper.ShowVoiceDictation(dictAction.TimeoutMs);
+                    if (string.IsNullOrWhiteSpace(text))
+                        return "Dictation cancelled or empty.";
+                    // Interpret the dictated text and execute resulting action(s)
+                    var interpretedTask = InterpretAsync(text);
+                    var interpreted = interpretedTask?.Result;
+                    if (interpreted == null)
+                        return "No action interpreted from dictated text.";
+                    return ExecuteActionAsync(interpreted);
+                }
+                catch (Exception ex)
+                {
+                    return $"Voice dictation failed: {ex.Message}";
+                }
+            }
             else if (action is SetWindowAlwaysOnTopAction setTop)
             {
                 IntPtr hWnd = IntPtr.Zero;
@@ -988,6 +1023,33 @@ namespace ExecuteCommands
                 }
                 System.IO.File.AppendAllText(GetLogPath(), "Window set to always on top\n");
                 return "Window set to always on top.";
+            }
+            // Multi-action sequences: run a list of actions in order
+            else if (action is ExecuteCommands.RunMultipleActionsAction multiAction)
+            {
+                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: Running multi-action '{multiAction.Name}' with {multiAction.Actions?.Count ?? 0} steps\n");
+                string lastResult = string.Empty;
+                if (multiAction.Actions != null)
+                {
+                    foreach (var sub in multiAction.Actions)
+                    {
+                        try
+                        {
+                            lastResult = ExecuteActionAsync(sub);
+                            System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] ExecuteActionAsync: multi-step result: {lastResult}\n");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.IO.File.AppendAllText(GetLogPath(), $"[ERROR] ExecuteActionAsync: multi-step failed: {ex.Message}\n");
+                            if (!multiAction.ContinueOnError)
+                            {
+                                return $"Multi-action '{multiAction.Name}' aborted: {ex.Message}";
+                            }
+                        }
+                        try { System.Threading.Thread.Sleep(Math.Max(0, multiAction.DelayMsBetween)); } catch { }
+                    }
+                }
+                return $"Executed multi-action '{multiAction.Name}'" + (string.IsNullOrEmpty(lastResult) ? "." : $": {lastResult}");
             }
             else if (action is OpenFolderAction folder)
             {
