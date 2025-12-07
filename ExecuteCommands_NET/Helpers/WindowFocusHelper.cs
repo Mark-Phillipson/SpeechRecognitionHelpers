@@ -1,12 +1,22 @@
 
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Diagnostics;
+using System;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace ExecuteCommands.Helpers
 {
     public static class WindowFocusHelper
     {
+        // Helper methods to send key events
+        public static void SendKeyDown(byte vk)
+        {
+            keybd_event(vk, 0, 0, 0);
+        }
+
+        public static void SendKeyUp(byte vk)
+        {
+            keybd_event(vk, 0, 2, 0);
+        }
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
         [DllImport("user32.dll")]

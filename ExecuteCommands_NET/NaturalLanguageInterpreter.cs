@@ -362,7 +362,9 @@ namespace ExecuteCommands
         {
             { "debug application", new ExecuteVSCommandAction("Debug.Start") },
             { "run application", new ExecuteVSCommandAction("Debug.StartWithoutDebugging") },
-            { "stop application", new ExecuteVSCommandAction("Debug.StopDebugging") }
+            { "stop application", new ExecuteVSCommandAction("Debug.StopDebugging") },
+            // Ensure 'focus' always triggers Ctrl+Alt+Tab
+            { "focus", new SendKeysAction("ctrl alt tab") }
         };
 
         // VS Code specific commands
