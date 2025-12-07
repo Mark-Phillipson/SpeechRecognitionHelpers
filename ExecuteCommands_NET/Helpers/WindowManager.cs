@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Windows.Forms;
 namespace ExecuteCommands.Helpers
 {
     // Handles window management actions (maximize, move, always on top, etc.)
@@ -38,7 +40,25 @@ namespace ExecuteCommands.Helpers
                 bool gotInfo = monitor != IntPtr.Zero && Win32ApiHelper.GetMonitorInfo(monitor, ref info);
                 if (!gotInfo)
                 {
-                    return "Failed to get monitor info.";
+                    try
+                    {
+                        File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.log"), "[WARN] WindowManager: failed to get monitor info, falling back to primary screen\n");
+                    }
+                    catch { }
+                    // fallback to primary screen working area
+                    try
+                    {
+                        var wa = Screen.PrimaryScreen.WorkingArea;
+                        info.rcWork.Left = wa.Left;
+                        info.rcWork.Top = wa.Top;
+                        info.rcWork.Right = wa.Right;
+                        info.rcWork.Bottom = wa.Bottom;
+                        gotInfo = true;
+                    }
+                    catch
+                    {
+                        return "Failed to get monitor info.";
+                    }
                 }
                 var rect = info.rcWork;
                 int width = (rect.Right - rect.Left) / 2;
@@ -62,7 +82,24 @@ namespace ExecuteCommands.Helpers
                 bool gotInfo = monitor != IntPtr.Zero && Win32ApiHelper.GetMonitorInfo(monitor, ref info);
                 if (!gotInfo)
                 {
-                    return "Failed to get monitor info.";
+                    try
+                    {
+                        File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.log"), "[WARN] WindowManager: failed to get monitor info for right half, falling back to primary screen\n");
+                    }
+                    catch { }
+                    try
+                    {
+                        var wa = Screen.PrimaryScreen.WorkingArea;
+                        info.rcWork.Left = wa.Left;
+                        info.rcWork.Top = wa.Top;
+                        info.rcWork.Right = wa.Right;
+                        info.rcWork.Bottom = wa.Bottom;
+                        gotInfo = true;
+                    }
+                    catch
+                    {
+                        return "Failed to get monitor info.";
+                    }
                 }
                 var rect = info.rcWork;
                 int width = (rect.Right - rect.Left) / 2;
@@ -104,7 +141,38 @@ namespace ExecuteCommands.Helpers
                 }
                 if (nextMonitor == IntPtr.Zero)
                 {
-                    return "No other monitor found.";
+                        // no other monitor — fallback to primary
+                        try
+                        {
+                            File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.log"), "[WARN] WindowManager: no other monitor found, using primary screen\n");
+                        }
+                        catch { }
+                        Win32ApiHelper.MONITORINFOEX primaryInfo = new Win32ApiHelper.MONITORINFOEX();
+                        try
+                        {
+                            var wa = Screen.PrimaryScreen.WorkingArea;
+                            primaryInfo.rcWork.Left = wa.Left;
+                            primaryInfo.rcWork.Top = wa.Top;
+                            primaryInfo.rcWork.Right = wa.Right;
+                            primaryInfo.rcWork.Bottom = wa.Bottom;
+                        }
+                        catch
+                        {
+                            return "No other monitor found.";
+                        }
+                        int widthP = (primaryInfo.rcWork.Right - primaryInfo.rcWork.Left);
+                        int heightP = (primaryInfo.rcWork.Bottom - primaryInfo.rcWork.Top);
+                        int widthPercentP = move.WidthPercent.HasValue ? move.WidthPercent.Value : 100;
+                        int heightPercentP = move.HeightPercent.HasValue ? move.HeightPercent.Value : 100;
+                        int xP = primaryInfo.rcWork.Left + (widthP - (widthP * widthPercentP / 100)) / 2;
+                        int yP = primaryInfo.rcWork.Top + (heightP - (heightP * heightPercentP / 100)) / 2;
+                        bool successP = Win32ApiHelper.SetWindowPos(activeHWnd, IntPtr.Zero, xP, yP, widthP, heightP, 0x0040 /*SWP_SHOWWINDOW*/);
+                        if (!successP)
+                        {
+                            int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
+                            return $"Failed to move window to primary monitor. Win32 error: {error}";
+                        }
+                        return "Window moved to primary monitor.";
                 }
                 Win32ApiHelper.MONITORINFOEX nextInfo = new Win32ApiHelper.MONITORINFOEX();
                 nextInfo.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(Win32ApiHelper.MONITORINFOEX));

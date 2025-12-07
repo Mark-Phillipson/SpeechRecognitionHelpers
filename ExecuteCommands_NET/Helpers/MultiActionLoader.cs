@@ -16,10 +16,17 @@ namespace ExecuteCommands.Helpers
             try
             {
                 Commands.Clear();
-                if (!File.Exists(ConfigPath)) return;
+                var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.log");
+                try { File.AppendAllText(logPath, $"[DEBUG] MultiActionLoader.ConfigPath: {ConfigPath}\n"); } catch { }
+                if (!File.Exists(ConfigPath))
+                {
+                    try { File.AppendAllText(logPath, $"[WARN] MultiActionLoader: config not found at {ConfigPath}\n"); } catch { }
+                    return;
+                }
                 var json = File.ReadAllText(ConfigPath);
                 var doc = JsonDocument.Parse(json);
                 if (doc.RootElement.ValueKind != JsonValueKind.Array) return;
+                var registered = new List<string>();
                 foreach (var item in doc.RootElement.EnumerateArray())
                 {
                     try
@@ -43,13 +50,56 @@ namespace ExecuteCommands.Helpers
                         if (!string.IsNullOrWhiteSpace(name) && actions.Count > 0)
                         {
                             var r = new ExecuteCommands.RunMultipleActionsAction(name, actions, continueOnError, delay);
+                            // store the entry under its original name
                             Commands[name] = r;
+                            registered.Add(name);
+                            // also store a normalized/compact key to allow flexible matching (e.g. "setup" vs "set up")
+                            try
+                            {
+                                var normalized = NormalizeKey(name);
+                                if (!string.IsNullOrWhiteSpace(normalized) && !Commands.ContainsKey(normalized))
+                                {
+                                    Commands[normalized] = r;
+                                    registered.Add(normalized);
+                                }
+                            }
+                            catch { }
                         }
                     }
                     catch { }
                 }
             }
             catch { }
+            try
+            {
+                var logPath2 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.log");
+                // write keys that were registered (if any)
+                if (Commands.Count > 0)
+                {
+                    try { File.AppendAllText(logPath2, $"[DEBUG] MultiActionLoader loaded keys: {string.Join(", ", Commands.Keys)}\n"); } catch { }
+                }
+            }
+            catch { }
+        }
+
+        public static string NormalizeKey(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return string.Empty;
+            try
+            {
+                var low = s.ToLowerInvariant();
+                // remove punctuation (keep word chars and whitespace)
+                low = System.Text.RegularExpressions.Regex.Replace(low, "[^\\w\\s]", "");
+                // collapse whitespace
+                low = System.Text.RegularExpressions.Regex.Replace(low, "\\s+", " ").Trim();
+                // compact (remove spaces) so variants like "setup" and "set up" match
+                var compact = low.Replace(" ", "");
+                return compact;
+            }
+            catch
+            {
+                return s.ToLowerInvariant();
+            }
         }
 
         private static ExecuteCommands.ActionBase? DeserializeAction(JsonElement elem)

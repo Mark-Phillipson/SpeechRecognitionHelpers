@@ -570,10 +570,11 @@ namespace ExecuteCommands
                 return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
             }
 
-            // Check for configured multi-action commands (exact match)
+            // Check for configured multi-action commands (exact match or normalized match)
             try
             {
-                if (ExecuteCommands.Helpers.MultiActionLoader.Commands.TryGetValue(text, out var multi))
+                if (ExecuteCommands.Helpers.MultiActionLoader.Commands.TryGetValue(text, out var multi) ||
+                    ExecuteCommands.Helpers.MultiActionLoader.Commands.TryGetValue(ExecuteCommands.Helpers.MultiActionLoader.NormalizeKey(text), out multi))
                 {
                     System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched multi-action command: {multi.Name}\n");
                     return System.Threading.Tasks.Task.FromResult<ActionBase?>(multi);
