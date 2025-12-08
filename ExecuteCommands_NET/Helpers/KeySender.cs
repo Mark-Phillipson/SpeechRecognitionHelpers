@@ -30,6 +30,17 @@ namespace ExecuteCommands.Helpers
                 System.IO.File.AppendAllText(logPath, "[DEBUG] Sent Ctrl+Alt+Tab.\n");
                 return "[KeySender.SendKeys] Sent Ctrl+Alt+Tab.";
             }
+            else if (keysText == "control ," || keysText == "ctrl ,")
+            {
+                // Send Ctrl+Comma
+                System.IO.File.AppendAllText(logPath, "[DEBUG] Sending Ctrl+Comma key sequence.\n");
+                ExecuteCommands.Helpers.WindowFocusHelper.SendKeyDown(0x11); // VK_CONTROL
+                ExecuteCommands.Helpers.WindowFocusHelper.SendKeyDown(0xBC); // VK_OEM_COMMA
+                ExecuteCommands.Helpers.WindowFocusHelper.SendKeyUp(0xBC);
+                ExecuteCommands.Helpers.WindowFocusHelper.SendKeyUp(0x11);
+                System.IO.File.AppendAllText(logPath, "[DEBUG] Sent Ctrl+Comma.\n");
+                return "[KeySender.SendKeys] Sent Ctrl+Comma.";
+            }
             else
             {
                 System.IO.File.AppendAllText(logPath, $"[ERROR] Unsupported key sequence: '{keysText}'\n");
