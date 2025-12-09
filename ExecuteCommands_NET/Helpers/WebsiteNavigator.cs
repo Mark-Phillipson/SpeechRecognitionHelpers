@@ -27,10 +27,12 @@ namespace ExecuteCommands
             { "discord", "https://discord.com" },
             { "office", "https://www.office.com" },
             { "onenote", "https://www.onenote.com" },
-            { "outlook", "https://outlook.live.com" }
+            { "outlook", "https://outlook.live.com" },
+            { "azure", "https://portal.azure.com" }
         };
 
-        private static readonly string[] WebsiteTriggers = new[] { "open ", "go to ", "browse ", "visit " };
+        // Include 'launch' as a trigger since users often say 'launch <site>'
+        private static readonly string[] WebsiteTriggers = new[] { "open ", "go to ", "browse ", "visit ", "launch " };
 
         public static bool TryParseWebsiteCommand(string text, out string? url)
         {
