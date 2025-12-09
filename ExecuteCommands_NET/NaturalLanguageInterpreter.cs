@@ -150,8 +150,7 @@ namespace ExecuteCommands
                                     return new SendKeysAction(root.GetProperty("KeysText").GetString() ?? "");
                                 case "OpenFolderAction":
                                     return new OpenFolderAction(root.GetProperty("KnownFolder").GetString() ?? "");
-                                case "SetWindowAlwaysOnTopAction":
-                                    return new SetWindowAlwaysOnTopAction(root.TryGetProperty("Application", out var appProp) ? appProp.GetString() : null);
+                                // "SetWindowAlwaysOnTopAction" intentionally not supported: feature disabled.
                             }
                         }
                     }
@@ -225,7 +224,6 @@ namespace ExecuteCommands
             ("move window to left half", "Move the active window to the left half of the screen"),
             ("move window to right half", "Move the active window to the right half of the screen"),
             ("move window to other monitor", "Move the active window to the next monitor"),
-            ("set window always on top", "Set the active window to always be on top"),
             ("open downloads", "Open the Downloads folder"),
             ("open documents", "Open the Documents folder"),
             ("close tab", "Close the current tab in supported applications"),
@@ -646,19 +644,10 @@ namespace ExecuteCommands
             }
             if (matchedAlwaysOnTop)
             {
-                string? app = null;
-                var knownApps = new[] { "code", "msedge", "chrome", "firefox", "devenv", "opera", "brave" };
-                foreach (var candidate in knownApps)
-                {
-                    if (text.Contains(candidate))
-                    {
-                        app = candidate;
-                        break;
-                    }
-                }
-                var action = new SetWindowAlwaysOnTopAction(app);
-                System.IO.File.AppendAllText(GetLogPath(), $"[DEBUG] InterpretAsync matched: {action.GetType().Name} (always on top)\n");
-                return System.Threading.Tasks.Task.FromResult<ActionBase?>(action);
+                // The always-on-top feature is disabled because it was causing accidental
+                // behaviors for users. Log and return null so no action is executed.
+                System.IO.File.AppendAllText(GetLogPath(), "[INFO] InterpretAsync: 'always on top' command detected but feature is disabled by configuration.\n");
+                return System.Threading.Tasks.Task.FromResult<ActionBase?>(null);
             }
             // Send key sequences
             if (text.StartsWith("press "))
@@ -997,33 +986,9 @@ namespace ExecuteCommands
             }
             else if (action is SetWindowAlwaysOnTopAction setTop)
             {
-                IntPtr hWnd = IntPtr.Zero;
-                string? appName = setTop.Application?.ToLowerInvariant();
-                if (!string.IsNullOrWhiteSpace(appName))
-                {
-                    var procs = System.Diagnostics.Process.GetProcessesByName(appName);
-                    if (procs.Length > 0)
-                        hWnd = procs[0].MainWindowHandle;
-                }
-                else
-                {
-                    hWnd = Commands.GetForegroundWindow();
-                }
-                if (hWnd == IntPtr.Zero)
-                    return "No window found to set always on top.";
-                IntPtr HWND_TOPMOST = new IntPtr(-1);
-                const uint SWP_NOMOVE = 0x0002;
-                const uint SWP_NOSIZE = 0x0001;
-                const uint SWP_SHOWWINDOW = 0x0040;
-                bool success = SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
-                if (!success)
-                {
-                    int error = System.Runtime.InteropServices.Marshal.GetLastWin32Error();
-                    System.IO.File.AppendAllText("app.log", $"Failed to set window always on top. Win32 error: {error}\n");
-                    return $"Failed to set window always on top. Win32 error: {error}";
-                }
-                System.IO.File.AppendAllText(GetLogPath(), "Window set to always on top\n");
-                return "Window set to always on top.";
+                // This feature was disabled because it caused accidental "always on top" states.
+                System.IO.File.AppendAllText(GetLogPath(), "[INFO] ExecuteActionAsync: Attempt to set always-on-top blocked by configuration.\n");
+                return "Setting windows always-on-top has been disabled.";
             }
             // Multi-action sequences: run a list of actions in order
             else if (action is ExecuteCommands.RunMultipleActionsAction multiAction)
@@ -1358,10 +1323,7 @@ namespace ExecuteCommands
                         var nextAction = new MoveWindowAction(Target: "active", Monitor: "next", Position: "", WidthPercent: 0, HeightPercent: 0);
                         System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {nextAction.GetType().Name} (next monitor)\n");
                         return System.Threading.Tasks.Task.FromResult<ActionBase?>(nextAction);
-                    case "set window always on top":
-                        var topAction = new SetWindowAlwaysOnTopAction(null);
-                        System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {topAction.GetType().Name} (always on top)\n");
-                        return System.Threading.Tasks.Task.FromResult<ActionBase?>(topAction);
+                    
                     case "open downloads":
                         var downloadsAction = new OpenFolderAction("Downloads");
                         System.IO.File.AppendAllText("app.log", $"[DEBUG] InterpretAsync matched: {downloadsAction.GetType().Name} (downloads)\n");

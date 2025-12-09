@@ -11,7 +11,6 @@ namespace ExecuteCommands
             ("move window to left half", "Move the active window to the left half of the screen"),
             ("move window to right half", "Move the active window to the right half of the screen"),
             ("move window to other monitor", "Move the active window to the next monitor"),
-            ("set window always on top", "Set the active window to always be on top"),
             ("open downloads", "Open the Downloads folder"),
             ("open documents", "Open the Documents folder"),
             ("close tab", "Close the current tab in supported applications"),

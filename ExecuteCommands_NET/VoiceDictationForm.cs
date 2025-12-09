@@ -12,13 +12,15 @@ namespace DictationBoxMSP
         private Button btnSubmit = null!;
         private Button btnCancel = null!;
         private Button btnStart = null!;
+        private Button btnSendCommand = null!;
+        private Button btnCopyText = null!;
         private System.Windows.Forms.Timer autoSubmitTimer = null!;
         private System.Windows.Forms.Timer startDictationTimer = null!;
         private int timeoutMs = 0;
 
         public string ResultText => txtInput.Text ?? string.Empty;
 
-        public VoiceDictationForm(int timeoutMs = 20000, bool autoStartDictation = true)
+        public VoiceDictationForm(int timeoutMs = -1, bool autoStartDictation = true)
         {
             this.timeoutMs = timeoutMs;
             InitializeComponents();
@@ -32,23 +34,29 @@ namespace DictationBoxMSP
         private void InitializeComponents()
         {
             this.txtInput = new TextBox() { Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Vertical };
-            this.btnStart = new Button() { Text = "Start Dictation", Height = 40, AutoSize = false };
-            this.btnSubmit = new Button() { Text = "Submit", Height = 48 };
-            this.btnCancel = new Button() { Text = "Cancel", Height = 48 };
+            this.btnStart = new Button() { Text = "Start Dictation", Height = 56, AutoSize = false };
+            this.btnSubmit = new Button() { Text = "Submit", Height = 56 };
+            this.btnCancel = new Button() { Text = "Cancel", Height = 56 };
+            this.btnSendCommand = new Button() { Text = "Send Command", Height = 56 };
+            this.btnCopyText = new Button() { Text = "Copy Text", Height = 56 };
             this.autoSubmitTimer = new System.Windows.Forms.Timer();
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
             // Bottom panel to hold buttons
-            var bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 56 };
+            var bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 84 };
             bottomPanel.Padding = new Padding(8);
             bottomPanel.BackColor = DisplayMessage.SharedBackColor;
 
             // Flow layout for buttons
             var flow = new FlowLayoutPanel() { Dock = DockStyle.Fill, FlowDirection = FlowDirection.RightToLeft, AutoSize = false };
+            flow.WrapContents = false;
+            flow.Padding = new Padding(6);
             flow.Controls.Add(btnCancel);
             flow.Controls.Add(btnSubmit);
+            flow.Controls.Add(btnSendCommand);
+            flow.Controls.Add(btnCopyText);
             flow.Controls.Add(btnStart);
-            btnStart.Width = 150; btnSubmit.Width = 100; btnCancel.Width = 100;
+            btnStart.Width = 220; btnSubmit.Width = 120; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120;
             bottomPanel.Controls.Add(flow);
 
             this.Controls.Add(txtInput);
@@ -61,6 +69,8 @@ namespace DictationBoxMSP
             btnSubmit.Click += BtnSubmit_Click;
             btnCancel.Click += BtnCancel_Click;
             btnStart.Click += BtnStart_Click;
+            btnSendCommand.Click += BtnSendCommand_Click;
+            btnCopyText.Click += BtnCopyText_Click;
             this.FormClosing += VoiceDictationForm_FormClosing;
             this.KeyPreview = true;
             this.KeyDown += VoiceDictationForm_KeyDown;
@@ -146,6 +156,23 @@ namespace DictationBoxMSP
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void BtnSendCommand_Click(object? sender, EventArgs e)
+        {
+            // Explicit send command - behaves like Submit but kept as a distinct action
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void BtnCopyText_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                var text = txtInput.Text ?? string.Empty;
+                if (!string.IsNullOrEmpty(text)) Clipboard.SetText(text);
+            }
+            catch { }
         }
 
         private void VoiceDictationForm_FormClosing(object? sender, FormClosingEventArgs e)
