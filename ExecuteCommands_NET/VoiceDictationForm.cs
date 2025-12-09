@@ -10,7 +10,6 @@ namespace DictationBoxMSP
     public class VoiceDictationForm : Form
     {
         private TextBox txtInput = null!;
-        private Button btnSubmit = null!;
         private Button btnCancel = null!;
         private Button btnStart = null!;
         private Button btnSendCommand = null!;
@@ -36,12 +35,14 @@ namespace DictationBoxMSP
         private void InitializeComponents()
         {
             this.txtInput = new TextBox() { Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Vertical };
-            this.btnStart = new Button() { Text = "Start Dictation", Height = 56, AutoSize = false };
-            this.btnSubmit = new Button() { Text = "Submit", Height = 56 };
-            this.btnCancel = new Button() { Text = "Cancel", Height = 56 };
-            this.btnSendCommand = new Button() { Text = "Send Command", Height = 56 };
-            this.btnCopyText = new Button() { Text = "Copy Text", Height = 56 };
-            this.btnSearchWeb = new Button() { Text = "Search Web", Height = 56 };
+            // Use '&' to indicate keyboard accelerators (mnemonics). These are shown as underlined
+            // when Alt is pressed and allow keyboard activation (Alt+Key).
+            this.btnStart = new Button() { Text = "Re-Start &Dictation", Height = 56, AutoSize = false };
+            this.btnCancel = new Button() { Text = "&Cancel", Height = 56 };
+            // Use Alt+S for Send Command (replaces the removed Submit button)
+            this.btnSendCommand = new Button() { Text = "&Send Command", Height = 56 };
+            this.btnCopyText = new Button() { Text = "Copy &Text", Height = 56 };
+            this.btnSearchWeb = new Button() { Text = "Search &Web", Height = 56 };
             this.autoSubmitTimer = new System.Windows.Forms.Timer();
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
@@ -55,22 +56,29 @@ namespace DictationBoxMSP
             flow.WrapContents = false;
             flow.Padding = new Padding(6);
             flow.Controls.Add(btnCancel);
-            flow.Controls.Add(btnSubmit);
             flow.Controls.Add(btnSendCommand);
             flow.Controls.Add(btnCopyText);
             flow.Controls.Add(btnSearchWeb);
             flow.Controls.Add(btnStart);
-            btnStart.Width = 220; btnSubmit.Width = 120; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140;
+            // Keep explicit widths; remove Submit width since Submit is removed
+            btnStart.Width = 220; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140;
             bottomPanel.Controls.Add(flow);
+
+            // Make button borders visible on all sides by using FlatStyle and a small border
+            btnStart.FlatStyle = FlatStyle.Flat; btnStart.FlatAppearance.BorderSize = 1; btnStart.FlatAppearance.BorderColor = SystemColors.ControlDark; btnStart.Margin = new Padding(6);
+            btnCancel.FlatStyle = FlatStyle.Flat; btnCancel.FlatAppearance.BorderSize = 1; btnCancel.FlatAppearance.BorderColor = SystemColors.ControlDark; btnCancel.Margin = new Padding(6);
+            btnSendCommand.FlatStyle = FlatStyle.Flat; btnSendCommand.FlatAppearance.BorderSize = 1; btnSendCommand.FlatAppearance.BorderColor = SystemColors.ControlDark; btnSendCommand.Margin = new Padding(6);
+            btnCopyText.FlatStyle = FlatStyle.Flat; btnCopyText.FlatAppearance.BorderSize = 1; btnCopyText.FlatAppearance.BorderColor = SystemColors.ControlDark; btnCopyText.Margin = new Padding(6);
+            btnSearchWeb.FlatStyle = FlatStyle.Flat; btnSearchWeb.FlatAppearance.BorderSize = 1; btnSearchWeb.FlatAppearance.BorderColor = SystemColors.ControlDark; btnSearchWeb.Margin = new Padding(6);
 
             this.Controls.Add(txtInput);
             this.Controls.Add(bottomPanel);
 
             this.Text = "Voice Dictation";
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Size = new Size(900, 400);
+            // Increase width by 20% (900 -> 1080) to give more room for text
+            this.Size = new Size(1080, 400);
 
-            btnSubmit.Click += BtnSubmit_Click;
             btnCancel.Click += BtnCancel_Click;
             btnStart.Click += BtnStart_Click;
             btnSendCommand.Click += BtnSendCommand_Click;
@@ -147,12 +155,6 @@ namespace DictationBoxMSP
         private void AutoSubmitTimer_Tick(object? sender, EventArgs e)
         {
             autoSubmitTimer.Stop();
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private void BtnSubmit_Click(object? sender, EventArgs e)
-        {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
