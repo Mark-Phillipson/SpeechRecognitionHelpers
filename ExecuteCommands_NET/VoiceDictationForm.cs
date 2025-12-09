@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
@@ -15,6 +16,7 @@ namespace DictationBoxMSP
         private Button btnSendCommand = null!;
         private Button btnCopyText = null!;
         private Button btnSearchWeb = null!;
+        private Button btnOpenInVsc = null!;
         private System.Windows.Forms.Timer autoSubmitTimer = null!;
         private System.Windows.Forms.Timer startDictationTimer = null!;
         private int timeoutMs = 0;
@@ -43,6 +45,7 @@ namespace DictationBoxMSP
             this.btnSendCommand = new Button() { Text = "&Send Command", Height = 56 };
             this.btnCopyText = new Button() { Text = "Copy &Text", Height = 56 };
             this.btnSearchWeb = new Button() { Text = "Search &Web", Height = 56 };
+            this.btnOpenInVsc = new Button() { Text = "Open in &VS Code", Height = 56 };
             this.autoSubmitTimer = new System.Windows.Forms.Timer();
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
@@ -58,10 +61,11 @@ namespace DictationBoxMSP
             flow.Controls.Add(btnCancel);
             flow.Controls.Add(btnSendCommand);
             flow.Controls.Add(btnCopyText);
+            flow.Controls.Add(btnOpenInVsc);
             flow.Controls.Add(btnSearchWeb);
             flow.Controls.Add(btnStart);
             // Keep explicit widths; remove Submit width since Submit is removed
-            btnStart.Width = 220; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140;
+            btnStart.Width = 220; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140; btnOpenInVsc.Width = 160;
             bottomPanel.Controls.Add(flow);
 
             // Make button borders visible on all sides by using FlatStyle and a small border
@@ -69,6 +73,7 @@ namespace DictationBoxMSP
             btnCancel.FlatStyle = FlatStyle.Flat; btnCancel.FlatAppearance.BorderSize = 1; btnCancel.FlatAppearance.BorderColor = SystemColors.ControlDark; btnCancel.Margin = new Padding(6);
             btnSendCommand.FlatStyle = FlatStyle.Flat; btnSendCommand.FlatAppearance.BorderSize = 1; btnSendCommand.FlatAppearance.BorderColor = SystemColors.ControlDark; btnSendCommand.Margin = new Padding(6);
             btnCopyText.FlatStyle = FlatStyle.Flat; btnCopyText.FlatAppearance.BorderSize = 1; btnCopyText.FlatAppearance.BorderColor = SystemColors.ControlDark; btnCopyText.Margin = new Padding(6);
+            btnOpenInVsc.FlatStyle = FlatStyle.Flat; btnOpenInVsc.FlatAppearance.BorderSize = 1; btnOpenInVsc.FlatAppearance.BorderColor = SystemColors.ControlDark; btnOpenInVsc.Margin = new Padding(6);
             btnSearchWeb.FlatStyle = FlatStyle.Flat; btnSearchWeb.FlatAppearance.BorderSize = 1; btnSearchWeb.FlatAppearance.BorderColor = SystemColors.ControlDark; btnSearchWeb.Margin = new Padding(6);
 
             this.Controls.Add(txtInput);
@@ -83,6 +88,7 @@ namespace DictationBoxMSP
             btnStart.Click += BtnStart_Click;
             btnSendCommand.Click += BtnSendCommand_Click;
             btnCopyText.Click += BtnCopyText_Click;
+            btnOpenInVsc.Click += BtnOpenInVsc_Click;
             btnSearchWeb.Click += BtnSearchWeb_Click;
             this.FormClosing += VoiceDictationForm_FormClosing;
             this.KeyPreview = true;
@@ -228,6 +234,62 @@ namespace DictationBoxMSP
                 this.DialogResult = DialogResult.Cancel;
                 this.Close();
             }
+        }
+
+        private void BtnOpenInVsc_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                var text = txtInput.Text ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(text)) return;
+
+                var tempDir = Path.GetTempPath();
+                var fileName = $"dictation-{DateTime.Now:yyyyMMdd-HHmmss}.txt";
+                var filePath = Path.Combine(tempDir, fileName);
+                File.WriteAllText(filePath, text);
+
+                var args = $"--new-window \"{filePath}\"";
+
+                // Try the 'code' CLI first
+                try
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "code",
+                        Arguments = args,
+                        UseShellExecute = true
+                    };
+                    Process.Start(psi);
+                    return;
+                }
+                catch { }
+
+                // Try common install locations
+                var possible = new[]
+                {
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Microsoft VS Code", "Code.exe"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Microsoft VS Code", "Code.exe")
+                };
+
+                foreach (var p in possible)
+                {
+                    if (File.Exists(p))
+                    {
+                        var psi2 = new ProcessStartInfo
+                        {
+                            FileName = p,
+                            Arguments = args,
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi2);
+                        return;
+                    }
+                }
+
+                // Fallback: open with default program
+                Process.Start(new ProcessStartInfo { FileName = filePath, UseShellExecute = true });
+            }
+            catch { }
         }
     }
 }
