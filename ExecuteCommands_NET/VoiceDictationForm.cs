@@ -17,9 +17,17 @@ namespace DictationBoxMSP
         private Button btnCopyText = null!;
         private Button btnSearchWeb = null!;
         private Button btnOpenInVsc = null!;
+        private Button btnToggleTransparent = null!;
+        private Panel bottomPanel = null!;
         private System.Windows.Forms.Timer autoSubmitTimer = null!;
         private System.Windows.Forms.Timer startDictationTimer = null!;
         private int timeoutMs = 0;
+        private bool isBackgroundTransparent = false;
+        private Color savedFormBackColor;
+        private Color savedTransparencyKey;
+        private Color savedTxtInputBackColor;
+        private Color savedBottomPanelBackColor;
+        private double savedOpacity = 1.0;
 
         public string ResultText => txtInput.Text ?? string.Empty;
 
@@ -50,7 +58,7 @@ namespace DictationBoxMSP
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
             // Bottom panel to hold buttons
-            var bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 84 };
+            bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 84 };
             bottomPanel.Padding = new Padding(8);
             bottomPanel.BackColor = DisplayMessage.SharedBackColor;
 
@@ -62,10 +70,13 @@ namespace DictationBoxMSP
             flow.Controls.Add(btnSendCommand);
             flow.Controls.Add(btnCopyText);
             flow.Controls.Add(btnOpenInVsc);
+            // Toggle transparent button
+            this.btnToggleTransparent = new Button() { Text = "Toggle &Transparent", Height = 56 };
+            flow.Controls.Add(btnToggleTransparent);
             flow.Controls.Add(btnSearchWeb);
             flow.Controls.Add(btnStart);
             // Keep explicit widths; remove Submit width since Submit is removed
-            btnStart.Width = 220; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140; btnOpenInVsc.Width = 160;
+            btnStart.Width = 220; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140; btnOpenInVsc.Width = 160; btnToggleTransparent.Width = 160;
             bottomPanel.Controls.Add(flow);
 
             // Make button borders visible on all sides by using FlatStyle and a small border
@@ -75,6 +86,7 @@ namespace DictationBoxMSP
             btnCopyText.FlatStyle = FlatStyle.Flat; btnCopyText.FlatAppearance.BorderSize = 1; btnCopyText.FlatAppearance.BorderColor = SystemColors.ControlDark; btnCopyText.Margin = new Padding(6);
             btnOpenInVsc.FlatStyle = FlatStyle.Flat; btnOpenInVsc.FlatAppearance.BorderSize = 1; btnOpenInVsc.FlatAppearance.BorderColor = SystemColors.ControlDark; btnOpenInVsc.Margin = new Padding(6);
             btnSearchWeb.FlatStyle = FlatStyle.Flat; btnSearchWeb.FlatAppearance.BorderSize = 1; btnSearchWeb.FlatAppearance.BorderColor = SystemColors.ControlDark; btnSearchWeb.Margin = new Padding(6);
+            btnToggleTransparent.FlatStyle = FlatStyle.Flat; btnToggleTransparent.FlatAppearance.BorderSize = 1; btnToggleTransparent.FlatAppearance.BorderColor = SystemColors.ControlDark; btnToggleTransparent.Margin = new Padding(6);
 
             this.Controls.Add(txtInput);
             this.Controls.Add(bottomPanel);
@@ -89,6 +101,7 @@ namespace DictationBoxMSP
             btnSendCommand.Click += BtnSendCommand_Click;
             btnCopyText.Click += BtnCopyText_Click;
             btnOpenInVsc.Click += BtnOpenInVsc_Click;
+            btnToggleTransparent.Click += BtnToggleTransparent_Click;
             btnSearchWeb.Click += BtnSearchWeb_Click;
             this.FormClosing += VoiceDictationForm_FormClosing;
             this.KeyPreview = true;
@@ -102,11 +115,46 @@ namespace DictationBoxMSP
                 this.BackColor = DisplayMessage.SharedBackColor;
                 this.ForeColor = DisplayMessage.SharedForeColor;
                 var baseFont = DisplayMessage.SharedFont ?? SystemFonts.MessageBoxFont;
-                var larger = new Font(baseFont.FontFamily, Math.Max(baseFont.Size * 1.8f, baseFont.Size + 8f), baseFont.Style);
+                var larger = new Font(baseFont!.FontFamily, Math.Max(baseFont!.Size * 1.8f, baseFont!.Size + 8f), baseFont!.Style);
                 this.Font = larger;
                 txtInput.Font = larger;
                 txtInput.BackColor = DisplayMessage.SharedBackColor;
                 txtInput.ForeColor = DisplayMessage.SharedForeColor;
+                try { if (bottomPanel != null) bottomPanel.BackColor = DisplayMessage.SharedBackColor; } catch { }
+            }
+            catch { }
+        }
+
+        private void BtnToggleTransparent_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (!isBackgroundTransparent)
+                {
+                    // save current opacity and colors
+                    savedOpacity = this.Opacity;
+                    savedTxtInputBackColor = txtInput.BackColor;
+                    savedBottomPanelBackColor = bottomPanel.BackColor;
+
+                    // set a semi-transparent window (affects controls too)
+                    this.Opacity = 0.65;
+
+                    // keep control backgrounds readable
+                    txtInput.BackColor = DisplayMessage.SharedBackColor;
+                    bottomPanel.BackColor = DisplayMessage.SharedBackColor;
+
+                    isBackgroundTransparent = true;
+                    btnToggleTransparent.Text = "Disable &Transparent";
+                }
+                else
+                {
+                    // restore
+                    this.Opacity = savedOpacity;
+                    txtInput.BackColor = savedTxtInputBackColor;
+                    bottomPanel.BackColor = savedBottomPanelBackColor;
+                    isBackgroundTransparent = false;
+                    btnToggleTransparent.Text = "Toggle &Transparent";
+                }
             }
             catch { }
         }
