@@ -6,7 +6,8 @@ namespace ExecuteCommands.Helpers
 {
     public static class VoiceDictationHelper
     {
-        public static string? ShowVoiceDictation(int timeoutMs = 20000)
+        // Default timeout 0 disables auto-submit; >0 will auto-submit after that many ms
+        public static string? ShowVoiceDictation(int timeoutMs = 0)
         {
             string? result = null;
             try

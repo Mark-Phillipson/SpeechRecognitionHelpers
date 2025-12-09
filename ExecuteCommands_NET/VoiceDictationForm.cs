@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Diagnostics;
 using System.Windows.Forms;
 using WindowsInput;
 using WindowsInput.Native;
@@ -14,6 +15,7 @@ namespace DictationBoxMSP
         private Button btnStart = null!;
         private Button btnSendCommand = null!;
         private Button btnCopyText = null!;
+        private Button btnSearchWeb = null!;
         private System.Windows.Forms.Timer autoSubmitTimer = null!;
         private System.Windows.Forms.Timer startDictationTimer = null!;
         private int timeoutMs = 0;
@@ -39,6 +41,7 @@ namespace DictationBoxMSP
             this.btnCancel = new Button() { Text = "Cancel", Height = 56 };
             this.btnSendCommand = new Button() { Text = "Send Command", Height = 56 };
             this.btnCopyText = new Button() { Text = "Copy Text", Height = 56 };
+            this.btnSearchWeb = new Button() { Text = "Search Web", Height = 56 };
             this.autoSubmitTimer = new System.Windows.Forms.Timer();
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
@@ -55,8 +58,9 @@ namespace DictationBoxMSP
             flow.Controls.Add(btnSubmit);
             flow.Controls.Add(btnSendCommand);
             flow.Controls.Add(btnCopyText);
+            flow.Controls.Add(btnSearchWeb);
             flow.Controls.Add(btnStart);
-            btnStart.Width = 220; btnSubmit.Width = 120; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120;
+            btnStart.Width = 220; btnSubmit.Width = 120; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140;
             bottomPanel.Controls.Add(flow);
 
             this.Controls.Add(txtInput);
@@ -71,6 +75,7 @@ namespace DictationBoxMSP
             btnStart.Click += BtnStart_Click;
             btnSendCommand.Click += BtnSendCommand_Click;
             btnCopyText.Click += BtnCopyText_Click;
+            btnSearchWeb.Click += BtnSearchWeb_Click;
             this.FormClosing += VoiceDictationForm_FormClosing;
             this.KeyPreview = true;
             this.KeyDown += VoiceDictationForm_KeyDown;
@@ -171,6 +176,40 @@ namespace DictationBoxMSP
             {
                 var text = txtInput.Text ?? string.Empty;
                 if (!string.IsNullOrEmpty(text)) Clipboard.SetText(text);
+            }
+            catch { }
+        }
+
+        private void BtnSearchWeb_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                var text = txtInput.Text ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(text)) return;
+                var query = Uri.EscapeDataString(text);
+                var url = $"https://www.bing.com/search?q={query}";
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "msedge",
+                    Arguments = url,
+                    UseShellExecute = true
+                };
+
+                try
+                {
+                    Process.Start(psi);
+                }
+                catch
+                {
+                    // Fallback: open with default browser
+                    var psi2 = new ProcessStartInfo
+                    {
+                        FileName = url,
+                        UseShellExecute = true
+                    };
+                    Process.Start(psi2);
+                }
             }
             catch { }
         }

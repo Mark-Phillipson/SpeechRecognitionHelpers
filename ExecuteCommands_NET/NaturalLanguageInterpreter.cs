@@ -366,7 +366,8 @@ namespace ExecuteCommands
             // Ensure 'focus' always triggers Ctrl+Alt+Tab
             { "focus", new SendKeysAction("ctrl alt tab") },
             // Voice dictation trigger: opens the voice dictation form (auto-submit 5s)
-            { "dictate", new OpenVoiceDictationFormAction(20000) }
+            // Use TimeoutMs=0 so the dictation form does not auto-submit — waits for manual Submit
+            { "dictate", new OpenVoiceDictationFormAction(0) }
         };
 
         // VS Code specific commands
