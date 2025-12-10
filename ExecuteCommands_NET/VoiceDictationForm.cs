@@ -58,7 +58,7 @@ namespace DictationBoxMSP
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
             // Bottom panel to hold buttons
-            bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 84 };
+            bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 120 };
             bottomPanel.Padding = new Padding(8);
             bottomPanel.BackColor = DisplayMessage.SharedBackColor;
 
@@ -93,8 +93,8 @@ namespace DictationBoxMSP
 
             this.Text = "Voice Dictation";
             this.StartPosition = FormStartPosition.CenterScreen;
-            // Increase width by 20% (900 -> 1080) to give more room for text
-            this.Size = new Size(1080, 400);
+            // Make the form a little wider and twice as high so buttons don't get cut off
+            this.Size = new Size(1200, 800);
 
             btnCancel.Click += BtnCancel_Click;
             btnStart.Click += BtnStart_Click;
@@ -201,6 +201,20 @@ namespace DictationBoxMSP
                 txtInput.Focus();
                 txtInput.Select();
                 var sim = new InputSimulator();
+                // Make sure modifier keys (Alt/Ctrl/Shift) are released before simulating Win+H.
+                // When the user activates the button via an access key (Alt+Key) the Alt key
+                // may still be logically down which can interfere with the Win+H keystroke.
+                try
+                {
+                    sim.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.MENU);
+                    sim.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.CONTROL);
+                    sim.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.SHIFT);
+                }
+                catch { }
+
+                // Give the input system a moment to settle after releasing modifiers
+                System.Threading.Thread.Sleep(60);
+
                 sim.Keyboard.ModifiedKeyStroke(VirtualKeyCode.LWIN, VirtualKeyCode.VK_H);
             }
             catch { }
