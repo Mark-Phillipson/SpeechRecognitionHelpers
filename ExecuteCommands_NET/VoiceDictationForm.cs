@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Collections.Generic;
+using System.Linq;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -13,7 +16,7 @@ namespace DictationBoxMSP
     {
         private TextBox txtInput = null!;
         private Button btnCancel = null!;
-        private Button btnStart = null!;
+        // removed Restart button (use voice phrase "voice typing" to start)
         private Button btnSendCommand = null!;
         private Button btnCopyText = null!;
         private Button btnSearchWeb = null!;
@@ -21,6 +24,8 @@ namespace DictationBoxMSP
         private Button btnToggleTransparent = null!;
         private Panel bottomPanel = null!;
         private Label lblTransient = null!;
+        private Label marqueeLabel = null!;
+        private System.Windows.Forms.Timer marqueeTimer = null!;
         private System.Windows.Forms.Timer autoSubmitTimer = null!;
         private System.Windows.Forms.Timer startDictationTimer = null!;
         private int timeoutMs = 0;
@@ -49,7 +54,7 @@ namespace DictationBoxMSP
             this.txtInput = new TextBox() { Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Vertical };
             // Use '&' to indicate keyboard accelerators (mnemonics). These are shown as underlined
             // when Alt is pressed and allow keyboard activation (Alt+Key).
-            this.btnStart = new Button() { Text = "Re-Start &Dictation", Height = 121, AutoSize = false };
+            // Re-Start Dictation button removed (use voice phrase instead)
             this.btnCancel = new Button() { Text = "&Cancel", Height = 121 };
             // Use Alt+S for Send Command (replaces the removed Submit button)
             this.btnSendCommand = new Button() { Text = "&Send Command", Height = 121 };
@@ -59,45 +64,138 @@ namespace DictationBoxMSP
             this.autoSubmitTimer = new System.Windows.Forms.Timer();
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
-            // Bottom panel to hold buttons
-            // Keep the panel height modest — buttons themselves are taller so the panel doesn't need to be huge
+            // Bottom area: use a table so marquee cannot overlap buttons.
             bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 140 };
             bottomPanel.Padding = new Padding(8);
             bottomPanel.BackColor = DisplayMessage.SharedBackColor;
 
-            // Flow layout for buttons
+            // We'll use a 3-row TableLayout: marquee (36px), buttons (84px), transient (20px)
+            var table = new TableLayoutPanel() { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 };
+            table.RowStyles.Clear();
+            table.RowStyles.Add(new RowStyle(SizeType.Absolute, 36));
+            table.RowStyles.Add(new RowStyle(SizeType.Absolute, 84));
+            table.RowStyles.Add(new RowStyle(SizeType.Absolute, 20));
+
+            // Marquee row (top of bottomPanel)
+            var marqueePanel = new Panel() { Dock = DockStyle.Fill, Height = 28 };
+            marqueePanel.Padding = new Padding(6, 6, 6, 6);
+            marqueePanel.BackColor = DisplayMessage.SharedBackColor;
+
+            marqueeLabel = new Label()
+            {
+                AutoSize = true,
+                TextAlign = ContentAlignment.MiddleLeft,
+                ForeColor = DisplayMessage.SharedForeColor,
+                BackColor = Color.Transparent,
+                Font = new Font(this.Font.FontFamily, Math.Max(this.Font.Size - 6f, 10f), FontStyle.Regular)
+            };
+            marqueePanel.Controls.Add(marqueeLabel);
+
+            // Buttons row (middle)
+            var buttonsContainer = new Panel() { Dock = DockStyle.Fill };
             var flow = new FlowLayoutPanel() { Dock = DockStyle.Fill, FlowDirection = FlowDirection.RightToLeft, AutoSize = false };
             flow.WrapContents = false;
             flow.Padding = new Padding(6);
+            // shorten button heights so marquee and buttons are visible together
+            var btnHeight = 64;
+            this.btnCancel.Height = btnHeight;
+            this.btnSendCommand.Height = btnHeight;
+            this.btnCopyText.Height = btnHeight;
+            this.btnSearchWeb.Height = btnHeight;
+            this.btnOpenInVsc.Height = btnHeight;
+            this.btnToggleTransparent = new Button() { Text = "Toggle Trans&parent", Height = btnHeight };
+
             flow.Controls.Add(btnCancel);
             flow.Controls.Add(btnSendCommand);
             flow.Controls.Add(btnCopyText);
             flow.Controls.Add(btnOpenInVsc);
-            // Toggle transparent button (use a unique mnemonic to avoid conflicts)
-            this.btnToggleTransparent = new Button() { Text = "Toggle Trans&parent", Height = 121 };
             flow.Controls.Add(btnToggleTransparent);
             flow.Controls.Add(btnSearchWeb);
-            flow.Controls.Add(btnStart);
-            // Keep explicit widths; remove Submit width since Submit is removed
-            btnStart.Width = 260; btnCancel.Width = 140; btnSendCommand.Width = 170; btnCopyText.Width = 160; btnSearchWeb.Width = 160; btnOpenInVsc.Width = 180; btnToggleTransparent.Width = 180;
-            bottomPanel.Controls.Add(flow);
 
-            // A small transient label shown briefly for strong feedback (e.g. "Copied")
+            // Keep explicit widths for remaining buttons so text remains visible
+            btnCancel.Width = 140; btnSendCommand.Width = 170; btnCopyText.Width = 160; btnSearchWeb.Width = 160; btnOpenInVsc.Width = 180; btnToggleTransparent.Width = 180;
+
+            // Make button fonts slightly larger so text is easier to read
+            try
+            {
+                var baseSize = Math.Max(this.Font.Size * 0.85f, 10f);
+                var btnFont = new Font(this.Font.FontFamily, baseSize + 1f, FontStyle.Regular);
+                btnCancel.Font = btnFont;
+                btnSendCommand.Font = btnFont;
+                btnCopyText.Font = btnFont;
+                btnSearchWeb.Font = btnFont;
+                btnOpenInVsc.Font = btnFont;
+                btnToggleTransparent.Font = btnFont;
+            }
+            catch { }
+
+            buttonsContainer.Controls.Add(flow);
+
+            // Transient row (bottom of bottomPanel)
             lblTransient = new Label()
             {
-                Dock = DockStyle.Bottom,
-                Height = 36,
+                Dock = DockStyle.Fill,
+                Height = 20,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Visible = false,
                 BackColor = Color.LimeGreen,
                 ForeColor = Color.Black,
-                Font = new Font(this.Font.FontFamily, Math.Max(this.Font.Size, 12f), FontStyle.Bold),
-                Padding = new Padding(6)
+                Font = new Font(this.Font.FontFamily, Math.Max(this.Font.Size - 2f, 10f), FontStyle.Bold),
+                Padding = new Padding(4)
             };
-            bottomPanel.Controls.Add(lblTransient);
+
+            table.Controls.Add(marqueePanel, 0, 0);
+            table.Controls.Add(buttonsContainer, 0, 1);
+            // lblTransient already created above and configured when building the table
+            table.Controls.Add(lblTransient, 0, 2);
+
+            bottomPanel.Controls.Add(table);
+
+            // Start marquee behavior
+            try
+            {
+                // Use curated English voice-typing commands (from Microsoft Voice Typing guidance)
+                var marqueeItems = LoadMarqueeItems();
+                var rnd = new Random();
+                marqueeTimer = new System.Windows.Forms.Timer();
+                marqueeTimer.Interval = 28;
+                marqueeTimer.Tick += (s, e) =>
+                {
+                    try
+                    {
+                        if (marqueeLabel.Left + marqueeLabel.Width <= -10)
+                        {
+                            var text = marqueeItems.Count > 0 ? marqueeItems[rnd.Next(marqueeItems.Count)] : "Say 'voice typing' to begin";
+                            marqueeLabel.Text = text;
+                            marqueeLabel.Left = marqueePanel.Width;
+                            marqueeLabel.Top = (marqueePanel.Height - marqueeLabel.Height) / 2;
+                        }
+                        else
+                        {
+                            marqueeLabel.Left -= 2;
+                        }
+                    }
+                    catch { }
+                };
+
+                this.Shown += (s, e) =>
+                {
+                    try
+                    {
+                        if (string.IsNullOrEmpty(marqueeLabel.Text))
+                        {
+                            marqueeLabel.Text = marqueeItems.Count > 0 ? marqueeItems[rnd.Next(marqueeItems.Count)] : "Say 'voice typing' to begin";
+                        }
+                        marqueeLabel.Left = marqueePanel.Width;
+                        marqueeLabel.Top = (marqueePanel.Height - marqueeLabel.Height) / 2;
+                        marqueeTimer?.Start();
+                    }
+                    catch { }
+                };
+            }
+            catch { }
 
             // Make button borders visible on all sides by using FlatStyle and a small border
-            btnStart.FlatStyle = FlatStyle.Flat; btnStart.FlatAppearance.BorderSize = 1; btnStart.FlatAppearance.BorderColor = SystemColors.ControlDark; btnStart.Margin = new Padding(6);
             btnCancel.FlatStyle = FlatStyle.Flat; btnCancel.FlatAppearance.BorderSize = 1; btnCancel.FlatAppearance.BorderColor = SystemColors.ControlDark; btnCancel.Margin = new Padding(6);
             btnSendCommand.FlatStyle = FlatStyle.Flat; btnSendCommand.FlatAppearance.BorderSize = 1; btnSendCommand.FlatAppearance.BorderColor = SystemColors.ControlDark; btnSendCommand.Margin = new Padding(6);
             btnCopyText.FlatStyle = FlatStyle.Flat; btnCopyText.FlatAppearance.BorderSize = 1; btnCopyText.FlatAppearance.BorderColor = SystemColors.ControlDark; btnCopyText.Margin = new Padding(6);
@@ -128,7 +226,7 @@ namespace DictationBoxMSP
             this.Size = new Size(1200, 800);
 
             btnCancel.Click += BtnCancel_Click;
-            btnStart.Click += BtnStart_Click;
+            // start button removed; dictation triggered via voice phrase
             btnSendCommand.Click += BtnSendCommand_Click;
             btnCopyText.Click += BtnCopyText_Click;
             btnOpenInVsc.Click += BtnOpenInVsc_Click;
@@ -221,10 +319,7 @@ namespace DictationBoxMSP
             StartDictation();
         }
 
-        private void BtnStart_Click(object? sender, EventArgs e)
-        {
-            StartDictation();
-        }
+        // BtnStart removed — StartDictation can still be invoked by voice phrase or timers
 
         private void StartDictation()
         {
@@ -386,6 +481,32 @@ namespace DictationBoxMSP
                 this.DialogResult = DialogResult.Cancel;
                 this.Close();
             }
+        }
+
+        private List<string> LoadMarqueeItems()
+        {
+            // Curated United Kingdom English voice-typing commands (UK variants only)
+            return new List<string>
+            {
+                "Punctuation: say 'full stop'",
+                "Comma: say 'comma'",
+                "Question mark: say 'question mark'",
+                "Exclamation mark: say 'exclamation mark'",
+                "New line: say 'new line'",
+                "New paragraph: say 'new paragraph'",
+                "Open quote / Close quote: say 'open quote' / 'close quote'",
+                "Colon / Semicolon: say 'colon' / 'semicolon'",
+                "Dash / Hyphen: say 'dash' or 'hyphen'",
+                "Ellipsis: say 'ellipsis'",
+                "Open parenthesis / Close parenthesis: say 'open parenthesis' / 'close parenthesis'",
+                "Delete last spoken word/phrase: say 'delete that' to remove last phrase",
+                "Select last spoken word or phrase: say 'select that'",
+                "Press enter: say 'press enter'",
+                "Press Backspace: say 'press backspace'",
+                "Press Tab: say 'press tab'",
+                "Press Space: say 'press space'",
+                "Say 'voice typing' to open Windows voice typing"
+            };
         }
 
         private void BtnOpenInVsc_Click(object? sender, EventArgs e)
