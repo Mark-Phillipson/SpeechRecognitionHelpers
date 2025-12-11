@@ -23,11 +23,14 @@ namespace DictationBoxMSP
         private void InitializeComponents()
         {
             this.txtSearch = new TextBox() { Dock = DockStyle.Top, Margin = new Padding(8), Height = (int)(28 * 1.2) };
-            this.lstResults = new ListBox() { Dock = DockStyle.Fill }; 
-            this.lblHint = new Label() { Dock = DockStyle.Top, Height = 20, Text = "Start typing to filter commands...", TextAlign = System.Drawing.ContentAlignment.MiddleLeft };
+            this.lstResults = new ListBox() { Dock = DockStyle.Fill };
+            // Move the hint label to the bottom so it doesn't overlap top items
+            this.lblHint = new Label() { Dock = DockStyle.Bottom, Height = 22, Text = "Start typing to filter commands...", TextAlign = System.Drawing.ContentAlignment.MiddleLeft };
 
-            this.Controls.Add(lstResults);
+            // Add controls in an order that yields predictable docking without needing BringToFront
+            // Add hint (bottom), then list (fill), then search (top)
             this.Controls.Add(lblHint);
+            this.Controls.Add(lstResults);
             this.Controls.Add(txtSearch);
 
             this.Text = "Available Commands";
@@ -76,6 +79,13 @@ namespace DictationBoxMSP
                 lstResults.BackColor = DisplayMessage.SharedBackColor;
                 lstResults.ForeColor = DisplayMessage.SharedForeColor;
                 lstResults.Font = largerFont;
+                // Avoid the ListBox clipping its first/last item by disabling IntegralHeight
+                lstResults.IntegralHeight = false;
+                // Use normal drawing mode to avoid owner-draw inconsistencies
+                lstResults.DrawMode = DrawMode.Normal;
+                // Set a generous item height based on the chosen font to avoid clipping
+                try { lstResults.ItemHeight = (int)Math.Ceiling(largerFont.GetHeight()) + 8; } catch { }
+                lstResults.BorderStyle = BorderStyle.FixedSingle;
             }
 
             if (lblHint != null)
@@ -90,9 +100,7 @@ namespace DictationBoxMSP
         {
             // Start with no results for performance; user begins typing to populate.
             lstResults.Items.Clear();
-            // Ensure layout order: bring search to front
-            txtSearch.BringToFront();
-            lblHint.BringToFront();
+            // No BringToFront calls — control docking/order set in InitializeComponents
         }
 
         private void AvailableCommandsForm_Shown(object? sender, EventArgs e)
@@ -155,9 +163,11 @@ namespace DictationBoxMSP
         private void TxtSearch_TextChanged(object? sender, EventArgs e)
         {
             var q = txtSearch.Text?.Trim() ?? string.Empty;
-            if (string.IsNullOrEmpty(q))
+            // Only start searching when the user has entered 3 or more characters.
+            if (q.Length < 3)
             {
-                lblHint.Text = "Start typing to filter commands...";
+                lblHint.Text = "Type 3+ characters to search...";
+                // Keep the list empty until sufficient input is provided
                 lstResults.Items.Clear();
                 return;
             }
@@ -181,10 +191,45 @@ namespace DictationBoxMSP
                 items.AddRange(ExecuteCommands.NaturalLanguageInterpreter.VSCodeCommands);
             }
             catch { }
+            // Diagnostic logging: write combined items count and presence of 'natural dictate'
+            try
+            {
+                var logPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log"));
+                var found = items.Any(i => string.Equals(i.Command?.Trim(), "natural dictate", StringComparison.OrdinalIgnoreCase));
+                System.IO.File.AppendAllText(logPath, $"[DEBUG] AvailableCommandsForm: combined items count={items.Count}, contains 'natural dictate'={found}\n");
+            }
+            catch { }
+
+            // Log control bounds so we can see if the ListBox is overlapped/offset
+            try
+            {
+                var logPath2 = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log"));
+                System.IO.File.AppendAllText(logPath2, $"[DEBUG] AvailableCommandsForm.Bounds: Form.ClientSize={this.ClientSize}, txtSearch.Bounds={txtSearch.Bounds}, lblHint.Bounds={lblHint.Bounds}, lstResults.Bounds={lstResults.Bounds}\n");
+            }
+            catch { }
 
             // More flexible matching: split the query into terms and require all terms
             // to be present in either the command or the description (order-insensitive).
-            var terms = q.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim().ToLowerInvariant()).Where(s => s.Length > 0).ToArray();
+            // Tokenize and only keep terms of length >= 3 to avoid matching on tiny fragments
+            var terms = q.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => s.Trim().ToLowerInvariant())
+                .Where(s => s.Length >= 3)
+                .ToArray();
+
+            if (terms.Length == 0)
+            {
+                lblHint.Text = "Type 3+ characters to search...";
+                lstResults.Items.Clear();
+                return;
+            }
+
+            // Diagnostic logging: query terms
+            try
+            {
+                var logPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log"));
+                System.IO.File.AppendAllText(logPath, $"[DEBUG] AvailableCommandsForm: query='{q}', terms=[{string.Join(',', terms)}]\n");
+            }
+            catch { }
 
             var filtered = items
                 .Where(i =>
@@ -203,7 +248,8 @@ namespace DictationBoxMSP
                     catch { }
                     return $"{i.Command} — {i.Description}";
                 })
-                .Take(200)
+                // Limit results to 4 items for quick, focused suggestions
+                .Take(4)
                 .ToArray();
 
             // Also include any configured emoji mappings that match the query (show name -> emoji)
@@ -225,9 +271,45 @@ namespace DictationBoxMSP
             }
             catch { }
 
+            // Diagnostic logging: filtered count
+            try
+            {
+                var logPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log"));
+                System.IO.File.AppendAllText(logPath, $"[DEBUG] AvailableCommandsForm: filtered count={filtered.Length}\n");
+            }
+            catch { }
+
             lstResults.BeginUpdate();
             lstResults.Items.Clear();
             lstResults.Items.AddRange(filtered);
+            // Diagnostic: log the actual strings being added so we can confirm visibility
+            try
+            {
+                var logPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log"));
+                System.IO.File.AppendAllText(logPath, $"[DEBUG] AvailableCommandsForm: adding filtered items: {string.Join(" | ", filtered)}\n");
+            }
+            catch { }
+            // Ensure colors are explicit so items are visible regardless of shared theme
+            try { lstResults.BackColor = Color.Black; } catch { }
+            try { lstResults.ForeColor = Color.White; } catch { }
+            try { lstResults.Visible = true; lstResults.Refresh(); lstResults.Invalidate(); lstResults.Update(); } catch { }
+            try
+            {
+                var logPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log"));
+                System.IO.File.AppendAllText(logPath, $"[DEBUG] AvailableCommandsForm: ListBox.Items.Count={lstResults.Items.Count}\n");
+            }
+            catch { }
+            try
+            {
+                if (lstResults.Items.Count > 0)
+                {
+                    lstResults.SelectedIndex = 0; // select first to make it visible
+                    // Ensure the selected index is scrolled into view
+                    lstResults.TopIndex = Math.Max(0, lstResults.SelectedIndex);
+                    System.IO.File.AppendAllText(System.IO.Path.GetFullPath(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "bin", "app.log")), $"[DEBUG] AvailableCommandsForm: SelectedIndex={lstResults.SelectedIndex}, TopIndex={lstResults.TopIndex}\n");
+                }
+            }
+            catch { }
             lstResults.EndUpdate();
         }
 
