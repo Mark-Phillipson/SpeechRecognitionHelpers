@@ -48,7 +48,7 @@ namespace ExecuteCommands.Helpers
                     // fallback to primary screen working area
                     try
                     {
-                        var wa = Screen.PrimaryScreen.WorkingArea;
+                        var wa = Screen.PrimaryScreen?.WorkingArea ?? new System.Drawing.Rectangle(0, 0, SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);
                         info.rcWork.Left = wa.Left;
                         info.rcWork.Top = wa.Top;
                         info.rcWork.Right = wa.Right;
@@ -89,7 +89,7 @@ namespace ExecuteCommands.Helpers
                     catch { }
                     try
                     {
-                        var wa = Screen.PrimaryScreen.WorkingArea;
+                        var wa = Screen.PrimaryScreen?.WorkingArea ?? new System.Drawing.Rectangle(0, 0, SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);
                         info.rcWork.Left = wa.Left;
                         info.rcWork.Top = wa.Top;
                         info.rcWork.Right = wa.Right;
@@ -150,7 +150,7 @@ namespace ExecuteCommands.Helpers
                         Win32ApiHelper.MONITORINFOEX primaryInfo = new Win32ApiHelper.MONITORINFOEX();
                         try
                         {
-                            var wa = Screen.PrimaryScreen.WorkingArea;
+                            var wa = Screen.PrimaryScreen?.WorkingArea ?? new System.Drawing.Rectangle(0, 0, SystemInformation.PrimaryMonitorSize.Width, SystemInformation.PrimaryMonitorSize.Height);
                             primaryInfo.rcWork.Left = wa.Left;
                             primaryInfo.rcWork.Top = wa.Top;
                             primaryInfo.rcWork.Right = wa.Right;

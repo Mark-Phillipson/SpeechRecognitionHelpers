@@ -22,6 +22,7 @@ dotnet run --framework net10.0-windows -- natural "maximize this window"
 dotnet run --framework net10.0-windows -- natural "put this window on the left half"
 dotnet run --framework net10.0-windows -- natural "put this window on the right half"
 dotnet run --framework net10.0-windows -- natural " close this window"
+dotnet run --framework net10.0-windows -- natural "natural dictate"  # Opens the voice dictation form for speaking or typing natural language commands
 ```
 
 ## Window Management Actions

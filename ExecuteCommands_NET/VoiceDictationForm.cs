@@ -30,8 +30,7 @@ namespace DictationBoxMSP
         private System.Windows.Forms.Timer startDictationTimer = null!;
         private int timeoutMs = 0;
         private bool isBackgroundTransparent = false;
-        private Color savedFormBackColor;
-        private Color savedTransparencyKey;
+        // removed unused saved colors to avoid compiler warnings
         private Color savedTxtInputBackColor;
         private Color savedBottomPanelBackColor;
         private double savedOpacity = 1.0;

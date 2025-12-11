@@ -51,17 +51,15 @@ namespace DictationBoxMSP
 
             // Increase font size for accessibility (40% larger than shared font)
             var sharedFont = DisplayMessage.SharedFont;
-            float baseSize = SystemFonts.MessageBoxFont.Size;
-            FontFamily fontFamily = SystemFonts.MessageBoxFont.FontFamily;
-            FontStyle fontStyle = SystemFonts.MessageBoxFont.Style;
-            #pragma warning disable CS8602 // Dereference of a possibly null reference
+            float baseSize = SystemFonts.MessageBoxFont?.Size ?? 12f;
+            FontFamily fontFamily = SystemFonts.MessageBoxFont?.FontFamily ?? FontFamily.GenericSansSerif;
+            FontStyle fontStyle = SystemFonts.MessageBoxFont?.Style ?? FontStyle.Regular;
             if (sharedFont != null)
             {
                 baseSize = sharedFont.Size;
-                fontFamily = sharedFont.FontFamily;
+                fontFamily = sharedFont.FontFamily ?? fontFamily;
                 fontStyle = sharedFont.Style;
             }
-            #pragma warning restore CS8602
             float largerSize = Math.Max(baseSize * 1.4f, baseSize + 4f);
             var largerFont = new Font(fontFamily, largerSize, fontStyle);
             this.Font = largerFont;
@@ -105,6 +103,51 @@ namespace DictationBoxMSP
                 this.ActiveControl = txtSearch;
                 txtSearch.Focus();
                 txtSearch.Select();
+                // Populate with a random sample of commands so the user sees examples immediately
+                PopulateRandomSampleItems(20);
+            }
+            catch { }
+        }
+
+        private void PopulateRandomSampleItems(int sampleSize)
+        {
+            try
+            {
+                var items = new List<(string Command, string Description)>();
+                try { items.AddRange(ExecuteCommands.NaturalLanguageInterpreter.AvailableCommands); } catch { }
+                try { items.AddRange(ExecuteCommands.NaturalLanguageInterpreter.VisualStudioCommands); } catch { }
+                try { items.AddRange(ExecuteCommands.NaturalLanguageInterpreter.VSCodeCommands); } catch { }
+
+                // Deduplicate by Command+Description
+                var distinct = items
+                    .Where(i => !string.IsNullOrEmpty(i.Command))
+                    .GroupBy(i => (i.Command ?? string.Empty) + "|" + (i.Description ?? string.Empty))
+                    .Select(g => g.First())
+                    .ToList();
+
+                if (distinct.Count == 0)
+                {
+                    lstResults.Items.Clear();
+                    return;
+                }
+
+                var rng = new Random();
+                var sample = distinct.OrderBy(_ => rng.Next()).Take(sampleSize).Select(i =>
+                {
+                    try
+                    {
+                        var emoji = ExecuteCommands.EmojiManager.GetCommandEmoji(i.Command);
+                        if (!string.IsNullOrEmpty(emoji))
+                            return $"{emoji} {i.Command} — {i.Description}";
+                    }
+                    catch { }
+                    return $"{i.Command} — {i.Description}";
+                }).ToArray();
+
+                lstResults.BeginUpdate();
+                lstResults.Items.Clear();
+                lstResults.Items.AddRange(sample);
+                lstResults.EndUpdate();
             }
             catch { }
         }
@@ -139,8 +182,16 @@ namespace DictationBoxMSP
             }
             catch { }
 
+            // More flexible matching: split the query into terms and require all terms
+            // to be present in either the command or the description (order-insensitive).
+            var terms = q.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim().ToLowerInvariant()).Where(s => s.Length > 0).ToArray();
+
             var filtered = items
-                .Where(i => i.Command.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0 || (i.Description ?? string.Empty).IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
+                .Where(i =>
+                {
+                    var hay = (i.Command + " " + (i.Description ?? string.Empty)).ToLowerInvariant();
+                    return terms.All(t => hay.Contains(t));
+                })
                 .Select(i =>
                 {
                     try

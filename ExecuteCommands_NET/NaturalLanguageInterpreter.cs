@@ -233,6 +233,7 @@ namespace ExecuteCommands
             ("focus window <name>", "Focus a window by its name (e.g. focus window Zoom)"),
             ("focus <window name>", "Focus a window by its name (e.g. focus Zoom)"),
             ("show help", "Show help and available commands"),
+            ("natural dictate", "Open the voice dictation form (speak or type natural language commands)"),
             ("emoji set <name> <emoji>", "Set an emoji for a named shortcut (e.g. emoji set happy 😀)"),
             ("emoji <name>", "Insert the configured emoji for the given name"),
             ("emoji <emoji>", "Insert the given emoji immediately")
