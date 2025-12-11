@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using WindowsInput;
 using WindowsInput.Native;
 
@@ -19,6 +20,7 @@ namespace DictationBoxMSP
         private Button btnOpenInVsc = null!;
         private Button btnToggleTransparent = null!;
         private Panel bottomPanel = null!;
+        private Label lblTransient = null!;
         private System.Windows.Forms.Timer autoSubmitTimer = null!;
         private System.Windows.Forms.Timer startDictationTimer = null!;
         private int timeoutMs = 0;
@@ -47,18 +49,19 @@ namespace DictationBoxMSP
             this.txtInput = new TextBox() { Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Vertical };
             // Use '&' to indicate keyboard accelerators (mnemonics). These are shown as underlined
             // when Alt is pressed and allow keyboard activation (Alt+Key).
-            this.btnStart = new Button() { Text = "Re-Start &Dictation", Height = 56, AutoSize = false };
-            this.btnCancel = new Button() { Text = "&Cancel", Height = 56 };
+            this.btnStart = new Button() { Text = "Re-Start &Dictation", Height = 121, AutoSize = false };
+            this.btnCancel = new Button() { Text = "&Cancel", Height = 121 };
             // Use Alt+S for Send Command (replaces the removed Submit button)
-            this.btnSendCommand = new Button() { Text = "&Send Command", Height = 56 };
-            this.btnCopyText = new Button() { Text = "Copy &Text", Height = 56 };
-            this.btnSearchWeb = new Button() { Text = "Search &Web", Height = 56 };
-            this.btnOpenInVsc = new Button() { Text = "Open in &VS Code", Height = 56 };
+            this.btnSendCommand = new Button() { Text = "&Send Command", Height = 121 };
+            this.btnCopyText = new Button() { Text = "Copy &Text", Height = 121 };
+            this.btnSearchWeb = new Button() { Text = "Search &Web", Height = 121 };
+            this.btnOpenInVsc = new Button() { Text = "Open in &VS Code", Height = 121 };
             this.autoSubmitTimer = new System.Windows.Forms.Timer();
             this.startDictationTimer = new System.Windows.Forms.Timer();
 
             // Bottom panel to hold buttons
-            bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 120 };
+            // Keep the panel height modest — buttons themselves are taller so the panel doesn't need to be huge
+            bottomPanel = new Panel() { Dock = DockStyle.Bottom, Height = 140 };
             bottomPanel.Padding = new Padding(8);
             bottomPanel.BackColor = DisplayMessage.SharedBackColor;
 
@@ -70,14 +73,28 @@ namespace DictationBoxMSP
             flow.Controls.Add(btnSendCommand);
             flow.Controls.Add(btnCopyText);
             flow.Controls.Add(btnOpenInVsc);
-            // Toggle transparent button
-            this.btnToggleTransparent = new Button() { Text = "Toggle &Transparent", Height = 56 };
+            // Toggle transparent button (use a unique mnemonic to avoid conflicts)
+            this.btnToggleTransparent = new Button() { Text = "Toggle Trans&parent", Height = 121 };
             flow.Controls.Add(btnToggleTransparent);
             flow.Controls.Add(btnSearchWeb);
             flow.Controls.Add(btnStart);
             // Keep explicit widths; remove Submit width since Submit is removed
-            btnStart.Width = 220; btnCancel.Width = 120; btnSendCommand.Width = 140; btnCopyText.Width = 120; btnSearchWeb.Width = 140; btnOpenInVsc.Width = 160; btnToggleTransparent.Width = 160;
+            btnStart.Width = 260; btnCancel.Width = 140; btnSendCommand.Width = 170; btnCopyText.Width = 160; btnSearchWeb.Width = 160; btnOpenInVsc.Width = 180; btnToggleTransparent.Width = 180;
             bottomPanel.Controls.Add(flow);
+
+            // A small transient label shown briefly for strong feedback (e.g. "Copied")
+            lblTransient = new Label()
+            {
+                Dock = DockStyle.Bottom,
+                Height = 36,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Visible = false,
+                BackColor = Color.LimeGreen,
+                ForeColor = Color.Black,
+                Font = new Font(this.Font.FontFamily, Math.Max(this.Font.Size, 12f), FontStyle.Bold),
+                Padding = new Padding(6)
+            };
+            bottomPanel.Controls.Add(lblTransient);
 
             // Make button borders visible on all sides by using FlatStyle and a small border
             btnStart.FlatStyle = FlatStyle.Flat; btnStart.FlatAppearance.BorderSize = 1; btnStart.FlatAppearance.BorderColor = SystemColors.ControlDark; btnStart.Margin = new Padding(6);
@@ -87,6 +104,20 @@ namespace DictationBoxMSP
             btnOpenInVsc.FlatStyle = FlatStyle.Flat; btnOpenInVsc.FlatAppearance.BorderSize = 1; btnOpenInVsc.FlatAppearance.BorderColor = SystemColors.ControlDark; btnOpenInVsc.Margin = new Padding(6);
             btnSearchWeb.FlatStyle = FlatStyle.Flat; btnSearchWeb.FlatAppearance.BorderSize = 1; btnSearchWeb.FlatAppearance.BorderColor = SystemColors.ControlDark; btnSearchWeb.Margin = new Padding(6);
             btnToggleTransparent.FlatStyle = FlatStyle.Flat; btnToggleTransparent.FlatAppearance.BorderSize = 1; btnToggleTransparent.FlatAppearance.BorderColor = SystemColors.ControlDark; btnToggleTransparent.Margin = new Padding(6);
+
+            // Provide tooltips and ensure mnemonics are enabled so shortcuts are discoverable
+            try
+            {
+                var tt = new ToolTip();
+                tt.IsBalloon = false;
+                tt.ShowAlways = true;
+                tt.SetToolTip(btnToggleTransparent, "Toggle Transparent (Alt+P)");
+                tt.SetToolTip(btnCopyText, "Copy text to clipboard (Alt+T)");
+                // Ensure mnemonics are enabled explicitly
+                btnToggleTransparent.UseMnemonic = true;
+                btnCopyText.UseMnemonic = true;
+            }
+            catch { }
 
             this.Controls.Add(txtInput);
             this.Controls.Add(bottomPanel);
@@ -144,7 +175,8 @@ namespace DictationBoxMSP
                     bottomPanel.BackColor = DisplayMessage.SharedBackColor;
 
                     isBackgroundTransparent = true;
-                    btnToggleTransparent.Text = "Disable &Transparent";
+                    // Keep the same mnemonic (Trans&parent -> Alt+P) for the disabled state
+                    btnToggleTransparent.Text = "Disable Trans&parent";
                 }
                 else
                 {
@@ -153,7 +185,7 @@ namespace DictationBoxMSP
                     txtInput.BackColor = savedTxtInputBackColor;
                     bottomPanel.BackColor = savedBottomPanelBackColor;
                     isBackgroundTransparent = false;
-                    btnToggleTransparent.Text = "Toggle &Transparent";
+                    btnToggleTransparent.Text = "Toggle Trans&parent";
                 }
             }
             catch { }
@@ -240,12 +272,70 @@ namespace DictationBoxMSP
             this.Close();
         }
 
-        private void BtnCopyText_Click(object? sender, EventArgs e)
+        private async void BtnCopyText_Click(object? sender, EventArgs e)
         {
             try
             {
                 var text = txtInput.Text ?? string.Empty;
-                if (!string.IsNullOrEmpty(text)) Clipboard.SetText(text);
+                if (string.IsNullOrEmpty(text)) return;
+
+                Clipboard.SetText(text);
+
+                try
+                {
+                    // Stronger visual feedback: change text, colors and force a refresh so it's obvious
+                    var originalText = btnCopyText.Text;
+                    var originalBack = btnCopyText.BackColor;
+                    var originalFore = btnCopyText.ForeColor;
+                    var originalFont = btnCopyText.Font;
+
+                    btnCopyText.Enabled = false;
+                    btnCopyText.Text = "Copied";
+                    // Ensure BackColor will be applied even when visual styles are enabled
+                    var originalUseVisual = btnCopyText.UseVisualStyleBackColor;
+                    try { btnCopyText.UseVisualStyleBackColor = false; } catch { }
+                    btnCopyText.BackColor = Color.LimeGreen;
+                    btnCopyText.ForeColor = Color.Black;
+                    btnCopyText.Font = new Font(originalFont.FontFamily, originalFont.Size, FontStyle.Bold);
+                    btnCopyText.Refresh();
+
+                    // Show the transient label as a very visible confirmation below the buttons
+                    try
+                    {
+                        if (lblTransient != null)
+                        {
+                            lblTransient.Text = "Copied";
+                            lblTransient.BackColor = Color.LimeGreen;
+                            lblTransient.ForeColor = Color.Black;
+                            lblTransient.Visible = true;
+                            lblTransient.BringToFront();
+                        }
+                    }
+                    catch { }
+
+                    await Task.Delay(1250);
+
+                    btnCopyText.Text = originalText;
+                    btnCopyText.BackColor = originalBack;
+                    btnCopyText.ForeColor = originalFore;
+                    btnCopyText.Font = originalFont;
+                    try { btnCopyText.UseVisualStyleBackColor = originalUseVisual; } catch { }
+                    btnCopyText.Enabled = true;
+                    btnCopyText.Refresh();
+
+                    // Hide the transient label after restoring button state
+                    try
+                    {
+                        if (lblTransient != null)
+                        {
+                            lblTransient.Visible = false;
+                        }
+                    }
+                    catch { }
+                }
+                catch { }
+
+                try { ExecuteCommands.TrayNotificationHelper.ShowNotification("Copied", "Text copied to clipboard", 1200); } catch { }
             }
             catch { }
         }
