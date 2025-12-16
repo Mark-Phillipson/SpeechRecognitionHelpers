@@ -24,7 +24,7 @@ namespace DictationBoxMSP
         private Button btnToggleTransparent = null!;
         private Panel bottomPanel = null!;
         private Label lblTransient = null!;
-        private Label marqueeLabel = null!;
+        private List<Label> marqueeLabels = new List<Label>();
         private System.Windows.Forms.Timer marqueeTimer = null!;
         private System.Windows.Forms.Timer autoSubmitTimer = null!;
         private System.Windows.Forms.Timer startDictationTimer = null!;
@@ -80,15 +80,21 @@ namespace DictationBoxMSP
             marqueePanel.Padding = new Padding(6, 6, 6, 6);
             marqueePanel.BackColor = DisplayMessage.SharedBackColor;
 
-            marqueeLabel = new Label()
+            // Create multiple marquee labels so we can show more than one message at once
+            int marqueeCount = 2;
+            for (int i = 0; i < marqueeCount; i++)
             {
-                AutoSize = true,
-                TextAlign = ContentAlignment.MiddleLeft,
-                ForeColor = DisplayMessage.SharedForeColor,
-                BackColor = Color.Transparent,
-                Font = new Font(this.Font.FontFamily, Math.Max(this.Font.Size - 6f, 10f), FontStyle.Regular)
-            };
-            marqueePanel.Controls.Add(marqueeLabel);
+                var lbl = new Label()
+                {
+                    AutoSize = true,
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    ForeColor = DisplayMessage.SharedForeColor,
+                    BackColor = Color.Transparent,
+                    Font = new Font(this.Font.FontFamily, Math.Max(this.Font.Size - 6f, 10f), FontStyle.Regular)
+                };
+                marqueePanel.Controls.Add(lbl);
+                marqueeLabels.Add(lbl);
+            }
 
             // Buttons row (middle)
             var buttonsContainer = new Panel() { Dock = DockStyle.Fill };
@@ -150,10 +156,9 @@ namespace DictationBoxMSP
 
             bottomPanel.Controls.Add(table);
 
-            // Start marquee behavior
+            // Start marquee behavior: scroll multiple labels across the panel
             try
             {
-                // Use curated English voice-typing commands (from Microsoft Voice Typing guidance)
                 var marqueeItems = LoadMarqueeItems();
                 var rnd = new Random();
                 marqueeTimer = new System.Windows.Forms.Timer();
@@ -162,16 +167,26 @@ namespace DictationBoxMSP
                 {
                     try
                     {
-                        if (marqueeLabel.Left + marqueeLabel.Width <= -10)
+                        foreach (var lbl in marqueeLabels.ToList())
                         {
-                            var text = marqueeItems.Count > 0 ? marqueeItems[rnd.Next(marqueeItems.Count)] : "Say 'voice typing' to begin";
-                            marqueeLabel.Text = text;
-                            marqueeLabel.Left = marqueePanel.Width;
-                            marqueeLabel.Top = (marqueePanel.Height - marqueeLabel.Height) / 2;
-                        }
-                        else
-                        {
-                            marqueeLabel.Left -= 2;
+                            if (lbl.Left + lbl.Width <= -10)
+                            {
+                                var text = marqueeItems.Count > 0 ? marqueeItems[rnd.Next(marqueeItems.Count)] : "Say 'voice typing' to begin";
+                                lbl.Text = text;
+                                // place this label to the right of the right-most label (or panel if none)
+                                int rightmost = marqueePanel.Width;
+                                foreach (var other in marqueeLabels)
+                                {
+                                    if (other == lbl) continue;
+                                    rightmost = Math.Max(rightmost, other.Left + other.Width + 40);
+                                }
+                                lbl.Left = rightmost;
+                                lbl.Top = (marqueePanel.Height - lbl.Height) / 2;
+                            }
+                            else
+                            {
+                                lbl.Left -= 2;
+                            }
                         }
                     }
                     catch { }
@@ -181,12 +196,17 @@ namespace DictationBoxMSP
                 {
                     try
                     {
-                        if (string.IsNullOrEmpty(marqueeLabel.Text))
+                        for (int i = 0; i < marqueeLabels.Count; i++)
                         {
-                            marqueeLabel.Text = marqueeItems.Count > 0 ? marqueeItems[rnd.Next(marqueeItems.Count)] : "Say 'voice typing' to begin";
+                            var lbl = marqueeLabels[i];
+                            if (string.IsNullOrEmpty(lbl.Text))
+                            {
+                                lbl.Text = marqueeItems.Count > 0 ? marqueeItems[rnd.Next(marqueeItems.Count)] : "Say 'voice typing' to begin";
+                            }
+                            // stagger starting positions so messages are spread out
+                            lbl.Left = marqueePanel.Width + i * (marqueePanel.Width / 2);
+                            lbl.Top = (marqueePanel.Height - lbl.Height) / 2;
                         }
-                        marqueeLabel.Left = marqueePanel.Width;
-                        marqueeLabel.Top = (marqueePanel.Height - marqueeLabel.Height) / 2;
                         marqueeTimer?.Start();
                     }
                     catch { }
@@ -487,15 +507,11 @@ namespace DictationBoxMSP
             // Curated United Kingdom English voice-typing commands (UK variants only)
             return new List<string>
             {
-                "Punctuation: say 'full stop'",
-                "Comma: say 'comma'",
-                "Question mark: say 'question mark'",
-                "Exclamation mark: say 'exclamation mark'",
+                "Punctuation: say 'full stop' Note this will also stop Voice Typing and go back to Talon Voice",
                 "New line: say 'new line'",
                 "New paragraph: say 'new paragraph'",
                 "Open quote / Close quote: say 'open quote' / 'close quote'",
                 "Colon / Semicolon: say 'colon' / 'semicolon'",
-                "Dash / Hyphen: say 'dash' or 'hyphen'",
                 "Ellipsis: say 'ellipsis'",
                 "Open parenthesis / Close parenthesis: say 'open parenthesis' / 'close parenthesis'",
                 "Delete last spoken word/phrase: say 'delete that' to remove last phrase",
@@ -504,7 +520,7 @@ namespace DictationBoxMSP
                 "Press Backspace: say 'press backspace'",
                 "Press Tab: say 'press tab'",
                 "Press Space: say 'press space'",
-                "Say 'voice typing' to open Windows voice typing"
+                "Say 'voice typing' to open Windows Voice Typing and set Talon Voice to sleep"
             };
         }
 
