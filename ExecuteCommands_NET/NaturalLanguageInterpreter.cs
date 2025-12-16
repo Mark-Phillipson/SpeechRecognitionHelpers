@@ -64,6 +64,7 @@ namespace ExecuteCommands
             { "teams", "Teams.exe" },
             { "onenote", "onenote.exe" },
             { "paint", "mspaint.exe" },
+            { "microsoft paint", "mspaint.exe" },
             { "terminal", "wt.exe" },
             { "windows terminal", "wt.exe" },
             { "cmd", "wt.exe" }, // Always prefer Windows Terminal
@@ -742,6 +743,11 @@ namespace ExecuteCommands
                 var appName = text.Substring(5).Trim();
                 // Normalize app name (remove 'the', 'app', etc.)
                 appName = appName.Replace("the ", "").Replace("app", "").Trim();
+                // Strip vendor prefixes like "microsoft " or "ms " to handle phrases such as "microsoft paint"
+                if (appName.StartsWith("microsoft ", StringComparison.OrdinalIgnoreCase))
+                    appName = appName.Substring("microsoft ".Length).Trim();
+                else if (appName.StartsWith("ms ", StringComparison.OrdinalIgnoreCase))
+                    appName = appName.Substring("ms ".Length).Trim();
                 // Special case: "terminal" or "windows terminal" or "cmd" or "command prompt"
                 if (appName == "terminal" || appName == "windows terminal" || appName == "cmd" || appName == "command prompt")
                     appName = "terminal";
